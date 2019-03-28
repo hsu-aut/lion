@@ -1,0 +1,278 @@
+<div class="card">
+    <h5 class="card-header">VDI3682 Template</h5>
+    <div class="card-body">
+      <h5 class="card-title">Options & Statistics</h5>
+      <p class="card-text">The VDI3682 template uses a tabular approach for building a graph. One can add elements by either rendering for functions, structure or behavior.</p>
+      <div class="row" style="height: 200px;">
+        <!-- <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                  General Template Options
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input [(ngModel)]="TemplateOption" type="radio" id="OptionRadio1" name="OptionRadio" class="custom-control-input" value="function" >
+                        <label class="custom-control-label" for="OptionRadio1">Functional View</label>
+                    </div>
+                    <div class="form-check">
+                        <input [(ngModel)]="TemplateOption" type="radio" id="OptionRadio2" name="OptionRadio" class="custom-control-input" value="behavior">
+                        <label class="custom-control-label" for="OptionRadio2">Behavioral View</label>
+                    </div>
+                    <div class="form-check">
+                        <input [(ngModel)]="TemplateOption" type="radio" id="OptionRadio3" name="OptionRadio" class="custom-control-input" value="structure">
+                        <label class="custom-control-label" for="OptionRadio3">Structural View</label>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="col" >
+            <div class="card h-100">
+                <div class="card-header">
+                  Additonal Functional View Options
+                </div>
+                <div class="card-body">
+                  <div class="form-check">
+                      <input [(ngModel)]="FunctionalOptions" type="radio" id="functionalRadio1" name="FunctionalOptions" class="custom-control-input" value="existingEntities">
+                      <label class="custom-control-label" for="functionalRadio1">Connect existing Entities</label>
+                  </div>
+                  <div class="form-check">
+                      <input [(ngModel)]="FunctionalOptions" type="radio" id="functionalRadio2" name="FunctionalOptions" class="custom-control-input" value="newEntities">
+                      <label class="custom-control-label" for="functionalRadio2">Create new Entities </label>
+                  </div>
+                </div>               
+            </div>
+            <div class="card h-100" *ngIf="TemplateOption === 'behavior'">
+                <div class="card-header">
+                  Additonal Behavior View Options
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input [(ngModel)]="BehavioralOptions" type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="option1" checked>
+                        <label class="custom-control-label" for="customRadio1">View 1</label>
+                    </div>
+                    <div class="form-check">
+                        <input [(ngModel)]="BehavioralOptions" type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="option2">
+                        <label class="custom-control-label" for="customRadio2">View 2</label>
+                    </div>
+                    <div class="form-check">
+                        <input [(ngModel)]="BehavioralOptions" type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="option3">
+                        <label class="custom-control-label" for="customRadio3">View 3</label>
+                    </div>
+                </div>               
+            </div>
+            <div class="card h-100" *ngIf="TemplateOption === 'structure'">
+                <div class="card-header">
+                  Additonal Structure View Options
+                </div>
+                <div class="card-body">
+                    <div class="form-check">
+                        <input [(ngModel)]="StructuralOptions" type="radio" id="customRadio1" name="customRadio" class="custom-control-input" value="option1" checked>
+                        <label class="custom-control-label" for="customRadio1">View 1</label>
+                    </div>
+                    <div class="form-check">
+                        <input [(ngModel)]="StructuralOptions" type="radio" id="customRadio2" name="customRadio" class="custom-control-input" value="option2">
+                        <label class="custom-control-label" for="customRadio2">View 2</label>
+                    </div>
+                    <div class="form-check">
+                        <input [(ngModel)]="StructuralOptions" type="radio" id="customRadio3" name="customRadio" class="custom-control-input" value="option3">
+                        <label class="custom-control-label" for="customRadio3">View 3</label>
+                    </div>
+                </div>               
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header">
+                  Functional View Statistics
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover"> 
+                        <thead>
+                          <tr>
+                            <th scope="col">No# Functions</th>
+                            <th scope="col">No# Inputs</th>
+                            <th scope="col">No# Outputs</th>
+                            <th scope="col">No# TechnicalResource</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+            <div class="card h-100" *ngIf="TemplateOption === 'behavior'">
+                <div class="card-header">
+                  Behavior View Statistics
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover"> 
+                        <thead>
+                          <tr>
+                            <th scope="col">No# Functions</th>
+                            <th scope="col">No# Inputs</th>
+                            <th scope="col">No# Outputs</th>
+                            <th scope="col">No# TechnicalResource</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+            <div class="card h-100" *ngIf="TemplateOption === 'structure'">
+                <div class="card-header">
+                  Structure View Statistics
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover"> 
+                        <thead>
+                          <tr>
+                            <th scope="col">No# Functions</th>
+                            <th scope="col">No# Inputs</th>
+                            <th scope="col">No# Outputs</th>
+                            <th scope="col">No# TechnicalResource</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>2</td>
+                            <td>3</td>
+                            <td>4</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+            
+        </div>
+      </div>
+
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+      <h5 class="card-title"> Functional Insert Template</h5>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <div *ngIf="FunctionalOptions === 'newEntities'">
+              
+              <div class="row">
+              <div class="col">The Subject of the created statement</div>
+              <div class="col">The Predicate of the created statement</div>
+              <div class="col">The Object of the created statement</div>
+              <div class="w-100"></div>
+              <div class="col">
+                  <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
+              </div>
+              <div class="col">
+                  <input class="form-control" type="text" placeholder="rdf:type" readonly>
+              </div>
+              <div class="col"> 
+                <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
+                  <option *ngFor='let x of keys(allClasses.results.bindings)'> 
+                  {{allClasses.results.bindings[x].type.value}}
+                  </option>
+                </select> 
+              </div>            
+            </div>
+            <div class="row">
+                <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
+                <button class="btn btn-secondary col m-3" (click)="executeInsertEntities()">execute INSERT</button>
+            </div>
+          </div>
+          <div *ngIf="FunctionalOptions === 'existingEntities'">
+            <div class="row">
+              <div class="col">The Subject of the created statement</div>
+              <div class="col">The Predicate of the created statement</div>
+              <div class="col">The Class of the Object of the created statement</div>
+              <div class="col">The Object of the created statement</div>
+              <div class="w-100"></div>
+              <div class="col">
+                  <input [(ngModel)]="selectedSubject" class="form-control" type="text" placeholder="Select a Function from Table" readonly>
+              </div>
+              <div class="col">
+                <div *ngIf="existingPredicates; then thenBlock else elseBlock"></div>
+                  <ng-template #thenBlock>
+                      <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control" (click)="getObjectClasses()">
+                          <option  *ngFor='let x of keys(existingPredicates.results.bindings)'>
+                          {{existingPredicates.results.bindings[x].ObjectProperty.value}}
+                          </option>
+                        </select>
+                  </ng-template>
+                  <ng-template #elseBlock>
+                      <input class="form-control" type="text" placeholder="Select a Function from Table" readonly>
+                  </ng-template>
+              </div>
+              <div class="col">
+              <div *ngIf="existingObjectClasses; then thenBlock2 else elseBlock2"></div>
+              <ng-template #thenBlock2>
+                  <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control" (click)="getExistingObjects()">
+                      <option  *ngFor='let x of keys(existingObjectClasses.results.bindings)'>
+                      {{existingObjectClasses.results.bindings[x].Class.value}}
+                      </option>
+                    </select>
+              </ng-template>
+              <ng-template #elseBlock2>
+                  <input class="form-control" type="text" placeholder="Select a Predicate" readonly>
+              </ng-template>
+              </div>
+              <div class="col">
+                  <div *ngIf="existingObjects; then thenBlock3 else elseBlock3"></div>
+                  <ng-template #thenBlock3>
+                      <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
+                          <option  *ngFor='let x of keys(existingObjects.results.bindings)'>
+                          {{existingObjects.results.bindings[x].Individual.value}}
+                          </option>
+                        </select>
+                  </ng-template>
+                  <ng-template #elseBlock3>
+                      <input class="form-control" type="text" placeholder="Select a Class of Objects" readonly>
+                  </ng-template>
+              </div>       
+            </div>
+            <div class="row">
+                <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
+                <button class="btn btn-secondary col m-3" (click)="executeInsertRelations()">execute INSERT</button>
+            </div>
+          </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Available Functional Entities in Database</h5>
+        <p class="card-text">Click either on a Function to use as a Subject or on any other cell to use as an Object.</p>
+        
+            <div *ngIf="allFunctionInfo" class="row align-items-center">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <!-- take first result binding and iterate over keys, these keys are table columns -->
+                            <th *ngFor="let col of keys(allFunctionInfo[0])" scope="col">{{col}} </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <!-- one row for each binding -->
+                        <tr *ngFor="let tableRow of allFunctionInfo">
+                            <!-- one entry for each key in each binding -->
+                            <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+    
+    </div>
+</div>

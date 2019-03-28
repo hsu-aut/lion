@@ -1,0 +1,43 @@
+<div class="card">
+    <h5 class="card-header">ISA 88 Template</h5>
+    <div class="card-body">
+      <h5 class="card-title">ISA 88 INSERT Template</h5>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+      
+
+      <div class="row">
+        <div class="col">Select element to add ISA 88 behavior for
+            <select [(ngModel)]="selectedOption" name="selectedOption" class="form-control">
+            <option *ngFor='let list of selectOption'>
+            {{list}}
+            </option>
+            </select>
+        </div>
+        <div class="col">Select granularity
+            <select [(ngModel)]="optionMode" name="optionMode" class="form-control">
+                <option>Production</option>
+                <option>Maintenance</option>
+            </select>
+        </div>
+        <div class="col">Select Mode to be included
+            <select [(ngModel)]="optionGranularity" name="optionGranularity" class="form-control">
+                <option>System_Behavior</option>
+                <option>Service_Behavior</option>
+            </select>
+        </div>
+      </div>
+      <div class="row">
+      <button (click)="update()" class="btn btn-secondary col">build INSERT</button>
+      <button (click)="insertISA88()" class="btn btn-secondary col">execute INSERT</button>
+      </div>  
+    </div>
+</div>
+
+
+
+
+<!-- <textarea name="selectreturn" id="selectreturn" cols="30" rows="10" >{{insertreturn | json}}</textarea>  -->
+
+
+<!-- <textarea name="insertString" id="insertString" cols="150" rows="100">{{insertString}}</textarea> -->
+
