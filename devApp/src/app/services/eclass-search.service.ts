@@ -30,7 +30,7 @@ export class EclassSearchService {
       
   }
 
-  // start with ng serve --proxy-config proxy.conf.json --open
+
   
 
 }
