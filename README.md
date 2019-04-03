@@ -1,1 +1,1 @@
-This is the Lightweight Ontology Support Tool
+This is the Lightweight Ontology Support Tool some blabla
