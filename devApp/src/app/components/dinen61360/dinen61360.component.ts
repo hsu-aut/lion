@@ -3,9 +3,7 @@ import { DINEN61360Variables, DINEN61360Data, DINEN61360Insert, expressionGoal, 
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { EclassSearchService } from '../../services/eclass-search.service';
 import { Namespace} from '../../utils/prefixes';
-
-
-
+import { DownloadService } from 'src/app/services/download.service';
 
 
 @Component({
@@ -14,9 +12,6 @@ import { Namespace} from '../../utils/prefixes';
   styleUrls: ['./dinen61360.component.scss']
 })
 export class Dinen61360Component implements OnInit {
-  //Hamied test
-  eclassUrl: string;
- // Hamied Test ende
   keys = Object.keys;
   din = new DINEN61360Insert();
   _loaderShow = true;
@@ -70,13 +65,11 @@ export class Dinen61360Component implements OnInit {
   customReturn: any;
   selectString = this.namespaceParser.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
 
-  constructor(private query:SparqlQueriesService, private eclass:EclassSearchService) 
+  constructor(private query:SparqlQueriesService, private eclass:EclassSearchService, private dlService: DownloadService) 
   { }
 
   ngOnInit() {
-    //Hamied test
-  this.eclassUrl = this.eclass.getEclassUrl();
-  // Hamied Test ende
+ 
 
         this.query.select(this.modelData.SPARQL_SELECT_allTypes).subscribe((data: any) => {
         // log + assign data and stop loader
@@ -140,7 +133,12 @@ export class Dinen61360Component implements OnInit {
       }
     }
     this.insertString = this.din.buildDINEN61360T(varia);
-    console.log(this.insertString)
+
+    const blob = new Blob([this.insertString], { type: 'text/plain' });
+    // Dateiname
+    const name = 'dinen61360TypeInsert.txt';
+    this.dlService.download(blob, name);
+    console.log(this.insertString);
   }
 
   buildInstanceInsert(){
@@ -181,7 +179,15 @@ export class Dinen61360Component implements OnInit {
       }
     }
     this.insertString = this.din.buildDINEN61360I(varia);
-    console.log(this.insertString)
+
+    // new: Hamied -> Download insertString as .txt file
+        // Blob
+    const blob = new Blob([this.insertString], { type: 'text/plain' });
+        // Dateiname
+    const name = 'dinen61360InstanceInsert.txt';
+    this.dlService.download(blob, name);
+
+    console.log(this.insertString);
   }
 
 

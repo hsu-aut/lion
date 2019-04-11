@@ -14,6 +14,7 @@ export class SparqlQueriesService {
 
 
   constructor(private http: HttpClient) {
+    // new Hamied -> default url in constructor
     this.url = 'http://localhost:7200/repositories/Airbus_CTC_01';
 
   }
@@ -48,7 +49,7 @@ export class SparqlQueriesService {
     return re;
   }
 
-  
+  // New Hamied -> Getter and Setter
   getUrl(){
     return this.url;
   }

@@ -30,8 +30,11 @@
             </div>
             <div class="card-body">
               
-              <button class="btn btn-secondary" (click)="buildTypeInsert()">Save</button>
-              <button class="btn btn-secondary" (click)="insertDINEN61360()">Load</button>
+           
+              <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button>
+              <h1>FileUpload</h1>
+              <input type="file" (change)="onFileSelected($event)">
+              <button class="btn btn-secondary" (click)="test()">Load</button>
             </div>
           </div>
           <br>

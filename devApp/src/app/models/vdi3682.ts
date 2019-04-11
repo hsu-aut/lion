@@ -125,8 +125,8 @@ export class VDI3682INSERT {
             BIND(IRI(STR("${predicate}")) AS ?predicate).
             BIND(IRI(STR("${object}")) AS ?object).
         }`
-    console.log(insertString)
-    return insertString
+    console.log(insertString);
+    return insertString;
     }
 
     

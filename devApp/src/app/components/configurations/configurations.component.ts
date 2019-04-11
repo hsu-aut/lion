@@ -1,12 +1,27 @@
+import { HttpClientModule } from '@angular/common/http';
+
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { EclassSearchService } from '../../services/eclass-search.service';
 import { Namespace} from '../../utils/prefixes';
+import { DownloadService } from 'src/app/services/download.service';
+import { formatDate } from '@angular/common';
 
 class Prefix {
   prefix: string;
   namespace: string;
 }
+
+interface Cfg {
+  graphDB: {
+    url: string
+  }
+
+  backend: {
+    eClass: string
+}
+}
+
 
 @Component({
   selector: 'app-configurations',
@@ -23,10 +38,11 @@ export class ConfigurationsComponent implements OnInit {
   url: string[];
   eclassUrl: string;
   PREFIXES: Array<Prefix> = new Namespace().PREFIXES;
+  fileUrl;
 
 
 
-  constructor(private query: SparqlQueriesService, private eclass: EclassSearchService ) { 
+constructor(private query: SparqlQueriesService, private eclass: EclassSearchService, private dlService: DownloadService, private http: HttpClientModule) { 
     this.url = query.getUrl().split('/repositories/'); 
     this.eclassUrl = eclass.getEclassUrl();
   }
@@ -42,5 +58,44 @@ export class ConfigurationsComponent implements OnInit {
   submitBackendConfig(eclassUrl: string){
     this.eclass.setEclassUrl(eclassUrl);
   }
+
+
+  saveConfiguration(){
+    // Inhalt
+    const configs = {
+      graphDB: {
+        url: this.query.getUrl()
+      },
+      backend: {
+        eClass: this.eclass.getEclassUrl()
+      }
+    };
+    const data = JSON.stringify(configs, null, '  ');
+    // Blob
+    const blob = new Blob([data], { type: 'application/json' });
+    // Dateiname
+    const name = 'lionConfigurations.json';
+    // Downloadservice
+    this.dlService.download(blob, name);
+  }
+
+
+  onFileSelected(event){
+    //this.selectedFile = event.srcElement.files[0];
+    //console.log(this.selectedFile);
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const line = JSON.parse(reader.result) as Cfg[];
+        this.submitBackendConfig(line.backend.eClass);
+        this.query.setUrl(line.graphDB.url);
+        console.log(line);
+    }
+    reader.readAsText(event.target.files[0]);
+
+    }
+  }
+
+
 
 }
