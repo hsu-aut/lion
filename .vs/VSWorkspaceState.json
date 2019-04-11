@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "\\devApp",
+    "\\devApp\\src",
+    "\\devApp\\src\\app",
+    "\\devApp\\src\\app\\components",
+    "\\devApp\\src\\app\\components\\configurations",
+    "\\devApp\\src\\app\\components\\vdi3682",
+    "\\devApp\\src\\app\\models",
+    "\\devApp\\src\\app\\services",
+    "\\devApp\\src\\app\\utils",
+    "\\lion_backEnd",
+    "\\lion_backEnd\\views"
+  ],
+  "SelectedNode": "\\devApp\\src\\app\\components\\configurations\\configurations.component.spec.ts",
+  "PreviewInSolutionExplorer": false
+}

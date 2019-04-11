@@ -2,15 +2,21 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders }    from '@angular/common/http';
 
 
-const url = `http://localhost:7200/repositories/Airbus_CTC_01`;
+//const url = `http://localhost:7200/repositories/Airbus_CTC_01`;
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class SparqlQueriesService {
+    url: string;
 
-  constructor( private http: HttpClient) { }
+
+
+  constructor(private http: HttpClient) {
+    this.url = 'http://localhost:7200/repositories/Airbus_CTC_01';
+
+  }
 
   select(body){
     var httpOptions = {
@@ -21,8 +27,8 @@ export class SparqlQueriesService {
     
     // return this.http.post(url, body, httpOptions).pipe(tap((data: any) => data.json()));  
     console.log("Query executed");
-    console.log(url, body, httpOptions);
-    var re = this.http.post(url, body, httpOptions);
+    console.log(this.url, body, httpOptions);
+    var re = this.http.post(this.url, body, httpOptions);
     console.log(re);
     return re;
       
@@ -35,11 +41,22 @@ export class SparqlQueriesService {
         'Content-Type':  'application/sparql-update'
       })
     };
-    var urlPOST = url + "/statements";
+    var urlPOST = this.url + "/statements";
     console.log("insert executed");
     var re = this.http.post(urlPOST, body, httpOptions);
     console.log(re);
     return re;
   }
 
+  
+  getUrl(){
+    return this.url;
+  }
+  setUrl(url: string){
+    this.url = url;
+  }
+
+
 }
+
+

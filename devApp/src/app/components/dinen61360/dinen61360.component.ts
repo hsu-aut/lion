@@ -14,7 +14,9 @@ import { Namespace} from '../../utils/prefixes';
   styleUrls: ['./dinen61360.component.scss']
 })
 export class Dinen61360Component implements OnInit {
-
+  //Hamied test
+  eclassUrl: string;
+ // Hamied Test ende
   keys = Object.keys;
   din = new DINEN61360Insert();
   _loaderShow = true;
@@ -68,9 +70,14 @@ export class Dinen61360Component implements OnInit {
   customReturn: any;
   selectString = this.namespaceParser.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
 
-  constructor(private query:SparqlQueriesService, private eclass:EclassSearchService) { }
+  constructor(private query:SparqlQueriesService, private eclass:EclassSearchService) 
+  { }
 
   ngOnInit() {
+    //Hamied test
+  this.eclassUrl = this.eclass.getEclassUrl();
+  // Hamied Test ende
+
         this.query.select(this.modelData.SPARQL_SELECT_allTypes).subscribe((data: any) => {
         // log + assign data and stop loader
         console.log(data);
