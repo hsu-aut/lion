@@ -49,7 +49,7 @@ export class Isa88Component implements OnInit {
       BehaviorClass: this.optionGranularity,
       mode: this.optionMode
     }
-    this.insertString = this.isa88.buildISA88(varia);
+    console.log(this.insertString = this.isa88.buildISA88(varia));
 
   }
 
