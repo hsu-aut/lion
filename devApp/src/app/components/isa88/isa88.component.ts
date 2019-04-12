@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ISA88Insert, ISA88Data, ISA88Variables } from '../../models/isa88Model';
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { Namespace} from '../../utils/prefixes';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-isa88',
@@ -10,16 +11,17 @@ import { Namespace} from '../../utils/prefixes';
 })
 export class Isa88Component implements OnInit {
 
-  constructor(private query:SparqlQueriesService) { }
+  constructor(private query:SparqlQueriesService, private sanitizer: DomSanitizer) { }
 
   isa88 = new ISA88Insert();
   namespaceParser = new Namespace();
   
-  // variables for html
+  //user input variables
   insertString: string;
   optionMode: string;
   optionGranularity: string;
   selectedOption: any;
+  insertUrl;
 
   // variables for behavior 
   selectString = new ISA88Data().SPARQL_SELECT;
@@ -41,7 +43,7 @@ export class Isa88Component implements OnInit {
       });
   }
 
-  update(){
+  buildInsert(){
     // this.insertString = this.fetchTemplate.getFilledISA88Template(this.selectedOption, this.optionMode, this.optionGranularity);
     // this.query.select().subscribe(selectreturn => this.selectreturn);
     var varia:ISA88Variables = {
@@ -50,10 +52,12 @@ export class Isa88Component implements OnInit {
       mode: this.optionMode
     }
     console.log(this.insertString = this.isa88.buildISA88(varia));
-
+    const data = this.isa88.buildISA88(varia);
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    this.insertUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
 
-  insertISA88(){
+  executeInsert(){
     this.query.insert(this.insertString).subscribe((data: any) => {
       this.insertreturn = data
     });

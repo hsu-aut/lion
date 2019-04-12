@@ -3,6 +3,7 @@ import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES, tripel } from '../../models/vdi3682'
 import { Namespace} from '../../utils/prefixes';
 import { Tables } from '../../utils/tables'
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -16,13 +17,18 @@ export class VDI3682Component implements OnInit {
   namespaceParser = new Namespace();
   TableUtil = new Tables();
 
-  // semanz40 model data
+  // stats 
+  NoOfProcesses: number;
+  NoOfInOuts: number;
+  NoOfTechnicalResources: number;
+
+  // model data
   modelData = new VDI3682DATA();
   modelInsert = new VDI3682INSERT();
   modelVariables = new VDI3682VARIABLES();
   
   // graph db data
-  allFunctionInfo: any;
+  allProcessInfo: any;
   allClasses: any;
 
   //user input variables
@@ -37,16 +43,16 @@ export class VDI3682Component implements OnInit {
   existingObjectClasses: string;
   existingPredicates: string;
   existingObjects: string;
+  insertUrl;
 
-  constructor(private query:SparqlQueriesService) { }
+  constructor(private query:SparqlQueriesService, private sanitizer: DomSanitizer) { }
 
   ngOnInit() {
-      this.query.select(this.modelData.allFunctionInfo).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.allFunctionInfo = this.TableUtil.buildTable(data);
-      console.log(this.allFunctionInfo)
+      this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
+        this.namespaceParser.parseToPrefix(data);
+        this.allProcessInfo = this.TableUtil.buildTable(data);
+        console.log(this.allProcessInfo)
       // parse prefixes where possible 
-      
       });
     this.query.select(this.modelData.allClasses).subscribe((data: any) => {
         // log + assign data and stop loader
@@ -55,6 +61,21 @@ export class VDI3682Component implements OnInit {
         // parse prefixes where possible 
         this.namespaceParser.parseToPrefix(data);
         });
+    // get stats of functions in TS
+        this.query.select(this.modelData.NoOfProcesses).subscribe((data: any) => {
+            this.namespaceParser.parseToPrefix(data);
+            this.NoOfProcesses = this.TableUtil.buildTable(data).length;  
+        });
+        this.query.select(this.modelData.NoOfInOuts).subscribe((data: any) => {
+          this.namespaceParser.parseToPrefix(data);
+          this.NoOfInOuts = this.TableUtil.buildTable(data).length;  
+        });
+        this.query.select(this.modelData.NoOfTechnicalResources).subscribe((data: any) => {
+          this.namespaceParser.parseToPrefix(data);
+          this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;  
+        });
+
+        
   }
 
 
@@ -64,7 +85,10 @@ export class VDI3682Component implements OnInit {
       predicate: this.newPredicate,
       object: this.selectedClass
     }
-    this.modelInsert.createEntity(this.modelVariables.simpleStatement)
+    
+    const data = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
+    const blob = new Blob([data], { type: 'application/octet-stream' });
+    this.insertUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
   }
   executeInsertEntities(){
     

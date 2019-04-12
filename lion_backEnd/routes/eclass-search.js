@@ -4,7 +4,6 @@ var router = express.Router();
 var url = require('url');
 var sqlSelect = require('../sql_util/sqlSELECT');
 
-var http = require('http');
 
 
 /* GET properties list by name */

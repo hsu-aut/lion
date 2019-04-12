@@ -4,14 +4,40 @@ var parser = new Namespace();
 
 export class VDI3682DATA {
 
-public allFunctionInfo = `
+public NoOfProcesses = `
 PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
-SELECT ?Function ?Input ?InputType ?Output ?OutputType ?TechnicalResource WHERE { 
-	?Function a VDI3682:Process.
-    OPTIONAL {?Function VDI3682:hasInput ?Input. ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-    OPTIONAL {?Function VDI3682:hasOutput ?Output. ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-    OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Function.}
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?Process WHERE { 
+	?Process a VDI3682:Process.
+
+}
+`
+public NoOfTechnicalResources = `
+PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?TR WHERE { 
+	?TR a VDI3682:TechnicalResource.
+}
+`
+public NoOfInOuts = `
+PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?IoPoE WHERE { 
+	?IoPoE a ?x.
+    VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
+}
+`
+public allProcessInfo = `
+PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+
+SELECT ?Process ?Input ?InputType ?Output ?OutputType ?TechnicalResource WHERE { 
+	?Process a VDI3682:Process.
+    OPTIONAL {?Process VDI3682:hasInput ?Input. ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+    OPTIONAL {?Process VDI3682:hasOutput ?Output. ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+    OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process.}
 }
 `
 public allClasses = `
