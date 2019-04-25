@@ -54,9 +54,11 @@
                             </option>
                         </select>  
                         </label>
-                      <p class="card-text">first build before executing the INSERT</p>
-                      <button class="btn btn-secondary" (click)="buildTypeInsert()">build INSERT</button>
-                      <button class="btn btn-secondary" (click)="insertDINEN61360()">execute INSERT</button>
+                      <p class="card-text">build and download or build and execute</p>
+                      <div class="row">
+                            <a [href]="insertUrl" download="insert.txt" class="btn btn-secondary col m-3" (click)="buildTypeInsert()">build INSERT</a>
+                            <button class="btn btn-secondary col m-3" (click)="insertDINEN61360T()">execute INSERT</button>
+                      </div>
                     </div>
             </div>
     
@@ -109,26 +111,26 @@
                     </label>
             </div>
             <div class="form-check">
-                    <input class="form-check-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios2" value="PhysicalByInheritance">
-                    <label class="form-check-label" for="instanceRadios2">
+                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios2" value="PhysicalByInheritance">
+                    <label class="custom-control-label" for="instanceRadios2">
                             Physical Entities by Inheritance
                     </label>
             </div>
             <div class="form-check">
-                    <input class="form-check-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios4" value="Functional">
-                    <label class="form-check-label" for="instanceRadios4">
+                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios4" value="Functional">
+                    <label class="custom-control-label" for="instanceRadios4">
                             Functional Entities
                     </label>
             </div>
             <div class="form-check">
-                    <input class="form-check-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios5" value="Behavioral">
-                    <label class="form-check-label" for="instanceRadios5">
+                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios5" value="Behavioral">
+                    <label class="custom-control-label" for="instanceRadios5">
                             Behavioral Entities
                     </label>
             </div>
             <div class="form-check">
-                    <input class="form-check-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios6" value="CustomTable">
-                    <label class="form-check-label" for="instanceRadios6">
+                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios6" value="CustomTable">
+                    <label class="custom-control-label" for="instanceRadios6">
                             Custom Table
                     </label>
             </div>
@@ -147,9 +149,11 @@
                     {{logicInterpretation[key]}}
                     </option>
             </select></label>
-            <p class="card-text">first build before executing the INSERT</p>
-            <button class="btn btn-secondary" (click)="buildInstanceInsert()">build INSERT</button>
-            <button class="btn btn-secondary" (click)="insertDINEN61360()">execute INSERT</button> 
+            <p class="card-text">build and download or build and execute</p>
+            <div class="row">
+                <a [href]="insertUrl" download="insert.txt" class="btn btn-secondary col m-3" (click)="buildInstanceInsert()">build INSERT</a>
+                <button class="btn btn-secondary col m-3" (click)="insertDINEN61360I()">execute INSERT</button>
+            </div> 
         </div>
     </div> 
         

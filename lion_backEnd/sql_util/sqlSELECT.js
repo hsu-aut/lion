@@ -11,7 +11,7 @@ SELECT p.Identifier, p.VersionNumber, p.RevisionNumber, p.PreferredName, p.Short
 
 FROM eclass_basic_9_1_properties.eclass9_1_pr_de AS p
 
-JOIN eclass_basic_9_1_properties.eclass9_1_un_de AS uom ON p.IrdiUN = uom.IrdiUN
+LEFT OUTER JOIN eclass_basic_9_1_properties.eclass9_1_un_de AS uom ON p.IrdiUN = uom.IrdiUN
 
 WHERE PreferredName LIKE '%${propertyName}%';`;
 

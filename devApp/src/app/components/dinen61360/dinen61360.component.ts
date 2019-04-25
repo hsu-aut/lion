@@ -3,7 +3,9 @@ import { DINEN61360Variables, DINEN61360Data, DINEN61360Insert, expressionGoal, 
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { EclassSearchService } from '../../services/eclass-search.service';
 import { Namespace} from '../../utils/prefixes';
+
 import { DownloadService } from 'src/app/services/download.service';
+
 
 
 @Component({
@@ -15,7 +17,7 @@ export class Dinen61360Component implements OnInit {
   keys = Object.keys;
   din = new DINEN61360Insert();
   _loaderShow = true;
-
+  insertUrl;
 
   // 61360 input form variables
   code: string;
@@ -64,6 +66,7 @@ export class Dinen61360Component implements OnInit {
   namespaceParser = new Namespace();
   customReturn: any;
   selectString = this.namespaceParser.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
+
 
   constructor(private query:SparqlQueriesService, private eclass:EclassSearchService, private dlService: DownloadService) 
   { }
@@ -134,11 +137,13 @@ export class Dinen61360Component implements OnInit {
     }
     this.insertString = this.din.buildDINEN61360T(varia);
 
+
     const blob = new Blob([this.insertString], { type: 'text/plain' });
     // Dateiname
     const name = 'dinen61360TypeInsert.txt';
     this.dlService.download(blob, name);
     console.log(this.insertString);
+
   }
 
   buildInstanceInsert(){
@@ -180,6 +185,7 @@ export class Dinen61360Component implements OnInit {
     }
     this.insertString = this.din.buildDINEN61360I(varia);
 
+
     // new: Hamied -> Download insertString as .txt file
         // Blob
     const blob = new Blob([this.insertString], { type: 'text/plain' });
@@ -188,6 +194,7 @@ export class Dinen61360Component implements OnInit {
     this.dlService.download(blob, name);
 
     console.log(this.insertString);
+
   }
 
 
@@ -231,8 +238,86 @@ export class Dinen61360Component implements OnInit {
   propertyTableClick(row){
     this.code = row.ID.value
   }
-
-  insertDINEN61360(){
+  insertDINEN61360T(){
+    var varia:DINEN61360Variables = {
+      optionalTypeVariables: 
+        { Synonymous_Name: this.Synonymous_Name,
+          backwards_compatible_Revision: this.backwards_compatible_Revision,
+          backwards_compatible_Version: this.backwards_compatible_Version,
+          Value_Format_Field_length: this.Value_Format_Field_length,
+          Value_Format_Field_length_Variable: this.Value_Format_Field_length_Variable,
+          Value_Format_non_quantitativ: this.Value_Format_non_quantitativ,
+          Value_Format_quantitativ: this.Value_Format_quantitativ,
+          Value_List: this.Value_List,
+          Value_List_Member: this.Value_List_Member,
+          Source_Document_of_Definition: this.Source_Document_of_Definition,
+          Synonymous_Letter_Symbol: this.Synonymous_Letter_Symbol,
+          Note: this.Note,
+          Remark: this.Remark,
+          Preferred_Letter_Symbol: this.Preferred_Letter_Symbol,
+          Formula: this.Formula,
+          Drawing_Reference: this.Drawing_Reference,
+        },
+      mandatoryTypeVariables: {
+        code: this.code,
+        version: this.version,
+        revision: this.revision,
+        preferredName: this.preferred_name,
+        shortName: this.short_name,
+        definition: this.definition,
+        datatypeString: this.selectedDataytpe,
+        unitOfMeasure: this.UoM
+      },
+      instanceVariables: {
+        expressionGoalString: this.selectedExpressionGoal,
+        logicInterpretationString: this.selectedLogicInterpretation,
+        valueString: this.value,
+        describedIndividual: this.describedIndividual
+      }
+    }
+    this.insertString = this.din.buildDINEN61360T(varia);
+    this.query.insert(this.insertString).subscribe((data: any) => {
+      console.log(data)
+    });
+  }
+  insertDINEN61360I(){
+    var varia:DINEN61360Variables = {
+      optionalTypeVariables: 
+        { Synonymous_Name: this.Synonymous_Name,
+          backwards_compatible_Revision: this.backwards_compatible_Revision,
+          backwards_compatible_Version: this.backwards_compatible_Version,
+          Value_Format_Field_length: this.Value_Format_Field_length,
+          Value_Format_Field_length_Variable: this.Value_Format_Field_length_Variable,
+          Value_Format_non_quantitativ: this.Value_Format_non_quantitativ,
+          Value_Format_quantitativ: this.Value_Format_quantitativ,
+          Value_List: this.Value_List,
+          Value_List_Member: this.Value_List_Member,
+          Source_Document_of_Definition: this.Source_Document_of_Definition,
+          Synonymous_Letter_Symbol: this.Synonymous_Letter_Symbol,
+          Note: this.Note,
+          Remark: this.Remark,
+          Preferred_Letter_Symbol: this.Preferred_Letter_Symbol,
+          Formula: this.Formula,
+          Drawing_Reference: this.Drawing_Reference,
+        },
+      mandatoryTypeVariables: {
+        code: this.code,
+        version: this.version,
+        revision: this.revision,
+        preferredName: this.preferred_name,
+        shortName: this.short_name,
+        definition: this.definition,
+        datatypeString: this.selectedDataytpe,
+        unitOfMeasure: this.UoM
+      },
+      instanceVariables: {
+        expressionGoalString: this.selectedExpressionGoal,
+        logicInterpretationString: this.selectedLogicInterpretation,
+        valueString: this.value,
+        describedIndividual: this.describedIndividual
+      }
+    }
+    this.insertString = this.din.buildDINEN61360I(varia);
     this.query.insert(this.insertString).subscribe((data: any) => {
       console.log(data)
     });

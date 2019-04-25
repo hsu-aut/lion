@@ -4,12 +4,11 @@ export class ISA88Data {
        public IRI: Array<String>;
        public SPARQL_SELECT = `
        PREFIX SA4: <http://www.hsu-ifa.de/ontologies/SemAnz40#>
+       PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
        
        SELECT ?x WHERE { 
                
-        ?y a SA4:System;
-        SA4:System_implements ?x.
-        ?x a SA4:System_Behavior.
+        ?x a VDI3682:TechnicalResource.
            
        } `;
 }
@@ -36,10 +35,9 @@ export class ISA88Insert {
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-    # Necessary SemAnz40 standard ontologies
+    # Necessary standard ontologies
     PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
-    PREFIX SA4: <http://www.hsu-ifa.de/ontologies/SemAnz40#>
-    PREFIX OSM: <http://www.hsu-ifa.de/ontologies/OSM_Matcher#> 
+
 
     # ${mode} Mode
 
@@ -200,44 +198,44 @@ export class ISA88Insert {
             # defines the element to bind the states and transitions to
             ?SysBehaviorOrPOUIRI 
             #connected to states
-            OSM:described_by_ISA88_Element ?Aborting;
-            OSM:described_by_ISA88_Element ?Clearing;
-            OSM:described_by_ISA88_Element ?Complete;
-            OSM:described_by_ISA88_Element ?Completing;
-            OSM:described_by_ISA88_Element ?Execute;
-            OSM:described_by_ISA88_Element ?Holding;
-            OSM:described_by_ISA88_Element ?Resetting;
-            OSM:described_by_ISA88_Element ?Starting;
-            OSM:described_by_ISA88_Element ?Stopping;
-            OSM:described_by_ISA88_Element ?Suspending;
-            OSM:described_by_ISA88_Element ?Unholding;
-            OSM:described_by_ISA88_Element ?Unsuspending;
-            OSM:described_by_ISA88_Element ?Aborted;
-            OSM:described_by_ISA88_Element ?Held;
-            OSM:described_by_ISA88_Element ?Idle;
-            OSM:described_by_ISA88_Element ?Stopped;
-            OSM:described_by_ISA88_Element ?Suspended; 
+            ISA88:described_by_ISA88_Element ?Aborting;
+            ISA88:described_by_ISA88_Element ?Clearing;
+            ISA88:described_by_ISA88_Element ?Complete;
+            ISA88:described_by_ISA88_Element ?Completing;
+            ISA88:described_by_ISA88_Element ?Execute;
+            ISA88:described_by_ISA88_Element ?Holding;
+            ISA88:described_by_ISA88_Element ?Resetting;
+            ISA88:described_by_ISA88_Element ?Starting;
+            ISA88:described_by_ISA88_Element ?Stopping;
+            ISA88:described_by_ISA88_Element ?Suspending;
+            ISA88:described_by_ISA88_Element ?Unholding;
+            ISA88:described_by_ISA88_Element ?Unsuspending;
+            ISA88:described_by_ISA88_Element ?Aborted;
+            ISA88:described_by_ISA88_Element ?Held;
+            ISA88:described_by_ISA88_Element ?Idle;
+            ISA88:described_by_ISA88_Element ?Stopped;
+            ISA88:described_by_ISA88_Element ?Suspended; 
             # connected to transitions 
-            OSM:described_by_ISA88_Element ?Abort_Command;
-            OSM:described_by_ISA88_Element ?Clear_Command;
-            OSM:described_by_ISA88_Element ?Hold_Command;
-            OSM:described_by_ISA88_Element ?Reset_Command;
-            OSM:described_by_ISA88_Element ?Start_Command;
-            OSM:described_by_ISA88_Element ?Stop_Command;
-            OSM:described_by_ISA88_Element ?Suspend_Command;
-            OSM:described_by_ISA88_Element ?Un_Hold_Command;
-            OSM:described_by_ISA88_Element ?Aborting_State_Complete;
-            OSM:described_by_ISA88_Element ?Clearing_State_Complete;
-            OSM:described_by_ISA88_Element ?Completing_State_Complete;
-            OSM:described_by_ISA88_Element ?Execute_State_Complete;
-            OSM:described_by_ISA88_Element ?Holding_State_Complete;
-            OSM:described_by_ISA88_Element ?Resetting_State_Complete;
-            OSM:described_by_ISA88_Element ?Starting_State_Complete;
-            OSM:described_by_ISA88_Element ?Stopping_State_Complete;
-            OSM:described_by_ISA88_Element ?Suspending_State_Complete;
-            OSM:described_by_ISA88_Element ?Unholding_State_Complete;
-            OSM:described_by_ISA88_Element ?Unsuspending_State_Complete;
-            OSM:described_by_ISA88_Element ?Unsuspend_Command. 
+            ISA88:described_by_ISA88_Element ?Abort_Command;
+            ISA88:described_by_ISA88_Element ?Clear_Command;
+            ISA88:described_by_ISA88_Element ?Hold_Command;
+            ISA88:described_by_ISA88_Element ?Reset_Command;
+            ISA88:described_by_ISA88_Element ?Start_Command;
+            ISA88:described_by_ISA88_Element ?Stop_Command;
+            ISA88:described_by_ISA88_Element ?Suspend_Command;
+            ISA88:described_by_ISA88_Element ?Un_Hold_Command;
+            ISA88:described_by_ISA88_Element ?Aborting_State_Complete;
+            ISA88:described_by_ISA88_Element ?Clearing_State_Complete;
+            ISA88:described_by_ISA88_Element ?Completing_State_Complete;
+            ISA88:described_by_ISA88_Element ?Execute_State_Complete;
+            ISA88:described_by_ISA88_Element ?Holding_State_Complete;
+            ISA88:described_by_ISA88_Element ?Resetting_State_Complete;
+            ISA88:described_by_ISA88_Element ?Starting_State_Complete;
+            ISA88:described_by_ISA88_Element ?Stopping_State_Complete;
+            ISA88:described_by_ISA88_Element ?Suspending_State_Complete;
+            ISA88:described_by_ISA88_Element ?Unholding_State_Complete;
+            ISA88:described_by_ISA88_Element ?Unsuspending_State_Complete;
+            ISA88:described_by_ISA88_Element ?Unsuspend_Command. 
 
     } WHERE {
 
@@ -323,7 +321,7 @@ export class ISA88Insert {
     # Necessary SemAnz40 standard ontologies
     PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
     PREFIX SA4: <http://www.hsu-ifa.de/ontologies/SemAnz40#>
-    PREFIX OSM: <http://www.hsu-ifa.de/ontologies/OSM_Matcher#> 
+
     
     # ${mode} Mode
     
@@ -444,38 +442,38 @@ export class ISA88Insert {
             # defines the element to bind the states and transitions to
             ?SysBehaviorOrPOUIRI 
             #connected to states
-            OSM:described_by_ISA88_Element ?Aborting;
-            OSM:described_by_ISA88_Element ?Clearing;
-            OSM:described_by_ISA88_Element ?Complete;
-            OSM:described_by_ISA88_Element ?Completing;
-            OSM:described_by_ISA88_Element ?Execute;
-            OSM:described_by_ISA88_Element ?Holding;
-            OSM:described_by_ISA88_Element ?Resetting;
-            OSM:described_by_ISA88_Element ?Starting;
-            OSM:described_by_ISA88_Element ?Stopping;
-            OSM:described_by_ISA88_Element ?Unholding;
+            ISA88:described_by_ISA88_Element ?Aborting;
+            ISA88:described_by_ISA88_Element ?Clearing;
+            ISA88:described_by_ISA88_Element ?Complete;
+            ISA88:described_by_ISA88_Element ?Completing;
+            ISA88:described_by_ISA88_Element ?Execute;
+            ISA88:described_by_ISA88_Element ?Holding;
+            ISA88:described_by_ISA88_Element ?Resetting;
+            ISA88:described_by_ISA88_Element ?Starting;
+            ISA88:described_by_ISA88_Element ?Stopping;
+            ISA88:described_by_ISA88_Element ?Unholding;
     
-            OSM:described_by_ISA88_Element ?Aborted;
-            OSM:described_by_ISA88_Element ?Held;
-            OSM:described_by_ISA88_Element ?Idle;
-            OSM:described_by_ISA88_Element ?Stopped;
+            ISA88:described_by_ISA88_Element ?Aborted;
+            ISA88:described_by_ISA88_Element ?Held;
+            ISA88:described_by_ISA88_Element ?Idle;
+            ISA88:described_by_ISA88_Element ?Stopped;
             # connected to transitions 
-            OSM:described_by_ISA88_Element ?Abort_Command;
-            OSM:described_by_ISA88_Element ?Clear_Command;
-            OSM:described_by_ISA88_Element ?Hold_Command;
-            OSM:described_by_ISA88_Element ?Reset_Command;
-            OSM:described_by_ISA88_Element ?Start_Command;
-            OSM:described_by_ISA88_Element ?Stop_Command;
-            OSM:described_by_ISA88_Element ?Un_Hold_Command;
-            OSM:described_by_ISA88_Element ?Aborting_State_Complete;
-            OSM:described_by_ISA88_Element ?Clearing_State_Complete;
-            OSM:described_by_ISA88_Element ?Completing_State_Complete;
-            OSM:described_by_ISA88_Element ?Execute_State_Complete;
-            OSM:described_by_ISA88_Element ?Holding_State_Complete;
-            OSM:described_by_ISA88_Element ?Resetting_State_Complete;
-            OSM:described_by_ISA88_Element ?Starting_State_Complete;
-            OSM:described_by_ISA88_Element ?Stopping_State_Complete;
-            OSM:described_by_ISA88_Element ?Unholding_State_Complete.
+            ISA88:described_by_ISA88_Element ?Abort_Command;
+            ISA88:described_by_ISA88_Element ?Clear_Command;
+            ISA88:described_by_ISA88_Element ?Hold_Command;
+            ISA88:described_by_ISA88_Element ?Reset_Command;
+            ISA88:described_by_ISA88_Element ?Start_Command;
+            ISA88:described_by_ISA88_Element ?Stop_Command;
+            ISA88:described_by_ISA88_Element ?Un_Hold_Command;
+            ISA88:described_by_ISA88_Element ?Aborting_State_Complete;
+            ISA88:described_by_ISA88_Element ?Clearing_State_Complete;
+            ISA88:described_by_ISA88_Element ?Completing_State_Complete;
+            ISA88:described_by_ISA88_Element ?Execute_State_Complete;
+            ISA88:described_by_ISA88_Element ?Holding_State_Complete;
+            ISA88:described_by_ISA88_Element ?Resetting_State_Complete;
+            ISA88:described_by_ISA88_Element ?Starting_State_Complete;
+            ISA88:described_by_ISA88_Element ?Stopping_State_Complete;
+            ISA88:described_by_ISA88_Element ?Unholding_State_Complete.
     
     } WHERE {
     

@@ -27,8 +27,8 @@
         </div>
       </div>
       <div class="row">
-      <button (click)="update()" class="btn btn-secondary col">build INSERT</button>
-      <button (click)="insertISA88()" class="btn btn-secondary col">execute INSERT</button>
+      <a [href]="insertUrl" download="insert.txt" (click)="buildInsert()" class="btn btn-secondary col m-3">build INSERT</a>
+      <button (click)="executeInsert()" class="btn btn-secondary col m-3">execute INSERT</button>
       </div>  
     </div>
 </div>
