@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders }    from '@angular/common/http';
 
-const url = `/eclassSearch/list`;
+//const url = `/eclassSearch/list`;
 
 
 
@@ -9,8 +9,10 @@ const url = `/eclassSearch/list`;
   providedIn: 'root'
 })
 export class EclassSearchService {
-
-  constructor( private http: HttpClient) { }
+  url: string;
+  constructor( private http: HttpClient) {
+    this.url = `/eclassSearch/list`;
+   }
 
   getPropertyList(preferredName){
     var httpOptions = {
@@ -19,7 +21,7 @@ export class EclassSearchService {
       })
     };
 
-    var request = url + `?prop=${preferredName}`
+    var request = this.url + `?prop=${preferredName}`
     
     // return this.http.post(url, body, httpOptions).pipe(tap((data: any) => data.json()));  
     console.log("Query executed");
@@ -28,6 +30,14 @@ export class EclassSearchService {
     console.log(re);
     return re;
       
+  }
+
+  getEclassUrl(){
+    return this.url;
+  }
+
+  setEclassUrl(url: string){
+    this.url = url;
   }
 
 

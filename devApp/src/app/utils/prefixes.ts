@@ -16,6 +16,8 @@ export class Namespace {
         {prefix: "SoA:", namespace: "http://delicias.dia.fi.upm.es/ontologies/SimpleOrAggregated.owl#"}
     ]
 
+
+
     public getPrefixString(){
         var prefixString: string = ""
 

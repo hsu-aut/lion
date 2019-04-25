@@ -3,8 +3,8 @@ import { DINEN61360Variables, DINEN61360Data, DINEN61360Insert, expressionGoal, 
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { EclassSearchService } from '../../services/eclass-search.service';
 import { Namespace} from '../../utils/prefixes';
-import { DomSanitizer } from '@angular/platform-browser';
 
+import { DownloadService } from 'src/app/services/download.service';
 
 
 
@@ -14,7 +14,6 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./dinen61360.component.scss']
 })
 export class Dinen61360Component implements OnInit {
-
   keys = Object.keys;
   din = new DINEN61360Insert();
   _loaderShow = true;
@@ -68,9 +67,13 @@ export class Dinen61360Component implements OnInit {
   customReturn: any;
   selectString = this.namespaceParser.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
 
-  constructor(private query:SparqlQueriesService, private eclass:EclassSearchService, private sanitizer: DomSanitizer) { }
+
+  constructor(private query:SparqlQueriesService, private eclass:EclassSearchService, private dlService: DownloadService) 
+  { }
 
   ngOnInit() {
+ 
+
         this.query.select(this.modelData.SPARQL_SELECT_allTypes).subscribe((data: any) => {
         // log + assign data and stop loader
         console.log(data);
@@ -133,10 +136,14 @@ export class Dinen61360Component implements OnInit {
       }
     }
     this.insertString = this.din.buildDINEN61360T(varia);
-    console.log(this.insertString)
-    const data = this.insertString = this.din.buildDINEN61360T(varia);
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    this.insertUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+
+
+    const blob = new Blob([this.insertString], { type: 'text/plain' });
+    // Dateiname
+    const name = 'dinen61360TypeInsert.txt';
+    this.dlService.download(blob, name);
+    console.log(this.insertString);
+
   }
 
   buildInstanceInsert(){
@@ -177,10 +184,17 @@ export class Dinen61360Component implements OnInit {
       }
     }
     this.insertString = this.din.buildDINEN61360I(varia);
-    console.log(this.insertString)
-    const data = this.insertString = this.din.buildDINEN61360I(varia);
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    this.insertUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+
+
+    // new: Hamied -> Download insertString as .txt file
+        // Blob
+    const blob = new Blob([this.insertString], { type: 'text/plain' });
+        // Dateiname
+    const name = 'dinen61360InstanceInsert.txt';
+    this.dlService.download(blob, name);
+
+    console.log(this.insertString);
+
   }
 
 

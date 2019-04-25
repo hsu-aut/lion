@@ -2,7 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule }    from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 // Components
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +13,7 @@ import { VDI3682Component } from './components/vdi3682/vdi3682.component';
 import { HomeComponent } from './components/home/home.component';
 import { ISO22400Component } from './components/iso22400/iso22400.component';
 import { BootstrapComponentsComponent } from './components/bootstrap-components/bootstrap-components.component';
+import { ConfigurationsComponent } from './components/configurations/configurations.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { BootstrapComponentsComponent } from './components/bootstrap-components/
     VDI3682Component,
     HomeComponent,
     ISO22400Component,
-    BootstrapComponentsComponent
+    BootstrapComponentsComponent,
+    ConfigurationsComponent
   ],
   imports: [
     BrowserModule,

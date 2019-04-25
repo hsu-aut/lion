@@ -3,7 +3,9 @@ import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES, tripel } from '../../models/vdi3682'
 import { Namespace} from '../../utils/prefixes';
 import { Tables } from '../../utils/tables'
-import { DomSanitizer } from '@angular/platform-browser';
+
+import { DownloadService } from 'src/app/services/download.service';
+
 
 
 @Component({
@@ -45,7 +47,10 @@ export class VDI3682Component implements OnInit {
   existingObjects: string;
   insertUrl;
 
-  constructor(private query:SparqlQueriesService, private sanitizer: DomSanitizer) { }
+
+  constructor(private query:SparqlQueriesService, private dlService: DownloadService) { }
+
+
 
   ngOnInit() {
       this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
@@ -80,15 +85,22 @@ export class VDI3682Component implements OnInit {
 
 
   buildInsert(){
+    
     this.modelVariables.simpleStatement = {
       subject: this.newSubject,
       predicate: this.newPredicate,
       object: this.selectedClass
-    }
+
+    };
+    var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement);
+        // new: Hamied -> Download insertString as .txt file
+        // Blob
+    const blob = new Blob([insertString], { type: 'text/plain' });
+        // Dateiname
+    const name = 'vdi3682Insert.txt';
+    this.dlService.download(blob, name);
     
-    const data = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    this.insertUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+
   }
   executeInsertEntities(){
     
