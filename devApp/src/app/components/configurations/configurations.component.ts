@@ -86,7 +86,7 @@ constructor(private query: SparqlQueriesService, private eclass: EclassSearchSer
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const line = JSON.parse(reader.result) as Cfg[];
+        const line = JSON.parse(reader.result.toString()) as Cfg;
         this.submitBackendConfig(line.backend.eClass);
         this.query.setUrl(line.graphDB.url);
         console.log(line);

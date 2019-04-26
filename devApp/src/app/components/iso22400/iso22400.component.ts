@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UUIDgen } from '../../utils/uuid' 
 
 @Component({
   selector: 'app-iso22400',
@@ -8,8 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class ISO22400Component implements OnInit {
 
   constructor() { }
-
+  UUIDGenerator = new UUIDgen();
+  UUID;
   ngOnInit() {
+    this.UUID = this.UUIDGenerator.generateFreshIRI();
   }
 
 }
