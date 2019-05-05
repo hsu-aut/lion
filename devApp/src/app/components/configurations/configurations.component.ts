@@ -13,13 +13,14 @@ class Prefix {
 }
 
 interface Cfg {
+  saveDate: string;
   graphDB: {
     url: string
-  }
+  };
 
   backend: {
     eClass: string
-}
+};
 }
 
 
@@ -34,6 +35,8 @@ interface Cfg {
 
 
 export class ConfigurationsComponent implements OnInit {
+  savingDate: string;
+  loadDate: string;
 
   url: string[];
   eclassUrl: string;
@@ -42,8 +45,11 @@ export class ConfigurationsComponent implements OnInit {
 
 
 
-constructor(private query: SparqlQueriesService, private eclass: EclassSearchService, private dlService: DownloadService, private http: HttpClientModule) { 
-    this.url = query.getUrl().split('/repositories/'); 
+constructor(private query: SparqlQueriesService,
+  private eclass: EclassSearchService,
+  private dlService: DownloadService,
+  private http: HttpClientModule) {
+    this.url = query.getUrl().split('/repositories/');
     this.eclassUrl = eclass.getEclassUrl();
   }
 
@@ -51,18 +57,21 @@ constructor(private query: SparqlQueriesService, private eclass: EclassSearchSer
   }
 
 
-  submitGraphConfig(url1: string, rep: string){
+  submitGraphConfig(url1: string, rep: string) {
     this.query.setUrl(url1 + '/repositories/' + rep);
-  } 
+  }
 
-  submitBackendConfig(eclassUrl: string){
+  submitBackendConfig(eclassUrl: string) {
     this.eclass.setEclassUrl(eclassUrl);
   }
 
 
   saveConfiguration(){
     // Inhalt
+    const savingTempDate = new Date().toLocaleString();
+    this.savingDate = 'Downloaded Configurations. Date: ' + savingTempDate;
     const configs = {
+      saveDate: savingTempDate,
       graphDB: {
         url: this.query.getUrl()
       },
@@ -80,17 +89,16 @@ constructor(private query: SparqlQueriesService, private eclass: EclassSearchSer
   }
 
 
-  onFileSelected(event){
-    //this.selectedFile = event.srcElement.files[0];
-    //console.log(this.selectedFile);
+  loadSelectedFile(event){
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const line = JSON.parse(reader.result.toString()) as Cfg;
+        this.loadDate = 'Loaded Configurations. Date: ' + line.saveDate;
         this.submitBackendConfig(line.backend.eClass);
         this.query.setUrl(line.graphDB.url);
         console.log(line);
-    }
+    };
     reader.readAsText(event.target.files[0]);
 
     }

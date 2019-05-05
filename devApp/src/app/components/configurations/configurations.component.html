@@ -3,7 +3,7 @@
   <h5 class="card-header">Configuration Management</h5>
   <div class="card-body">
     
-    <div class="row" style="height: 350px;">
+    <div class="row" style="height: 450px;">
     <div class="col" >
       <!-- Graph Database Configuration -->
       <div class="card h-90">
@@ -31,10 +31,14 @@
             <div class="card-body">
               
            
-              <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button>
-              <h1>FileUpload</h1>
-              <input type="file" (change)="onFileSelected($event)">
-              <button class="btn btn-secondary" (click)="test()">Load</button>
+              <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button>  {{savingDate}}
+              <br>
+              <br>
+              <label for="file-upload" class="btn btn-secondary">
+                 Load
+              </label>
+              <input id="file-upload" type="file" (change)="loadSelectedFile($event)"> {{loadDate}}
+              
             </div>
           </div>
           <br>
