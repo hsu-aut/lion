@@ -12,16 +12,12 @@
                 </div>
                 <div class="card-body">
                   <div class="form-check">
-                      <input [(ngModel)]="ProcessOptions" type="radio" id="functionalRadio1" name="ProcessOptions" class="custom-control-input" value="existingEntities">
-                      <label class="custom-control-label" for="functionalRadio1">Connect existing Entities</label>
-                  </div>
-                  <div class="form-check">
                       <input [(ngModel)]="ProcessOptions" type="radio" id="functionalRadio2" name="ProcessOptions" class="custom-control-input" value="newEntities">
                       <label class="custom-control-label" for="functionalRadio2">Create new Entities </label>
                   </div>
                   <div class="form-check">
-                      <input [(ngModel)]="ProcessOptions" type="radio" id="functionalRadio3" name="ProcessOptions" class="custom-control-input" value="inheritance">
-                      <label class="custom-control-label" for="functionalRadio3">Create new Entities by Inheritance</label>
+                      <input [(ngModel)]="ProcessOptions" type="radio" id="functionalRadio1" name="ProcessOptions" class="custom-control-input" value="existingEntities">
+                      <label class="custom-control-label" for="functionalRadio1">Connect existing Entities</label>
                   </div>
                 </div>               
             </div>
@@ -60,7 +56,7 @@
 <div class="card">
     <div class="card-body">
       <h5 class="card-title"> Process Insert Template</h5>
-      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+      <p *ngIf="ProcessOptions===undefined" class="card-text">Select an option to add process information.</p>
           <div *ngIf="ProcessOptions === 'newEntities'">
               
               <div class="row">
@@ -76,14 +72,14 @@
               </div>
               <div class="col"> 
                 <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
-                  <option *ngFor='let x of keys(allClasses.results.bindings)'> 
-                  {{allClasses.results.bindings[x].type.value}}
+                  <option *ngFor='let x of keys(allClasses)'> 
+                  {{allClasses[x].type}}
                   </option>
                 </select> 
               </div>            
             </div>
             <div class="row">
-                <a [href]="insertUrl" download="insert.txt" class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</a>
+                <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
                 <button class="btn btn-secondary col m-3" (click)="executeInsertEntities()">execute INSERT</button>
             </div>
           </div>
@@ -147,9 +143,12 @@
 <div class="card">
     <div class="card-body">
         <h5 class="card-title">Available Processes in Database</h5>
-        <p class="card-text">Click either on a Process to use as a Subject or on any other cell to use as an Object.</p>
-        
-            <div *ngIf="allProcessInfo" class="row align-items-center">
+        <div *ngIf="allProcessInfo.length!==0; then processTable else todoInfo"></div>
+        <ng-template #todoInfo>
+            <p class="card-text">There is no process info available in the database, please add some.</p>
+        </ng-template>
+            <div class="row align-items-center">
+              <ng-template #processTable>  
                 <table class="table table-hover table-sm">
                     <thead>
                         <tr>
@@ -165,6 +164,7 @@
                         </tr>
                         </tbody>
                 </table>
+              </ng-template>
             </div>
     
     </div>

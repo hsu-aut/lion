@@ -47,38 +47,21 @@ export class VDI3682Component implements OnInit {
   existingObjects: string;
   insertUrl;
 
+  // template options
+  // ProcessOptions = "newEntities";
 
   constructor(private query:SparqlQueriesService, private dlService: DownloadService) { }
 
 
 
   ngOnInit() {
-      this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
-        this.namespaceParser.parseToPrefix(data);
-        this.allProcessInfo = this.TableUtil.buildTable(data);
-        console.log(this.allProcessInfo)
-      // parse prefixes where possible 
-      });
+    this.getAllProcessInfo();
     this.query.select(this.modelData.allClasses).subscribe((data: any) => {
-        // log + assign data and stop loader
-        console.log(data);
-        this.allClasses = data;
         // parse prefixes where possible 
         this.namespaceParser.parseToPrefix(data);
+        this.allClasses = this.TableUtil.buildTable(data);
         });
-    // get stats of functions in TS
-        this.query.select(this.modelData.NoOfProcesses).subscribe((data: any) => {
-            this.namespaceParser.parseToPrefix(data);
-            this.NoOfProcesses = this.TableUtil.buildTable(data).length;  
-        });
-        this.query.select(this.modelData.NoOfInOuts).subscribe((data: any) => {
-          this.namespaceParser.parseToPrefix(data);
-          this.NoOfInOuts = this.TableUtil.buildTable(data).length;  
-        });
-        this.query.select(this.modelData.NoOfTechnicalResources).subscribe((data: any) => {
-          this.namespaceParser.parseToPrefix(data);
-          this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;  
-        });
+    this.getStatisticInfo();
 
         
   }
@@ -97,7 +80,7 @@ export class VDI3682Component implements OnInit {
         // Blob
     const blob = new Blob([insertString], { type: 'text/plain' });
         // Dateiname
-    const name = 'vdi3682Insert.txt';
+    const name = 'insert.txt';
     this.dlService.download(blob, name);
     
 
@@ -112,6 +95,8 @@ export class VDI3682Component implements OnInit {
     var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
     this.query.insert(insertString).subscribe((data: any) => {
       console.log(data)
+      this.getAllProcessInfo();
+      this.getStatisticInfo();
     });
   }
   iriTableClick(name: string){
@@ -166,5 +151,32 @@ export class VDI3682Component implements OnInit {
     this.query.insert(insertString).subscribe((data: any) => {
       console.log(data)
     });
+
+  }
+
+  getAllProcessInfo(){
+    this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.allProcessInfo = this.TableUtil.buildTable(data);
+      console.log(this.allProcessInfo)
+    // parse prefixes where possible 
+    });
+  }
+  getStatisticInfo(){
+    // get stats of functions in TS
+  this.query.select(this.modelData.NoOfProcesses).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.NoOfProcesses = this.TableUtil.buildTable(data).length;  
+  });
+  this.query.select(this.modelData.NoOfInOuts).subscribe((data: any) => {
+    this.namespaceParser.parseToPrefix(data);
+    this.NoOfInOuts = this.TableUtil.buildTable(data).length;  
+  });
+  this.query.select(this.modelData.NoOfTechnicalResources).subscribe((data: any) => {
+    this.namespaceParser.parseToPrefix(data);
+    this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;  
+  });
   }
 }
+
+
