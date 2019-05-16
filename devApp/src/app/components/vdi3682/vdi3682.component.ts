@@ -30,7 +30,7 @@ export class VDI3682Component implements OnInit {
   modelVariables = new VDI3682VARIABLES();
   
   // graph db data
-  allProcessInfo: any;
+  allProcessInfo: any = [];
   allClasses: any;
 
   //user input variables
@@ -47,8 +47,6 @@ export class VDI3682Component implements OnInit {
   existingObjects: string;
   insertUrl;
 
-  // template options
-  // ProcessOptions = "newEntities";
 
   constructor(private query:SparqlQueriesService, private dlService: DownloadService) { }
 
@@ -150,6 +148,8 @@ export class VDI3682Component implements OnInit {
     var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
     this.query.insert(insertString).subscribe((data: any) => {
       console.log(data)
+      this.getAllProcessInfo();
+      this.getStatisticInfo();
     });
 
   }
