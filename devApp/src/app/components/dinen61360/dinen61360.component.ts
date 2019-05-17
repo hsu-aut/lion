@@ -57,7 +57,7 @@ export class Dinen61360Component implements OnInit {
   selectedDataytpe: any;
   datatype = datatype;
   value: string;
-  
+
   // graph db data - DIN EN 61360
   modelData = new DINEN61360Data();
   din = new DINEN61360Insert();
@@ -361,19 +361,19 @@ export class Dinen61360Component implements OnInit {
       this.allTypes = this.TableUtil.buildTable(data);
     });
   }
-  getStatisticInfo(){
+  getStatisticInfo() {
     // get stats of functions in TS
-  this.query.select(this.modelData.SPARQL_SELECT_allDE).subscribe((data: any) => {
+    this.query.select(this.modelData.SPARQL_SELECT_allDE).subscribe((data: any) => {
       this.namespaceParser.parseToPrefix(data);
-      this.NoOfDE = this.TableUtil.buildTable(data).length;  
-  });
-  this.query.select(this.modelData.SPARQL_SELECT_allDET).subscribe((data: any) => {
-    this.namespaceParser.parseToPrefix(data);
-    this.NoOfDET = this.TableUtil.buildTable(data).length;  
-  });
-  this.query.select(this.modelData.SPARQL_SELECT_allDEI).subscribe((data: any) => {
-    this.namespaceParser.parseToPrefix(data);
-    this.NoOfDEI = this.TableUtil.buildTable(data).length;  
-  });
+      this.NoOfDE = this.TableUtil.buildTable(data).length;
+    });
+    this.query.select(this.modelData.SPARQL_SELECT_allDET).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.NoOfDET = this.TableUtil.buildTable(data).length;
+    });
+    this.query.select(this.modelData.SPARQL_SELECT_allDEI).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.NoOfDEI = this.TableUtil.buildTable(data).length;
+    });
   }
 }

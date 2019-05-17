@@ -8,9 +8,7 @@ import { Namespace } from '../utils/prefixes';
 export class PrefixesService {
 
   constructor() { }
-  // consistency variables
-
-
+ 
   prefixes = new Namespace;
 
   getPrefixes() {
@@ -19,7 +17,7 @@ export class PrefixesService {
   addNamespace(PREFIX, NAMESPACE) {
     let pre = PREFIX;
     let name = NAMESPACE;
-    let entry = { prefix: pre, namespace: name};
+    let entry = { prefix: pre, namespace: name };
     this.prefixes.PREFIXES.push(entry);
   }
 
@@ -32,29 +30,19 @@ export class PrefixesService {
     this.prefixes.PREFIXES.splice(key, 1);
   }
 
-  getActiveNamespace(){
+  getActiveNamespace() {
     return this.prefixes.activeNamespace;
   }
 
-  setActiveNamespace(key){
+  setActiveNamespace(key) {
     let max = this.prefixes.PREFIXES.length;
 
-    if(key <= max) {
+    if (key <= max) {
       this.prefixes.activeNamespace = key;
     }
   }
 
-  // getActiveNamespace() {
-  //   var key;
-  //   let last;
 
-  //   for (const i in this.prefixes.PREFIXES) {
-  //     console.log(this.prefixes.PREFIXES[i].active);
-  //     if (this.prefixes.PREFIXES[i].active) { key = i;console.log(key); break; }
-  //   }
-  //   console.log(key)
-  //   console.log(this.prefixes.PREFIXES[key])
-  // }
 
 
 
