@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
-import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES, tripel } from '../../models/vdi3682'
+import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../models/vdi3682'
 import { Namespace} from '../../utils/prefixes';
 import { Tables } from '../../utils/tables'
 
