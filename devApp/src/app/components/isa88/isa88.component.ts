@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ISA88Insert, ISA88Data, ISA88Variables } from '../../models/isa88Model';
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
 import { Namespace} from '../../utils/prefixes';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DownloadService } from 'src/app/services/download.service';
 
 @Component({
   selector: 'app-isa88',
@@ -11,7 +11,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class Isa88Component implements OnInit {
 
-  constructor(private query:SparqlQueriesService, private sanitizer: DomSanitizer) { }
+  constructor(private query:SparqlQueriesService, private dlService: DownloadService) { }
 
   isa88 = new ISA88Insert();
   namespaceParser = new Namespace();
@@ -51,13 +51,20 @@ export class Isa88Component implements OnInit {
       BehaviorClass: this.optionGranularity,
       mode: this.optionMode
     }
-    console.log(this.insertString = this.isa88.buildISA88(varia));
-    const data = this.isa88.buildISA88(varia);
-    const blob = new Blob([data], { type: 'application/octet-stream' });
-    this.insertUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+    this.insertString = this.isa88.buildISA88(varia);
+    const blob = new Blob([this.insertString], { type: 'text/plain' });
+    // Dateiname
+    const name = 'insert.txt';
+    this.dlService.download(blob, name);
   }
 
   executeInsert(){
+    var varia:ISA88Variables = {
+      SystemName: this.selectedOption,
+      BehaviorClass: this.optionGranularity,
+      mode: this.optionMode
+    }
+    this.insertString = this.isa88.buildISA88(varia);
     this.query.insert(this.insertString).subscribe((data: any) => {
       this.insertreturn = data
     });
