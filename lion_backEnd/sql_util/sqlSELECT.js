@@ -9,9 +9,9 @@ exports.selectEclassProperties = function (propertyName){
 var selectString = `
 SELECT p.Identifier, p.VersionNumber, p.RevisionNumber, p.PreferredName, p.ShortName, p.Definition, p.DataType, uom.DINNotation 
 
-FROM eclass_basic_9_1_properties.eclass9_1_pr_de AS p
+FROM ${db_conf.database}.eclass9_1_pr_en AS p
 
-LEFT OUTER JOIN eclass_basic_9_1_properties.eclass9_1_un_de AS uom ON p.IrdiUN = uom.IrdiUN
+LEFT OUTER JOIN ${db_conf.database}.eclass9_1_un_en AS uom ON p.IrdiUN = uom.IrdiUN
 
 WHERE PreferredName LIKE '%${propertyName}%';`;
 
