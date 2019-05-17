@@ -6,16 +6,16 @@ class Prefix {
 export class Namespace {
 
     public PREFIXES: Array<Prefix> = [
-        {prefix: "SA4:", namespace: "http://www.hsu-ifa.de/ontologies/SemAnz40#"},
         {prefix: "VDI3682:", namespace: "http://www.hsu-ifa.de/ontologies/VDI3682#"},
         {prefix: "DE6:", namespace: "http://www.hsu-ifa.de/ontologies/DINEN61360#"},
         {prefix: "ISA88:", namespace: "http://www.hsu-ifa.de/ontologies/ISA-TR88#"},
         {prefix: "rdf:", namespace: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
         {prefix: "rdfs:", namespace: "http://www.w3.org/2000/01/rdf-schema#"},
         {prefix: "owl:", namespace: "http://www.w3.org/2002/07/owl#"},
-        {prefix: "SoA:", namespace: "http://delicias.dia.fi.upm.es/ontologies/SimpleOrAggregated.owl#"}
+        {prefix: ":", namespace: "http://lionFacts#"}
     ]
 
+    public activeNamespace: number = 6;
 
 
     public getPrefixString(){

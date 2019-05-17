@@ -2,153 +2,208 @@
 <div class="card">
   <h5 class="card-header">Configuration Management</h5>
   <div class="card-body">
-    
+
     <div class="row" style="height: 450px;">
-    <div class="col" >
-      <!-- Graph Database Configuration -->
-      <div class="card h-90">
+      <div class="col">
+        <!-- Graph Database Configuration -->
+        <div class="card h-90">
           <div class="card-header">
             <h6>Graph Database Configuration</h6>
           </div>
           <div class="card-body">
-            <label><input class="form-control" [(ngModel)]="URL" name="url" type="text" placeholder="{{url[0]}}"></label><br>
-            <label><input class="form-control" [(ngModel)]="Repository" name="repository" type="text" placeholder="{{url[1]}}"></label><br>
-            <label><input class="form-control" [(ngModel)]="Username" name="username" type="text" placeholder="[Username]"></label><br>
-            <label><input class="form-control" [(ngModel)]="Password" name="password" type="text" placeholder="[Password]"></label><br>
-            
+            <label><input class="form-control" [(ngModel)]="URL" name="url" type="text"
+                placeholder="{{url[0]}}"></label><br>
+            <label><input class="form-control" [(ngModel)]="Repository" name="repository" type="text"
+                placeholder="{{url[1]}}"></label><br>
+            <label><input class="form-control" [(ngModel)]="Username" name="username" type="text"
+                placeholder="[Username]"></label><br>
+            <label><input class="form-control" [(ngModel)]="Password" name="password" type="text"
+                placeholder="[Password]"></label><br>
+
             <button class="btn btn-secondary" (click)="submitGraphConfig(URL, Repository)">submit</button>
           </div>
-        </div>               
-    </div>
+        </div>
+      </div>
 
 
-    <div class="col" >
-      <!-- Upload / Download Configurations -->
+      <div class="col">
+        <!-- Upload / Download Configurations -->
         <div class="card h-40">
-            <div class="card-header">
-              <h6>Save / Load Configurations</h6>
-            </div>
-            <div class="card-body">
-              
-           
-              <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button>  {{savingDate}}
-              <br>
-              <br>
-              <label for="file-upload" class="btn btn-secondary">
-                 Load
-              </label>
-              <input id="file-upload" type="file" (change)="loadSelectedFile($event)"> {{loadDate}}
-              
-            </div>
+          <div class="card-header">
+            <h6>Save / Load Configurations</h6>
           </div>
-          <br>
-<!-- Backend Configuration -->
-      <div class="card h-40">
+          <div class="card-body">
+
+
+            <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button> {{savingDate}}
+            <br>
+            <br>
+            <label for="file-upload" class="btn btn-secondary">
+              Load
+            </label>
+            <input id="file-upload" type="file" (change)="loadSelectedFile($event)"> {{loadDate}}
+
+          </div>
+        </div>
+        <br>
+        <!-- Backend Configuration -->
+        <div class="card h-40">
           <div class="card-header">
             <h6>Backend Configuration</h6>
           </div>
           <div class="card-body">
 
-            <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text" placeholder="{{eclassUrl}}"></label><br>
+            <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text"
+                placeholder="{{eclassUrl}}"></label><br>
 
             <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button>
-            
-          </div>
-        </div>               
-    </div>
 
-
-
-
-
-      </div>       
-      <!-- Namespaces of Ontologies -->
-      <div class="card">
-          <div class="card-header">
-            <h6>Namespaces of Ontologies</h6>
-          </div>
-          <div class="card-body">
-            <li *ngFor="let pre of PREFIXES">
-                <label><input class="form-control" [(ngModel)]="prefix"name="prefix" type="text" placeholder={{pre.prefix}} size="10"></label>
-                <label><input class="form-control" [(ngModel)]="namespace" name="namepspace" type="text" placeholder={{pre.namespace}} size="60"></label><br>
-            </li>
-      
-            
-            <button class="btn btn-secondary" (click)="buildTypeInsert()">submit</button>
-      
           </div>
         </div>
-    
-</div>
+      </div>
 
-<!-- Graph Database Configuration -->
-<div *ngIf="TemplateOption === 'graphDatabase'">
 
-  <div class="card">
-    <div class="card-header">
-      Graph Database Configuration
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">Configuring the connection to the graph database</h5>
-      {{test}}
-      <label><input class="form-control" [(ngModel)]="URL" name="url" type="text" placeholder="{{url[0]}}"></label><br>
-      <label><input class="form-control" [(ngModel)]="Repository" name="repository" type="text" placeholder="{{url[1]}}"></label><br>
-      <label><input class="form-control" [(ngModel)]="Username" name="username" type="text" placeholder="[Username]"></label><br>
-      <label><input class="form-control" [(ngModel)]="Password" name="password" type="text" placeholder="[Password]"></label><br>
-      
-      <button class="btn btn-secondary" (click)="submitGraphConfig(URL, Repository)">submit</button>
-         </div>
-  </div>
-</div>
-<!-- Backend Configuration -->
-<div *ngIf="TemplateOption === 'backend'">
 
-  <div class="card">
-    <div class="card-header">
-      Backend Configuration
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">Configuring Routes to Backend Services </h5>
-      <h5></h5>
-      <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text" placeholder="{{eclassUrl}}"></label><br>
 
-      <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button>
-      
-    </div>
-  </div>
-</div>
-
-<!-- Namespaces of Ontologies -->
-<div *ngIf="TemplateOption === 'namespaces'">
-
-  <div class="card">
-    <div class="card-header">
-      Namespaces of Ontologies
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">Configuration of prefixes</h5>
-      <li *ngFor="let pre of PREFIXES">
-          <label><input class="form-control" [(ngModel)]="prefix"name="prefix" type="text" placeholder={{pre.prefix}} size="10"></label>
-          <label><input class="form-control" [(ngModel)]="namespace" name="namepspace" type="text" placeholder={{pre.namespace}} size="60"></label><br>
-      </li>
-
-      
-      <button class="btn btn-secondary" (click)="buildTypeInsert()">submit</button>
 
     </div>
-  </div>
-</div>
-<!-- Upload / Download Configurations -->
-<div *ngIf="TemplateOption === 'upload'">
-
-  <div class="card">
-    <div class="card-header">
-      Upload / Download Configurations
-    </div>
-    <div class="card-body">
-      <h5 class="card-title">Upload or Download configuration files</h5>
-      <button class="btn btn-secondary" (click)="buildTypeInsert()">Download</button>
-      <button class="btn btn-secondary" (click)="insertDINEN61360()">Upload</button>
+    <!-- Namespaces of Ontologies -->
+    <div class="card">
+      <h5 class="card-header">
+        Namespaces of Ontologies
+      </h5>
+      <div class="card-body">
+        <p class="card-text"> Existing namespaces and their prefixes are shown below. Click on the table to delete or
+          edit existing namespaces. </p>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col"> PREFIX </th>
+              <th scope="col"> Namespace </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tableRow of PREFIXES">
+              <!-- one entry for each key in each binding -->
+              <td *ngFor="let x of keys(tableRow)" (click)="prefixTableClick(tableRow)">{{tableRow[x]}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <form>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Prefix of active Namespace </label>
+              <input [(ngModel)]="activeNamespace.prefix" class="form-control" name="activeNamespacePrefix" type="text" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> Active Namespace </label>
+              <input [(ngModel)]="activeNamespace.namespace" class="form-control" name="activeNamespaceIRI" type="text" readonly>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Prefix </label>
+              <input [(ngModel)]="userPrefix" name="userPrefix" type="text" placeholder="[Prefix]" class="form-control">
+            </div>
+            <div class="form-group col-sm">
+              <label> Namesapce </label>
+              <input [(ngModel)]="userNamespace" name="userNamespace" type="text" placeholder="[Namesapce]"
+                class="form-control">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="addNamespace()"> Add
+                Namesapce
+              </button></div>
+            <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="editNamespace()"> Edit
+                Namesapce
+              </button></div>
+            <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="deleteNamespace()">
+                Delete Namesapce
+              </button></div>
+            <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="setActiveNamespace()">
+                Set as active Namesapce
+              </button></div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- Graph Database Configuration -->
+  <div *ngIf="TemplateOption === 'graphDatabase'">
+
+    <div class="card">
+      <div class="card-header">
+        Graph Database Configuration
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Configuring the connection to the graph database</h5>
+        {{test}}
+        <label><input class="form-control" [(ngModel)]="URL" name="url" type="text"
+            placeholder="{{url[0]}}"></label><br>
+        <label><input class="form-control" [(ngModel)]="Repository" name="repository" type="text"
+            placeholder="{{url[1]}}"></label><br>
+        <label><input class="form-control" [(ngModel)]="Username" name="username" type="text"
+            placeholder="[Username]"></label><br>
+        <label><input class="form-control" [(ngModel)]="Password" name="password" type="text"
+            placeholder="[Password]"></label><br>
+
+        <button class="btn btn-secondary" (click)="submitGraphConfig(URL, Repository)">submit</button>
+      </div>
+    </div>
+  </div>
+  <!-- Backend Configuration -->
+  <div *ngIf="TemplateOption === 'backend'">
+
+    <div class="card">
+      <div class="card-header">
+        Backend Configuration
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Configuring Routes to Backend Services </h5>
+        <h5></h5>
+        <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text"
+            placeholder="{{eclassUrl}}"></label><br>
+
+        <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Namespaces of Ontologies -->
+  <!-- <div *ngIf="TemplateOption === 'namespaces'">
+
+    <div class="card">
+      <div class="card-header">
+        Namespaces of Ontologies
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Configuration of prefixes</h5>
+        <li *ngFor="let pre of PREFIXES">
+          <label><input class="form-control" [(ngModel)]="prefix" name="prefix" type="text" placeholder={{pre.prefix}}
+              size="10"></label>
+          <label><input class="form-control" [(ngModel)]="namespace" name="namepspace" type="text"
+              placeholder={{pre.namespace}} size="60"></label><br>
+        </li>
+        <button class="btn btn-secondary" (click)="buildTypeInsert()">submit</button>
+
+      </div>
+    </div>
+  </div> -->
+  <!-- Upload / Download Configurations -->
+  <div *ngIf="TemplateOption === 'upload'">
+
+    <div class="card">
+      <div class="card-header">
+        Upload / Download Configurations
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Upload or Download configuration files</h5>
+        <button class="btn btn-secondary" (click)="buildTypeInsert()">Download</button>
+        <button class="btn btn-secondary" (click)="insertDINEN61360()">Upload</button>
+      </div>
+    </div>
+  </div>
