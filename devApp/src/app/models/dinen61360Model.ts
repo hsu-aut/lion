@@ -1,4 +1,4 @@
-import {Namespace} from '../utils/prefixes';
+import { Namespace } from '../utils/prefixes';
 
 var parser = new Namespace();
 
@@ -7,7 +7,7 @@ export class DINEN61360Data {
     public SPARQL_SELECT_allTypes = `
     PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT ?Type ?ID ?Definition ?Unit_Of_Measure ?Data_Type WHERE { 
+    SELECT DISTINCT ?Type ?ID ?Definition ?Unit_Of_Measure ?Data_Type WHERE { 
               
        ?Type a DE6:Type_Description;
        DE6:Code ?ID;
@@ -15,9 +15,31 @@ export class DINEN61360Data {
        DE6:Unit_of_Measure ?Unit_Of_Measure;
        a ?Data_Type.
        ?Data_Type rdfs:subClassOf ?a.
-          VALUES ?a
-      {DE6:Simple_Data_Type DE6:Complex_Data_Type}
-          }  `;
+        VALUES ?a
+        {DE6:Array DE6:Bag DE6:List DE6:Set DE6:Boolean DE6:Integer DE6:Real DE6:String}
+        }  `;
+    public SPARQL_SELECT_allDE = `
+    PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    SELECT ?DE  WHERE { 
+    ?DE a DE6:Data_Element.  
+	}  
+    `;
+    public SPARQL_SELECT_allDET = `
+    PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    SELECT ?DEI  WHERE { 
+    ?DEI a DE6:Type_Description.  
+	}  
+    `;
+    public SPARQL_SELECT_allDEI = `
+    PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    SELECT ?DEI  WHERE { 
+    ?DEI a DE6:Instance_Description.  
+	} 
+    `;
+
     public SPARQL_SELECT_physical_by_child = `
     PREFIX SA4: <http://www.hsu-ifa.de/ontologies/SemAnz40#>
     PREFIX SoA: <http://delicias.dia.fi.upm.es/ontologies/SimpleOrAggregated.owl#>
@@ -40,14 +62,14 @@ export class DINEN61360Data {
     }  `;
 }
 
-export enum expressionGoal {Actual_Value = "Actual_Value" ,Assurance = "Assurance" ,Requirement = "Requirement"}
-export enum logicInterpretation {"<" = "<" ,"<=" = "<=" , "=" =  "=" , ">" = ">" , ">=" = ">="}
-export enum datatype {Boolean = "Boolean", Integer = "Integer",Real = "Real",String = "String",Array = "Array",Bag = "Bag",List = "List",Set = "Set"}
+export enum expressionGoal { Actual_Value = "Actual_Value", Assurance = "Assurance", Requirement = "Requirement" }
+export enum logicInterpretation { "<" = "<", "<=" = "<=", "=" = "=", ">" = ">", ">=" = ">=" }
+export enum datatype { Boolean = "Boolean", Integer = "Integer", Real = "Real", String = "String", Array = "Array", Bag = "Bag", List = "List", Set = "Set" }
 
 class InstanceVariables {
     expressionGoalString: string;
     logicInterpretationString: logicInterpretation;
-    valueString: string; 
+    valueString: string;
     describedIndividual: string;
 }
 
@@ -91,8 +113,8 @@ export class DINEN61360Variables {
 export class DINEN61360Insert {
 
     public buildDINEN61360T(variables: DINEN61360Variables) {
-        
-        
+
+
 
         // individual to be described by data element
 
@@ -126,30 +148,30 @@ export class DINEN61360Insert {
         var Drawing_Reference = variables.optionalTypeVariables.Drawing_Reference
 
         var optionals = {
-            boundSynonymous_Name:                       `BIND(STR("${Synonymous_Name}") AS ?Synonymous_Name).`, 
-            boundbackwards_compatible_Revision:         `BIND(STR("${backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
-            boundbackwards_compatible_Version:          `BIND(STR("${backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
-            boundValue_Format_Field_length:             `BIND(STR("${Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
-            boundValue_Format_Field_length_Variable:    `BIND(STR("${Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
-            boundValue_Format_non_quantitativ:          `BIND(STR("${Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
-            boundValue_Format_quantitativ:              `BIND(STR("${Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
-            boundValue_List:                            `BIND(STR("${Value_List}") AS ?Value_List).`,
-            boundValue_List_Member:                     `BIND(STR("${Value_List_Member}") AS ?Value_List_Member).`,
-            boundSource_Document_of_Definition:         `BIND(STR("${Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
-            boundSynonymous_Letter_Symbol:              `BIND(STR("${Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
-            boundNote:                                  `BIND(STR("${Note}") AS ?Note).`,
-            boundRemark:                                `BIND(STR("${Remark}") AS ?Remark).`, 
-            boundPreferred_Letter_Symbol:               `BIND(STR("${Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
-            boundFormula:                               `BIND(STR("${Formula}") AS ?Formula).`,
-            boundDrawing_Reference:                     `BIND(STR("${Drawing_Reference}") AS ?Drawing_Reference).`,
+            boundSynonymous_Name: `BIND(STR("${Synonymous_Name}") AS ?Synonymous_Name).`,
+            boundbackwards_compatible_Revision: `BIND(STR("${backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
+            boundbackwards_compatible_Version: `BIND(STR("${backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
+            boundValue_Format_Field_length: `BIND(STR("${Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
+            boundValue_Format_Field_length_Variable: `BIND(STR("${Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
+            boundValue_Format_non_quantitativ: `BIND(STR("${Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
+            boundValue_Format_quantitativ: `BIND(STR("${Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
+            boundValue_List: `BIND(STR("${Value_List}") AS ?Value_List).`,
+            boundValue_List_Member: `BIND(STR("${Value_List_Member}") AS ?Value_List_Member).`,
+            boundSource_Document_of_Definition: `BIND(STR("${Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
+            boundSynonymous_Letter_Symbol: `BIND(STR("${Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
+            boundNote: `BIND(STR("${Note}") AS ?Note).`,
+            boundRemark: `BIND(STR("${Remark}") AS ?Remark).`,
+            boundPreferred_Letter_Symbol: `BIND(STR("${Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
+            boundFormula: `BIND(STR("${Formula}") AS ?Formula).`,
+            boundDrawing_Reference: `BIND(STR("${Drawing_Reference}") AS ?Drawing_Reference).`,
         }
-  
+
         // add a check for empties and if one is found delete the string
         for (const i in optionals) {
-            
-                const element = optionals[i];
-                if (element.search(`undefined`) != -1) {optionals[i] = ""}
-                // console.log(element);
+
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = "" }
+            // console.log(element);
         }
 
         var insertString = `
@@ -265,39 +287,39 @@ INSERT {
 }      
         
         `
-        return insertString    
+        return insertString
     }
 
     public buildDINEN61360I(variables: DINEN61360Variables) {
 
-// individual to be described by data element
-var describedIRI = parser.parseToIRI(variables.instanceVariables.describedIndividual);
+        // individual to be described by data element
+        var describedIRI = parser.parseToIRI(variables.instanceVariables.describedIndividual);
 
 
-// type info
-var code = variables.mandatoryTypeVariables.code
+        // type info
+        var code = variables.mandatoryTypeVariables.code
 
-// instance info
-var expressionGoal = variables.instanceVariables.expressionGoalString
-var logicInterpretation = variables.instanceVariables.logicInterpretationString
+        // instance info
+        var expressionGoal = variables.instanceVariables.expressionGoalString
+        var logicInterpretation = variables.instanceVariables.logicInterpretationString
 
-var optionals = {
-    boundExpressionGoal:              `BIND(STR("${expressionGoal}") AS ?Expression_Goal).`,    
-    boundLogicInterpretation:         `BIND(STR("${logicInterpretation}") AS ?Logic_Interpretation).`
+        var optionals = {
+            boundExpressionGoal: `BIND(STR("${expressionGoal}") AS ?Expression_Goal).`,
+            boundLogicInterpretation: `BIND(STR("${logicInterpretation}") AS ?Logic_Interpretation).`
 
-}
+        }
 
         // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
-            
+        for (const i in optionals) {
+
             const element = optionals[i];
-            if (element.search(`undefined`) != -1) {optionals[i] = ""}
+            if (element.search(`undefined`) != -1) { optionals[i] = "" }
             // console.log(element);
-    }
+        }
 
 
-// value info
-var value = variables.instanceVariables.valueString
+        // value info
+        var value = variables.instanceVariables.valueString
 
 
         var insertString = `
@@ -396,7 +418,7 @@ INSERT {
 
     public buildDINEN61360TnI(variables: DINEN61360Variables) {
 
-        
+
 
         // individual to be described by data element
         var describedIRI = variables.instanceVariables.describedIndividual;
@@ -413,7 +435,7 @@ INSERT {
         // instance info
         var expressionGoal = variables.instanceVariables.expressionGoalString
         var logicInterpretation = variables.instanceVariables.logicInterpretationString
-        
+
         // value info
         var value = variables.instanceVariables.valueString
         var datatype = variables.mandatoryTypeVariables.datatypeString
@@ -439,30 +461,30 @@ INSERT {
         var Drawing_Reference = variables.optionalTypeVariables.Drawing_Reference
 
         var optionals = {
-            boundSynonymous_Name:                       `BIND(STR("${Synonymous_Name}") AS ?Synonymous_Name).`, 
-            boundbackwards_compatible_Revision:         `BIND(STR("${backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
-            boundbackwards_compatible_Version:          `BIND(STR("${backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
-            boundValue_Format_Field_length:             `BIND(STR("${Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
-            boundValue_Format_Field_length_Variable:    `BIND(STR("${Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
-            boundValue_Format_non_quantitativ:          `BIND(STR("${Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
-            boundValue_Format_quantitativ:              `BIND(STR("${Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
-            boundValue_List:                            `BIND(STR("${Value_List}") AS ?Value_List).`,
-            boundValue_List_Member:                     `BIND(STR("${Value_List_Member}") AS ?Value_List_Member).`,
-            boundSource_Document_of_Definition:         `BIND(STR("${Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
-            boundSynonymous_Letter_Symbol:              `BIND(STR("${Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
-            boundNote:                                  `BIND(STR("${Note}") AS ?Note).`,
-            boundRemark:                                `BIND(STR("${Remark}") AS ?Remark).`, 
-            boundPreferred_Letter_Symbol:               `BIND(STR("${Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
-            boundFormula:                               `BIND(STR("${Formula}") AS ?Formula).`,
-            boundDrawing_Reference:                     `BIND(STR("${Drawing_Reference}") AS ?Drawing_Reference).`,
+            boundSynonymous_Name: `BIND(STR("${Synonymous_Name}") AS ?Synonymous_Name).`,
+            boundbackwards_compatible_Revision: `BIND(STR("${backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
+            boundbackwards_compatible_Version: `BIND(STR("${backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
+            boundValue_Format_Field_length: `BIND(STR("${Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
+            boundValue_Format_Field_length_Variable: `BIND(STR("${Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
+            boundValue_Format_non_quantitativ: `BIND(STR("${Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
+            boundValue_Format_quantitativ: `BIND(STR("${Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
+            boundValue_List: `BIND(STR("${Value_List}") AS ?Value_List).`,
+            boundValue_List_Member: `BIND(STR("${Value_List_Member}") AS ?Value_List_Member).`,
+            boundSource_Document_of_Definition: `BIND(STR("${Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
+            boundSynonymous_Letter_Symbol: `BIND(STR("${Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
+            boundNote: `BIND(STR("${Note}") AS ?Note).`,
+            boundRemark: `BIND(STR("${Remark}") AS ?Remark).`,
+            boundPreferred_Letter_Symbol: `BIND(STR("${Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
+            boundFormula: `BIND(STR("${Formula}") AS ?Formula).`,
+            boundDrawing_Reference: `BIND(STR("${Drawing_Reference}") AS ?Drawing_Reference).`,
         }
-  
+
         // add a check for empties and if one is found delete the string
         for (const i in optionals) {
-            
-                const element = optionals[i];
-                if (element.search(`undefined`) != -1) {optionals[i] = ""}
-                // console.log(element);
+
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = "" }
+            // console.log(element);
         }
 
         var insertString = `
@@ -634,8 +656,8 @@ INSERT {
     }
 
 }`;
-return insertString
+        return insertString
     }
 
-    
+
 }

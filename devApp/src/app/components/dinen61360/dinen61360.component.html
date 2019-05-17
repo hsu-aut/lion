@@ -1,344 +1,360 @@
-
-
 <div class="card">
-        <h5 class="card-header">DIN EN 61360 Insert Template</h5>
-        <!-- Hamied Test -->
-        <h5>{{eclassUrl}}</h5>
-        <!-- Hamied test ende-->
-        <div class="card-body">
-          <h5 class="card-title">Select options to take</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <div class="form-check">
-                <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption" name="exampleRadios" id="exampleRadios1" value="manType" checked>
-                <label class="custom-control-label" for="exampleRadios1">
-                        Create type description with mandatory definitions
-                </label>
+    <h5 class="card-header">DIN EN 61360 Template</h5>
+    <div class="card-body">
+        <h5 class="card-title">Options & Statistics</h5>
+        <p class="card-text">The DIN EN 61360 template uses a tabular approach for building a graph. One can add type
+            and instance descriptions to any kind of entity.</p>
+        <div class="row" style="height: 200px;">
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header"> Template Options </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption"
+                                name="propertyRadio" id="propertyRadios1" value="typeDesc">
+                            <label class="custom-control-label" for="propertyRadios1"> Create type description </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption"
+                                name="propertyRadio" id="propertyRadios3" value="instanceDesc">
+                            <label class="custom-control-label" for="propertyRadios3"> Create instance description
+                            </label>
+                        </div>
+                        <!-- ToDo: Find place for loading spinner -->
+                        <div *ngIf="_loaderShow" class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="form-check">
-                <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption" name="exampleRadios" id="exampleRadios2" value="fullType">
-                <label class="custom-control-label" for="exampleRadios2">
-                        Create type description with full definitions
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption" name="exampleRadios" id="exampleRadios3" value="instance">
-                <label class="custom-control-label" for="exampleRadios3">
-                        Create instance description
-                </label>
-            </div>
-            <div *ngIf="_loaderShow" class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header"> Template Statistics </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No# Data Elements</th>
+                                    <th scope="col">No# Type Descriptions</th>
+                                    <th scope="col">No# Instance Descriptions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ToDo: include statistics -->
+                                <tr>
+                                    <td>{{NoOfDE}}</td>
+                                    <td>{{NoOfDET}}</td>
+                                    <td>{{NoOfDEI}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
+
+    </div>
 </div>
 
-<div *ngIf="TemplateOption === 'manType'">
+<div *ngIf="TemplateOption===undefined" class="card">
+    <div class="card-body">
+        <h5 class="card-title">DIN EN 61360 Insert Template</h5>
+        <p class="card-text"> Select an option to add property information. </p>
+    </div>
+</div>
 
-            <div class="card">
-                    <div class="card-header">
-                      DIN EN 61360 Types
+<div *ngIf="TemplateOption === 'typeDesc'">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"> DIN EN 61360 Mandatory Type Definition Template </h5>
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-sm">
+                        <label> Code </label>
+                        <input class="form-control" [(ngModel)]="code" name="code" type="text" placeholder="[Code]">
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Mandatory Type Definitions</h5>
-                        <label><input class="form-control" [(ngModel)]="code" name="code" type="text" placeholder="[Code]"></label>
-                        <label><input class="form-control" [(ngModel)]="version" name="version" type="text" placeholder="[Version]"></label> 
-                        <label><input class="form-control" [(ngModel)]="revision" name="revision" type="text" placeholder="[Revision]"></label>
-                        <label><input class="form-control" [(ngModel)]="preferred_name" name="preferred_name" type="text" placeholder="[Preferred Name]"></label>
-                        <label><input class="form-control" [(ngModel)]="short_name" name="short_name" type="text" placeholder="[Short Name]"></label> 
-                        <label><input class="form-control" [(ngModel)]="definition" name="definition" type="text" placeholder="[Definition]"></label> 
-                        <label><input class="form-control" [(ngModel)]="UoM" name="UoM" type="text" placeholder="[Unit of Measure]"></label>
-                        <label> Select Datatype 
+                    <div class="form-group col-sm">
+                        <label> Version </label>
+                        <input class="form-control" [(ngModel)]="version" name="version" type="text"
+                            placeholder="[Version]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Revision </label>
+                        <input class="form-control" [(ngModel)]="revision" name="revision" type="text"
+                            placeholder="[Revision]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Preferred Name </label>
+                        <input class="form-control" [(ngModel)]="preferred_name" name="preferred_name" type="text"
+                            placeholder="[Preferred Name]">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm">
+                        <label> Short Name </label>
+                        <input class="form-control" [(ngModel)]="short_name" name="short_name" type="text"
+                            placeholder="[Short Name]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Definition </label>
+                        <input class="form-control" [(ngModel)]="definition" name="definition" type="text"
+                            placeholder="[Definition]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Unit of Measure </label>
+                        <input class="form-control" [(ngModel)]="UoM" name="UoM" type="text"
+                            placeholder="[Unit of Measure]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Data type </label>
                         <select [(ngModel)]="selectedDataytpe" name="selectedDataytpe" class="form-control">
                             <option *ngFor='let key of keys(datatype)' [ngValue]="key">
-                              {{datatype[key]}}
+                                {{datatype[key]}}
                             </option>
-                        </select>  
-                        </label>
-                      <p class="card-text">build and download or build and execute</p>
-                      <div class="row">
-                            <a [href]="insertUrl" download="insert.txt" class="btn btn-secondary col m-3" (click)="buildTypeInsert()">build INSERT</a>
-                            <button class="btn btn-secondary col m-3" (click)="insertDINEN61360T()">execute INSERT</button>
-                      </div>
+                        </select>
                     </div>
-            </div>
-    
-            <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">ecl@ss properties</h5>
-                        <p class="card-text">Click on a row to fill in necessary type descriptions</p>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <button class="btn btn-outline-secondary" (click)="searchByPreferredName(search_name)" type="button">Search ecl@ss Database</button>
-                            </div>
-                                <input [(ngModel)]="search_name" type="text" class="form-control" placeholder="preferred_name" aria-label="" aria-describedby="basic-addon1">
-                        </div>
-                        <div class="row align-items-center">
-                            <table class="table table-hover table-sm">
-                                <thead>
-                                    <tr>
-                                    <!-- take first result binding and iterate over keys, these keys are table columns -->
-                                        <th *ngFor="let col of keys(propertyList[0])" scope="col">{{col}} </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                <!-- one row for each binding -->
-                                    <tr *ngFor="let tableRow of propertyList">
-                                    <!-- one entry for each key in each binding -->
-                                        <td *ngFor="let x of keys(tableRow)" (click)="eclassTableClick(tableRow)">{{tableRow[x]}}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div> 
-                    </div>
-            </div>
-</div>
-    
-
-
-<div *ngIf="TemplateOption === 'instance'">
-    <div class="card">
-        <div class="card-header">
-                  DIN EN 61360 Instance
-        </div>
-        <div class="card-body">
-
-            <h5 class="card-title">Instance definition template</h5>
-            <p class="card-text">Select table to display</p>
-            <div class="form-check">
-                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios1" value="properties" checked>
-                    <label class="custom-control-label" for="instanceRadios1">
-                            Available Type Descriptions in Database
-                    </label>
-            </div>
-            <div class="form-check">
-                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios2" value="PhysicalByInheritance">
-                    <label class="custom-control-label" for="instanceRadios2">
-                            Physical Entities by Inheritance
-                    </label>
-            </div>
-            <div class="form-check">
-                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios4" value="Functional">
-                    <label class="custom-control-label" for="instanceRadios4">
-                            Functional Entities
-                    </label>
-            </div>
-            <div class="form-check">
-                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios5" value="Behavioral">
-                    <label class="custom-control-label" for="instanceRadios5">
-                            Behavioral Entities
-                    </label>
-            </div>
-            <div class="form-check">
-                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption" name="instanceRadios" id="instanceRadios6" value="CustomTable">
-                    <label class="custom-control-label" for="instanceRadios6">
-                            Custom Table
-                    </label>
-            </div>
-
-            <p class="card-text">Define the instance:</p>
-            <label><input [(ngModel)]="describedIndividual" name="describedIndividual" type="text" placeholder="[Input described Individual]" class="form-control"></label>
-            <label><input [(ngModel)]="code" name="code" type="text" placeholder="[Input Data Type Code]" class="form-control"></label>
-            <label><input [(ngModel)]="value" name="value" type="text" placeholder="[Input value]" class="form-control"></label>
-            <label> Select Expression Goal <select [(ngModel)]="selectedExpressionGoal" name="selectedExpressionGoal" class="form-control" >
-                    <option *ngFor='let key of keys(expressionGoal)' [ngValue]="key">
-                    {{expressionGoal[key]}}
-                    </option>
-            </select></label>
-            <label> Select Logic Interpretation <select [(ngModel)]="selectedLogicInterpretation" name="selectedLogicInterpretation" class="form-control">
-                    <option *ngFor='let key of keys(logicInterpretation)' [ngValue]="key">
-                    {{logicInterpretation[key]}}
-                    </option>
-            </select></label>
-            <p class="card-text">build and download or build and execute</p>
+                </div>
+            </form>
             <div class="row">
-                <a [href]="insertUrl" download="insert.txt" class="btn btn-secondary col m-3" (click)="buildInstanceInsert()">build INSERT</a>
-                <button class="btn btn-secondary col m-3" (click)="insertDINEN61360I()">execute INSERT</button>
-            </div> 
-        </div>
-    </div> 
-        
-    <div *ngIf="instanceOption === 'CustomTable'" >
-        <div class="card">    
-            <div class="card-body">
-                <h5 class="card-title">Custom Table</h5>
-                <p class="card-text">Define Select Query:</p>
-                <textarea [(ngModel)]="selectString" class="w-100" rows ="15" name="selectString"></textarea>
-                <button class="btn btn-secondary" (click)="executeSelect(selectString)">execute SELECT</button>
+                <button class="btn btn-secondary col m-3" (click)="buildTypeInsert()">build INSERT</button>
+                <button class="btn btn-secondary col m-3" (click)="insertDINEN61360T()">execute INSERT</button>
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"> ecl@ss properties </h5>
+            <p class="card-text"> Click on a row to fill in necessary type descriptions </p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary" (click)="searchByPreferredName(search_name)"
+                        type="button"> Search ecl@ss Database </button>
+                </div>
+                <input [(ngModel)]="search_name" type="text" class="form-control" placeholder="Preferred Name"
+                    aria-label="" aria-describedby="basic-addon1">
+            </div>
+
+            <div *ngIf="propertyList.length!==0" class="row align-items-center">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <!-- take first result binding and iterate over keys, these keys are table columns -->
+                            <th *ngFor="let col of keys(propertyList[0])" scope="col">{{col}} </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- one row for each binding -->
+                        <tr *ngFor="let tableRow of propertyList">
+                            <!-- one entry for each key in each binding -->
+                            <td *ngFor="let x of keys(tableRow)" (click)="eclassTableClick(tableRow)">{{tableRow[x]}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div *ngIf="TemplateOption === 'instanceDesc'">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"> DIN EN 61360 Instance Definition Template </h5>
+            <div class="row">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            Instance Definition
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <label> Described Individual </label>
+                                        <input [(ngModel)]="describedIndividual" name="describedIndividual" type="text"
+                                            placeholder="[Input described Individual]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <label> Code </label>
+                                        <input [(ngModel)]="code" name="code" type="text" placeholder="[Code]"
+                                            class="form-control">
+                                    </div>
+                                    <div class="form-group col-sm">
+                                        <label> Value </label>
+                                        <input [(ngModel)]="value" name="value" type="text" placeholder="[Input value]"
+                                            class="form-control">
+                                    </div>
+                                    <div class="form-group col-sm">
+                                        <label> Expression Goal </label>
+                                        <select [(ngModel)]="selectedExpressionGoal" name="selectedExpressionGoal"
+                                            class="form-control">
+                                            <option *ngFor='let key of keys(expressionGoal)' [ngValue]="key">
+                                                {{expressionGoal[key]}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-sm">
+                                        <label> Logic Interpretation </label>
+                                        <select [(ngModel)]="selectedLogicInterpretation"
+                                            name="selectedLogicInterpretation" class="form-control">
+                                            <option *ngFor='let key of keys(logicInterpretation)' [ngValue]="key">
+                                                {{logicInterpretation[key]}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <p class="card-text">build and download or build and execute</p>
+                            <div class="row">
+                                <button class="btn btn-secondary col m-3" (click)="buildInstanceInsert()">build
+                                    INSERT</button>
+                                <button class="btn btn-secondary col m-3" (click)="insertDINEN61360I()">execute
+                                    INSERT</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header"> Instance Template Options </div>
+                        <div class="card-body">
+                            <p class="card-text"> Select list or table to display from graph database </p>
+                            <div class="form-check">
+                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                    name="instanceRadios" id="instanceRadios1" value="allTypeDescriptions" checked>
+                                <label class="custom-control-label" for="instanceRadios1">
+                                    DIN EN 61360 Type Descriptions
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                    name="instanceRadios" id="instanceRadios4" value="allProcessTable">
+                                <label class="custom-control-label" for="instanceRadios4">
+                                    VDI 3682 Individuals
+                                </label>
+                            </div>
+                            <!-- <div class="form-check">
+                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                    name="instanceRadios" id="instanceRadios5" value="ISA88">
+                                <label class="custom-control-label" for="instanceRadios5">
+                                    ISA 88 Individuals
+                                </label>
+                            </div> -->
+                            <div class="form-check">
+                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                    name="instanceRadios" id="instanceRadios6" value="CustomTable">
+                                <label class="custom-control-label" for="instanceRadios6">
+                                    Define Custom Table
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="instanceOption === 'CustomTable'">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Custom Table</h5>
+            <p class="card-text">Define Select Query:</p>
+            <textarea [(ngModel)]="selectString" class="w-100" rows="15" name="selectString"></textarea>
+            <button class="btn btn-secondary" (click)="executeSelect(selectString)">execute SELECT</button>
+        </div>
 
         <div *ngIf="customReturn" class="card">
             <div class="card-body">
-            <h5 class="card-title">Returned Values</h5>
-            <p class="card-text">Click on an element to fill the described Individual</p>
+                <h5 class="card-title">Returned Values</h5>
+                <p class="card-text">Click on an element to fill the described Individual</p>
                 <div class="row align-items-center">
                     <table class="table table-hover table-sm">
                         <thead>
                             <tr>
                                 <!-- take first result binding and iterate over keys, these keys are table columns -->
-                                <th *ngFor="let col of keys(customReturn.results.bindings[0])" scope="col">{{col}} </th>
-                                </tr>
+                                <th *ngFor="let col of keys(customReturn.results.bindings[0])" scope="col">{{col}}
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <!-- one row for each binding -->
+                            <!-- one row for each binding -->
                             <tr *ngFor="let tableRow of customReturn.results.bindings">
                                 <!-- one entry for each key in each binding -->
-                                <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x].value)">{{tableRow[x].value}}</td>
+                                <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x].value)">
+                                    {{tableRow[x].value}}</td>
                             </tr>
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
-        </div>              
         </div>
     </div>
-
-    <div *ngIf="instanceOption === 'properties'" class="card">
-            <div class="card-body">
-                <h5 class="card-title">Available Types in Database</h5>
-                <p class="card-text">Click on a row to fill in necessary type descriptions</p>
-                <div  class="row align-items-center">
-                        <table class="table table-hover">
-                                <thead>
-                                  <tr>
-                                    <!-- take first result binding and iterate over keys, these keys are table columns -->
-                                    <th *ngFor="let col of keys(returnData.results.bindings[0])" scope="col">{{col}} </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- one row for each binding -->
-                                  <tr *ngFor="let tableRow of returnData.results.bindings">
-                                      <!-- one entry for each key in each binding -->
-                                    <td *ngFor="let x of keys(tableRow)" (click)="propertyTableClick(tableRow)">{{tableRow[x].value}}</td>
-                                  </tr>
-                                </tbody>
-                        </table>
-                </div>
-
-            </div>
-    </div> 
-    <div *ngIf="instanceOption === 'PhysicalByInheritance'" class="card">
-            <div class="card-body">
-                <h5 class="card-title">Available Types of Physical Entities in Database</h5>
-                <p class="card-text">Click on a row to fill in the described individual</p>
-
-                here should be a radio to select
-
-                <div  class="row align-items-center">
-                        <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <!-- take first result binding and iterate over keys, these keys are table columns -->
-                                    <th *ngFor="let col of keys(physicalEntitiesByInheritance.results.bindings[0])" scope="col">{{col}} </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- one row for each binding -->
-                                <tr *ngFor="let tableRow of physicalEntitiesByInheritance.results.bindings">
-                                    <!-- one entry for each key in each binding -->
-                                    <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x].value)" >{{tableRow[x].value}}</td>
-                                </tr>
-                                </tbody>
-                        </table>
-                </div>
-            </div>
-    </div>        
 </div>
 
-<div *ngIf="TemplateOption === 'fullType'">
-        
-        <div class="card">
-                <div class="card-header">
-                  DIN EN 61360 Type
-                </div>
-                <div class="card-body">
-                  <h5 class="card-title">Optional Type Descriptions</h5>
-                  <p class="card-text">This is existing behavior but not layouted so not visualized</p>
-                  
-                </div>
-              </div>
-            <!-- <div>
-                <label><input [(ngModel)]="code" name="code" type="text" placeholder="[Code]"> Input Code</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="version" name="version" type="text" placeholder="[Version]"> Input Version</label> 
-            </div>
-            <div>
-                <label><input [(ngModel)]="revision" name="revision" type="text" placeholder="[Revision]"> Input Revision</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="preferred_name" name="preferred_name" type="text" placeholder="[Preferred Name]"> Input Preferred Name</label>
-            </div>
-            <div>
-                <label> <input [(ngModel)]="short_name" name="short_name" type="text" placeholder="[Short Name]"> Input Short Name</label> 
-            </div>
-            <div>
-                <label><input [(ngModel)]="definition" name="definition" type="text" placeholder="[Definition]"> Input Definition</label> 
-            </div>
-            <div>
-                <label><input [(ngModel)]="UoM" name="UoM" type="text" placeholder="[Unit of Measure]"> Input Unit of Measure</label>
-            </div>
-            <div>
-                    <label> <select [(ngModel)]="selectedDataytpe" name="selectedDataytpe">
-                            <option *ngFor='let key of keys(datatype)' [ngValue]="key">
-                              {{datatype[key]}}
-                            </option>
-                    </select> Select Datatype </label>
-            </div>
+<div *ngIf="instanceOption === 'allTypeDescriptions'" class="card">
+    <div class="card-body">
+        <h5 class="card-title">Available Types in Database</h5>
+        <p class="card-text"> Click on a row to create an instance of this type description </p>
+        <div class="row align-items-center">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <!-- take first result binding and iterate over keys, these keys are table columns -->
+                        <th *ngFor="let col of keys(allTypes[0])" scope="col">{{col}} </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- one row for each binding -->
+                    <tr *ngFor="let tableRow of allTypes">
+                        <!-- one entry for each key in each binding -->
+                        <td *ngFor="let x of keys(tableRow)" (click)="propertyTableClick(tableRow)">
+                            {{tableRow[x]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-            <div>
-                <label><input [(ngModel)]="Synonymous_Name" name="Synonymous_Name" type="text" placeholder="[Synonym]"> Input Synonymous name</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="backwards_compatible_Revision" name="backwards_compatible_Revision" type="text" placeholder="[Backwards compatible Revision]"> Input backwards compatible Revision</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="backwards_compatible_Version" name="backwards_compatible_Version" type="text" placeholder="[Backwards compatible Version]"> Input backwards compatible Version</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Value_Format_Field_length" name="Value_Format_Field_length" type="text" placeholder="[Value format field length]"> Input value format field length</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Value_Format_Field_length_Variable" name="Value_Format_Field_length_Variable" type="text" placeholder="[Value Format Field length Variable]"> Input Value Format Field length Variable</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Value_Format_non_quantitativ" name="Value_Format_non_quantitativ" type="text" placeholder="[Value Format non quantitativ]"> Input Value Format non quantitativ</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Value_Format_quantitativ" name="Value_Format_quantitativ" type="text" placeholder="[Value Format quantitativ]"> Input Value Format quantitativ</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Value_List" name="Value_List" type="text" placeholder="[Value List]"> Input Value List</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Value_List_Member" name="Value_List_Member" type="text" placeholder="[Value List Member]"> Value List Member</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Source_Document_of_Definition" name="Source_Document_of_Definition" type="text" placeholder="[Source Document of Definition]"> Source Document of Definition</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Synonymous_Letter_Symbol" name="Synonymous_Letter_Symbol" type="text" placeholder="[Synonymous Letter Symbol]"> Input Synonymous Letter Symbol</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Note" name="Note" type="text" placeholder="[Note]"> Input Note</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Remark" name="Remark" type="text" placeholder="[Remark]"> Input Remark</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Preferred_Letter_Symbol" name="Preferred_Letter_Symbol" type="text" placeholder="[Preferred Letter Symbol]"> Preferred Letter Symbol</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Formula" name="Formula" type="text" placeholder="[Formula]"> Input Formula</label>
-            </div>
-            <div>
-                <label><input [(ngModel)]="Drawing_Reference" name="Drawing_Reference" type="text" placeholder="[Drawing_Reference]"> Input Drawing_Reference</label>
-            </div>
-
-            <div>
-                <button class="btn btn-secondary" (click)="buildTypeInsert()">build DINEN61360 Type Description</button>
-            </div> -->
+    </div>
 </div>
 
+<div *ngIf="instanceOption === 'allProcessTable'" class="card">
+    <div class="card-body">
+        <h5 class="card-title">Available Processes in Database</h5>
+        <div *ngIf="allProcessInfo.length!==0; then processTable else todoInfo"></div>
+        <ng-template #todoInfo>
+            <p class="card-text">There is no process info available in the database, please add some.</p>
+        </ng-template>
+        <div class="row align-items-center">
+            <ng-template #processTable>
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <!-- take first result binding and iterate over keys, these keys are table columns -->
+                            <th *ngFor="let col of keys(allProcessInfo[0])" scope="col">{{col}} </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- one row for each binding -->
+                        <tr *ngFor="let tableRow of allProcessInfo">
+                            <!-- one entry for each key in each binding -->
+                            <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-template>
+        </div>
 
-<!-- 
-<textarea name="insertString" id="insertString" cols="150" rows="100">{{insertString}}</textarea> -->
+    </div>
+</div>
