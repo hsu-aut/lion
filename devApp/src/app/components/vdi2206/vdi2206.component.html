@@ -1,0 +1,245 @@
+<div class="card">
+  <h5 class="card-header">VDI2206 Template</h5>
+  <div class="card-body">
+    <h5 class="card-title">Options & Statistics</h5>
+    <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to an
+      existing system structure or create a new system structure.</p>
+    <div class="row" style="height: 200px;">
+
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-header">
+            Template Options
+          </div>
+          <div class="card-body">
+            <div class="form-check">
+              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio1" name="StructureOptions"
+                class="custom-control-input" value="newEntities" (click)="setBack()">
+              <label class="custom-control-label" for="functionalRadio1">Create new Entities </label>
+            </div>
+            <div class="form-check">
+              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio2" name="StructureOptions"
+                class="custom-control-input" value="existingEntitiesContainment" (click)="setBack()">
+              <label class="custom-control-label" for="functionalRadio2">Connect existing Entities by containment
+              </label>
+            </div>
+            <!-- ToDo add flow relations -->
+            <!-- <div class="form-check">
+              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio3" name="StructureOptions"
+                class="custom-control-input" value="existingEntitiesFlow">
+              <label class="custom-control-label" for="functionalRadio3">Connect existing Entities by flow relation
+              </label>
+            </div> -->
+            <!-- ToDo add inheritance relations -->
+            <div class="form-check">
+              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio4" name="StructureOptions"
+                class="custom-control-input" value="existingEntitiesInheritance" (click)="setBack()">
+              <label class="custom-control-label" for="functionalRadio4">Connect existing Entities by inheritance
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-header">
+            Template Statistics
+          </div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No# Systems</th>
+                  <th scope="col">No# Modules</th>
+                  <th scope="col">No# Components</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{NoOfSystems}}</td>
+                  <td>{{NoOfModules}}</td>
+                  <td>{{NoOfComponents}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title"> Structure Insert Template</h5>
+    <p *ngIf="StructureOptions===undefined" class="card-text">Select an option to add structure information.</p>
+    <div *ngIf="StructureOptions === 'newEntities'">
+
+      <div class="row">
+        <div class="col">The Subject of the created statement</div>
+        <div class="col">The Predicate of the created statement</div>
+        <div class="col">The Object of the created statement</div>
+        <div class="w-100"></div>
+        <div class="col">
+          <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
+        </div>
+        <div class="col">
+          <input class="form-control" type="text" placeholder="rdf:type" readonly>
+        </div>
+        <div class="col">
+          <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
+            <option *ngFor='let x of keys(allClasses)'>
+              {{allClasses[x].type}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
+        <button class="btn btn-secondary col m-3" (click)="executeInsert()">execute INSERT</button>
+      </div>
+    </div>
+    <div *ngIf="StructureOptions === 'existingEntitiesContainment'">
+      <div class="row">
+        <div class="col">The Subject of the created statement</div>
+        <div class="col">The Predicate of the created statement</div>
+        <div class="col">The Class of the Object of the created statement</div>
+        <div class="col">The Object of the created statement</div>
+        <div class="w-100"></div>
+        <div class="col">
+          <input [(ngModel)]="selectedSubject" class="form-control" type="text"
+            placeholder="Select an Entity from Table" readonly>
+        </div>
+        <div class="col">
+          <div *ngIf="existingPredicates; then thenBlock else elseBlock"></div>
+          <ng-template #thenBlock>
+            <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
+              (click)="getObjectClasses()">
+              <option *ngFor='let x of existingPredicates'>
+                {{x}}
+              </option>
+            </select>
+          </ng-template>
+          <ng-template #elseBlock>
+            <input class="form-control" type="text" placeholder="Select an Entity from Table" readonly>
+          </ng-template>
+        </div>
+        <div class="col">
+          <div *ngIf="existingObjectClasses; then thenBlock2 else elseBlock2"></div>
+          <ng-template #thenBlock2>
+            <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
+              (click)="getExistingObjects()">
+              <option *ngFor='let x of existingObjectClasses'>
+                {{x}}
+              </option>
+            </select>
+          </ng-template>
+          <ng-template #elseBlock2>
+            <input class="form-control" type="text" placeholder="Select a Predicate" readonly>
+          </ng-template>
+        </div>
+        <div class="col">
+          <div *ngIf="existingObjects; then thenBlock3 else elseBlock3"></div>
+          <ng-template #thenBlock3>
+            <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
+              <option *ngFor='let x of existingObjects'>
+                {{x}}
+              </option>
+            </select>
+          </ng-template>
+          <ng-template #elseBlock3>
+            <input class="form-control" type="text" placeholder="Select a Class of Objects" readonly>
+          </ng-template>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
+        <button class="btn btn-secondary col m-3" (click)="executeInsert()">execute INSERT</button>
+      </div>
+    </div>
+    <div *ngIf="StructureOptions === 'existingEntitiesInheritance'">
+        <div class="row">
+          <div class="col">The Subject of the created statement</div>
+          <div class="col">The Predicate of the created statement</div>
+          <div class="col">The Object of the created statement</div>
+          <div class="w-100"></div>
+          <div class="col">
+            <input [(ngModel)]="selectedSubject" class="form-control" type="text"
+              placeholder="Select an Entity from Table" readonly>
+          </div>
+          <div class="col">
+            <div *ngIf="existingPredicates; then thenBlock else elseBlock"></div>
+            <ng-template #thenBlock>
+              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control" (click)="getExistingObjects()">
+                <option>VDI2206:hasChild</option>
+                <option>VDI2206:hasParent</option>
+              </select>
+            </ng-template>
+            <ng-template #elseBlock>
+              <input class="form-control" type="text" placeholder="Select an Entity from Table" readonly>
+            </ng-template>
+          </div>
+          <div class="col">
+            <div *ngIf="existingObjects; then thenBlock3 else elseBlock3"></div>
+            <ng-template #thenBlock3>
+              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
+                <option *ngFor='let x of existingObjects'>
+                  {{x}}
+                </option>
+              </select>
+            </ng-template>
+            <ng-template #elseBlock3>
+              <input class="form-control" type="text" placeholder="Select a Class of Objects" readonly>
+            </ng-template>
+          </div>
+        </div>
+        <div class="row">
+          <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
+          <button class="btn btn-secondary col m-3" (click)="executeInsert()">execute INSERT</button>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <h5 class="card-title">Available Structural Entities in Database by containment</h5>
+      </div>
+
+      <div class="btn-group col-sm-3" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-secondary" (click)="renderTable('System')">by
+          System</button>
+        <button type="button" class="btn btn-secondary" (click)="renderTable('Module')">by
+          Module</button>
+      </div>
+    </div>
+
+    <div *ngIf="currentTable.length!==0; then structureTableContainment else todoInfo"></div>
+    <ng-template #todoInfo>
+      <p class="card-text">There is no structural info available in the database, please add some.</p>
+    </ng-template>
+    <div class="row align-items-center">
+      <ng-template #structureTableContainment>
+        <table class="table table-hover table-sm">
+          <thead>
+            <tr>
+              <!-- take first result binding and iterate over keys, these keys are table columns -->
+              <th *ngFor="let col of keys(currentTable[0])" scope="col">{{col}} </th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- one row for each binding -->
+            <tr *ngFor="let tableRow of currentTable">
+              <!-- one entry for each key in each binding -->
+              <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-template>
+    </div>
+
+  </div>
+</div>
