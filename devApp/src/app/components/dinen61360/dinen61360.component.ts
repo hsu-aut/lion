@@ -1,6 +1,6 @@
 import { Component, OnInit, } from '@angular/core';
 import { DINEN61360Variables, DINEN61360Data, DINEN61360Insert, expressionGoal, logicInterpretation, datatype } from '../../models/dinen61360Model';
-import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../models/vdi3682';
+import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../models/vdi3682Model';
 import { ISA88Insert, ISA88Data, ISA88Variables } from '../../models/isa88Model';
 import { SparqlQueriesService } from '../../services/sparql-queries.service';
 import { EclassSearchService } from '../../services/eclass-search.service';
