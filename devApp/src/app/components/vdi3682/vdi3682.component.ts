@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
-import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../models/vdi3682'
+import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../models/vdi3682Model';
 import { Namespace} from '../../utils/prefixes';
-import { Tables } from '../../utils/tables'
-
+import { Tables } from '../../utils/tables';
 import { DownloadService } from 'src/app/services/download.service';
 
 
@@ -18,7 +17,7 @@ export class VDI3682Component implements OnInit {
   keys = Object.keys; 
   namespaceParser = new Namespace();
   TableUtil = new Tables();
-
+ 
   // stats 
   NoOfProcesses: number;
   NoOfInOuts: number;
