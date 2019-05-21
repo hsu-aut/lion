@@ -1,0 +1,18 @@
+<div class="row align-items-center">
+  <table class="table table-hover table-sm">
+    <thead>
+      <tr>
+        <!-- take first result binding and iterate over keys, these keys are table columns -->
+        <th *ngFor="let col of keys(currentTable[0])" scope="col">{{col}} </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- one row for each binding -->
+      <tr *ngFor="let tableRow of currentTable">
+        <!-- one entry for each key in each binding -->
+        <td *ngFor="let x of keys(tableRow)" (click)="tableClickRow(tableRow)" (click)="tableClickCell(tableRow[x])">
+          {{tableRow[x]}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
