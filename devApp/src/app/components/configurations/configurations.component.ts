@@ -1,16 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 
 import { Component, OnInit } from '@angular/core';
-import { SparqlQueriesService} from '../../services/sparql-queries.service';
+import { SparqlQueriesService } from '../../services/sparql-queries.service';
 import { EclassSearchService } from '../../services/eclass-search.service';
-import { Namespace} from '../../utils/prefixes';
 import { DownloadService } from 'src/app/services/download.service';
-import { formatDate } from '@angular/common';
-
-class Prefix {
-  prefix: string;
-  namespace: string;
-}
+import { PrefixesService } from '../../services/prefixes.service';
 
 interface Cfg {
   saveDate: string;
@@ -20,9 +14,8 @@ interface Cfg {
 
   backend: {
     eClass: string
-};
+  };
 }
-
 
 @Component({
   selector: 'app-configurations',
@@ -30,30 +23,41 @@ interface Cfg {
   styleUrls: ['./configurations.component.scss']
 })
 
-
-
-
-
 export class ConfigurationsComponent implements OnInit {
+  // util variables
+  keys = Object.keys;
+
   savingDate: string;
   loadDate: string;
 
   url: string[];
   eclassUrl: string;
-  PREFIXES: Array<Prefix> = new Namespace().PREFIXES;
+
   fileUrl;
 
+  // namespace config variables
+  PREFIXES: any;
+  userPrefix: string;
+  userNamespace: string;
+  userKey: number;
+  activeNamespace: any;
 
 
-constructor(private query: SparqlQueriesService,
-  private eclass: EclassSearchService,
-  private dlService: DownloadService,
-  private http: HttpClientModule) {
+
+
+  constructor(private query: SparqlQueriesService,
+    private eclass: EclassSearchService,
+    private dlService: DownloadService,
+    private http: HttpClientModule,
+    private prefixService: PrefixesService) {
     this.url = query.getUrl().split('/repositories/');
     this.eclassUrl = eclass.getEclassUrl();
   }
 
   ngOnInit() {
+    //load namespaces initially
+    this.PREFIXES = this.prefixService.getPrefixes();
+    this.getActiveNamespace();    
   }
 
 
@@ -66,7 +70,7 @@ constructor(private query: SparqlQueriesService,
   }
 
 
-  saveConfiguration(){
+  saveConfiguration() {
     // Inhalt
     const savingTempDate = new Date().toLocaleString();
     this.savingDate = 'Downloaded Configurations. Date: ' + savingTempDate;
@@ -89,7 +93,7 @@ constructor(private query: SparqlQueriesService,
   }
 
 
-  loadSelectedFile(event){
+  loadSelectedFile(event) {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -98,12 +102,35 @@ constructor(private query: SparqlQueriesService,
         this.submitBackendConfig(line.backend.eClass);
         this.query.setUrl(line.graphDB.url);
         console.log(line);
-    };
-    reader.readAsText(event.target.files[0]);
+      };
+      reader.readAsText(event.target.files[0]);
 
     }
   }
 
+  prefixTableClick(tableRow) {
+    this.userPrefix = tableRow.prefix;
+    this.userNamespace = tableRow.namespace;
+    for (let i = 0; i < this.PREFIXES.length; i++) {
+      if (tableRow.namespace == this.PREFIXES[i].namespace) { this.userKey = i }
+    }
+  }
+  addNamespace() {
+    this.prefixService.addNamespace(this.userPrefix, this.userNamespace);
+  }
 
+  editNamespace() {
+    this.prefixService.editNamespace(this.userKey, this.userPrefix, this.userNamespace);
+  }
 
+  deleteNamespace() { 
+    this.prefixService.deleteNamespace(this.userKey);
+  }
+  setActiveNamespace(){
+    this.prefixService.setActiveNamespace(this.userKey);
+    this.getActiveNamespace();
+  }
+  getActiveNamespace(){
+    this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()];
+  }
 }

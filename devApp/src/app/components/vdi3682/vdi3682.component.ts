@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../services/sparql-queries.service';
-import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES, tripel } from '../../models/vdi3682'
+import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../models/vdi3682Model';
 import { Namespace} from '../../utils/prefixes';
-import { Tables } from '../../utils/tables'
-
+import { Tables } from '../../utils/tables';
 import { DownloadService } from 'src/app/services/download.service';
 
 
@@ -18,7 +17,7 @@ export class VDI3682Component implements OnInit {
   keys = Object.keys; 
   namespaceParser = new Namespace();
   TableUtil = new Tables();
-
+ 
   // stats 
   NoOfProcesses: number;
   NoOfInOuts: number;
@@ -30,7 +29,7 @@ export class VDI3682Component implements OnInit {
   modelVariables = new VDI3682VARIABLES();
   
   // graph db data
-  allProcessInfo: any;
+  allProcessInfo: any = [];
   allClasses: any;
 
   //user input variables
@@ -53,32 +52,13 @@ export class VDI3682Component implements OnInit {
 
 
   ngOnInit() {
-      this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
-        this.namespaceParser.parseToPrefix(data);
-        this.allProcessInfo = this.TableUtil.buildTable(data);
-        console.log(this.allProcessInfo)
-      // parse prefixes where possible 
-      });
+    this.getAllProcessInfo();
     this.query.select(this.modelData.allClasses).subscribe((data: any) => {
-        // log + assign data and stop loader
-        console.log(data);
-        this.allClasses = data;
         // parse prefixes where possible 
         this.namespaceParser.parseToPrefix(data);
+        this.allClasses = this.TableUtil.buildTable(data);
         });
-    // get stats of functions in TS
-        this.query.select(this.modelData.NoOfProcesses).subscribe((data: any) => {
-            this.namespaceParser.parseToPrefix(data);
-            this.NoOfProcesses = this.TableUtil.buildTable(data).length;  
-        });
-        this.query.select(this.modelData.NoOfInOuts).subscribe((data: any) => {
-          this.namespaceParser.parseToPrefix(data);
-          this.NoOfInOuts = this.TableUtil.buildTable(data).length;  
-        });
-        this.query.select(this.modelData.NoOfTechnicalResources).subscribe((data: any) => {
-          this.namespaceParser.parseToPrefix(data);
-          this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;  
-        });
+    this.getStatisticInfo();
 
         
   }
@@ -97,7 +77,7 @@ export class VDI3682Component implements OnInit {
         // Blob
     const blob = new Blob([insertString], { type: 'text/plain' });
         // Dateiname
-    const name = 'vdi3682Insert.txt';
+    const name = 'insert.txt';
     this.dlService.download(blob, name);
   }
 
@@ -125,6 +105,8 @@ export class VDI3682Component implements OnInit {
     var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
     this.query.insert(insertString).subscribe((data: any) => {
       console.log(data)
+      this.getAllProcessInfo();
+      this.getStatisticInfo();
     });
   }
 
@@ -182,6 +164,35 @@ export class VDI3682Component implements OnInit {
     var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
     this.query.insert(insertString).subscribe((data: any) => {
       console.log(data)
+      this.getAllProcessInfo();
+      this.getStatisticInfo();
+    });
+
+  }
+
+  getAllProcessInfo(){
+    this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.allProcessInfo = this.TableUtil.buildTable(data);
+      console.log(this.allProcessInfo)
+    // parse prefixes where possible 
     });
   }
+  getStatisticInfo(){
+    // get stats of functions in TS
+  this.query.select(this.modelData.NoOfProcesses).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.NoOfProcesses = this.TableUtil.buildTable(data).length;  
+  });
+  this.query.select(this.modelData.NoOfInOuts).subscribe((data: any) => {
+    this.namespaceParser.parseToPrefix(data);
+    this.NoOfInOuts = this.TableUtil.buildTable(data).length;  
+  });
+  this.query.select(this.modelData.NoOfTechnicalResources).subscribe((data: any) => {
+    this.namespaceParser.parseToPrefix(data);
+    this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;  
+  });
+  }
 }
+
+

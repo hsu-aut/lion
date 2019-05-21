@@ -1,6 +1,8 @@
-import {Namespace} from '../utils/prefixes';
+import { Namespace } from '../utils/prefixes';
+import { PrefixesService } from '../services/prefixes.service';
 
-var parser = new Namespace();
+var parser = new Namespace;
+var nameService = new PrefixesService;
 
 export class VDI3682DATA {
 
@@ -136,9 +138,8 @@ export class VDI3682VARIABLES {
 export class VDI3682INSERT {
 
     public createEntity(graph: tripel){
-        
-
-        var subject = "http://www.hsu-ifa.de/ontologies/VDI3682#" + parser.parseToName(graph.subject);
+        var activeNamespace = parser.PREFIXES[nameService.getActiveNamespace()].namespace;
+        var subject = activeNamespace + parser.parseToName(graph.subject);
         var predicate = parser.parseToIRI(graph.predicate);
         var object = parser.parseToIRI(graph.object);
 
