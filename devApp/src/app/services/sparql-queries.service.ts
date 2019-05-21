@@ -17,6 +17,7 @@ export class SparqlQueriesService {
 
   constructor(private http: HttpClient) {
     // new Hamied -> default url in constructor
+
     this.url = 'http://localhost:7200/repositories/testdb';
 
   }

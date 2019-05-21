@@ -79,9 +79,22 @@ export class VDI3682Component implements OnInit {
         // Dateiname
     const name = 'insert.txt';
     this.dlService.download(blob, name);
-    
-
   }
+
+  buildInsertRelations(){
+    
+    this.modelVariables.simpleStatement = {
+      subject: this.selectedSubject,
+      predicate: this.selectedPredicate,
+      object: this.selectedObject,
+    }
+    var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
+    const blob = new Blob([insertString], { type: 'text/plain' });
+        // Dateiname
+    const name = 'vdi3682Insert.txt';
+    this.dlService.download(blob, name);
+  }
+
   executeInsertEntities(){
     
     this.modelVariables.simpleStatement = {
@@ -96,6 +109,10 @@ export class VDI3682Component implements OnInit {
       this.getStatisticInfo();
     });
   }
+
+
+
+
   iriTableClick(name: string){
     this.selectedSubject = name;
     this.query.select(this.modelData.selectClass(this.selectedSubject)).subscribe((data: any) =>{

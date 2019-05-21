@@ -15,6 +15,8 @@ import { HomeComponent } from './components/home/home.component';
 import { ISO22400Component } from './components/iso22400/iso22400.component';
 import { BootstrapComponentsComponent } from './components/bootstrap-components/bootstrap-components.component';
 import { ConfigurationsComponent } from './components/configurations/configurations.component';
+import { WadlComponent } from './components/wadl/wadl.component';
+
 
 @NgModule({
   declarations: [
@@ -26,7 +28,8 @@ import { ConfigurationsComponent } from './components/configurations/configurati
     HomeComponent,
     ISO22400Component,
     BootstrapComponentsComponent,
-    ConfigurationsComponent
+    ConfigurationsComponent,
+    WadlComponent
   ],
   imports: [
     BrowserModule,
