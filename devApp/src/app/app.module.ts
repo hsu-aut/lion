@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 // Components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 import { Isa88Component } from './components/isa88/isa88.component';
 import { Dinen61360Component } from './components/dinen61360/dinen61360.component';
 import { VDI3682Component } from './components/vdi3682/vdi3682.component';
@@ -16,6 +17,10 @@ import { ISO22400Component } from './components/iso22400/iso22400.component';
 import { BootstrapComponentsComponent } from './components/bootstrap-components/bootstrap-components.component';
 import { ConfigurationsComponent } from './components/configurations/configurations.component';
 import { WadlComponent } from './components/wadl/wadl.component';
+
+// util components
+import { TableComponent } from './components/util-components/table/table.component';
+
 
 
 @NgModule({
@@ -29,7 +34,8 @@ import { WadlComponent } from './components/wadl/wadl.component';
     ISO22400Component,
     BootstrapComponentsComponent,
     ConfigurationsComponent,
-    WadlComponent
+    WadlComponent,
+    TableComponent
   ],
   imports: [
     BrowserModule,

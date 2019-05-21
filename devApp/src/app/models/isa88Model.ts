@@ -1,35 +1,52 @@
-import {Namespace} from '../utils/prefixes';
+import { Namespace } from '../utils/prefixes';
+import { PrefixesService } from '../services/prefixes.service';
+
+var parser = new Namespace;
+var nameService = new PrefixesService;
 
 export class ISA88Data {
-       public IRI: Array<String>;
-       public SPARQL_SELECT = `
-       PREFIX SA4: <http://www.hsu-ifa.de/ontologies/SemAnz40#>
+        public IRI: Array<String>;
+        public SPARQL_SELECT_TR = `
        PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-       
        SELECT ?x WHERE { 
-               
         ?x a VDI3682:TechnicalResource.
-           
        } `;
+        public SPARQL_SELECT_BEHAVIOR_INFO = `
+        PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+        SELECT ?State ?Transition WHERE {
+        ?StateType rdfs:subClassOf ISA88:State.
+        ?State a ?StateType.
+        ?State ISA88:State_is_connected_with_Transition ?Transition.
+        ?Transition a ?TransitionType.
+        ?TransitionType rdfs:subClassOf ISA88:Transition.
+        FILTER (?StateType != ISA88:State)
+        FILTER (?StateType != ISA88:Acting)
+        FILTER (?StateType != ISA88:Wait)
+        FILTER (?TransitionType != ISA88:Transition)
+        FILTER (?TransitionType != ISA88:Command)
+        FILTER (?TransitionType != ISA88:State_Complete)
+}
+       `;
 }
 
 export class ISA88Variables {
-    SystemName: string;
-    BehaviorClass: string;
-    mode: string;
+        SystemName: string;
+        mode: string;
 }
 
 export class ISA88Insert {
 
- public buildISA88(variables: ISA88Variables): string{
+        public buildISA88(variables: ISA88Variables): string {
+                var prefixes = nameService.getPrefixes();
+                var namespace = prefixes[nameService.getActiveNamespace()].namespace;
+                var SystemName = parser.parseToName(variables.SystemName);
+                var SystemIRI = parser.parseToIRI(variables.SystemName);
+                var mode = variables.mode;
 
-    var namespaceOptions = new Namespace();
-
-    var SystemName = namespaceOptions.parseToName(variables.SystemName);
-    var mode = variables.mode;
-    var BehaviorClass = variables.BehaviorClass;
-
-    var insertStringProduction = `      
+                var insertStringProduction = `      
     # Necessary W3C ontologies
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -258,16 +275,10 @@ export class ISA88Insert {
             # ----------------------------------------------------------------- #
             # The system type for which a ISA 88 state machine shall be created, comment the not applicable (POU vs System_Behavior)
             BIND(STR("${SystemName}") AS ?SystemType).
-            BIND(STR("${BehaviorClass}") AS ?SemAnz40BehaviorType).
+            BIND(STR("${SystemIRI}") AS ?SysBehaviorOrPOUIRI).
             # ----------------------------------------------------------------- #
             # Defines the general namespace for all individuals
-            BIND(STR("http://www.hsu-ifa.de/ontologies/ISA-TR88#") AS ?NameSpace).
-            BIND(STR("http://www.hsu-ifa.de/ontologies/SemAnz40#") AS ?SemAnz40Namespace).
-            # The system behavior individual to bind the states and transitions to
-            BIND(CONCAT(?SystemType, "_", ?SemAnz40BehaviorType) AS ?SysBehaveior).
-            BIND(IRI(CONCAT(?SemAnz40Namespace,?SysBehaveior)) AS ?SysBehaviorOrPOUIRI).
-            BIND(IRI(CONCAT(?SemAnz40Namespace, ?SemAnz40BehaviorType)) AS ?SemAnz40BehaviorTypeIRI)  
-            ?SysBehaviorOrPOU rdf:type ?SemAnz40BehaviorTypeIRI.
+            BIND(STR("${namespace}") AS ?NameSpace).
             # ----------------------------------------------------------------- #
             # states
             BIND(IRI(CONCAT(?NameSpace,?SystemType,"_Aborting")) AS ?Aborting).
@@ -312,7 +323,7 @@ export class ISA88Insert {
         }
     }`;
 
-    var insertStringMaintenance = `
+                var insertStringMaintenance = `
     # Necessary W3C ontologies
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -496,16 +507,10 @@ export class ISA88Insert {
             # ----------------------------------------------------------------- #
             # The system type for which a ISA 88 state machine shall be created
             BIND(STR("${SystemName}") AS ?SystemType).
-            BIND(STR("${BehaviorClass}") AS ?SemAnz40BehaviorType).
+            BIND(STR("${SystemIRI}") AS ?SysBehaviorOrPOUIRI).
             # ----------------------------------------------------------------- #
             # Defines the general namespace for all individuals
-            BIND(STR("http://www.hsu-ifa.de/ontologies/ISA-TR88#") AS ?NameSpace).
-            BIND(STR("http://www.hsu-ifa.de/ontologies/SemAnz40#") AS ?SemAnz40Namespace).
-            # The system behavior individual to bind the states and transitions to
-            BIND(CONCAT(?SystemType, "_", ?SemAnz40BehaviorType) AS ?SysBehaveior).
-            BIND(IRI(CONCAT(?SemAnz40Namespace,?SysBehaveior)) AS ?SysBehaviorOrPOUIRI).
-            BIND(IRI(CONCAT(?SemAnz40Namespace, ?SemAnz40BehaviorType)) AS ?SemAnz40BehaviorTypeIRI)  
-            ?SysBehaviorOrPOU rdf:type ?SemAnz40BehaviorTypeIRI.
+            BIND(STR("${namespace}") AS ?NameSpace).
             # ----------------------------------------------------------------- #
             # states
             BIND(IRI(CONCAT(?NameSpace,?SystemType,"_Aborting")) AS ?Aborting).
@@ -546,11 +551,11 @@ export class ISA88Insert {
 
 
     `;
-    if(mode == "Production") {return insertStringProduction}
-    if(mode == "Maintenance") {return insertStringMaintenance}
-    
-    ;
- }   
+                if (mode == "Production") { return insertStringProduction }
+                if (mode == "Maintenance") { return insertStringMaintenance }
+
+                ;
+        }
 
 }
 

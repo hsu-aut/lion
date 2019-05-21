@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ISA88Insert, ISA88Data, ISA88Variables } from '../../models/isa88Model';
-import { SparqlQueriesService} from '../../services/sparql-queries.service';
-import { Namespace} from '../../utils/prefixes';
+import { SparqlQueriesService } from '../../services/sparql-queries.service';
+import { Namespace } from '../../utils/prefixes';
 import { DownloadService } from 'src/app/services/download.service';
+import { Tables } from '../../utils/tables';
 
 @Component({
   selector: 'app-isa88',
@@ -11,11 +12,13 @@ import { DownloadService } from 'src/app/services/download.service';
 })
 export class Isa88Component implements OnInit {
 
-  constructor(private query:SparqlQueriesService, private dlService: DownloadService) { }
-
-  isa88 = new ISA88Insert();
+  constructor(private query: SparqlQueriesService, private dlService: DownloadService) { }
+  // util variables
+  keys = Object.keys;
+  TableUtil = new Tables();
   namespaceParser = new Namespace();
-  
+  currentTable: Array<Object> = [];
+
   //user input variables
   insertString: string;
   optionMode: string;
@@ -24,50 +27,55 @@ export class Isa88Component implements OnInit {
   insertUrl;
 
   // variables for behavior 
-  selectString = new ISA88Data().SPARQL_SELECT;
-  selectOption: ISA88Data["IRI"] = [];
+  isa88 = new ISA88Insert();
+  selectString = new ISA88Data();
+  selectOption: Array<string> = [];
   selectreturn: any;
   insertreturn: any;
-  
+
   ngOnInit() {
-    this.query.select(this.selectString).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.selectreturn = data.results.bindings
-      this.selectreturn.forEach(element => {
-      this.selectOption.push(element.x.value);
-        // console.log(element.x.value)
-      this.selectedOption = this.selectOption[0]
-      
-      });
-      
-      });
+    this.getTechnicalResources();
+    this.getBehaviorInfo();
   }
 
-  buildInsert(){
-    // this.insertString = this.fetchTemplate.getFilledISA88Template(this.selectedOption, this.optionMode, this.optionGranularity);
-    // this.query.select().subscribe(selectreturn => this.selectreturn);
-    var varia:ISA88Variables = {
-      SystemName: this.selectedOption,
-      BehaviorClass: this.optionGranularity,
-      mode: this.optionMode
-    }
-    this.insertString = this.isa88.buildISA88(varia);
+  buildInsert() {
+    var variables = this.getVariables();
+    this.insertString = this.isa88.buildISA88(variables);
     const blob = new Blob([this.insertString], { type: 'text/plain' });
     // Dateiname
     const name = 'insert.txt';
     this.dlService.download(blob, name);
   }
 
-  executeInsert(){
-    var varia:ISA88Variables = {
-      SystemName: this.selectedOption,
-      BehaviorClass: this.optionGranularity,
-      mode: this.optionMode
-    }
-    this.insertString = this.isa88.buildISA88(varia);
+  executeInsert() {
+    var variables = this.getVariables();
+    this.insertString = this.isa88.buildISA88(variables);
     this.query.insert(this.insertString).subscribe((data: any) => {
       this.insertreturn = data
     });
+    this.getBehaviorInfo();
+  }
+
+  getTechnicalResources() {
+    this.query.select(this.selectString.SPARQL_SELECT_TR).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.selectOption = this.TableUtil.buildList(data, 0);
+    });
+  }
+
+  getBehaviorInfo() {
+    this.query.select(this.selectString.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.currentTable = this.TableUtil.buildTable(data);
+    });
+  }
+
+  getVariables() {
+    var varia: ISA88Variables = {
+      SystemName: this.selectedOption,
+      mode: this.optionMode
+    }
+    return varia
   }
 
 }
