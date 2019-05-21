@@ -15,7 +15,7 @@ export class Namespace {
         { prefix: "rdf:", namespace: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
         { prefix: "rdfs:", namespace: "http://www.w3.org/2000/01/rdf-schema#" },
         { prefix: "owl:", namespace: "http://www.w3.org/2002/07/owl#" },
-        { prefix: "li:", namespace: "http://lionFacts#" }
+        { prefix: "lf:", namespace: "http://lionFacts#" }
     ] 
 
 
