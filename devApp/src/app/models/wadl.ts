@@ -11,7 +11,8 @@ public availableMethods = `
 PREFIX ${nsPrefix}: <${nsUri}>
 SELECT DISTINCT ?availableMethods
 WHERE { 
-    ?availableMethods sesame:directSubClassOf ${nsPrefix}:Method . 
+    ?availableMethods sesame:directSubClassOf ${nsPrefix}:Method. 
+
 }
 `;
 
@@ -19,11 +20,12 @@ WHERE {
 public availableResources = `
 PREFIX ${nsPrefix}: <${nsUri}>
 
-SELECT ?BaseUrl ?Resource 
+SELECT ?BaseUrl ?Resource ?ServiceProvider
 WHERE { 
     ?Bas ${nsPrefix}:hasResource ?Res.
     ?Bas ${nsPrefix}:hasBase ?BaseUrl.
     ?Res ${nsPrefix}:hasPath ?Resource.
+    OPTIONAL{?ServiceProvider ${nsPrefix}:hasService ?Bas.}
 }
 `;
 
@@ -105,7 +107,7 @@ public getHeaderParamters(graph:mandInfos){
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Parameter ?MediaType
+SELECT ?Key ?MediaType
     WHERE {
         <${nsUri}${baseUrl}${resourceName}> wadl:hasMethod ?Method.
         ?Method rdf:type ?MethodType.
@@ -113,8 +115,10 @@ SELECT ?Parameter ?MediaType
         ?Method ${nsPrefix}:hasRequest ?Request.    
         ?Request ${nsPrefix}:hasParameter ?Parameter. 
         ?Parameter rdf:type ?ParameterType. VALUES ?ParameterType {${nsPrefix}:HeaderParameter}
+        Optional{?Parameter ${nsPrefix}:hasParameterName ?Key.
         Optional{?Parameter ${nsPrefix}:hasRepresentation ?Rep.
-            Optional{?rep ${nsPrefix}:hasMediaType ?MediaType}
+        Optional{?Rep ${nsPrefix}:hasMediaType ?MediaType}}
+
         }
     }
     `;
@@ -129,7 +133,7 @@ public getHeaderParamtersTemp(graph:mandInfos){
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?Parameter ?MediaType
+SELECT ?Parameter ?key ?MediaType
     WHERE {
         <http://www.hsu-ifa.de/ontologies/WADL#${baseUrl}${resourceName}> wadl:hasMethod ?Method.
         ?Method rdf:type ?MethodType.
@@ -137,6 +141,7 @@ SELECT ?Parameter ?MediaType
         ?Method wadl:hasRequest ?Request.    
         ?Request wadl:hasParameter ?Parameter. 
         ?Parameter rdf:type ?ParameterType. VALUES ?ParameterType {wadl:HeaderParameter}
+        Optional{?Parameter wadl:hasParameterName ?key.}
         Optional{?Parameter wadl:hasRepresentation ?Rep.
             Optional{?rep wadl:hasMediaType ?MediaType}
         }
@@ -301,7 +306,7 @@ export class WADLINSERT {
                     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
                     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
                     INSERT {
-                        ${modelIri} ${nsPrefix}:hasService ?resources.
+                        <${modelIri}> ${nsPrefix}:hasService ?resources.
                         
                         ?resources rdf:type ${nsPrefix}:Resources; 
                         a owl:NamedIndividual;
@@ -393,12 +398,13 @@ export class WADLINSERT {
             return insertString;
         };    
 
-        public createHeaderParameter(graph: mandInfos, mediaType: string){
+        public createHeaderParameter(graph: mandInfos, headerKey:string, mediaType: string){
             var baseUrl = parser.parseToName(graph.baseUrl);
             var resourceName = parser.parseToIRI(graph.resourceName);
             var method = parser.parseToIRI(graph.method);
     
             var mediaType = mediaType;
+            var headerKey = headerKey;
     
             var insertString = `
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -414,7 +420,8 @@ export class WADLINSERT {
                 a owl:NamedIndividual. 
     
                 ?parameter rdf:type ${nsPrefix}:HeaderParameter;
-                a owl:NamedIndividual.
+                a owl:NamedIndividual;
+                ${nsPrefix}:hasParameterName ?key.
 
                 ?representation rdf:type ${nsPrefix}:Representation;
                 a owl:NamedIndividual;
@@ -433,13 +440,14 @@ export class WADLINSERT {
                             BIND(STR(CONCAT(?method_name, "_Req")) AS ?request_name).
                             BIND(IRI(CONCAT(?Namespace, ?request_name)) AS ?request).
 
-                            BIND(STR(CONCAT(?request_name, "_Head")) AS ?parameter_name).
+                            BIND(STR(CONCAT(?request_name, "_Head_${headerKey}")) AS ?parameter_name).
                             BIND(IRI(CONCAT(?Namespace, ?parameter_name)) AS ?parameter).
 
                             BIND(STR(CONCAT(?parameter_name, "_Rep")) AS ?representation_name).
                             BIND(IRI(CONCAT(?Namespace, ?representation_name)) AS ?representation).
 
-                            BIND(STR("${mediaType}") as ?mediaType)
+                            BIND(STR("${mediaType}") as ?mediaType).
+                            BIND(STR("${headerKey}") as ?key).
                 
                     }
             `;
