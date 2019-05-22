@@ -20,6 +20,8 @@ import { WadlComponent } from './components/wadl/wadl.component';
 
 // util components
 import { TableComponent } from './components/util-components/table/table.component';
+import { VerticalNavPanelComponent } from './components/util-components/vertical-nav-panel/vertical-nav-panel.component';
+import { HorizontalNavPanelComponent } from './components/util-components/horizontal-nav-panel/horizontal-nav-panel.component';
 
 
 
@@ -35,7 +37,9 @@ import { TableComponent } from './components/util-components/table/table.compone
     BootstrapComponentsComponent,
     ConfigurationsComponent,
     WadlComponent,
-    TableComponent
+    TableComponent,
+    VerticalNavPanelComponent,
+    HorizontalNavPanelComponent
   ],
   imports: [
     BrowserModule,
