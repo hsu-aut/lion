@@ -13,7 +13,8 @@
                         <div class="form-check">
                             <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption"
                                 name="propertyRadio" id="propertyRadios1" value="typeDesc">
-                            <label class="custom-control-label" for="propertyRadios1"> Create type description </label>
+                            <label class="custom-control-label" for="propertyRadios1"
+                                (click)="setTableDescription(undefined)"> Create type description </label>
                         </div>
                         <div class="form-check">
                             <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption"
@@ -136,25 +137,9 @@
                 <input [(ngModel)]="search_name" type="text" class="form-control" placeholder="Preferred Name"
                     aria-label="" aria-describedby="basic-addon1">
             </div>
-
-            <div *ngIf="propertyList.length!==0" class="row align-items-center">
-                <table class="table table-hover table-sm">
-                    <thead>
-                        <tr>
-                            <!-- take first result binding and iterate over keys, these keys are table columns -->
-                            <th *ngFor="let col of keys(propertyList[0])" scope="col">{{col}} </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- one row for each binding -->
-                        <tr *ngFor="let tableRow of propertyList">
-                            <!-- one entry for each key in each binding -->
-                            <td *ngFor="let x of keys(tableRow)" (click)="eclassTableClick(tableRow)">{{tableRow[x]}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        </div>
+        <div *ngIf="propertyList.length!==0" class="card px-sm-2 py-sm-2">
+            <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)"></app-table>
         </div>
     </div>
 </div>
@@ -228,35 +213,39 @@
                         <div class="card-header"> Instance Template Options </div>
                         <div class="card-body">
                             <p class="card-text"> Select list or table to display from graph database </p>
-                            <div class="form-check">
-                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
-                                    name="instanceRadios" id="instanceRadios1" value="allTypeDescriptions" checked>
-                                <label class="custom-control-label" for="instanceRadios1">
-                                    DIN EN 61360 Type Descriptions
-                                </label>
+                            <div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios1" value="allTypeDescriptions">
+                                    <label class="custom-control-label" for="instanceRadios1"
+                                        (click)="setTableDescription('allTypeDescriptions')">
+                                        DIN EN 61360 Type Descriptions
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios4" value="allProcessTable">
+                                    <label class="custom-control-label" (click)="setTableDescription('allProcessTable')">
+                                        VDI 3682 Individuals
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios5" value="ISA88">
+                                    <label class="custom-control-label" for="instanceRadios5"
+                                        (click)="setTableDescription('ISA88')">
+                                        ISA 88 Individuals
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios6" value="CustomTable">
+                                    <label class="custom-control-label" for="instanceRadios6"
+                                        (click)="setTableDescription('CustomTable')">
+                                        Define Custom Table
+                                    </label>
+                                </div>
                             </div>
-                            <div class="form-check">
-                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
-                                    name="instanceRadios" id="instanceRadios4" value="allProcessTable">
-                                <label class="custom-control-label" for="instanceRadios4">
-                                    VDI 3682 Individuals
-                                </label>
-                            </div>
-                            <!-- <div class="form-check">
-                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
-                                    name="instanceRadios" id="instanceRadios5" value="ISA88">
-                                <label class="custom-control-label" for="instanceRadios5">
-                                    ISA 88 Individuals
-                                </label>
-                            </div> -->
-                            <div class="form-check">
-                                <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
-                                    name="instanceRadios" id="instanceRadios6" value="CustomTable">
-                                <label class="custom-control-label" for="instanceRadios6">
-                                    Define Custom Table
-                                </label>
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -274,87 +263,21 @@
             <button class="btn btn-secondary" (click)="executeSelect(selectString)">execute SELECT</button>
         </div>
 
-        <div *ngIf="customReturn" class="card">
-            <div class="card-body">
-                <h5 class="card-title">Returned Values</h5>
-                <p class="card-text">Click on an element to fill the described Individual</p>
-                <div class="row align-items-center">
-                    <table class="table table-hover table-sm">
-                        <thead>
-                            <tr>
-                                <!-- take first result binding and iterate over keys, these keys are table columns -->
-                                <th *ngFor="let col of keys(customReturn.results.bindings[0])" scope="col">{{col}}
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- one row for each binding -->
-                            <tr *ngFor="let tableRow of customReturn.results.bindings">
-                                <!-- one entry for each key in each binding -->
-                                <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x].value)">
-                                    {{tableRow[x].value}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div *ngIf="customTable" class="card px-sm-2 py-sm-2">
+            <app-table [currentTable]="customTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="iriTableClick($event)"></app-table>
         </div>
     </div>
 </div>
-
-<div *ngIf="instanceOption === 'allTypeDescriptions'" class="card">
-    <div class="card-body">
-        <h5 class="card-title">Available Types in Database</h5>
-        <p class="card-text"> Click on a row to create an instance of this type description </p>
-        <div class="row align-items-center">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <!-- take first result binding and iterate over keys, these keys are table columns -->
-                        <th *ngFor="let col of keys(allTypes[0])" scope="col">{{col}} </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- one row for each binding -->
-                    <tr *ngFor="let tableRow of allTypes">
-                        <!-- one entry for each key in each binding -->
-                        <td *ngFor="let x of keys(tableRow)" (click)="propertyTableClick(tableRow)">
-                            {{tableRow[x]}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
+<div *ngIf="instanceOption === 'allTypeDescriptions'" class="card px-sm-2 py-sm-2">
+    <app-table [currentTable]="allTypes" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+        (tableClickedRow)="propertyTableClick($event)"></app-table>
 </div>
-
-<div *ngIf="instanceOption === 'allProcessTable'" class="card">
-    <div class="card-body">
-        <h5 class="card-title">Available Processes in Database</h5>
-        <div *ngIf="allProcessInfo.length!==0; then processTable else todoInfo"></div>
-        <ng-template #todoInfo>
-            <p class="card-text">There is no process info available in the database, please add some.</p>
-        </ng-template>
-        <div class="row align-items-center">
-            <ng-template #processTable>
-                <table class="table table-hover table-sm">
-                    <thead>
-                        <tr>
-                            <!-- take first result binding and iterate over keys, these keys are table columns -->
-                            <th *ngFor="let col of keys(allProcessInfo[0])" scope="col">{{col}} </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- one row for each binding -->
-                        <tr *ngFor="let tableRow of allProcessInfo">
-                            <!-- one entry for each key in each binding -->
-                            <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </ng-template>
-        </div>
-
-    </div>
+<div *ngIf="instanceOption === 'ISA88'" class="card px-sm-2 py-sm-2">
+    <app-table [currentTable]="allBehaviorInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+        (tableClickedCell)="iriTableClick($event)"></app-table>
+</div>
+<div *ngIf="instanceOption === 'allProcessTable'" class="card px-sm-2 py-sm-2">
+    <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+        (tableClickedCell)="iriTableClick($event)"></app-table>
 </div>

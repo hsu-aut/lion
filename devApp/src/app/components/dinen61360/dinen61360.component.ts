@@ -21,7 +21,10 @@ export class Dinen61360Component implements OnInit {
   namespaceParser = new Namespace();
   TableUtil = new Tables();
   _loaderShow = true;
-
+  currentTable: Array<Object> = [];
+  instanceOption: string;
+  tableTitle: string;
+  tableSubTitle: string;
 
   // 61360 input form variables
   code: string;
@@ -69,20 +72,20 @@ export class Dinen61360Component implements OnInit {
   allExTypes: DINEN61360Data["IRI"] = [];
   allTypes: any;
   insertString: string;
-  customReturn: any;
+  customTable: Array<Object>;
   selectString = this.namespaceParser.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
 
   // graph db data VDI 3682
   allProcessInfo: any = [];
   VDI3682modelData = new VDI3682DATA();
-  VDI3682modelInsert = new ISA88Insert();
-  VDI3682modelVariables = new ISA88Variables();
+  VDI3682modelInsert = new VDI3682INSERT();
+  VDI3682modelVariables = new VDI3682VARIABLES();
 
   // graph db data ISA 88
   allBehaviorInfo: any = [];
   ISAmodelData = new ISA88Data();
-  ISAmodelInsert = new VDI3682INSERT();
-  ISAmodelVariables = new VDI3682VARIABLES();
+  ISAmodelInsert = new ISA88Insert();
+  ISAmodelVariables = new ISA88Variables();
 
   //eclass data from backend
   propertyList = [];
@@ -94,6 +97,7 @@ export class Dinen61360Component implements OnInit {
     this.getAllProcessInfo();
     this.getAllTypes();
     this.getStatisticInfo();
+    this.getAllBehaviorInfo();
     this.query.select(this.modelData.SPARQL_SELECT_physical_by_child).subscribe((data: any) => {
       // log + assign data and stop loader
       console.log(data);
@@ -131,7 +135,7 @@ export class Dinen61360Component implements OnInit {
     this.eclass.getPropertyList(search_name).subscribe((rawlist: any) => {
       this.propertyList = rawlist;
       this._loaderShow = false;
-      console.log(rawlist);
+      this.currentTable = this.propertyList;
     });
   }
 
@@ -186,8 +190,8 @@ export class Dinen61360Component implements OnInit {
   executeSelect(selectString) {
     this.query.select(selectString).subscribe((data: any) => {
       this.namespaceParser.parseToPrefix(data);
-      this.customReturn = data;
-
+      this.customTable = this.TableUtil.buildTable(data);;
+      this.setTableDescription(this.instanceOption);
     });
   }
   iriTableClick(name: string) {
@@ -199,6 +203,14 @@ export class Dinen61360Component implements OnInit {
     this.query.select(this.VDI3682modelData.allProcessInfo).subscribe((data: any) => {
       this.namespaceParser.parseToPrefix(data);
       this.allProcessInfo = this.TableUtil.buildTable(data);
+      this._loaderShow = false;
+    });
+  }
+  getAllBehaviorInfo() {
+    this._loaderShow = true;
+    this.query.select(this.ISAmodelData.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.allBehaviorInfo = this.TableUtil.buildTable(data);
       this._loaderShow = false;
     });
   }
@@ -226,7 +238,7 @@ export class Dinen61360Component implements OnInit {
     });
   }
 
-  getVariables(){
+  getVariables() {
     var varia: DINEN61360Variables = {
       optionalTypeVariables:
       {
@@ -266,4 +278,27 @@ export class Dinen61360Component implements OnInit {
     }
     return varia
   }
+
+
+  setTableDescription(option) {
+    this.instanceOption = option;
+    if (this.instanceOption == "allTypeDescriptions") {
+      this.tableTitle = "Available Type Descriptions in Database";
+      this.tableSubTitle = "Click on a row to create an instance of this type description.";
+    } else if (this.instanceOption == "allProcessTable") {
+      this.tableTitle = "Available Process Description Entities in Database";
+      this.tableSubTitle = "Click on a row to asign a data element to it.";
+    } else if (this.instanceOption == "ISA88") {
+      this.tableTitle = "Available Behavior Entities in Database";
+      this.tableSubTitle = "Click on a row to asign a data element to it.";
+    } else if (this.instanceOption == "CustomTable") {
+      this.tableTitle = "Return of custom Query";
+      this.tableSubTitle = "Click on a row to asign a data element to it.";
+    } else if (this.instanceOption == undefined) {
+      this.tableTitle = undefined;
+      this.tableSubTitle = undefined;
+    }
+  }
+
 }
+

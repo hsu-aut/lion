@@ -216,30 +216,7 @@
           Module</button>
       </div>
     </div>
-
-    <div *ngIf="currentTable.length!==0; then structureTableContainment else todoInfo"></div>
-    <ng-template #todoInfo>
-      <p class="card-text">There is no structural info available in the database, please add some.</p>
-    </ng-template>
-    <div class="row align-items-center">
-      <ng-template #structureTableContainment>
-        <table class="table table-hover table-sm">
-          <thead>
-            <tr>
-              <!-- take first result binding and iterate over keys, these keys are table columns -->
-              <th *ngFor="let col of keys(currentTable[0])" scope="col">{{col}} </th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- one row for each binding -->
-            <tr *ngFor="let tableRow of currentTable">
-              <!-- one entry for each key in each binding -->
-              <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
-            </tr>
-          </tbody>
-        </table>
-      </ng-template>
-    </div>
-
   </div>
 </div>
+<app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+(tableClickedCell)="iriTableClick($event)"></app-table>

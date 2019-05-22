@@ -17,6 +17,8 @@ export class VDI3682Component implements OnInit {
   keys = Object.keys; 
   namespaceParser = new Namespace();
   TableUtil = new Tables();
+  tableTitle: string;
+  tableSubTitle: string;
  
   // stats 
   NoOfProcesses: number;
@@ -53,6 +55,7 @@ export class VDI3682Component implements OnInit {
 
   ngOnInit() {
     this.getAllProcessInfo();
+    this.setTableDescription();
     this.query.select(this.modelData.allClasses).subscribe((data: any) => {
         // parse prefixes where possible 
         this.namespaceParser.parseToPrefix(data);
@@ -192,6 +195,11 @@ export class VDI3682Component implements OnInit {
     this.namespaceParser.parseToPrefix(data);
     this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;  
   });
+  }
+
+  setTableDescription() {
+      this.tableTitle = "Available Processes in Database";
+      this.tableSubTitle = "Click on a cell to to use it for further descriptions.";
   }
 }
 

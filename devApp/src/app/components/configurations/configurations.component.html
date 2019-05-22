@@ -1,26 +1,13 @@
 <!-- Namespaces of Ontologies Card -->
 <div class="card">
   <h5 class="card-header">
-    Namespaces of Ontologies
+    Configuration of Namespaces of Ontologies
   </h5>
   <div class="card-body">
     <p class="card-text"> Existing namespaces and their prefixes are shown below. Click on the table to delete or
       edit existing namespaces. </p>
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col"> PREFIX </th>
-          <th scope="col"> Namespace </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let tableRow of PREFIXES">
-          <!-- one entry for each key in each binding -->
-          <td *ngFor="let x of keys(tableRow)" (click)="prefixTableClick(tableRow)">{{tableRow[x]}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <app-table [currentTable]="PREFIXES" [tableTitle]="nameSpaceTableTitle" [tableExplanation]="nameSpaceTableSubTitle"
+    (tableClickedRow)="prefixTableClick($event)"></app-table>
     <form>
       <div class="form-row">
         <div class="form-group col-sm">

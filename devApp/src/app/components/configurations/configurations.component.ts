@@ -26,6 +26,8 @@ interface Cfg {
 export class ConfigurationsComponent implements OnInit {
   // util variables
   keys = Object.keys;
+  nameSpaceTableTitle: string = undefined;
+  nameSpaceTableSubTitle: string = "Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.";
 
   savingDate: string;
   loadDate: string;
