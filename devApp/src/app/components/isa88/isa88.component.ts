@@ -18,24 +18,25 @@ export class Isa88Component implements OnInit {
   TableUtil = new Tables();
   namespaceParser = new Namespace();
   currentTable: Array<Object> = [];
+  tableTitle: string;
+  tableSubTitle: string;
 
   //user input variables
   insertString: string;
   optionMode: string;
-  optionGranularity: string;
   selectedOption: any;
-  insertUrl;
+
 
   // variables for behavior 
   isa88 = new ISA88Insert();
   selectString = new ISA88Data();
   selectOption: Array<string> = [];
-  selectreturn: any;
   insertreturn: any;
 
   ngOnInit() {
     this.getTechnicalResources();
     this.getBehaviorInfo();
+    this.setTableDescription();
   }
 
   buildInsert() {
@@ -76,6 +77,11 @@ export class Isa88Component implements OnInit {
       mode: this.optionMode
     }
     return varia
+  }
+
+  setTableDescription(){
+    this.tableTitle = "Available state machine entities in database";
+    this.tableSubTitle = undefined;
   }
 
 }

@@ -1,60 +1,30 @@
-<div class="card">
+<div class="px-sm-3 py-sm-3">
+  <div class="card">
     <h5 class="card-header">ISA 88 Template</h5>
     <div class="card-body">
-        <p class="card-text"> As the state machine of the ISA 88 is standardized, one can add a standard state machine
-            to any element by choosing the element and the mode.</p>
-        <div class="row">
-            <div class="col">Select element to add ISA 88 state machine to
-                <select [(ngModel)]="selectedOption" name="selectedOption" class="form-control">
-                    <option *ngFor='let list of selectOption'>
-                        {{list}}
-                    </option>
-                </select>
-            </div>
-            <div class="col">Select Mode to be included
-                <select [(ngModel)]="optionMode" name="optionMode" class="form-control">
-                    <option>Production</option>
-                    <option>Maintenance</option>
-                </select>
-            </div>
-        </div>
-        <div class="row">
-            <button (click)="buildInsert()" class="btn btn-secondary col m-3">build INSERT</button>
-            <button (click)="executeInsert()" class="btn btn-secondary col m-3">execute INSERT</button>
-        </div>
-    </div>
-</div>
-<div class="card">
-    <div class="card-body">
+      <p class="card-text"> As the state machine of the ISA 88 is standardized, one can add a standard state machine
+        to any element by choosing the element and the mode.</p>
       <div class="row">
-        <div class="col">
-          <h5 class="card-title">Available state machine entities in database </h5>
+        <div class="col">Select element to add ISA 88 state machine to
+          <select [(ngModel)]="selectedOption" name="selectedOption" class="form-control">
+            <option *ngFor='let list of selectOption'>
+              {{list}}
+            </option>
+          </select>
+        </div>
+        <div class="col">Select Mode to be included
+          <select [(ngModel)]="optionMode" name="optionMode" class="form-control">
+            <option>Production</option>
+            <option>Maintenance</option>
+          </select>
         </div>
       </div>
-  
-      <div *ngIf="currentTable.length!==0; then behaviorTable else todoInfo"></div>
-      <ng-template #todoInfo>
-        <p class="card-text">There is no state machine entities available in the database, please add some.</p>
-      </ng-template>
-      <div class="row align-items-center">
-        <ng-template #behaviorTable>
-          <table class="table table-hover table-sm">
-            <thead>
-              <tr>
-                <!-- take first result binding and iterate over keys, these keys are table columns -->
-                <th *ngFor="let col of keys(currentTable[0])" scope="col">{{col}} </th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- one row for each binding -->
-              <tr *ngFor="let tableRow of currentTable">
-                <!-- one entry for each key in each binding -->
-                <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </ng-template>
+      <div class="row">
+        <button (click)="buildInsert()" class="btn btn-secondary col m-3">build INSERT</button>
+        <button (click)="executeInsert()" class="btn btn-secondary col m-3">execute INSERT</button>
       </div>
-  
     </div>
   </div>
+</div>
+<app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+  (tableClickedCell)="tableClicked($event)"></app-table>
