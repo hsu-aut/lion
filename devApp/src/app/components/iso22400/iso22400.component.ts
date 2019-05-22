@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService } from '../../services/sparql-queries.service';
-import { VDI2206DATA, VDI2206INSERT, VDI2206VARIABLES } from '../../models/vdi2206Model';
+import { ISA88Insert, ISA88Data, ISA88Variables } from '../../models/isa88Model';
 import { Namespace } from '../../utils/prefixes';
 import { Tables } from '../../utils/tables';
 import { DownloadService } from 'src/app/services/download.service';
@@ -24,19 +24,18 @@ export class ISO22400Component implements OnInit {
   NoOfComponents: number;
 
   // model data
-  modelData = new VDI2206DATA();
-  modelInsert = new VDI2206INSERT();
-  modelVariables = new VDI2206VARIABLES();
+  isa88 = new ISA88Insert();
+  selectString = new ISA88Data();
+  selectOption: Array<string> = [];
+  selectreturn: any;
+  insertreturn: any;
 
-  allStructureInfoContainmentbySys: any = [];
-  allStructureInfoContainmentbyMod: any = [];
-  allStructureInfoInheritancebySys: any = [];
-  allStructureInfoInheritancebyMod: any = [];
 
+  tableTitle = "MyExampleTable";
+  tableExplanation = "Hello World! This is my example table!";
 
   ngOnInit() {
-    this.query.select(this.modelData.allStructureInfoContainmentbySys).subscribe((data: any) => {
-      // parse prefixes where possible 
+    this.query.select(this.selectString.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
       this.namespaceParser.parseToPrefix(data);
       this.currentTable = this.TableUtil.buildTable(data);
     });
