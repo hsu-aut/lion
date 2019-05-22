@@ -1,6 +1,8 @@
 
 export class Tables {
 
+    public paginationValues: Array<number> = [10, 20, 50, 100]
+    public defaultPaginationIndex: number = 1;
 
     buildTable(SPARQLReturn) {
         var heads = SPARQLReturn.head.vars
