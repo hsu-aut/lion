@@ -1,0 +1,372 @@
+<!-- Start Top Card-->
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h5 class="card-header">Web Application Description Language (WADL) Insert Template</h5>
+  <div class="card-body">
+    <div class="row">
+      <!--Start Top Card left Side-->
+      <div class="col-7 col-lg-8 ">
+        <!--  58/42 Split Small Devices / 66/33 Split Large Devices-->
+        <!-- Start Top Card left Side First Row-->
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-header">First Row Left</div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col">
+
+                    <div class="form-check">
+                      <input [(ngModel)]="ModelOptions" type="checkbox" id="addModel" name="ModelOptions"
+                        class="custom-control-input" value="addModel">
+                      <label class="custom-control-label" for="addModel">Add to a Model</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <h6>Method</h6>
+                  </div>
+                  <div class="col">
+                    <h6>BaseUrl</h6>
+                  </div>
+                  <div class="col">
+                    <h6>Resource</h6>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col">
+                    <div *ngIf="allAvailableMethods; else noConnection" class="row align-items-center">
+                      <select [(ngModel)]="selectedMethod" name="selectedMethod" class="form-control">
+                        <option *ngFor='let x of keys(allAvailableMethods.results.bindings)'>
+                          {{allAvailableMethods.results.bindings[x].availableMethods.value}}
+                        </option>
+                      </select>
+                    </div>
+                    <ng-template #noConnection>
+                      <select class="form-control">
+                        <option>
+                          ----
+                        </option>
+                      </select>
+                    </ng-template>
+                  </div>
+                  <div class="col">
+                    <input id="baseUrl" [(ngModel)]="baseUrl" name="baseUrl" class="form-control" type="text"
+                      placeholder="BaseUrl">
+                  </div>
+                  <div class="col">
+                    <input [(ngModel)]="resource" name="resource" class="form-control" type="text"
+                      placeholder="Resource">
+                  </div>
+                </div>
+                <br>
+
+                <div class="row">
+                  <div *ngIf="ModelOptions; then thenBlock else elseBlock"></div>
+                  <ng-template #thenBlock>
+                    <div class="col">
+                      <input id="modelIri" [(ngModel)]="modelIri" name="modelIri" class="form-control" type="text"
+                        placeholder="http:// Model IRI">
+                    </div>
+                    <div class="col">
+                      <button class="btn btn-secondary col" (click)="buildResourceInsertWithModel()">build
+                        INSERT</button>
+                    </div>
+                    <div class="col">
+                      <button class="btn btn-secondary col" (click)="executeInsertResourceWithModel()">execute
+                        INSERT</button>
+                    </div>
+
+                  </ng-template>
+                  <ng-template #elseBlock>
+                    <div class="col">
+                      <button class="btn btn-secondary col" (click)="buildResourceInsert()">build INSERT</button>
+                    </div>
+                    <div class="col">
+                      <button class="btn btn-secondary col" (click)="executeInsertResoruce()">execute
+                        INSERT</button>
+                    </div>
+                  </ng-template>
+
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Top Card left Side First Row-->
+        <!-- Start Top Card left Side Second Row-->
+        <div class=row>
+          <br>
+        </div>
+        <div *ngIf="selectedMethod && baseUrl && resource">
+
+          <div class="row">
+            <div class="col">
+              <div class="card">
+                <div class="card-header">Select Parameter</div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-check">
+                        <input [(ngModel)]="ParameterOptions" type="radio" (click)="updateAllParameterTable()"
+                          id="functionalRadio1" name="ParameterOptions" class="custom-control-input"
+                          value="allParameter">
+                        <label class="custom-control-label" for="functionalRadio1">All</label>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-check">
+                        <input [(ngModel)]="ParameterOptions" type="radio" (click)="updateQueryParameterTable()"
+                          id="functionalRadio2" name="ParameterOptions" class="custom-control-input"
+                          value="queryParameter">
+                        <label class="custom-control-label" for="functionalRadio2">Query</label>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-check">
+                        <input [(ngModel)]="ParameterOptions" type="radio" (click)="updateHeaderParameterTable()"
+                          id="functionalRadio3" name="ParameterOptions" class="custom-control-input"
+                          value="headerParameter">
+                        <label class="custom-control-label" for="functionalRadio3">Header</label>
+                      </div>
+                    </div>
+                    <div *ngIf="turnOnParameters">
+                      <div class="col">
+                        <div class="form-check">
+                          <input [(ngModel)]="ParameterOptions" type="radio" id="functionalRadio4"
+                            name="ParameterOptions" class="custom-control-input" value="matrixParameter">
+                          <label class="custom-control-label" for="functionalRadio4">Matrix</label>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-check">
+                          <input [(ngModel)]="ParameterOptions" type="radio" id="functionalRadio5"
+                            name="ParameterOptions" class="custom-control-input" value="templateParameter">
+                          <label class="custom-control-label" for="functionalRadio5">Template</label>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="form-check">
+                          <input [(ngModel)]="ParameterOptions" type="radio" id="functionalRadio6"
+                            name="ParameterOptions" class="custom-control-input" value="plainParameter">
+                          <label class="custom-control-label" for="functionalRadio6">Plain</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Top Card left Side Second Row-->
+      </div>
+      <!--End Top Card left Side-->
+      <!--Start Top right side-->
+      <div class="col-5 col-lg-4">
+        <!--  58/42 Split Small Devices / 66/33 Split Large Devices-->
+        <div class="row h-100">
+
+          <div class="card">
+
+            <div class="card-header">Available Services</div>
+            <div class="card-body">
+              <div *ngIf="availableResources?.length; else noServices" class="row align-items-center">
+                <table class="table table-hover table-sm">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let col of keys(availableResources[0])" scope="col">{{col}} </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- one row for each binding -->
+                    <tr *ngFor="let tableRow of availableResources">
+                      <!-- one entry for each key in each binding -->
+                      <td (click)="resourceTableClick(tableRow.BaseUrl, '')">{{tableRow.BaseUrl}}</td>
+                      <td (click)="resourceTableClick(tableRow.BaseUrl,tableRow.Resource)">{{tableRow.Resource}}</td>
+                      <td>{{tableRow.ServiceProvider}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ng-template #noServices>
+                no Services
+              </ng-template>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+      <!-- End Top rigt Side-->
+    </div>
+  </div>
+</div>
+<!-- End Top Card-->
+
+<!-- Start Bottom Card-->
+<!-- All Parameter-->
+<div *ngIf="ParameterOptions === 'allParameter' && availableParameters">
+  <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <div class="card-body">
+      <div class="card">
+        <div class="card-header">
+          All Parameters
+        </div>
+        <div class="card-body">
+          <div *ngIf="availableParameters?.length" class="row align-items-center">
+            <table class="table table-hover table-sm">
+              <thead>
+                <tr>
+                  <!-- take first result binding and iterate over keys, these keys are table columns -->
+                  <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <!-- one row for each binding -->
+                <tr *ngFor="let tableRow of availableParameters">
+                  <!-- one entry for each key in each binding -->
+                  <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Query Parameter-->
+<div *ngIf="ParameterOptions === 'queryParameter' && availableParameters">
+  <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <div class="card-body">
+      <div class="card">
+        <div class="card-header">
+          QueryParameters
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center">
+            <table class="table table-hover table-sm">
+              <thead *ngIf="availableParameters?.length; else noQueryParameter">
+                <tr>
+                  <!-- take first result binding and iterate over keys, these keys are table columns -->
+                  <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+                  <th>Action</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <ng-template #noQueryParameter>
+                <thead>
+                  <th>Key</th>
+                  <th>Type</th>
+                  <th>OptionValue</th>
+                  <th>Action</th>
+                  <th></th>
+                </thead>
+              </ng-template>
+              <tbody>
+                <!-- one row for each binding -->
+                <tr *ngFor="let tableRow of availableParameters">
+                  <!-- one entry for each key in each binding -->
+                  <td (click)="queryTableClick(tableRow.Key, tableRow.Type)" *ngFor="let x of keys(tableRow)">
+                    {{tableRow[x]}}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <input [(ngModel)]="queryParameterName" name="queryParameterName" class="form-control" type="text"
+                      placeholder="Query Name">
+                  </td>
+                  <td>
+                    <input [(ngModel)]="queryParameterType" name="queryParameterType" class="form-control" type="text"
+                      placeholder="Query Type">
+                  </td>
+                  <td>
+                    <input [(ngModel)]="queryParameterValue" name="queryParameterValue" class="form-control" type="text"
+                      placeholder="Option Value">
+                  </td>
+
+                  <!--class="nav-link text-dark bg-light"-->
+                  <td><button class="btn btn-secondary col" (click)="buildQueryParameterInsert()">build INSERT</button>
+                  </td>
+                  <td><button class="btn btn-secondary col" (click)="executeQueryParameterInsert()">execute
+                      INSERT</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Header Parameter-->
+<div *ngIf="ParameterOptions === 'headerParameter' && availableParameters">
+  <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <div class="card-body">
+      <div class="card">
+        <div class="card-header">
+          HeaderParameters
+        </div>
+        <div class="card-body">
+          <div *ngIf="availableParameters" class="row align-items-center">
+            <table class="table table-hover table-sm">
+              <thead *ngIf="availableParameters?.length; else noHeaderParameter">
+                <tr>
+                  <!-- take first result binding and iterate over keys, these keys are table columns -->
+                  <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+                  <th>Action</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <ng-template #noHeaderParameter>
+                <th>Key</th>
+                <th>MediaType</th>
+                <th>Action</th>
+                <th></th>
+              </ng-template>
+              <tbody>
+                <!-- one row for each binding -->
+                <tr *ngFor="let tableRow of availableParameters">
+                  <!-- one entry for each key in each binding -->
+                  <td (click)="headerTableClick(tableRow.Key, tableRow.MediaType)" *ngFor="let x of keys(tableRow)">
+                    {{tableRow[x]}}</td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
+                    <input [(ngModel)]="headerParameterKey" name="headerParameterKey" class="form-control" type="text"
+                      placeholder="Key">
+                  </td>
+                  <td>
+                    <input [(ngModel)]="headerParameterMediaType" name="headerParameterMediaType" class="form-control"
+                      type="text" placeholder="Media Type">
+                  </td>
+
+                  <td><button class="btn btn-secondary col" (click)="buildHeaderParameterInsert()">build INSERT</button>
+                  </td>
+                  <td><button class="btn btn-secondary col" (click)="executeHeaderParameterInsert()">execute
+                      INSERT</button>
+                  </td>
+                </tr>
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End Bottom Card-->

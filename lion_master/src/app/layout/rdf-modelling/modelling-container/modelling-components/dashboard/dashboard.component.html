@@ -1,0 +1,11 @@
+<div class="col col-sm-6">
+    <div class="card mb-3">
+        <div class="card-header">
+            Designed RDF Triples per assigned Class
+        </div>
+        <div class="card-body">
+            <canvas baseChart height="180px" [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)">
+            </canvas>
+        </div>
+    </div>
+</div>

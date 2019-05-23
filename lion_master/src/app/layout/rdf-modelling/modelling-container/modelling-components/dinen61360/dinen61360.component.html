@@ -1,0 +1,284 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <h5 class="card-header">DIN EN 61360 Template</h5>
+    <div class="card-body">
+        <h5 class="card-title">Options & Statistics</h5>
+        <p class="card-text">The DIN EN 61360 template uses a tabular approach for building a graph. One can add type
+            and instance descriptions to any kind of entity.</p>
+        <div class="row" style="height: 200px;">
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header"> Template Options </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption"
+                                name="propertyRadio" id="propertyRadios1" value="typeDesc">
+                            <label class="custom-control-label" for="propertyRadios1"
+                                (click)="setTableDescription(undefined)"> Create type description </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="custom-control-input" type="radio" [(ngModel)]="TemplateOption"
+                                name="propertyRadio" id="propertyRadios3" value="instanceDesc">
+                            <label class="custom-control-label" for="propertyRadios3"> Create instance description
+                            </label>
+                        </div>
+                        <!-- ToDo: Find place for loading spinner -->
+                        <div *ngIf="_loaderShow" class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header"> Template Statistics </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No# Data Elements</th>
+                                    <th scope="col">No# Type Descriptions</th>
+                                    <th scope="col">No# Instance Descriptions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- ToDo: include statistics -->
+                                <tr>
+                                    <td>{{NoOfDE}}</td>
+                                    <td>{{NoOfDET}}</td>
+                                    <td>{{NoOfDEI}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- <div *ngIf="TemplateOption===undefined" class="card">
+    <div class="card-body">
+        <h5 class="card-title">DIN EN 61360 Insert Template</h5>
+        <p class="card-text"> Select an option to add property information. </p>
+    </div>
+</div> -->
+
+<div *ngIf="TemplateOption === 'typeDesc'">
+    <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h5 class="card-title"> DIN EN 61360 Mandatory Type Definition Template </h5>
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-sm">
+                        <label> Code </label>
+                        <input class="form-control" [(ngModel)]="code" name="code" type="text" placeholder="[Code]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Version </label>
+                        <input class="form-control" [(ngModel)]="version" name="version" type="text"
+                            placeholder="[Version]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Revision </label>
+                        <input class="form-control" [(ngModel)]="revision" name="revision" type="text"
+                            placeholder="[Revision]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Preferred Name </label>
+                        <input class="form-control" [(ngModel)]="preferred_name" name="preferred_name" type="text"
+                            placeholder="[Preferred Name]">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-sm">
+                        <label> Short Name </label>
+                        <input class="form-control" [(ngModel)]="short_name" name="short_name" type="text"
+                            placeholder="[Short Name]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Definition </label>
+                        <input class="form-control" [(ngModel)]="definition" name="definition" type="text"
+                            placeholder="[Definition]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Unit of Measure </label>
+                        <input class="form-control" [(ngModel)]="UoM" name="UoM" type="text"
+                            placeholder="[Unit of Measure]">
+                    </div>
+                    <div class="form-group col-sm">
+                        <label> Data type </label>
+                        <select [(ngModel)]="selectedDataytpe" name="selectedDataytpe" class="form-control">
+                            <option *ngFor='let key of keys(datatype)' [ngValue]="key">
+                                {{datatype[key]}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <button class="btn btn-secondary col m-3" (click)="buildTypeInsert()">build INSERT</button>
+                <button class="btn btn-secondary col m-3" (click)="insertDINEN61360T()">execute INSERT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h5 class="card-title"> ecl@ss properties </h5>
+            <p class="card-text"> Click on a row to fill in necessary type descriptions </p>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary" (click)="searchByPreferredName(search_name)"
+                        type="button"> Search ecl@ss Database </button>
+                </div>
+                <input [(ngModel)]="search_name" type="text" class="form-control" placeholder="Preferred Name"
+                    aria-label="" aria-describedby="basic-addon1">
+            </div>
+        </div>
+        <div *ngIf="propertyList.length!==0" class="card px-sm-2 py-sm-2">
+            <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)"></app-table>
+        </div>
+    </div>
+</div>
+
+
+
+<div *ngIf="TemplateOption === 'instanceDesc'">
+    <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h5 class="card-title"> DIN EN 61360 Instance Definition Template </h5>
+            <div class="row">
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            Instance Definition
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <label> Described Individual </label>
+                                        <input [(ngModel)]="describedIndividual" name="describedIndividual" type="text"
+                                            placeholder="[Input described Individual]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-sm">
+                                        <label> Code </label>
+                                        <input [(ngModel)]="code" name="code" type="text" placeholder="[Code]"
+                                            class="form-control">
+                                    </div>
+                                    <div class="form-group col-sm">
+                                        <label> Value </label>
+                                        <input [(ngModel)]="value" name="value" type="text" placeholder="[Input value]"
+                                            class="form-control">
+                                    </div>
+                                    <div class="form-group col-sm">
+                                        <label> Expression Goal </label>
+                                        <select [(ngModel)]="selectedExpressionGoal" name="selectedExpressionGoal"
+                                            class="form-control">
+                                            <option *ngFor='let key of keys(expressionGoal)' [ngValue]="key">
+                                                {{expressionGoal[key]}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-sm">
+                                        <label> Logic Interpretation </label>
+                                        <select [(ngModel)]="selectedLogicInterpretation"
+                                            name="selectedLogicInterpretation" class="form-control">
+                                            <option *ngFor='let key of keys(logicInterpretation)' [ngValue]="key">
+                                                {{logicInterpretation[key]}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <p class="card-text">build and download or build and execute</p>
+                            <div class="row">
+                                <button class="btn btn-secondary col m-3" (click)="buildInstanceInsert()">build
+                                    INSERT</button>
+                                <button class="btn btn-secondary col m-3" (click)="insertDINEN61360I()">execute
+                                    INSERT</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header"> Instance Template Options </div>
+                        <div class="card-body">
+                            <p class="card-text"> Select list or table to display from graph database </p>
+                            <div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios1" value="allTypeDescriptions">
+                                    <label class="custom-control-label" for="instanceRadios1"
+                                        (click)="setTableDescription('allTypeDescriptions')">
+                                        DIN EN 61360 Type Descriptions
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios4" value="allProcessTable">
+                                    <label class="custom-control-label"
+                                        (click)="setTableDescription('allProcessTable')">
+                                        VDI 3682 Individuals
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios5" value="ISA88">
+                                    <label class="custom-control-label" for="instanceRadios5"
+                                        (click)="setTableDescription('ISA88')">
+                                        ISA 88 Individuals
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios6" value="CustomTable">
+                                    <label class="custom-control-label" for="instanceRadios6"
+                                        (click)="setTableDescription('CustomTable')">
+                                        Define Custom Table
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="instanceOption === 'CustomTable'">
+    <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+            <h5 class="card-title">Custom Table</h5>
+            <p class="card-text">Define Select Query:</p>
+            <textarea [(ngModel)]="selectString" class="w-100" rows="15" name="selectString"></textarea>
+            <button class="btn btn-secondary" (click)="executeSelect(selectString)">execute SELECT</button>
+        </div>
+
+        <div *ngIf="customTable" class="card px-sm-2 py-sm-2">
+            <app-table [currentTable]="customTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="iriTableClick($event)"></app-table>
+        </div>
+    </div>
+</div>
+<div *ngIf="instanceOption === 'allTypeDescriptions'" class="px-sm-2 py-sm-2">
+    <app-table [currentTable]="allTypes" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+        (tableClickedRow)="propertyTableClick($event)"></app-table>
+</div>
+<div *ngIf="instanceOption === 'ISA88'" class="px-sm-2 py-sm-2">
+    <app-table [currentTable]="allBehaviorInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+        (tableClickedCell)="iriTableClick($event)"></app-table>
+</div>
+<div *ngIf="instanceOption === 'allProcessTable'" class="px-sm-2 py-sm-2">
+    <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+        (tableClickedCell)="iriTableClick($event)"></app-table>
+</div>
