@@ -9,12 +9,13 @@ export class DINEN61360Data {
     public SPARQL_SELECT_allTypes = `
     PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT DISTINCT ?Type ?ID ?Definition ?Unit_Of_Measure ?Data_Type WHERE { 
+    SELECT DISTINCT ?Type ?ID ?Name ?Definition ?Unit_Of_Measure ?Data_Type WHERE { 
               
        ?Type a DE6:Type_Description;
        DE6:Code ?ID;
        DE6:Definition ?Definition;
        DE6:Unit_of_Measure ?Unit_Of_Measure;
+       DE6:Preferred_Name ?Name;
        a ?Data_Type.
        ?Data_Type rdfs:subClassOf ?a.
         VALUES ?a
@@ -277,8 +278,8 @@ INSERT {
         # NO CHANGES TO THIS PART EVER
         # Defines the general namespace for all individuals
         BIND(STR("${activeNamespace}") AS ?NameSpace).
-        BIND(?Short_Name AS ?DET_Label).
-        BIND(IRI(CONCAT(?NameSpace,?DET_Label)) AS ?DE_TypeIRI).
+        BIND(?Preferred_Name AS ?DET_Label).
+        BIND(IRI(CONCAT(?NameSpace,?Code)) AS ?DE_TypeIRI).
         BIND(IRI(CONCAT("http://www.hsu-ifa.de/ontologies/DINEN61360#",?DataType)) AS ?DataTypeIRI).
       }
     }
