@@ -59,7 +59,11 @@ export class ConfigurationsComponent implements OnInit {
   ngOnInit() {
     //load namespaces initially
     this.PREFIXES = this.prefixService.getPrefixes();
-    this.getActiveNamespace();    
+    this.getActiveNamespace();
+    // this.eclass.getTBox().subscribe((data: any) => {
+    //   // log + assign data and stop loader
+    //   console.log(data);
+    // });;
   }
 
 

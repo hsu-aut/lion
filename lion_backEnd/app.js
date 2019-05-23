@@ -7,6 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var eclassSearch = require('./routes/eclass-search');
+var TBox = require('./routes/TBox');
 
 var app = express();
 
@@ -21,7 +22,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/eclassSearch', eclassSearch);
+app.use('/lion_BE/eclassSearch', eclassSearch);
+app.use('/lion_BE/TBox', TBox);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler

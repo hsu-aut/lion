@@ -1,5 +1,9 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-    <h5 class="card-header">DIN EN 61360 Template</h5>
+    <h5 class="card-header">DIN EN 61360 Template
+        <div *ngIf="_loaderShow" class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </h5>
     <div class="card-body">
         <h5 class="card-title">Options & Statistics</h5>
         <p class="card-text">The DIN EN 61360 template uses a tabular approach for building a graph. One can add type
@@ -21,10 +25,6 @@
                                 name="propertyRadio" id="propertyRadios3" value="instanceDesc">
                             <label class="custom-control-label" for="propertyRadios3"> Create instance description
                             </label>
-                        </div>
-                        <!-- ToDo: Find place for loading spinner -->
-                        <div *ngIf="_loaderShow" class="spinner-border" role="status">
-                            <span class="sr-only">Loading...</span>
                         </div>
                     </div>
                 </div>

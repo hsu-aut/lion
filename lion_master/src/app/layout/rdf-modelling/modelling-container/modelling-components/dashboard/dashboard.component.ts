@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 
 @Component({
@@ -21,32 +22,32 @@ export class DashboardComponent implements OnInit {
 
   // events
   public chartClicked(e: any): void {
-      // console.log(e);
+    // console.log(e);
   }
 
   public chartHovered(e: any): void {
-      // console.log(e);
+    // console.log(e);
   }
 
 
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
 
-      this.doughnutChartType = 'doughnut';
-      this.getPrefixes();
-      this.buildLabels();
+    this.doughnutChartType = 'doughnut';
+    this.getPrefixes();
+    this.buildLabels();
 
   }
 
-  buildLabels(){
+  buildLabels() {
     for (let i = 0; i < this.prefixes.length; i++) {
       this.doughnutChartLabels.push(this.prefixes[i].prefix)
     }
   }
 
-  getPrefixes(){
+  getPrefixes() {
     this.prefixes = this.namespaceService.getPrefixes();
   }
 

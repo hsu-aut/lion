@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders }    from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 
@@ -11,7 +11,7 @@ import { HttpClient, HttpHeaders }    from '@angular/common/http';
   providedIn: 'root'
 })
 export class SparqlQueriesService {
-    url: string;
+  url: string;
 
 
 
@@ -22,27 +22,27 @@ export class SparqlQueriesService {
 
   }
 
-  select(body){
+  select(body) {
     var httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/sparql-query'
+        'Content-Type': 'application/sparql-query'
       })
     };
-    
+
     // return this.http.post(url, body, httpOptions).pipe(tap((data: any) => data.json()));  
     console.log("Query executed");
     console.log(this.url, body, httpOptions);
     var re = this.http.post(this.url, body, httpOptions);
     console.log(re);
     return re;
-      
+
   }
 
-  insert(body){
+  insert(body) {
 
     var httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/sparql-update'
+        'Content-Type': 'application/sparql-update'
       })
     };
     var urlPOST = this.url + "/statements";
@@ -53,12 +53,14 @@ export class SparqlQueriesService {
   }
 
   // New Hamied -> Getter and Setter
-  getUrl(){
+  getUrl() {
     return this.url;
   }
-  setUrl(url: string){
+  setUrl(url: string) {
     this.url = url;
   }
+
+
 
 
 }

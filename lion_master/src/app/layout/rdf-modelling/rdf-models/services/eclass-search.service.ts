@@ -21,7 +21,7 @@ export class EclassSearchService {
       })
     };
 
-    var request = this.url + `eclassSearch/list?prop=${preferredName}`
+    var request = this.url + `/eclassSearch/list?prop=${preferredName}`
     
     // return this.http.post(url, body, httpOptions).pipe(tap((data: any) => data.json()));  
     console.log("Query executed");
