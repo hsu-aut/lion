@@ -11,7 +11,7 @@ import { HttpClient, HttpHeaders }    from '@angular/common/http';
 export class EclassSearchService {
   url: string;
   constructor( private http: HttpClient) {
-    this.url = `/eclassSearch/list`;
+    this.url = `/lion_BE`;
    }
 
   getPropertyList(preferredName){
@@ -21,7 +21,7 @@ export class EclassSearchService {
       })
     };
 
-    var request = this.url + `?prop=${preferredName}`
+    var request = this.url + `eclassSearch/list?prop=${preferredName}`
     
     // return this.http.post(url, body, httpOptions).pipe(tap((data: any) => data.json()));  
     console.log("Query executed");
@@ -40,7 +40,23 @@ export class EclassSearchService {
     this.url = url;
   }
 
+  // getTBox(){
+  //   var httpOptions = {
+  //     headers: new HttpHeaders({
+  //       'Content-Type':  'none',
+  //     })
+  //   };
 
+  //   var request = this.url + `/TBox/vdi3682`;
+    
+  //   // return this.http.post(url, body, httpOptions).pipe(tap((data: any) => data.json()));  
+  //   console.log("Query executed");
+  //   console.log(request, httpOptions);
+  //   var re = this.http.get(request, httpOptions);
+  //   console.log(re);
+  //   return re;
+      
+  // }
   
 
 }
