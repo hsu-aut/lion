@@ -1,8 +1,8 @@
-import {Namespace} from '../utils/prefixes';
+import {PrefixesService} from '../rdf-models/services/prefixes.service';
 const nsPrefix = `wadl`;
 const nsUri = `http://www.hsu-ifa.de/ontologies/WADL#`;
 
-var parser = new Namespace();
+var parser = new PrefixesService();
 
 export class WADLDATA {
 

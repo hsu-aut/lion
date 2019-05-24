@@ -4,7 +4,7 @@ import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../../rdf-model
 import { ISA88Insert, ISA88Data, ISA88Variables } from '../../../rdf-models/isa88Model';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
-import { Namespace} from '../../../utils/prefixes';
+import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -18,7 +18,6 @@ import { DownloadService } from '../../../rdf-models/services/download.service';
 export class Dinen61360Component implements OnInit {
   // util variables
   keys = Object.keys;
-  namespaceParser = new Namespace();
   TableUtil = new Tables();
   _loaderShow = true;
   currentTable: Array<Object> = [];
@@ -90,7 +89,12 @@ export class Dinen61360Component implements OnInit {
   //eclass data from backend
   propertyList = [];
 
-  constructor(private query: SparqlQueriesService, private eclass: EclassSearchService, private dlService: DownloadService) { }
+  constructor(
+    private query: SparqlQueriesService, 
+    private eclass: EclassSearchService, 
+    private dlService: DownloadService,
+    private namespaceParser: PrefixesService
+    ) { }
 
   ngOnInit() {
     // get ProcessData

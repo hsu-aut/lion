@@ -1,7 +1,5 @@
-import { Namespace } from '../utils/prefixes';
 import { PrefixesService } from './services/prefixes.service';
 
-var parser = new Namespace();
 var nameService = new PrefixesService();
 
 export class DINEN61360Data {
@@ -11,16 +9,16 @@ export class DINEN61360Data {
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT DISTINCT ?Type ?ID ?Name ?Definition ?Unit_Of_Measure ?Data_Type WHERE { 
               
-       ?Type a DE6:Type_Description;
-       DE6:Code ?ID;
-       DE6:Definition ?Definition;
-       DE6:Unit_of_Measure ?Unit_Of_Measure;
-       DE6:Preferred_Name ?Name;
-       a ?Data_Type.
-       ?Data_Type rdfs:subClassOf ?a.
-        VALUES ?a
-        {DE6:Array DE6:Bag DE6:List DE6:Set DE6:Boolean DE6:Integer DE6:Real DE6:String}
-        }  `;
+    ?Type a DE6:Type_Description.
+    OPTIONAL{ ?Type DE6:Code ?ID.}
+    OPTIONAL{ ?Type DE6:Definition ?Definition.}
+    OPTIONAL{ ?Type DE6:Unit_of_Measure ?Unit_Of_Measure.}
+    OPTIONAL{ ?Type DE6:Preferred_Name ?Name.}
+    OPTIONAL{ ?Type a ?Data_Type.
+                ?Data_Type rdfs:subClassOf ?a.
+                VALUES ?a
+                {DE6:Array DE6:Bag DE6:List DE6:Set DE6:Boolean DE6:Integer DE6:Real DE6:String}}
+    }   `;
     public SPARQL_SELECT_allDE = `
     PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -117,7 +115,8 @@ export class DINEN61360Insert {
 
     public buildDINEN61360T(variables: DINEN61360Variables) {
         // activeNamespace
-        var activeNamespace = parser.PREFIXES[nameService.getActiveNamespace()].namespace;
+        var PREFIXES = nameService.getPrefixes();
+        var activeNamespace = PREFIXES[nameService.getActiveNamespace()].namespace;
         // type info
         var code = variables.mandatoryTypeVariables.code
         var version = variables.mandatoryTypeVariables.version
@@ -292,10 +291,11 @@ INSERT {
 
     public buildDINEN61360I(variables: DINEN61360Variables) {
         // activeNamespace
-        var activeNamespace = parser.PREFIXES[nameService.getActiveNamespace()].namespace;
+        var PREFIXES = nameService.getPrefixes();
+        var activeNamespace = PREFIXES[nameService.getActiveNamespace()].namespace;
 
         // individual to be described by data element
-        var describedIRI = parser.parseToIRI(variables.instanceVariables.describedIndividual);
+        var describedIRI = nameService.parseToIRI(variables.instanceVariables.describedIndividual);
 
         // type info
         var code = variables.mandatoryTypeVariables.code

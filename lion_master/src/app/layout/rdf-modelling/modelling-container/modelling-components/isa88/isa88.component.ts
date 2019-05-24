@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ISA88Insert, ISA88Data, ISA88Variables } from '../../../rdf-models/isa88Model';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
-import { Namespace} from '../../../utils/prefixes';
+import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -12,11 +12,14 @@ import { DownloadService } from '../../../rdf-models/services/download.service';
 })
 export class Isa88Component implements OnInit {
 
-  constructor(private query: SparqlQueriesService, private dlService: DownloadService) { }
+  constructor(
+    private query: SparqlQueriesService, 
+    private dlService: DownloadService,
+    private namespaceParser: PrefixesService
+    ) { }
   // util variables
   keys = Object.keys;
   TableUtil = new Tables();
-  namespaceParser = new Namespace();
   currentTable: Array<Object> = [];
   tableTitle: string;
   tableSubTitle: string;

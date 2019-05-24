@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../../rdf-models/vdi3682Model';
-import { Namespace} from '../../../utils/prefixes';
+import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -15,7 +15,6 @@ import { DownloadService } from '../../../rdf-models/services/download.service';
 export class VDI3682Component implements OnInit {
   // util variables
   keys = Object.keys; 
-  namespaceParser = new Namespace();
   TableUtil = new Tables();
   tableTitle: string;
   tableSubTitle: string;
@@ -49,7 +48,11 @@ export class VDI3682Component implements OnInit {
   insertUrl;
 
 
-  constructor(private query:SparqlQueriesService, private dlService: DownloadService) { }
+  constructor(
+    private query:SparqlQueriesService, 
+    private dlService: DownloadService,
+    private namespaceParser: PrefixesService
+    ) { }
 
 
 

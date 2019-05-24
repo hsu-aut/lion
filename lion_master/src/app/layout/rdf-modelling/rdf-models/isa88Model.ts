@@ -1,7 +1,6 @@
-import { Namespace } from '../utils/prefixes';
 import { PrefixesService } from './services/prefixes.service';
 
-var parser = new Namespace;
+
 var nameService = new PrefixesService;
 
 export class ISA88Data {
@@ -40,10 +39,10 @@ export class ISA88Variables {
 export class ISA88Insert {
 
         public buildISA88(variables: ISA88Variables): string {
-                var prefixes = nameService.getPrefixes();
-                var namespace = prefixes[nameService.getActiveNamespace()].namespace;
-                var SystemName = parser.parseToName(variables.SystemName);
-                var SystemIRI = parser.parseToIRI(variables.SystemName);
+                var PREFIXES = nameService.getPrefixes();
+                var namespace = PREFIXES[nameService.getActiveNamespace()].namespace;
+                var SystemName = nameService.parseToName(variables.SystemName);
+                var SystemIRI = nameService.parseToIRI(variables.SystemName);
                 var mode = variables.mode;
 
                 var insertStringProduction = `      

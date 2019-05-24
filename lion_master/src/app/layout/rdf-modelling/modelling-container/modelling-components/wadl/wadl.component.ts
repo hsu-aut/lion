@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { WADLDATA, WADLINSERT, WADLVARIABLES } from '../../../rdf-models/wadl';
-import { Namespace} from '../../../utils/prefixes';
+import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -46,7 +46,6 @@ export class WadlComponent implements OnInit {
 
   // util variables
   keys = Object.keys;
-  namespaceParser = new Namespace();
   TableUtil = new Tables();
 
 
@@ -57,7 +56,11 @@ export class WadlComponent implements OnInit {
 
 
 
-  constructor(private query: SparqlQueriesService, private dlService: DownloadService) {
+  constructor(
+    private query: SparqlQueriesService, 
+    private dlService: DownloadService,
+    private namespaceParser: PrefixesService
+    ) {
 
 
   }

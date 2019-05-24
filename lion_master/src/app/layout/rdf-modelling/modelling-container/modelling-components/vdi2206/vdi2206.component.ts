@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { VDI2206DATA, VDI2206INSERT, VDI2206VARIABLES } from '../../../rdf-models/vdi2206Model';
-import { Namespace} from '../../../utils/prefixes';
+import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -14,7 +14,6 @@ export class Vdi2206Component implements OnInit {
 
   // util variables
   keys = Object.keys;
-  namespaceParser = new Namespace();
   TableUtil = new Tables();
   currentTable: Array<Object> = [];
 
@@ -53,7 +52,11 @@ export class Vdi2206Component implements OnInit {
   StructureOptions: string;
   StructureView: string;
 
-  constructor(private query: SparqlQueriesService, private dlService: DownloadService) { }
+  constructor(
+    private query: SparqlQueriesService, 
+    private dlService: DownloadService,
+    private namespaceParser: PrefixesService
+    ) { }
 
   ngOnInit() {
     this.query.select(this.modelData.allClasses).subscribe((data: any) => {

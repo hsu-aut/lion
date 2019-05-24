@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
-
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 
 @Component({
@@ -11,7 +9,7 @@ import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 })
 export class DashboardComponent implements OnInit {
   // prefix object
-  namespaceService = new PrefixesService();
+
   prefixes;
 
   // Doughnut
@@ -31,7 +29,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-  constructor() { }
+  constructor(private namespaceService: PrefixesService) { }
 
   ngOnInit() {
 

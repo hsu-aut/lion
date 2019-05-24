@@ -1,7 +1,6 @@
-import { Namespace } from '../utils/prefixes';
+
 import { PrefixesService } from './services/prefixes.service';
 
-var parser = new Namespace;
 var nameService = new PrefixesService;
 
 export class VDI2206DATA {
@@ -78,7 +77,7 @@ SELECT ?Module ?childEntity ?childEntityType WHERE {
 
     public selectClass(Individual) {
 
-        var iri = parser.parseToIRI(Individual);
+        var iri = nameService.parseToIRI(Individual);
 
         var selectString = `
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -113,7 +112,7 @@ SELECT ?Module ?childEntity ?childEntityType WHERE {
     }
 
     public selectClassByRange(predicate){
-        var iri = parser.parseToIRI(predicate);
+        var iri = nameService.parseToIRI(predicate);
         var selectString =`
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -134,7 +133,7 @@ SELECT ?Module ?childEntity ?childEntityType WHERE {
     }
     public selectIndividualByClass(Class){
         console.log(Class);
-        var iri = parser.parseToIRI(Class);
+        var iri = nameService.parseToIRI(Class);
         console.log(iri);
         var selectString = `
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -162,10 +161,11 @@ export class VDI2206VARIABLES {
 export class VDI2206INSERT {
 
     public createEntity(graph: tripel) {
-        var activeNamespace = parser.PREFIXES[nameService.getActiveNamespace()].namespace;
-        var subject = activeNamespace + parser.parseToName(graph.subject);
-        var predicate = parser.parseToIRI(graph.predicate);
-        var object = parser.parseToIRI(graph.object);
+        var PREFIXES = nameService.getPrefixes();
+        var activeNamespace = PREFIXES[nameService.getActiveNamespace()].namespace;
+        var subject = activeNamespace + nameService.parseToName(graph.subject);
+        var predicate = nameService.parseToIRI(graph.predicate);
+        var object = nameService.parseToIRI(graph.object);
 
         var insertString = `
         INSERT { 
