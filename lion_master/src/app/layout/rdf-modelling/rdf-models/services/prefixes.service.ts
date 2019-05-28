@@ -10,35 +10,37 @@ export class PrefixesService {
   constructor() { }
 
   prefixes = new Namespace;
+  PREFIXES = this.prefixes.PREFIXES;
+  activeNamespace = this.prefixes.activeNamespace;
 
   getPrefixes() {
-    return this.prefixes.PREFIXES;
+    return this.PREFIXES;
   }
   addNamespace(PREFIX, NAMESPACE) {
     let pre = PREFIX;
     let name = NAMESPACE;
     let entry = { prefix: pre, namespace: name };
-    this.prefixes.PREFIXES.push(entry);
+    this.PREFIXES.push(entry);
   }
 
   editNamespace(key, userPrefix, userNamespace) {
-    this.prefixes.PREFIXES[key].prefix = userPrefix;
-    this.prefixes.PREFIXES[key].namespace = userNamespace;
+    this.PREFIXES[key].prefix = userPrefix;
+    this.PREFIXES[key].namespace = userNamespace;
   }
 
   deleteNamespace(key) {
-    this.prefixes.PREFIXES.splice(key, 1);
+    this.PREFIXES.splice(key, 1);
   }
 
   getActiveNamespace() {
-    return this.prefixes.activeNamespace;
+    return this.activeNamespace;
   }
 
   setActiveNamespace(key) {
-    let max = this.prefixes.PREFIXES.length;
+    let max = this.PREFIXES.length;
 
     if (key <= max) {
-      this.prefixes.activeNamespace = key;
+      this.activeNamespace = key;
     }
   }
 
@@ -50,23 +52,30 @@ export class PrefixesService {
     for (let index = 0; index < PREFIXES.length; index++) {
       prefixString = prefixString + "PREFIX " + PREFIXES[index].prefix + `<${PREFIXES[index].namespace}>` + "\n"
     }
-    console.log(prefixString)
+
     return prefixString
   }
 
+  // depreciated, should not be used!!!!!!!!
   parseToName(IndividualWithPrefix: string): string {
     var PREFIXES = this.getPrefixes();
+    console.log(PREFIXES)
     var prefixedName: string = IndividualWithPrefix;
     var name: string;
     var parsed: boolean;
+    if (prefixedName.search("http:") != -1) { 
+      var IRI = prefixedName;
+      var nameArray = IRI.split("#")
+      return nameArray[1];
+    }
     for (let i = 0; i < PREFIXES.length; i++) {
 
       if (prefixedName.search(PREFIXES[i].prefix) != -1) {
 
         name = prefixedName.replace(PREFIXES[i].prefix, "");
-        // console.log(name);
+        console.log(name);
         parsed = true;
-      }
+      } 
     }
     if (parsed == true) {
       return name;
@@ -84,10 +93,9 @@ export class PrefixesService {
     for (let i = 0; i < PREFIXES.length; i++) {
 
       if (prefixedName.search(PREFIXES[i].prefix) != -1) {
-
+        
         name = prefixedName.replace(PREFIXES[i].prefix, "");
         IRI = PREFIXES[i].namespace + name;
-        // console.log(IRI);
         parsed = true;
         break;
       }
@@ -101,7 +109,6 @@ export class PrefixesService {
   parseToPrefix(SPARQLReturn: any) {
     var PREFIXES = this.getPrefixes();
     var returnObject = SPARQLReturn;
-    console.log(PREFIXES);
     // loop iterates over all results
     for (const key in returnObject.results.bindings) {
       if (returnObject.results.bindings.hasOwnProperty(key)) {

@@ -90,8 +90,8 @@
         </div>
         <div class="col">
           <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
-            <option *ngFor='let x of keys(allClasses)'>
-              {{allClasses[x].type}}
+            <option *ngFor='let x of allClasses'>
+              {{x}}
             </option>
           </select>
         </div>

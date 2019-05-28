@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ISA88Insert, ISA88Data, ISA88Variables } from '../../../rdf-models/isa88Model';
+import { Isa88ModelService, ISA88Insert, ISA88Variables } from '../../../rdf-models/isa88Model.service';
+import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
+
+
+
+
 
 @Component({
   selector: 'app-isa88',
@@ -15,7 +20,9 @@ export class Isa88Component implements OnInit {
   constructor(
     private query: SparqlQueriesService, 
     private dlService: DownloadService,
-    private namespaceParser: PrefixesService
+    private namespaceParser: PrefixesService,
+    private modelService: Isa88ModelService,
+    private vdi3682ModelService: Vdi3682ModelService, 
     ) { }
   // util variables
   keys = Object.keys;
@@ -32,19 +39,19 @@ export class Isa88Component implements OnInit {
 
   // variables for behavior 
   isa88 = new ISA88Insert();
-  selectString = new ISA88Data();
   selectOption: Array<string> = [];
   insertreturn: any;
 
   ngOnInit() {
-    this.getTechnicalResources();
-    this.getBehaviorInfo();
+    this.currentTable = this.modelService.getISA88BehaviorInfo();
+    this.selectOption = this.vdi3682ModelService.getLIST_OF_TECHNICAL_RESOURCES();
     this.setTableDescription();
+
   }
 
   buildInsert() {
     var variables = this.getVariables();
-    this.insertString = this.isa88.buildISA88(variables);
+    this.insertString = this.modelService.buildStateMachine(variables);
     const blob = new Blob([this.insertString], { type: 'text/plain' });
     // Dateiname
     const name = 'insert.txt';
@@ -53,26 +60,13 @@ export class Isa88Component implements OnInit {
 
   executeInsert() {
     var variables = this.getVariables();
-    this.insertString = this.isa88.buildISA88(variables);
-    this.query.insert(this.insertString).subscribe((data: any) => {
+    this.modelService.insertStateMachine(variables).subscribe((data: any) => {
       this.insertreturn = data
+      this.refreshISA88();
     });
-    this.getBehaviorInfo();
+    
   }
 
-  getTechnicalResources() {
-    this.query.select(this.selectString.SPARQL_SELECT_TR).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.selectOption = this.TableUtil.buildList(data, 0);
-    });
-  }
-
-  getBehaviorInfo() {
-    this.query.select(this.selectString.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.currentTable = this.TableUtil.buildTable(data);
-    });
-  }
 
   getVariables() {
     var varia: ISA88Variables = {
@@ -85,6 +79,13 @@ export class Isa88Component implements OnInit {
   setTableDescription(){
     this.tableTitle = "Available state machine entities in database";
     this.tableSubTitle = undefined;
+  }
+
+  refreshISA88(){
+    this.modelService.loadISA88BehaviorInfo().subscribe((data: any) => {
+      this.currentTable = data
+      this.modelService.setISA88BehaviorInfo(data)
+    });
   }
 
 }

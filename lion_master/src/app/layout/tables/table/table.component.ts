@@ -70,7 +70,7 @@ export class TableComponent implements OnInit {
   setPageCount() {
     this.pageArray = [];
     this.numberOfPages = Math.ceil(this.numberOfRows / this.paginationNumber);
-    console.log(Math.ceil(this.numberOfRows / this.paginationNumber))
+    // console.log(Math.ceil(this.numberOfRows / this.paginationNumber))
     for (let i = 0; i < this.numberOfPages; i++) {
       this.pageArray[i] = i + 1;
     }

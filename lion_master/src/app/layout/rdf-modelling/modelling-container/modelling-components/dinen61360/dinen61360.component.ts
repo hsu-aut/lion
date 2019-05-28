@@ -1,7 +1,7 @@
 import { Component, OnInit, } from '@angular/core';
-import { DINEN61360Variables, DINEN61360Data, DINEN61360Insert, expressionGoal, logicInterpretation, datatype } from '../../../rdf-models/dinen61360Model';
-import { VDI3682DATA, VDI3682INSERT, VDI3682VARIABLES } from '../../../rdf-models/vdi3682Model';
-import { ISA88Insert, ISA88Data, ISA88Variables } from '../../../rdf-models/isa88Model';
+import { Dinen61360Service, DINEN61360Insert, DINEN61360Variables, expressionGoal, logicInterpretation, datatype } from '../../../rdf-models/dinen61360.service';
+import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
+import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
@@ -19,7 +19,7 @@ export class Dinen61360Component implements OnInit {
   // util variables
   keys = Object.keys;
   TableUtil = new Tables();
-  _loaderShow = true;
+  _loaderShow = false;
   currentTable: Array<Object> = [];
   instanceOption: string;
   tableTitle: string;
@@ -61,14 +61,13 @@ export class Dinen61360Component implements OnInit {
   value: string;
 
   // graph db data - DIN EN 61360
-  modelData = new DINEN61360Data();
   din = new DINEN61360Insert();
   NoOfDE = 0;
   NoOfDET = 0;
   NoOfDEI = 0;
   physicalEntitiesByInheritance: any;
   physicalEntitiesByContainment: any;
-  allExTypes: DINEN61360Data["IRI"] = [];
+  allExTypes: Array<Object> = [];
   allTypes: any;
   insertString: string;
   customTable: Array<Object>;
@@ -76,15 +75,10 @@ export class Dinen61360Component implements OnInit {
 
   // graph db data VDI 3682
   allProcessInfo: any = [];
-  VDI3682modelData = new VDI3682DATA();
-  VDI3682modelInsert = new VDI3682INSERT();
-  VDI3682modelVariables = new VDI3682VARIABLES();
 
   // graph db data ISA 88
   allBehaviorInfo: any = [];
-  ISAmodelData = new ISA88Data();
-  ISAmodelInsert = new ISA88Insert();
-  ISAmodelVariables = new ISA88Variables();
+
 
   //eclass data from backend
   propertyList = [];
@@ -93,7 +87,10 @@ export class Dinen61360Component implements OnInit {
     private query: SparqlQueriesService, 
     private eclass: EclassSearchService, 
     private dlService: DownloadService,
-    private namespaceParser: PrefixesService
+    private namespaceParser: PrefixesService,
+    private dinen61360Service: Dinen61360Service,
+    private vdi3682Service: Vdi3682ModelService,
+    private isa88Service: Isa88ModelService
     ) { }
 
   ngOnInit() {
@@ -102,23 +99,12 @@ export class Dinen61360Component implements OnInit {
     this.getAllTypes();
     this.getStatisticInfo();
     this.getAllBehaviorInfo();
-    this.query.select(this.modelData.SPARQL_SELECT_physical_by_child).subscribe((data: any) => {
-      // log + assign data and stop loader
-      console.log(data);
-      this._loaderShow = false;
-      this.physicalEntitiesByInheritance = data;
-
-      // parse prefixes where possible 
-      this.namespaceParser.parseToPrefix(data);
-    });
-
-
 
   }
 
   buildTypeInsert() {
     var varia = this.getVariables();
-    this.insertString = this.din.buildDINEN61360T(varia);
+    this.insertString = this.dinen61360Service.buildDET(varia);
     const blob = new Blob([this.insertString], { type: 'text/plain' });
     const name = 'insert.txt';
     this.dlService.download(blob, name);
@@ -127,7 +113,7 @@ export class Dinen61360Component implements OnInit {
 
   buildInstanceInsert() {
     var varia = this.getVariables();
-    this.insertString = this.din.buildDINEN61360I(varia);
+    this.insertString = this.dinen61360Service.buildDEI(varia);
     const blob = new Blob([this.insertString], { type: 'text/plain' });
     const name = 'insert.txt';
     this.dlService.download(blob, name);
@@ -155,7 +141,6 @@ export class Dinen61360Component implements OnInit {
     for (const key in datatype) {
       if (datatype.hasOwnProperty(key)) {
         const element = datatype[key].toString();
-
         if (str.includes(element.toLowerCase())) {
           this.selectedDataytpe = element;
         }
@@ -167,7 +152,6 @@ export class Dinen61360Component implements OnInit {
     } else {
       this.short_name = row.ShortName;
     }
-
     this.UoM = row.DINNotation;
   }
 
@@ -176,71 +160,116 @@ export class Dinen61360Component implements OnInit {
   }
   insertDINEN61360T() {
     var varia = this.getVariables();
-    this.insertString = this.din.buildDINEN61360T(varia);
-    this.query.insert(this.insertString).subscribe((data: any) => {
-      console.log(data)
-      this.getAllTypes();
-      this.getStatisticInfo();
+    this.dinen61360Service.insertDET(varia).subscribe((data: any) => {
+      this.setAllTypes();
+      this.setStatisticInfo();
     });
 
   }
   insertDINEN61360I() {
     var varia = this.getVariables();
-    this.insertString = this.din.buildDINEN61360I(varia);
-    this.query.insert(this.insertString).subscribe((data: any) => {
-      this.getStatisticInfo();
+    this.dinen61360Service.insertDEI(varia).subscribe((data: any) => {
+      this.setStatisticInfo();
     });
+
   }
+
   executeSelect(selectString) {
-    this.query.select(selectString).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.customTable = this.TableUtil.buildTable(data);;
+    this.query.selectTable(selectString).subscribe((data: any) => {
+      this.customTable = data;
       this.setTableDescription(this.instanceOption);
     });
   }
+
   iriTableClick(name: string) {
     this.describedIndividual = name;
   }
 
+  // getAllProcessInfo() {
+  //   this._loaderShow = true;
+  //   this.query.selectTable(this.VDI3682modelData.allProcessInfo).subscribe((data: any) => {
+  //     this.allProcessInfo = data;
+  //     this._loaderShow = false;
+  //   });
+  // }
+
   getAllProcessInfo() {
-    this._loaderShow = true;
-    this.query.select(this.VDI3682modelData.allProcessInfo).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.allProcessInfo = this.TableUtil.buildTable(data);
-      this._loaderShow = false;
-    });
+    this.allProcessInfo = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
   }
+  // getAllBehaviorInfo() {
+  //   this._loaderShow = true;
+  //   this.query.select(this.ISAmodelData.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
+  //     this.namespaceParser.parseToPrefix(data);
+  //     this.allBehaviorInfo = this.TableUtil.buildTable(data);
+  //     this._loaderShow = false;
+  //   });
+  // }
   getAllBehaviorInfo() {
-    this._loaderShow = true;
-    this.query.select(this.ISAmodelData.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.allBehaviorInfo = this.TableUtil.buildTable(data);
-      this._loaderShow = false;
-    });
+    this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
   }
+  // getAllTypes() {
+  //   this._loaderShow = true;
+  //   this.query.select(this.modelData.SPARQL_SELECT_allTypes).subscribe((data: any) => {
+  //     this._loaderShow = false;
+  //     this.namespaceParser.parseToPrefix(data);
+  //     this.allTypes = this.TableUtil.buildTable(data);
+  //   });
+  // }
   getAllTypes() {
+    this.allTypes = this.dinen61360Service.getTABLE_All_TYPES();
+  }
+
+  setAllTypes() {
     this._loaderShow = true;
-    this.query.select(this.modelData.SPARQL_SELECT_allTypes).subscribe((data: any) => {
+    this.dinen61360Service.loadTABLE_All_TYPES().subscribe((data: any) => {
+      this.allTypes = data;
+      this.dinen61360Service.setTABLE_All_TYPES(data)
       this._loaderShow = false;
-      this.namespaceParser.parseToPrefix(data);
-      this.allTypes = this.TableUtil.buildTable(data);
     });
   }
+  // getStatisticInfo() {
+  //   // get stats of functions in TS
+  //   this.query.select(this.modelData.SPARQL_SELECT_allDE).subscribe((data: any) => {
+  //     this.namespaceParser.parseToPrefix(data);
+  //     this.NoOfDE = this.TableUtil.buildTable(data).length;
+  //   });
+  //   this.query.select(this.modelData.SPARQL_SELECT_allDET).subscribe((data: any) => {
+  //     this.namespaceParser.parseToPrefix(data);
+  //     this.NoOfDET = this.TableUtil.buildTable(data).length;
+  //   });
+  //   this.query.select(this.modelData.SPARQL_SELECT_allDEI).subscribe((data: any) => {
+  //     this.namespaceParser.parseToPrefix(data);
+  //     this.NoOfDEI = this.TableUtil.buildTable(data).length;
+  //   });
+  // }
+
   getStatisticInfo() {
     // get stats of functions in TS
-    this.query.select(this.modelData.SPARQL_SELECT_allDE).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.NoOfDE = this.TableUtil.buildTable(data).length;
+    this.NoOfDE = this.dinen61360Service.getLIST_All_DE().length;
+    this.NoOfDET = this.dinen61360Service.getLIST_All_DET().length;
+    this.NoOfDEI = this.dinen61360Service.getLIST_All_DEI().length;
+  }
+
+  setStatisticInfo() {
+  this._loaderShow = true;
+    // set stats of functions in TS
+    this.dinen61360Service.loadLIST_All_DE().subscribe((data: any) => {
+      this.NoOfDE = data.length;
+      this.dinen61360Service.setLIST_All_DE(data)
+      this._loaderShow = false;
     });
-    this.query.select(this.modelData.SPARQL_SELECT_allDET).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.NoOfDET = this.TableUtil.buildTable(data).length;
+    this.dinen61360Service.loadLIST_All_DET().subscribe((data: any) => {
+      this.NoOfDET = data.length;
+      this.dinen61360Service.setLIST_All_DET(data)
+      this._loaderShow = false;
     });
-    this.query.select(this.modelData.SPARQL_SELECT_allDEI).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.NoOfDEI = this.TableUtil.buildTable(data).length;
+    this.dinen61360Service.loadLIST_All_DEI().subscribe((data: any) => {
+      this.NoOfDEI = data.length;
+      this.dinen61360Service.setLIST_All_DEI(data)
+      this._loaderShow = false;
     });
   }
+
 
   getVariables() {
     var varia: DINEN61360Variables = {

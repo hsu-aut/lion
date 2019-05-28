@@ -74,8 +74,8 @@
         </div>
         <div class="col">
           <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
-            <option *ngFor='let x of keys(allClasses)'>
-              {{allClasses[x].type}}
+            <option *ngFor='let x of allClasses'>
+              {{x}}
             </option>
           </select>
         </div>
@@ -102,8 +102,8 @@
           <ng-template #thenBlock>
             <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
               (click)="getObjectClasses()">
-              <option *ngFor='let x of keys(existingPredicates.results.bindings)'>
-                {{existingPredicates.results.bindings[x].ObjectProperty.value}}
+              <option *ngFor='let x of existingPredicates'>
+                {{x}}
               </option>
             </select>
           </ng-template>
@@ -116,8 +116,8 @@
           <ng-template #thenBlock2>
             <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
               (click)="getExistingObjects()">
-              <option *ngFor='let x of keys(existingObjectClasses.results.bindings)'>
-                {{existingObjectClasses.results.bindings[x].Class.value}}
+              <option *ngFor='let x of existingObjectClasses'>
+                {{x}}
               </option>
             </select>
           </ng-template>
@@ -129,8 +129,8 @@
           <div *ngIf="existingObjects; then thenBlock3 else elseBlock3"></div>
           <ng-template #thenBlock3>
             <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
-              <option *ngFor='let x of keys(existingObjects.results.bindings)'>
-                {{existingObjects.results.bindings[x].Individual.value}}
+              <option *ngFor='let x of existingObjects'>
+                {{x}}
               </option>
             </select>
           </ng-template>

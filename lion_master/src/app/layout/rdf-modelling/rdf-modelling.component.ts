@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-rdf-modelling',
   templateUrl: './rdf-modelling.component.html',
@@ -9,9 +10,10 @@ export class RdfModellingComponent implements OnInit {
 
   collapedSideBar: boolean;
 
-  constructor() { }
+  constructor( ) { }
 
   ngOnInit() {
+
   }
 
   receiveCollapsed($event) {
