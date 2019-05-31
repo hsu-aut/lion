@@ -113,7 +113,7 @@ export class SparqlQueriesService {
         # in case the range is a blank node, use the rdf:first as return    
         BIND(IF(isBlank(?a),?g,?a) AS ?object)
     }`;
-    return this.select(selectString);
+    return this.selectTable(selectString);
   }
 
   getTriplesCount(Namespace) {
@@ -125,7 +125,7 @@ export class SparqlQueriesService {
     FILTER(STRSTARTS(STR(?object), "${Namespace}"))
     }
     `;
-    return this.select(selectString);
+    return this.selectList(selectString, 0);
   }
 
 

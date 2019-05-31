@@ -13,9 +13,9 @@ import { ConfigurationsComponent } from './modelling-components/configurations/c
 
 
 const routes: Routes = [
-    // { path: '', component: ModellingContainerComponent },
+    { path: '', component: ModellingContainerComponent },
     { path: 'dashboard', component: DashboardComponent },
-    { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
+    // { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     { path: 'vdi3682', component: VDI3682Component },
     { path: 'dinen61360', component: Dinen61360Component },
     { path: 'vdi2206', component: Vdi2206Component },

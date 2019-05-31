@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 
-var nameService = new PrefixesService;
 
 @Injectable({
   providedIn: 'root'
