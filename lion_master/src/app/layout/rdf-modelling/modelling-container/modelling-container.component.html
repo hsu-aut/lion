@@ -1,3 +1,16 @@
-<p>
-  modelling-container works!
-</p>
+
+<div class="container" style="height: 80vh" >
+  <div class="row" style="padding-top: 30%">
+    <div class="col sm-4">
+      <p style="text-align: center"> {{progressDescription}} </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="progress" style="height: 1px;">
+        <div class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': progressString}" aria-valuenow="25"
+          aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+  </div>
+</div>

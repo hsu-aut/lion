@@ -12,16 +12,27 @@ export class DashboardService {
     data: [],
     labels: []
   }
-
+  numberOfloads: number = 1;
+  loadCount: number = 0;
   chartPrefixes: Array<number> = [0, 1, 2, 3, 4]
 
   constructor(
     private query: SparqlQueriesService,
     private nameService: PrefixesService
   ) {
+
     this.loadChartData().subscribe((data: any) => {
       this.doughnutChartData = data;
+      this.loadCount++;
     });
+  }
+  
+  getDashboardStatus(){
+    if(this.loadCount < this.numberOfloads){
+      return true
+    } else{
+      return false
+    }
   }
 
   loadChartData() {
