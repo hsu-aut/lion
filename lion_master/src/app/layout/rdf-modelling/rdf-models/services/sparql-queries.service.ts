@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrefixesService } from './prefixes.service';
 import { Tables } from '../../utils/tables';
+import { Url } from 'url';
 
 //const url = `http://localhost:7200/repositories/Airbus_CTC_01`;
 
@@ -13,19 +14,40 @@ import { Tables } from '../../utils/tables';
 })
 export class SparqlQueriesService {
   // util
-  url: string;
+  host: string;
+  repository: string;
   TableUtil = new Tables();
-
 
   constructor(
     private http: HttpClient,
     private namespaceService: PrefixesService
   ) {
-    // new Hamied -> default url in constructor
 
-    this.url = 'http://localhost:7200/repositories/testdb';
-
+    // default url
+    this.host = 'http://localhost:7200';
+    this.repository = 'testdb';
   }
+
+    // getter and setter for repository and host
+    getHost() {
+      return this.host;
+    }
+    setHost(hostName: string) {
+      this.host = hostName;
+    }
+    getRepository() {
+      return this.repository;
+    }
+    setRepository(repositoryName: string) {
+      this.repository = repositoryName;
+    }
+    getURL() {
+      var url: string;
+      return url = this.host + '/repositories/' + this.repository;
+    }
+    // setURL(host: string, repository) {
+    //   this.url = host + '/repositories/' + repository;
+    // }
 
   select(body) {
     var httpOptions = {
@@ -33,7 +55,7 @@ export class SparqlQueriesService {
         'Content-Type': 'application/sparql-query'
       })
     };
-    var re = this.http.post(this.url, body, httpOptions);
+    var re = this.http.post(this.getURL(), body, httpOptions);
     return re;
 
   }
@@ -46,7 +68,7 @@ export class SparqlQueriesService {
     };
 
     var tableObservable = new Observable((observer) => {
-      this.http.post(this.url, Query, httpOptions).subscribe((data: any) => {
+      this.http.post(this.getURL(), Query, httpOptions).subscribe((data: any) => {
         this.namespaceService.parseToPrefix(data);
         currentTable = this.TableUtil.buildTable(data)
         observer.next(currentTable)
@@ -66,7 +88,7 @@ export class SparqlQueriesService {
     };
 
     var tableObservable = new Observable((observer) => {
-      this.http.post(this.url, Query, httpOptions).subscribe((data: any) => {
+      this.http.post(this.getURL(), Query, httpOptions).subscribe((data: any) => {
         this.namespaceService.parseToPrefix(data);
         currentList = this.TableUtil.buildList(data, varPosition)
         observer.next(currentList)
@@ -84,17 +106,9 @@ export class SparqlQueriesService {
         'Content-Type': 'application/sparql-update'
       })
     };
-    var urlPOST = this.url + "/statements";
+    var urlPOST = this.getURL() + "/statements";
     var re = this.http.post(urlPOST, body, httpOptions);
     return re;
-  }
-
-  // New Hamied -> Getter and Setter
-  getUrl() {
-    return this.url;
-  }
-  setUrl(url: string) {
-    this.url = url;
   }
 
   getRelatedTriples(subject) {
@@ -128,9 +142,10 @@ export class SparqlQueriesService {
     return this.selectList(selectString, 0);
   }
 
-
+ 
 
 
 }
+
 
 

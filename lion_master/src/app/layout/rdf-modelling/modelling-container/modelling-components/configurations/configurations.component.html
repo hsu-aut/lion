@@ -7,7 +7,7 @@
     <p class="card-text"> Existing namespaces and their prefixes are shown below. Click on the table to delete or
       edit existing namespaces. </p>
     <app-table [currentTable]="PREFIXES" [tableTitle]="nameSpaceTableTitle" [tableExplanation]="nameSpaceTableSubTitle"
-    (tableClickedRow)="prefixTableClick($event)"></app-table>
+      (tableClickedRow)="prefixTableClick($event)"></app-table>
     <form>
       <div class="form-row">
         <div class="form-group col-sm">
@@ -45,6 +45,7 @@
         <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="setActiveNamespace()">
             Set as active Namesapce
           </button></div>
+
       </div>
     </form>
   </div>
@@ -63,16 +64,14 @@
             <h6>Graph Database Configuration</h6>
           </div>
           <div class="card-body">
-            <label><input class="form-control" [(ngModel)]="URL" name="url" type="text"
-                placeholder="{{url[0]}}"></label><br>
-            <label><input class="form-control" [(ngModel)]="Repository" name="repository" type="text"
-                placeholder="{{url[1]}}"></label><br>
-            <label><input class="form-control" [(ngModel)]="Username" name="username" type="text"
-                placeholder="[Username]"></label><br>
-            <label><input class="form-control" [(ngModel)]="Password" name="password" type="text"
-                placeholder="[Password]"></label><br>
+            <label><input class="form-control" [(ngModel)]="hostName" name="url" type="text"
+                placeholder="hostName"></label><br>
+            <label><input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
+                placeholder="repositoryName"></label><br>
 
-            <button class="btn btn-secondary" (click)="submitGraphConfig(URL, Repository)">submit</button>
+
+            <button class="btn btn-secondary" (click)="setGraphDBConfig(hostName, repositoryName)">
+              Set GraphDB Config </button>
           </div>
         </div>
       </div>
@@ -105,11 +104,20 @@
           </div>
           <div class="card-body">
 
-            <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text"
+            <!-- <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text"
                 placeholder="{{eclassUrl}}"></label><br>
 
-            <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button>
+            <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button> -->
 
+            <div class="form-row">
+              <div class="form-group col-sm"> <a class="btn btn-secondary col m-3" href="/modelling/model"
+                  (click)="loadTBoxes()"> Load Tboxes
+                </a></div>
+              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="clearRepository()">
+                  Clear Repository
+                  Namesapce
+                </button></div>
+            </div>
           </div>
         </div>
       </div>
@@ -125,20 +133,22 @@
       </div>
       <div class="card-body">
         <h5 class="card-title">Configuring the connection to the graph database</h5>
-        {{test}}
-        <label><input class="form-control" [(ngModel)]="URL" name="url" type="text"
-            placeholder="{{url[0]}}"></label><br>
-        <label><input class="form-control" [(ngModel)]="Repository" name="repository" type="text"
-            placeholder="{{url[1]}}"></label><br>
-        <label><input class="form-control" [(ngModel)]="Username" name="username" type="text"
+        <label><input class="form-control" [(ngModel)]="hostName" name="url" type="text"
+            placeholder="hostName"></label><br>
+        <label><input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
+            placeholder="repositoryName"></label><br>
+        <!-- <label><input class="form-control" [(ngModel)]="Username" name="username" type="text"
             placeholder="[Username]"></label><br>
         <label><input class="form-control" [(ngModel)]="Password" name="password" type="text"
-            placeholder="[Password]"></label><br>
+            placeholder="[Password]"></label><br> -->
 
         <button class="btn btn-secondary" (click)="submitGraphConfig(URL, Repository)">submit</button>
       </div>
     </div>
   </div>
+
+
+
   <!-- Backend Configuration -->
   <div *ngIf="TemplateOption === 'backend'">
 

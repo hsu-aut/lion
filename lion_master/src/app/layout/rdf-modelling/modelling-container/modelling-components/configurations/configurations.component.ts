@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
+import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 
@@ -33,6 +34,8 @@ export class ConfigurationsComponent implements OnInit {
   loadDate: string;
 
   url: string[];
+  hostName: string;
+  repositoryName: string;
   eclassUrl: string;
 
   fileUrl;
@@ -47,12 +50,15 @@ export class ConfigurationsComponent implements OnInit {
 
 
 
-  constructor(private query: SparqlQueriesService,
+  constructor(
+    private query: SparqlQueriesService,
+    private backEnd: BackEndRequestsService,
     private eclass: EclassSearchService,
     private dlService: DownloadService,
     private http: HttpClientModule,
     private prefixService: PrefixesService) {
-    this.url = query.getUrl().split('/repositories/');
+    this.hostName = query.getHost();
+    this.repositoryName = query.getRepository();
     this.eclassUrl = eclass.getEclassUrl();
   }
 
@@ -67,8 +73,9 @@ export class ConfigurationsComponent implements OnInit {
   }
 
 
-  submitGraphConfig(url1: string, rep: string) {
-    this.query.setUrl(url1 + '/repositories/' + rep);
+  setGraphDBConfig(hostName: string, repositoryName: string) {
+    this.query.setHost(hostName);
+    this.query.setRepository(repositoryName);
   }
 
   submitBackendConfig(eclassUrl: string) {
@@ -83,7 +90,7 @@ export class ConfigurationsComponent implements OnInit {
     const configs = {
       saveDate: savingTempDate,
       graphDB: {
-        url: this.query.getUrl()
+        url: this.query.getURL()
       },
       backend: {
         eClass: this.eclass.getEclassUrl()
@@ -99,20 +106,20 @@ export class ConfigurationsComponent implements OnInit {
   }
 
 
-  loadSelectedFile(event) {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const line = JSON.parse(reader.result.toString()) as Cfg;
-        this.loadDate = 'Loaded Configurations. Date: ' + line.saveDate;
-        this.submitBackendConfig(line.backend.eClass);
-        this.query.setUrl(line.graphDB.url);
-        console.log(line);
-      };
-      reader.readAsText(event.target.files[0]);
+  // loadSelectedFile(event) {
+  //   if (event.target.files && event.target.files[0]) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const line = JSON.parse(reader.result.toString()) as Cfg;
+  //       this.loadDate = 'Loaded Configurations. Date: ' + line.saveDate;
+  //       this.submitBackendConfig(line.backend.eClass);
+  //       this.query.setURL(line.graphDB.url);
+  //       console.log(line);
+  //     };
+  //     reader.readAsText(event.target.files[0]);
 
-    }
-  }
+  //   }
+  // }
 
   prefixTableClick(tableRow) {
     this.userPrefix = tableRow.prefix;
@@ -138,5 +145,30 @@ export class ConfigurationsComponent implements OnInit {
   }
   getActiveNamespace(){
     this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()];
+  }
+
+  loadTBoxes(){
+    this.backEnd.loadTBoxes("testdb","VDI3682").subscribe((data: any) => {
+      console.log(data)
+    })
+    this.backEnd.loadTBoxes("testdb","WADL").subscribe((data: any) => {
+      console.log(data)
+    })
+    this.backEnd.loadTBoxes("testdb","ISA88").subscribe((data: any) => {
+      console.log(data)
+    })
+    this.backEnd.loadTBoxes("testdb","DINEN61360").subscribe((data: any) => {
+      console.log(data)
+    })
+    this.backEnd.loadTBoxes("testdb","VDI2206").subscribe((data: any) => {
+      console.log(data)
+    })
+  }
+
+  clearRepository(){
+    this.backEnd.clearRepo("testdb").subscribe((data: any) => {
+      console.log("got data")
+      // console.log(data)
+    })
   }
 }
