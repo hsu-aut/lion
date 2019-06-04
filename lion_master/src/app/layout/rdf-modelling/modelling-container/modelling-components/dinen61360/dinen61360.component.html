@@ -224,16 +224,24 @@
                                 </div>
                                 <div class="form-check">
                                     <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
-                                        name="instanceRadios" id="instanceRadios4" value="allProcessTable">
-                                    <label class="custom-control-label"
+                                        name="instanceRadios" id="instanceRadios2" value="allProcessTable">
+                                    <label class="custom-control-label" for="instanceRadios2"
                                         (click)="setTableDescription('allProcessTable')">
                                         VDI 3682 Individuals
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
-                                        name="instanceRadios" id="instanceRadios5" value="ISA88">
-                                    <label class="custom-control-label" for="instanceRadios5"
+                                        name="instanceRadios" id="instanceRadios3" value="structureTable">
+                                    <label class="custom-control-label" for="instanceRadios3"
+                                        (click)="setTableDescription('structureTable')">
+                                        VDI 2206 Individuals
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="custom-control-input" type="radio" [(ngModel)]="instanceOption"
+                                        name="instanceRadios" id="instanceRadios4" value="ISA88">
+                                    <label class="custom-control-label" for="instanceRadios4"
                                         (click)="setTableDescription('ISA88')">
                                         ISA 88 Individuals
                                     </label>
@@ -281,4 +289,36 @@
 <div *ngIf="instanceOption === 'allProcessTable'" class="px-sm-2 py-sm-2">
     <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
         (tableClickedCell)="iriTableClick($event)"></app-table>
+</div>
+<div *ngIf="instanceOption === 'structureTable'">
+        <div class="px-sm-2 py-sm-2">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab" aria-controls="sys"
+                      aria-selected="true" (click)="setStructureTable('System_BUTTON')"> System </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab" aria-controls="mod"
+                      aria-selected="false" (click)="setStructureTable('Module_BUTTON')"> Module </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab" aria-controls="com"
+                      aria-selected="false" (click)="setStructureTable('Component_BUTTON')"> Component </a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
+                    <app-table [currentTable]="structureTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                      (tableClickedCell)="iriTableClick($event)"></app-table>
+                  </div>
+                  <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
+                    <app-table [currentTable]="structureTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                      (tableClickedCell)="iriTableClick($event)"></app-table>
+                  </div>
+                  <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
+                    <app-table [currentTable]="structureTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                      (tableClickedCell)="iriTableClick($event)"></app-table>
+                  </div>
+                </div>
+          </div>
 </div>

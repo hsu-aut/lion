@@ -2,7 +2,8 @@ import { Component, OnInit, } from '@angular/core';
 import { Dinen61360Service, DINEN61360Insert, DINEN61360Variables, expressionGoal, logicInterpretation, datatype } from '../../../rdf-models/dinen61360.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
-import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
+import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
+import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
@@ -25,6 +26,8 @@ export class Dinen61360Component implements OnInit {
   instanceOption: string;
   tableTitle: string;
   tableSubTitle: string;
+  _currentStructureOption: string;
+  StructureOptions: string = "System_BUTTON";
 
   // 61360 input form variables
   code: string;
@@ -66,8 +69,6 @@ export class Dinen61360Component implements OnInit {
   NoOfDE = 0;
   NoOfDET = 0;
   NoOfDEI = 0;
-  physicalEntitiesByInheritance: any;
-  physicalEntitiesByContainment: any;
   allExTypes: Array<Object> = [];
   allTypes: any;
   insertString: string;
@@ -80,20 +81,29 @@ export class Dinen61360Component implements OnInit {
   // graph db data ISA 88
   allBehaviorInfo: any = [];
 
+  //graph db data vdi2206
+  allStructureInfoContainmentbySys: any = [];
+  allStructureInfoContainmentbyMod: any = [];
+  allStructureInfoContainmentbyCOM: any = [];
+  allStructureInfoInheritancebySys: any = [];
+  allStructureInfoInheritancebyMod: any = [];
+  allStructureInfoInheritancebyCOM: any = [];
+  structureTable: Array<Object>;
 
   //eclass data from backend
   propertyList = [];
 
   constructor(
-    private query: SparqlQueriesService, 
-    private eclass: EclassSearchService, 
+    private query: SparqlQueriesService,
+    private eclass: EclassSearchService,
     private dlService: DownloadService,
     private namespaceParser: PrefixesService,
     private dinen61360Service: Dinen61360Service,
     private vdi3682Service: Vdi3682ModelService,
     private isa88Service: Isa88ModelService,
-    private loadingScreenService: DataLoaderService
-    ) { }
+    private loadingScreenService: DataLoaderService,
+    private vdi2206Service: Vdi2206ModelService
+  ) { }
 
   ngOnInit() {
     // get ProcessData
@@ -101,7 +111,8 @@ export class Dinen61360Component implements OnInit {
     this.getAllTypes();
     this.getStatisticInfo();
     this.getAllBehaviorInfo();
-
+    this.getAllStructuralInfo();
+    this.structureTable = this.allStructureInfoContainmentbySys;
   }
 
   buildTypeInsert() {
@@ -314,6 +325,15 @@ export class Dinen61360Component implements OnInit {
     return varia
   }
 
+  getAllStructuralInfo() {
+    //get containment info for sys
+    this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
+    this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
+    this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
+    this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
+    this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
+    this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
+  }
 
   setTableDescription(option) {
     this.instanceOption = option;
@@ -329,11 +349,41 @@ export class Dinen61360Component implements OnInit {
     } else if (this.instanceOption == "CustomTable") {
       this.tableTitle = "Return of custom Query";
       this.tableSubTitle = "Click on a row to asign a data element to it.";
+    } else if (this.instanceOption == "structureTable") {
+      this.tableTitle = "Availeable structural Entities in Database";
+      this.tableSubTitle = "Click on a row to asign a data element to it.";
     } else if (this.instanceOption == undefined) {
       this.tableTitle = undefined;
       this.tableSubTitle = undefined;
     }
   }
 
+  setStructureTable(StructureTable: string) {
+    switch (StructureTable) {
+      case "System_BUTTON": {
+        if (this.StructureOptions == "existingEntitiesInheritance") { this.currentTable = this.allStructureInfoInheritancebySys; }
+        else { this.structureTable = this.allStructureInfoContainmentbySys; }
+        this._currentStructureOption = StructureTable;
+        break;
+      }
+      case "Module_BUTTON": {
+        if (this.StructureOptions == "existingEntitiesInheritance") { this.currentTable = this.allStructureInfoInheritancebyMod; }
+        else { this.structureTable = this.allStructureInfoContainmentbyMod; }
+        this._currentStructureOption = StructureTable;
+        break;
+      }
+      case "Component_BUTTON": {
+        if (this.StructureOptions == "existingEntitiesInheritance") { this.currentTable = this.allStructureInfoInheritancebyCOM; }
+        else { this.structureTable = this.allStructureInfoContainmentbyCOM; }
+        this._currentStructureOption = StructureTable;
+        break;
+      }
+      default: {
+        // no default statements
+        break;
+      }
+    }
+
+  }
 }
 

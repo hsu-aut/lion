@@ -162,7 +162,7 @@ export class Vdi2206Component implements OnInit {
 
   //   });
   // }
-  iriTableClick(name: string) {
+  tableClick(name: string) {
     this.selectedSubject = name;
     console.log(this.selectedSubject)
     this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).subscribe((data: any) => {
