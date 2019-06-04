@@ -54,37 +54,41 @@
   <h5 class="card-header"> Graph Database Configuration </h5>
   <div class="card-body">
 
-      <div class="form-row">
-          <div class="form-group col-sm">
-            <label> Hostname </label>
-            <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName">
-          </div>
-          <div class="form-group col-sm">
-            <label> Repository name </label>
-            <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
-              placeholder="repositoryName">
-          </div>
-        </div>
+    <div class="form-row">
+      <div class="form-group col-sm">
+        <label> Hostname </label>
+        <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName" readonly>
+      </div>
+      <div class="form-group col-sm">
+        <label> Repository name </label>
+        <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
+          placeholder="repositoryName" readonly>
+      </div>
+    </div>
 
-        <div class="form-row">
-          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3"
-              (click)="setGraphDBConfig(hostName, repositoryName)"> Save Configuraton
-            </button></div>
-          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="refreshServices()">
-              Reload Data
-            </button></div>
-          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="loadTBoxes()">
-              Load Tboxes
-            </button></div>
-          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="clearRepository()">
-              Clear Repository
-            </button></div>
-        </div>
+    <div class="form-row">
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#SetRepoModal"> Change Configuration
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#RELOAD_MODAL">
+          Reload Data
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#TBOX_MODAL">
+          Load TBoxes
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#CreateModal">
+          Create new Repository
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#clearModal">
+          Clear Repository
+        </button></div>
+    </div>
 
-
-
-
-      <!-- <div class="col">
+    <!-- <div class="col">
         <div class="card h-40">
           <div class="card-header">
             <h6>Save / Load Configurations</h6>
@@ -99,5 +103,162 @@
         </div>
       </div> -->
 
+  </div>
+</div>
+
+<!-- Modals -->
+<!-- CLEAR REPOSITORY MODAL -->
+<div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Clear the Repository</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        You are about to clear the repository, all (!) triples (including the T-Box triples) will be deleted. There is
+        no possiblity to restore them.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Do not clear the repository </button>
+        <button type="button" class="btn btn-primary" (click)="clearRepository()"> I know what I am doing </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CREATE REPOSITORY MODAL -->
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Create a new Repository </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-row">
+          <div class="form-group col-sm">
+            <label> By pushing the button below, a new repository with the following name will be created: </label>
+            <input [(ngModel)]="newRepositoryname" name="newRepositoryname" type="text"
+              placeholder="[name of the new repository]" class="form-control">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="createNewRepo(newRepositoryname)">
+          Create new Repository </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SET REPOSITORY MODAL -->
+<div class="modal fade" id="SetRepoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Set active Repository</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group col-sm">
+            <label> Hostname </label>
+            <input [(ngModel)]="hostName" name="hostName" type="text" placeholder="[hostName]" class="form-control">
+          </div>
+          <div class="form-group col-sm">
+            <label> Repositories </label>
+            <select [(ngModel)]="repositoryName" name="repositoryName" class="form-control">
+              <option *ngFor='let x of repositoryList'>
+                {{x}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal"
+          (click)="setGraphDBConfig(hostName,repositoryName)">
+          Set Repository </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- LOAD TBOX MODAL -->
+<div class="modal fade" id="TBOX_MODAL" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Load TBoxes </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Loading the TBoxes is only necessary for a newly created repository. By pushing the button below, the latest
+        releases of the TBoxes are requested from GitHub and inserted in the GraphDB. After having inserted the TBox
+        triples, the required data of the tool will be retrieved again.
+        The following TBoxes will be inserted:
+        <ul>
+          <li>
+            VDI 3682
+          </li>
+          <li>
+            VDI 2206
+          </li>
+          <li>
+            ISA 88
+          </li>
+          <li>
+            WADL
+          </li>
+          <li>
+            DIN EN 61360
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="loadTBoxes()">
+          Load TBox </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Reload Data Modal -->
+<div class="modal fade" id="RELOAD_MODAL" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Reload Data </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        In order to display the data that is necessary for carrying out RDF modelling tasks, the tool retrieves some
+        data from the GraphDB. This is usually done automatically. In case of some failure, you can reload the data by
+        pushing the button below.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="refreshServices()">
+          Reload Data </button>
+      </div>
+    </div>
   </div>
 </div>

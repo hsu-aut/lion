@@ -198,36 +198,15 @@ export class Dinen61360Component implements OnInit {
     this.describedIndividual = name;
   }
 
-  // getAllProcessInfo() {
-  //   this._loaderShow = true;
-  //   this.query.selectTable(this.VDI3682modelData.allProcessInfo).subscribe((data: any) => {
-  //     this.allProcessInfo = data;
-  //     this._loaderShow = false;
-  //   });
-  // }
 
   getAllProcessInfo() {
     this.allProcessInfo = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
   }
-  // getAllBehaviorInfo() {
-  //   this._loaderShow = true;
-  //   this.query.select(this.ISAmodelData.SPARQL_SELECT_BEHAVIOR_INFO).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allBehaviorInfo = this.TableUtil.buildTable(data);
-  //     this._loaderShow = false;
-  //   });
-  // }
+
   getAllBehaviorInfo() {
     this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
   }
-  // getAllTypes() {
-  //   this._loaderShow = true;
-  //   this.query.select(this.modelData.SPARQL_SELECT_allTypes).subscribe((data: any) => {
-  //     this._loaderShow = false;
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allTypes = this.TableUtil.buildTable(data);
-  //   });
-  // }
+
   getAllTypes() {
     this.allTypes = this.dinen61360Service.getTABLE_All_TYPES();
   }
@@ -239,21 +218,7 @@ export class Dinen61360Component implements OnInit {
       this.dinen61360Service.setTABLE_All_TYPES(data)
     });
   }
-  // getStatisticInfo() {
-  //   // get stats of functions in TS
-  //   this.query.select(this.modelData.SPARQL_SELECT_allDE).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfDE = this.TableUtil.buildTable(data).length;
-  //   });
-  //   this.query.select(this.modelData.SPARQL_SELECT_allDET).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfDET = this.TableUtil.buildTable(data).length;
-  //   });
-  //   this.query.select(this.modelData.SPARQL_SELECT_allDEI).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfDEI = this.TableUtil.buildTable(data).length;
-  //   });
-  // }
+
 
   getStatisticInfo() {
     // get stats of functions in TS

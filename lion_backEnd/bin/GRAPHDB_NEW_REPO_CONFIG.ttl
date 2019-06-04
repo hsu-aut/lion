@@ -8,7 +8,7 @@
         @prefix owlim: <http://www.ontotext.com/trree/owlim#>.
         
         [] a rep:Repository ;
-            rep:repositoryID "myName" ;
+            rep:repositoryID "MIM2019" ;
             rdfs:label "GraphDB Free repository" ;
             rep:repositoryImpl [
                 rep:repositoryType "graphdb:FreeSailRepository" ;

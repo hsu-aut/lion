@@ -29,26 +29,26 @@ export class SparqlQueriesService {
     this.repository = 'testdb';
   }
 
-    // getter and setter for repository and host
-    getHost() {
-      return this.host;
-    }
-    setHost(hostName: string) {
-      this.host = hostName;
-    }
-    getRepository() {
-      return this.repository;
-    }
-    setRepository(repositoryName: string) {
-      this.repository = repositoryName;
-    }
-    getURL() {
-      var url: string;
-      return url = this.host + '/repositories/' + this.repository;
-    }
-    // setURL(host: string, repository) {
-    //   this.url = host + '/repositories/' + repository;
-    // }
+  // getter and setter for repository and host
+  getHost() {
+    return this.host;
+  }
+  setHost(hostName: string) {
+    this.host = hostName;
+  }
+  getRepository() {
+    return this.repository;
+  }
+  setRepository(repositoryName: string) {
+    this.repository = repositoryName;
+  }
+  getURL() {
+    var url: string;
+    return url = this.host + '/repositories/' + this.repository;
+  }
+  // setURL(host: string, repository) {
+  //   this.url = host + '/repositories/' + repository;
+  // }
 
   select(body) {
     var httpOptions = {
@@ -143,7 +143,32 @@ export class SparqlQueriesService {
     return this.selectList(selectString, 0);
   }
 
- 
+  getListOfRepositories() {
+    var currentList: Array<String> = [];
+    var url = this.host + "/repositories";
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/sparql-results+json, */*;q=0.5'
+      })
+    };
+
+    var listObservable = new Observable((observer) => {
+      this.http.get(url, httpOptions).subscribe((data: any) => {
+
+        for (let i = 0; i < data.results.bindings.length; i++) {
+
+          currentList.push(data.results.bindings[i].id.value)
+
+          if(i == (data.results.bindings.length - 1)){
+            observer.next(currentList)
+            observer.complete()
+          }
+        }
+      });
+    })
+
+    return listObservable;
+  }
 
 
 }

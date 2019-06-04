@@ -87,16 +87,6 @@ export class Vdi2206Component implements OnInit {
     });
   }
 
-  // getObjectClasses() {
-  //   if (this.selectedPredicate) {
-  //     var predicate = this.selectedPredicate;
-  //     this.query.select(this.modelData.selectClassByRange(predicate)).subscribe((data: any) => {
-  //       // parse prefixes where possible 
-  //       this.namespaceParser.parseToPrefix(data);
-  //       this.existingObjectClasses = this.TableUtil.buildList(data, 0);
-  //     });
-  //   }
-  // }
   getObjectClasses() {
     if (this.selectedPredicate) {
       var predicate = this.selectedPredicate;
@@ -127,41 +117,7 @@ export class Vdi2206Component implements OnInit {
       });
     }
   }
-  // getExistingObjects() {
-  //   if (this.selectedObjectClass) {
-  //     var owlClass = this.selectedObjectClass
-  //     this.query.select(this.modelData.selectIndividualByClass(owlClass)).subscribe((data: any) => {
-  //       // parse prefixes where possible 
-  //       this.namespaceParser.parseToPrefix(data);
-  //       this.existingObjects = this.TableUtil.buildList(data, 0);
-  //     });
-  //   } else if (this.StructureOptions == "existingEntitiesInheritance" && this.selectedPredicate != undefined) {
-  //     var subject = this.selectedSubject;
-  //     this.query.select(this.modelData.selectClass(subject)).subscribe((data: any) => {
-  //       var owlClass = data.results.bindings[0].Class.value
-  //       this.query.select(this.modelData.selectIndividualByClass(owlClass)).subscribe((data: any) => {
-  //         // parse prefixes where possible 
-  //         this.namespaceParser.parseToPrefix(data);
-  //         this.existingObjects = this.TableUtil.buildList(data, 0);
-  //       });
-  //     });
-  //   }
-  // }
 
-  // iriTableClick(name: string) {
-  //   this.selectedSubject = name;
-  //   this.query.select(this.modelData.selectClass(this.selectedSubject)).subscribe((data: any) => {
-  //     var owlClass = data.results.bindings[0].Class.value
-  //     console.log(owlClass)
-
-  //     this.query.select(this.modelData.selectPredicateByDomain(owlClass)).subscribe((data: any) => {
-  //       // parse prefixes where possible 
-  //       this.namespaceParser.parseToPrefix(data);
-  //       this.existingPredicates = this.TableUtil.buildList(data, 0);
-  //     });
-
-  //   });
-  // }
   tableClick(name: string) {
     this.selectedSubject = name;
     console.log(this.selectedSubject)
@@ -177,34 +133,7 @@ export class Vdi2206Component implements OnInit {
     });
   }
 
-  // getAllStructuralInfo() {
-  //   //get containment info for sys
-  //   this.query.select(this.modelData.allStructureInfoContainmentbySys).subscribe((data: any) => {
-  //     // parse prefixes where possible 
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allStructureInfoContainmentbySys = this.TableUtil.buildTable(data);
-  //     this.renderTable(this.StructureView);
-  //   });
-  //   this.query.select(this.modelData.allStructureInfoContainmentbyMod).subscribe((data: any) => {
-  //     // parse prefixes where possible 
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allStructureInfoContainmentbyMod = this.TableUtil.buildTable(data);
-  //     this.renderTable(this.StructureView);
-  //   });
-  //   this.query.select(this.modelData.allStructureInfoInheritancebySys).subscribe((data: any) => {
-  //     // parse prefixes where possible 
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allStructureInfoInheritancebySys = this.TableUtil.buildTable(data);
-  //     this.renderTable(this.StructureView);
-  //   });
-  //   this.query.select(this.modelData.allStructureInfoInheritancebyMod).subscribe((data: any) => {
-  //     // parse prefixes where possible 
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allStructureInfoInheritancebyMod = this.TableUtil.buildTable(data);
-  //     this.renderTable(this.StructureView);
-  //   });
 
-  // }
   getAllStructuralInfo() {
     //get containment info for sys
     this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
@@ -254,21 +183,7 @@ export class Vdi2206Component implements OnInit {
       this.setTableOption(this._currentOption);
     });
   }
-  // getStatisticInfo() {
-  //   // get stats of structure in TS
-  //   this.query.select(this.modelData.NoOfSystems).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfSystems = this.TableUtil.buildTable(data).length;
-  //   });
-  //   this.query.select(this.modelData.NoOfModules).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfModules = this.TableUtil.buildTable(data).length;
-  //   });
-  //   this.query.select(this.modelData.NoOfComponents).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfComponents = this.TableUtil.buildTable(data).length;
-  //   });
-  // }
+
   getStatisticInfo() {
         // get stats of structure in TS
     this.NoOfSystems = this.vdi2206Service.getLIST_OF_SYSTEMS().length
@@ -320,19 +235,6 @@ export class Vdi2206Component implements OnInit {
         break;
       }
     }
-
-    // this.StructureView = StructureTable;
-    // if (StructureTable == "System" && (this.StructureOptions == "newEntities" || this.StructureOptions == "existingEntitiesContainment")) {
-    //   this.currentTable = this.allStructureInfoContainmentbySys;
-    //   console.log(this.currentTable)
-    // } else if (StructureTable == "Module" && (this.StructureOptions == "newEntities" || this.StructureOptions == "existingEntitiesContainment")) {
-    //   this.currentTable = this.allStructureInfoContainmentbyMod;
-    // } else if (StructureTable == "System" && this.StructureOptions == "existingEntitiesInheritance") {
-    //   this.currentTable = this.allStructureInfoInheritancebySys;
-    // } else if (StructureTable == "Module" && this.StructureOptions == "existingEntitiesInheritance") {
-    //   this.currentTable = this.allStructureInfoInheritancebyMod;
-    // } 
-
   }
 
   //  todo -> implement delete

@@ -34,6 +34,9 @@ export class DashboardComponent implements OnInit {
   WADL_TITLE = "Existing Restful-Services in Database";
   WADL_SUBTITLE = "Click on a cell to to use it for further descriptions.";
 
+  // component UI variables
+  numberOfTriples: number = 0;
+  activeNamespace: string;
 
   // Doughnut
   private doughnutChartLabels: string[] = [];
@@ -88,6 +91,8 @@ export class DashboardComponent implements OnInit {
     this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
     this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
     this.DINEN61360Table = this.dinen61360Service.getTABLE_All_TYPES();
+    this.getTriplesCount();
+    this.getActiveNamespace();
 
   }
 
@@ -100,27 +105,27 @@ export class DashboardComponent implements OnInit {
     switch (button) {
       case "VDI3682_BUTTON": {
         this.setTable(this.VDI3682Table);
-        this.setTableTitles(this.VDI3682_TITLE,this.VDI3682_SUBTITLE);
+        this.setTableTitles(this.VDI3682_TITLE, this.VDI3682_SUBTITLE);
         break;
       }
       case "VDI2206_BUTTON": {
         this.setTable(this.VDI2206Table);
-        this.setTableTitles(this.VDI2206_TITLE,this.VDI2206_SUBTITLE);
+        this.setTableTitles(this.VDI2206_TITLE, this.VDI2206_SUBTITLE);
         break;
       }
       case "DINEN61360_BUTTON": {
         this.setTable(this.DINEN61360Table);
-        this.setTableTitles(this.DINEN61360_TITLE,this.DINEN61360_SUBTITLE);
+        this.setTableTitles(this.DINEN61360_TITLE, this.DINEN61360_SUBTITLE);
         break;
       }
       case "ISA88_BUTTON": {
         this.setTable(this.ISA88Table);
-        this.setTableTitles(this.ISA88_TITLE,this.ISA88_SUBTITLE);
+        this.setTableTitles(this.ISA88_TITLE, this.ISA88_SUBTITLE);
         break;
       }
       case "WADL_BUTTON": {
         this.setTable(this.WADLTable);
-        this.setTableTitles(this.WADL_TITLE,this.WADL_SUBTITLE);
+        this.setTableTitles(this.WADL_TITLE, this.WADL_SUBTITLE);
         break;
       }
       default: {
@@ -140,14 +145,22 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  setTable(table){
+  setTable(table) {
     this.currentTable = table;
   }
 
-  setTableTitles(Title, Subtitle){
+  setTableTitles(Title, Subtitle) {
     this.tableTitle = Title
     this.tableSubTitle = Subtitle
   }
 
-
+  getTriplesCount() {
+    for (let i = 0; i < this.doughnutChartData.length; i++) {
+      this.numberOfTriples = this.numberOfTriples + this.doughnutChartData[i];
+    }
+  }
+  getActiveNamespace() {
+    var PREFIXES = this.namespaceService.getPrefixes();
+    this.activeNamespace = PREFIXES[this.namespaceService.getActiveNamespace()].namespace;
+  }
 }

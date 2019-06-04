@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { Subscription, concat, Observable } from "rxjs";
+
+import { concat } from "rxjs";
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
@@ -13,7 +13,6 @@ import { Dinen61360Service } from '../../../rdf-models/dinen61360.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { DashboardService } from '../../modelling-components/dashboard/dashboard.service';
 
-import { DataLoaderService } from "../../../../../shared/services/dataLoader.service";
 import { finalize } from 'rxjs/operators';
 
 
@@ -47,8 +46,10 @@ export class ConfigurationsComponent implements OnInit {
   url: string[];
   hostName: string;
   repositoryName: string;
-  eclassUrl: string;
+  newRepositoryname: string;
+  repositoryList: Array<string>;
 
+  eclassUrl: string;
   fileUrl;
 
   // namespace config variables
@@ -58,7 +59,7 @@ export class ConfigurationsComponent implements OnInit {
   userKey: number;
   activeNamespace: any;
 
-  loadingSubscription: Subscription;
+  
 
 
   constructor(
@@ -66,9 +67,7 @@ export class ConfigurationsComponent implements OnInit {
     private backEnd: BackEndRequestsService,
     private eclass: EclassSearchService,
     private dlService: DownloadService,
-    private http: HttpClientModule,
     private prefixService: PrefixesService,
-    private loadingScreenService: DataLoaderService,
     private ISA_Service: Isa88ModelService,
     private DINEIN61360_Service: Dinen61360Service,
     private VDI2206_Service: Vdi2206ModelService,
@@ -77,25 +76,29 @@ export class ConfigurationsComponent implements OnInit {
 
 
   ) {
-    this.hostName = query.getHost();
-    this.repositoryName = query.getRepository();
-    this.eclassUrl = eclass.getEclassUrl();
+
+    
   }
 
   ngOnInit() {
     //load namespaces initially
     this.PREFIXES = this.prefixService.getPrefixes();
     this.getActiveNamespace();
+    this.eclassUrl = this.eclass.getEclassUrl();
     // this.eclass.getTBox().subscribe((data: any) => {
     //   // log + assign data and stop loader
     //   console.log(data);
     // });;
+    this.getListOfRepos();
+    this.hostName = this.query.getHost();
+    this.repositoryName = this.query.getRepository();
   }
 
 
   setGraphDBConfig(hostName: string, repositoryName: string) {
     this.query.setHost(hostName);
     this.query.setRepository(repositoryName);
+    this.refreshServices();
   }
 
   submitBackendConfig(eclassUrl: string) {
@@ -198,5 +201,17 @@ export class ConfigurationsComponent implements OnInit {
       this.ISA_Service.initializeISA88();
       this.DINEIN61360_Service.initializeDINEN61360();
       this.Dashboard_Service.initializeDashboard();
+  }
+
+  getListOfRepos() {
+    this.query.getListOfRepositories().subscribe((data: any) => {
+      this.repositoryList = data
+    })
+  }
+
+  createNewRepo(NewRepositoryName: string){
+    this.backEnd.createRepo(NewRepositoryName).subscribe((data: any) => {
+      this.getListOfRepos();
+    })
   }
 }

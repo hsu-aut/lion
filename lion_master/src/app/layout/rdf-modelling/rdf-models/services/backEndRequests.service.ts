@@ -57,6 +57,26 @@ export class BackEndRequestsService {
     return dbObservale;
   }
 
+  createRepo(repositoryName) {
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'none',
+        'responseType': 'text'
+      })
+    };
+    var request = this.url + `/repositories/create?repositoryName=${repositoryName}`
+    console.log(request, httpOptions);
+    var dbObservale = new Observable((observer) => {
+      this.http.get(request, httpOptions).subscribe((data: any) => {
+
+        console.log(data)
+        observer.next(data)
+        observer.complete()
+      });
+    })
+    return dbObservale;
+  }
+
 
 
 }

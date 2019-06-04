@@ -6,7 +6,8 @@ import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../rdf-models/dinen61360.service';
 import { Isa88ModelService } from '../rdf-models/isa88Model.service';
 import { DashboardService } from './modelling-components/dashboard/dashboard.service';
-import { Observable } from 'rxjs';
+import { EclassSearchService } from '../rdf-models/services/eclass-search.service';
+import { BackEndRequestsService } from '../rdf-models/services/backEndRequests.service';
 
 
 @Component({
@@ -15,51 +16,64 @@ import { Observable } from 'rxjs';
   styleUrls: ['./modelling-container.component.scss']
 })
 export class ModellingContainerComponent implements OnInit {
+  // utils
+  keys = Object.keys;
 
-  // loading progress
-  progressDescription: string;
-  progressString: string;
-  progress = 0;
+  // repository definitions
+  host: string;
+  repository: string;
+  newRepositoryname: string;
+  repositoryList: Array<string>;
+
 
   constructor(
-    private namespaceService: PrefixesService,
+    private eclass: EclassSearchService,
     private query: SparqlQueriesService,
-    private vdi3682Service: Vdi3682ModelService,
-    private vdi2206Service: Vdi2206ModelService,
-    private dinen61360Service: Dinen61360Service,
-    private isa88Service: Isa88ModelService,
-    private dashboardService: DashboardService
+    private backEnd: BackEndRequestsService,
+    private prefixService: PrefixesService,
+    private ISA_Service: Isa88ModelService,
+    private DINEIN61360_Service: Dinen61360Service,
+    private VDI2206_Service: Vdi2206ModelService,
+    private VDI3862_Service: Vdi3682ModelService,
+    private Dashboard_Service: DashboardService
   ) {
 
   }
 
   ngOnInit() {
-
-    this.getAllStatuses();
+    this.getListOfRepos();
+    this.host = this.query.getHost();
+    this.repository = this.query.getRepository();
 
   }
 
-  getAllStatuses() {
-    // TODO: implement real loads instead of fake load
-    setTimeout(() => {this.setProgressBar(16.67, "Dashboard")}, 300);
-    setTimeout(() => {this.setProgressBar(16.67, "VDI 3682")}, 600);
-    setTimeout(() => {this.setProgressBar(16.67, "VDI 2206")}, 900);
-    setTimeout(() => {this.setProgressBar(16.67, "ISA 88")}, 1200);
-    setTimeout(() => {this.setProgressBar(16.67, "DIN EN 61360")}, 1500);
-    setTimeout(() => {this.setProgressBar(16.67, "WADL")}, 1800);
+  setGraphDBConfig(hostName: string, repositoryName: string) {
+    this.query.setHost(hostName);
+    this.query.setRepository(repositoryName);
+    this.refreshServices();
   }
 
-
-  setProgressBar(percentage, description) {
-    this.progress = this.progress + percentage;
-    this.progressString = this.progress + "%";
-    
-    if(this.progress >= 97){
-      this.progressDescription = "Data successfully loaded!";
-    } else {
-      this.progressDescription = "Load " + description;
-    }
+  refreshServices() {
+    console.info("Refreshing data ...")
+    this.VDI3862_Service.initializeVDI3682();
+    this.VDI2206_Service.initializeVDI2206();
+    this.ISA_Service.initializeISA88();
+    this.DINEIN61360_Service.initializeDINEN61360();
+    this.Dashboard_Service.initializeDashboard();
   }
+
+  getListOfRepos() {
+    this.query.getListOfRepositories().subscribe((data: any) => {
+      this.repositoryList = data
+    })
+  }
+
+  createNewRepo(NewRepositoryName: string){
+    this.backEnd.createRepo(NewRepositoryName).subscribe((data: any) => {
+      this.getListOfRepos();
+    })
+  }
+
 
 
 

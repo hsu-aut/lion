@@ -3,6 +3,7 @@ var router = express.Router();
 var url = require('url');
 
 var repo = require('../public/HTTP_Client_Requests/GDB_Requests')
+var gdbConfig = require('../public/GraphDB_Repository_Config/GDBconfigurator')
 
 const curl = new (require('curl-request'))();
 
@@ -13,7 +14,7 @@ router.get('/create', function (req, res, next) {
     var q = url.parse(req.url, true).query;
     var repositoryName = q.repositoryName;
 
-    repo.setRepository(repositoryName).then(function (response) {
+    gdbConfig.setRepository(repositoryName).then(function (response) {
         curl
             .setHeaders([
                 'Content-Type: multipart/form-data'

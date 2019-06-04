@@ -1,19 +1,162 @@
+<div>
 
-
-<!-- <div class="container" style="height: 80vh" >
-  <div class="row" style="padding-top: 30%">
-    <div class="col sm-4">
-      <p style="text-align: center"> {{progressDescription}} </p>
-    </div>
-  </div>
-  <div class="row">
+  <div class="row py-4">
     <div class="col">
-      <div class="progress" style="height: 1px;">
-        <div class="progress-bar bg-success" role="progressbar" [ngStyle]="{'width': progressString}" aria-valuenow="25"
-          aria-valuemin="0" aria-valuemax="100"></div>
+      <div class="card text-center">
+        <h5 class="card-header"> Active Repository</h5>
+        <div class="card-body">
+          <p class="card-text">The active repository is shown below. In this repository, all RDF descriptions that are
+            created with this tool are stored. Click on a button below to edit the active repository or create a new
+            one.</p>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Hostname </label>
+              <input [(ngModel)]="host" name="host" type="text" placeholder="[host]" class="form-control" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> Repository </label>
+              <input [(ngModel)]="repository" name="repository" type="text" placeholder="[repository]"
+                class="form-control" readonly>
+            </div>
+          </div>
+          <button class="btn btn-secondary" data-toggle="modal" data-target="#SetRepoModal"> Change Configuration
+          </button>
+        </div>
       </div>
     </div>
   </div>
-  
-</div> -->
 
+  <div class="row py-4">
+    <div class="col">
+      <div class="card text-center">
+        <h5 class="card-header">Model Structural Descriptions</h5>
+        <div class="card-body">
+          <h5 class="card-title">Mechatronic System structures with VDI 2206</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a [routerLink]="['/modelling/model/vdi2206']" class="btn btn-secondary">Go to VDI 2206</a>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="col">
+      <div class="card text-center">
+        <h5 class="card-header">Create a State Machine</h5>
+        <div class="card-body">
+          <h5 class="card-title">Machine and Unit States with ISA 88</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a [routerLink]="['/modelling/model/isa88']" class="btn btn-secondary">Go to ISA 88</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row py-4">
+    <div class="col">
+      <div class="card text-center">
+        <h5 class="card-header">Model a Restful Service Description</h5>
+        <div class="card-body">
+          <h5 class="card-title">Web Application Description Language with WADL</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a [routerLink]="['/modelling/model/wadl']" class="btn btn-secondary">Go to WADL</a>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="col">
+      <div class="card text-center">
+        <h5 class="card-header">Model properties of any kind of entity</h5>
+        <div class="card-body">
+          <h5 class="card-title">Standard data element types with DIN EN 61360</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a [routerLink]="['/modelling/model/dinen61360']" class="btn btn-secondary">Go to DIN EN 61360</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row py-4">
+    <div class="col">
+      <div class="card text-center">
+        <h5 class="card-header"> Configure Graph Database Options and edit Namespaces</h5>
+        <div class="card-body">
+          <h5 class="card-title">Tool Configuration</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a [routerLink]="['/modelling/model/configuration']" class="btn btn-secondary">Go to Configuration</a>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="col">
+      <div class="card text-center">
+        <h5 class="card-header"> Model Process Descriptions </h5>
+        <div class="card-body">
+          <h5 class="card-title">Formalized Process Descriptions with VDI 3682</h5>
+          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+          <a [routerLink]="['/modelling/model/vdi3682']" class="btn btn-secondary">Go to VDI 3682</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE REPOSITORY MODAL -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Clear the Repository</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        You are about to clear the repository, all (!) triples (including the T-Box triples) will be deleted. There is
+        no possiblity to restore them.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Do not clear the repository </button>
+        <button type="button" class="btn btn-primary"> I know what I am doing </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<!-- SET REPOSITORY MODAL -->
+<div class="modal fade" id="SetRepoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Set active Repository</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group col-sm">
+            <label> Hostname </label>
+            <input [(ngModel)]="host" name="host" type="text" placeholder="[host]" class="form-control">
+          </div>
+          <div class="form-group col-sm">
+            <label> Repositories </label>
+            <select [(ngModel)]="repository" name="repository" class="form-control">
+              <option *ngFor='let x of repositoryList'>
+                {{x}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="setGraphDBConfig(host,repository)">
+          Set Repository </button>
+      </div>
+    </div>
+  </div>
+</div>

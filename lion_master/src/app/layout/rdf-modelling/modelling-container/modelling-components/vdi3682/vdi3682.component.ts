@@ -64,11 +64,6 @@ export class VDI3682Component implements OnInit {
     this.allProcessInfo = this.modelService.getALL_PROCESS_INFO_TABLE();
     this.allClasses = this.modelService.getLIST_OF_ALL_CLASSES();
     this.setTableDescription();
-    // this.query.select(this.modelData.allClasses).subscribe((data: any) => {
-    //   // parse prefixes where possible 
-    //   this.namespaceParser.parseToPrefix(data);
-    //   this.allClasses = this.TableUtil.buildTable(data);
-    // });
     this.getStatisticInfo();
 
 
@@ -110,11 +105,7 @@ export class VDI3682Component implements OnInit {
       predicate: this.newPredicate,
       object: this.selectedClass,
     }
-    // var insertString = this.modelInsert.createEntity(this.modelVariables.simpleStatement)
-    // this.query.insert(insertString).subscribe((data: any) => {
-    //   this.loadAllProcessInfo();
-    //   this.loadStatisticInfo();
-    // });
+
     this.modelService.insertTripel(this.modelVariables.simpleStatement).subscribe((data: any) => {
         this.loadAllProcessInfo();
         this.loadStatisticInfo();
@@ -122,25 +113,6 @@ export class VDI3682Component implements OnInit {
   }
 
 
-
-
-  // iriTableClick(name: string) {
-  //   this.selectedSubject = name;
-  //   this.query.select(this.modelData.selectClass(this.selectedSubject)).subscribe((data: any) => {
-  //     var owlClass = data.results.bindings[0].Class.value
-  //     console.log(owlClass)
-
-  //     this.query.select(this.modelData.selectPredicateByDomain(owlClass)).subscribe((data: any) => {
-  //       // log + assign data and stop loader
-  //       console.log(data);
-  //       this.existingPredicates = data;
-  //       // parse prefixes where possible 
-  //       this.namespaceParser.parseToPrefix(data);
-  //     });
-
-  //   });
-
-  // }
   iriTableClick(name: string) {
     this.selectedSubject = name;
 
@@ -152,18 +124,7 @@ export class VDI3682Component implements OnInit {
     });
 
   }
-  // getObjectClasses() {
-  //   if (this.selectedPredicate) {
-  //     var predicate = this.selectedPredicate;
-  //     this.query.select(this.modelData.selectClassByRange(predicate)).subscribe((data: any) => {
-  //       // log + assign data and stop loader
-  //       console.log(data);
-  //       this.existingObjectClasses = data;
-  //       // parse prefixes where possible 
-  //       this.namespaceParser.parseToPrefix(data);
-  //     });
-  //   }
-  // }
+
   getObjectClasses() {
     if (this.selectedPredicate) {
       var predicate = this.selectedPredicate;
@@ -172,18 +133,7 @@ export class VDI3682Component implements OnInit {
       });
     }
   }
-  // getExistingObjects() {
-  //   if (this.selectedObjectClass) {
-  //     var owlClass = this.selectedObjectClass
-  //     this.query.select(this.modelData.selectIndividualByClass(owlClass)).subscribe((data: any) => {
-  //       // log + assign data and stop loader
-  //       console.log(data);
-  //       this.existingObjects = data;
-  //       // parse prefixes where possible 
-  //       this.namespaceParser.parseToPrefix(data);
-  //     });
-  //   }
-  // }
+
   getExistingObjects() {
     if (this.selectedObjectClass) {
       var owlClass = this.selectedObjectClass
@@ -208,14 +158,6 @@ export class VDI3682Component implements OnInit {
       });
   }
 
-  // getAllProcessInfo() {
-  //   this.query.select(this.modelData.allProcessInfo).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.allProcessInfo = this.TableUtil.buildTable(data);
-  //     console.log(this.allProcessInfo)
-  //     // parse prefixes where possible 
-  //   });
-  // }
 
   loadAllProcessInfo() {
     this.modelService.loadALL_PROCESS_INFO_TABLE().subscribe((data: any) => {
@@ -225,22 +167,6 @@ export class VDI3682Component implements OnInit {
     });
   }
 
-
-  // getStatisticInfo() {
-  //   // get stats of functions in TS
-  //   this.query.select(this.modelData.NoOfProcesses).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfProcesses = this.TableUtil.buildTable(data).length;
-  //   });
-  //   this.query.select(this.modelData.NoOfInOuts).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfInOuts = this.TableUtil.buildTable(data).length;
-  //   });
-  //   this.query.select(this.modelData.NoOfTechnicalResources).subscribe((data: any) => {
-  //     this.namespaceParser.parseToPrefix(data);
-  //     this.NoOfTechnicalResources = this.TableUtil.buildTable(data).length;
-  //   });
-  // }
 
   getStatisticInfo() {
     // get stats of functions in TS
