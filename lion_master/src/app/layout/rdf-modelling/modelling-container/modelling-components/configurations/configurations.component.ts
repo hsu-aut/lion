@@ -1,10 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { Subscription } from "rxjs";
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
+
+import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
+import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
+import { Dinen61360Service } from '../../../rdf-models/dinen61360.service';
+import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
+
+import { DataLoaderService } from "../../../../../shared/services/dataLoader.service";
+
 
 
 interface Cfg {
@@ -47,7 +56,7 @@ export class ConfigurationsComponent implements OnInit {
   userKey: number;
   activeNamespace: any;
 
-
+  loadingSubscription: Subscription;
 
 
   constructor(
@@ -56,7 +65,15 @@ export class ConfigurationsComponent implements OnInit {
     private eclass: EclassSearchService,
     private dlService: DownloadService,
     private http: HttpClientModule,
-    private prefixService: PrefixesService) {
+    private prefixService: PrefixesService,
+    private loadingScreenService: DataLoaderService,
+    private ISA_Service: Isa88ModelService,
+    private DINEIN61360_Service: Dinen61360Service,
+    private VDI2206_Service: Vdi2206ModelService,
+    private VDI3862_Service: Vdi3682ModelService
+
+
+    ) {
     this.hostName = query.getHost();
     this.repositoryName = query.getRepository();
     this.eclassUrl = eclass.getEclassUrl();
@@ -148,25 +165,32 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   loadTBoxes(){
-    this.backEnd.loadTBoxes("testdb","VDI3682").subscribe((data: any) => {
+
+    this.backEnd.loadTBoxes(this.query.getRepository(),"VDI3682").subscribe((data: any) => {
+
       console.log(data)
     })
-    this.backEnd.loadTBoxes("testdb","WADL").subscribe((data: any) => {
+    this.backEnd.loadTBoxes(this.query.getRepository(),"WADL").subscribe((data: any) => {
+
       console.log(data)
     })
-    this.backEnd.loadTBoxes("testdb","ISA88").subscribe((data: any) => {
+    this.backEnd.loadTBoxes(this.query.getRepository(),"ISA88").subscribe((data: any) => {
+
       console.log(data)
     })
-    this.backEnd.loadTBoxes("testdb","DINEN61360").subscribe((data: any) => {
+    this.backEnd.loadTBoxes(this.query.getRepository(),"DINEN61360").subscribe((data: any) => {
+
       console.log(data)
     })
-    this.backEnd.loadTBoxes("testdb","VDI2206").subscribe((data: any) => {
+    this.backEnd.loadTBoxes(this.query.getRepository(),"VDI2206").subscribe((data: any) => {
+
       console.log(data)
     })
   }
 
   clearRepository(){
-    this.backEnd.clearRepo("testdb").subscribe((data: any) => {
+    this.backEnd.clearRepo(this.query.getRepository()).subscribe((data: any) => {
+
       console.log("got data")
       // console.log(data)
     })

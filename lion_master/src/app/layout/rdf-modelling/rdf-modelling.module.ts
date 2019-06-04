@@ -8,6 +8,7 @@ import { RdfModellingRoutingModule } from './rdf-modelling-routing.module';
 import { RdfModellingComponent } from './rdf-modelling.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
+import { LoaderComponent } from '../../shared/loader/loader.component'
 
 
 
@@ -22,6 +23,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   declarations: [
     RdfModellingComponent, 
     SidebarComponent,
+    LoaderComponent
   ]
     
 })

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
+import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 
 
 @Injectable({
@@ -19,25 +20,34 @@ export class Vdi3682ModelService {
 
   constructor(
     private query: SparqlQueriesService,
-    private nameService: PrefixesService
+    private nameService: PrefixesService,
+    private loadingScreenService: DataLoaderService
   ) {
 
+    this.initializeVDI3682();
+  }
+
+  public initializeVDI3682(){
     this.loadLIST_OF_PROCESSES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_OF_PROCESSES = data;
     });
     this.loadLIST_OF_TECHNICAL_RESOURCES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_OF_TECHNICAL_RESOURCES = data;
     });
     this.loadLIST_OF_INPUTS_AND_OUTPUTS().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_OF_INPUTS_AND_OUTPUTS = data;
     });
     this.loadALL_PROCESS_INFO_TABLE().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.TABLE_OF_PROCESS_INFO = data;
     });
     this.loadLIST_OF_ALL_CLASSES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_OF_ALL_CLASSES = data;
     });
-
   }
 
   public setLIST_OF_PROCESSES(list) {
@@ -58,18 +68,23 @@ export class Vdi3682ModelService {
 
 
   public loadLIST_OF_PROCESSES() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_PROCESSES, 0);
   }
   public loadLIST_OF_TECHNICAL_RESOURCES() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_TECHNICAL_RESOURCES, 0);
   }
   public loadLIST_OF_INPUTS_AND_OUTPUTS() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_INPUTS_AND_OUTPUTS, 0);
   }
   public loadALL_PROCESS_INFO_TABLE() {
+    this.loadingScreenService.startLoading();
     return this.query.selectTable(this.vdi3682data.SELECT_TABLE_OF_PROCESS_INFO);
   }
   public loadLIST_OF_ALL_CLASSES() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_ALL_CLASSES, 0);
   }
   public loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass) {

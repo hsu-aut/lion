@@ -1,53 +1,61 @@
 import { Injectable } from '@angular/core';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { PrefixesService } from './services/prefixes.service';
+import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { Tables } from '../utils/tables';
 
 var nameService = new PrefixesService;
 
 @Injectable({
-  providedIn: 'root'
+        providedIn: 'root'
 })
 export class Isa88ModelService {
 
-  isa88Data = new ISA88Data();
-  isa88Insert = new ISA88Insert();
+        isa88Data = new ISA88Data();
+        isa88Insert = new ISA88Insert();
 
-  constructor(
-    private query: SparqlQueriesService,
-    private nameService: PrefixesService
-    
-    ) {
-    this.loadISA88BehaviorInfo().subscribe((data: any) => {
-      this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = data;
-    });
+        constructor(
+                private query: SparqlQueriesService,
+                private nameService: PrefixesService,
+                private loadingScreenService: DataLoaderService
 
-  }
+        ) {
 
-  // isa 88 data
-  public loadISA88BehaviorInfo() {
-    return this.query.selectTable(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
-  }
+                this.initializeISA88();
 
-  public setISA88BehaviorInfo(table) {
-    this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = table;
-  }
-  public getISA88BehaviorInfo() {
-    return this.isa88Data.ALL_BEHAVIOR_INFO_TABLE;
-  }
+        }
 
-  public insertStateMachine(variables: ISA88Variables){
-        var PREFIXES = this.nameService.getPrefixes();
-        var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-        
-        return this.query.insert(this.isa88Insert.buildISA88(variables, namespace));
-  }
-  public buildStateMachine(variables: ISA88Variables){
-        var PREFIXES = this.nameService.getPrefixes();
-        var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-        
-        return this.isa88Insert.buildISA88(variables, namespace);
-  }
+        public initializeISA88() {
+                this.loadISA88BehaviorInfo().subscribe((data: any) => {
+                        this.loadingScreenService.stopLoading();
+                        this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = data;
+                });
+        }
+        // isa 88 data
+        public loadISA88BehaviorInfo() {
+                this.loadingScreenService.startLoading();
+                return this.query.selectTable(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
+        }
+
+        public setISA88BehaviorInfo(table) {
+                this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = table;
+        }
+        public getISA88BehaviorInfo() {
+                return this.isa88Data.ALL_BEHAVIOR_INFO_TABLE;
+        }
+
+        public insertStateMachine(variables: ISA88Variables) {
+                var PREFIXES = this.nameService.getPrefixes();
+                var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+
+                return this.query.insert(this.isa88Insert.buildISA88(variables, namespace));
+        }
+        public buildStateMachine(variables: ISA88Variables) {
+                var PREFIXES = this.nameService.getPrefixes();
+                var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+
+                return this.isa88Insert.buildISA88(variables, namespace);
+        }
 
 }
 
@@ -55,9 +63,9 @@ class ISA88Data {
 
 
 
-  public IRI: Array<String>;
-  public ALL_BEHAVIOR_INFO_TABLE: Array<Object> = []
-  public SPARQL_SELECT_BEHAVIOR_INFO = `
+        public IRI: Array<String>;
+        public ALL_BEHAVIOR_INFO_TABLE: Array<Object> = []
+        public SPARQL_SELECT_BEHAVIOR_INFO = `
   PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -79,19 +87,19 @@ class ISA88Data {
 }
 
 export class ISA88Variables {
-  SystemName: string;
-  mode: string;
+        SystemName: string;
+        mode: string;
 }
 
 export class ISA88Insert {
 
-  public buildISA88(variables: ISA88Variables, activeNameSpace): string {
-    var namespace = activeNameSpace;
-    var SystemName = nameService.parseToName(variables.SystemName);
-    var SystemIRI = nameService.parseToIRI(variables.SystemName);
-    var mode = variables.mode;
+        public buildISA88(variables: ISA88Variables, activeNameSpace): string {
+                var namespace = activeNameSpace;
+                var SystemName = nameService.parseToName(variables.SystemName);
+                var SystemIRI = nameService.parseToIRI(variables.SystemName);
+                var mode = variables.mode;
 
-    var insertStringProduction = `      
+                var insertStringProduction = `      
 # Necessary W3C ontologies
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -368,7 +376,7 @@ INSERT {
   }
 }`;
 
-    var insertStringMaintenance = `
+                var insertStringMaintenance = `
 # Necessary W3C ontologies
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -596,10 +604,10 @@ INSERT {
 
 
 `;
-    if (mode == "Production") { return insertStringProduction }
-    if (mode == "Maintenance") { return insertStringMaintenance }
+                if (mode == "Production") { return insertStringProduction }
+                if (mode == "Maintenance") { return insertStringMaintenance }
 
-    ;
-  }
+                ;
+        }
 
 }

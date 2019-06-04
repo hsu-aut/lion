@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
-
+import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 
 
 @Injectable({
@@ -23,58 +23,79 @@ export class Vdi2206ModelService {
 
 constructor(
   private query: SparqlQueriesService,
-  private nameService: PrefixesService
+  private nameService: PrefixesService,
+  private loadingScreenService: DataLoaderService
 ) { 
+
+  this.initializeVDI2206();
+
+}
+
+public initializeVDI2206(){
   this.loadLIST_OF_SYSTEMS().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.LIST_OF_SYSTEMS = data;
   });
   this.loadLIST_OF_MODULES().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.LIST_OF_MODULES = data;
   });
   this.loadLIST_OF_COMPONENTS().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.LIST_OF_COMPONENTS = data;
   });
   this.loadLIST_OF_CLASSES().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.LIST_OF_CLASSES = data;
   });
   this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS = data;
   });
   this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD = data;
   });
   this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS = data;
   });
   this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD().subscribe((data: any) => {
+    this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD = data;
   });
-  
-
 }
 
 public loadLIST_OF_SYSTEMS(){
+  this.loadingScreenService.startLoading();
   return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_SYSTEMS, 0);
 }
 public loadLIST_OF_MODULES(){
+  this.loadingScreenService.startLoading();
   return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_MODULES, 0);
 }
 public loadLIST_OF_COMPONENTS(){
+  this.loadingScreenService.startLoading();
   return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_COMPONENTS, 0);
 }
 public loadLIST_OF_CLASSES(){
+  this.loadingScreenService.startLoading();
   return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_CLASSES, 0);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS(){
+  this.loadingScreenService.startLoading();
   return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD(){
+  this.loadingScreenService.startLoading();
   return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS(){
+  this.loadingScreenService.startLoading();
   return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD(){
+  this.loadingScreenService.startLoading();
   return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD);
 }
 

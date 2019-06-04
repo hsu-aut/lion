@@ -2,17 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { DataLoaderService } from "../../../../shared/services/dataLoader.service";
+
 @Injectable({
   providedIn: 'root'
 })
 export class BackEndRequestsService {
   url: string;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private loadingScreenService: DataLoaderService) {
     this.url = `/lion_BE`;
   }
 
   loadTBoxes(repositoryName, TBox) {
+    
     var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'none',
@@ -23,6 +28,7 @@ export class BackEndRequestsService {
     console.log(request, httpOptions);
     var dbObservale = new Observable((observer) => {
       this.http.get(request, httpOptions).subscribe((data: any) => {
+        
         console.log(data)
         observer.next(data)
         observer.complete()
@@ -42,6 +48,7 @@ export class BackEndRequestsService {
     console.log(request, httpOptions);
     var dbObservale = new Observable((observer) => {
       this.http.get(request, httpOptions).subscribe((data: any) => {
+        
         console.log(data)
         observer.next(data)
         observer.complete()

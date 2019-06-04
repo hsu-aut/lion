@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
+import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 
 var nameService = new PrefixesService;
 
@@ -19,86 +20,101 @@ export class Dinen61360Service {
 
   constructor(
     private query: SparqlQueriesService,
-    private nameService: PrefixesService
-  ) { 
+    private nameService: PrefixesService,
+    private loadingScreenService: DataLoaderService
+  ) {
+
+    this.initializeDINEN61360();
+
+  }
+
+  public initializeDINEN61360() {
     this.loadTABLE_All_TYPES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.TABLE_All_TYPES = data;
     });
     this.loadLIST_All_DE().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_All_DE = data;
     });
     this.loadLIST_All_DEI().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_All_DEI = data;
     });
     this.loadLIST_All_DET().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.LIST_All_DET = data;
     });
   }
 
-  public loadTABLE_All_TYPES() { 
+  public loadTABLE_All_TYPES() {
+    this.loadingScreenService.startLoading();
     return this.query.selectTable(this.dinen61360data.SPARQL_SELECT_allTypes);
   }
-  public loadLIST_All_DE() { 
+  public loadLIST_All_DE() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDE, 0);
   }
-  public loadLIST_All_DEI() { 
+  public loadLIST_All_DEI() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDEI, 0);
   }
   public loadLIST_All_DET() {
+    this.loadingScreenService.startLoading();
     return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDET, 0);
-   }
+  }
 
 
-  public setTABLE_All_TYPES(table) { 
+  public setTABLE_All_TYPES(table) {
     this.TABLE_All_TYPES = table;
   }
-  public setLIST_All_DE(list) { 
+  public setLIST_All_DE(list) {
     this.LIST_All_DE = list;
   }
-  public setLIST_All_DET(list) { 
+  public setLIST_All_DET(list) {
     this.LIST_All_DET = list;
   }
   public setLIST_All_DEI(list) {
     this.LIST_All_DEI = list;
-   }
+  }
 
-  public getTABLE_All_TYPES() { 
+  public getTABLE_All_TYPES() {
     return this.TABLE_All_TYPES;
   }
-  public getLIST_All_DE() { 
+  public getLIST_All_DE() {
     return this.LIST_All_DE
   }
-  public getLIST_All_DET() { 
+  public getLIST_All_DET() {
     return this.LIST_All_DET
   }
-  public getLIST_All_DEI() { 
+  public getLIST_All_DEI() {
     return this.LIST_All_DEI
   }
 
-  public insertDET(variables: DINEN61360Variables){
+  public insertDET(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    
+
     return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, namespace));
-}
-public buildDET(variables: DINEN61360Variables){
+  }
+  public buildDET(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    
+
     return this.dinen61360insert.buildDINEN61360T(variables, namespace);
-}
-public insertDEI(variables: DINEN61360Variables){
-  var PREFIXES = this.nameService.getPrefixes();
-  var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-  
-  return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, namespace));
-}
-public buildDEI(variables: DINEN61360Variables){
-  var PREFIXES = this.nameService.getPrefixes();
-  var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-  
-  return this.dinen61360insert.buildDINEN61360I(variables, namespace);
-}
+  }
+  public insertDEI(variables: DINEN61360Variables) {
+    var PREFIXES = this.nameService.getPrefixes();
+    var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+
+    return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, namespace));
+  }
+  public buildDEI(variables: DINEN61360Variables) {
+    var PREFIXES = this.nameService.getPrefixes();
+    var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+
+    return this.dinen61360insert.buildDINEN61360I(variables, namespace);
+  }
 
 }
 

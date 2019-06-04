@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrefixesService } from './prefixes.service';
 import { Tables } from '../../utils/tables';
-import { Url } from 'url';
+import { DataLoaderService } from "../../../../shared/services/dataLoader.service";
 
 //const url = `http://localhost:7200/repositories/Airbus_CTC_01`;
 
@@ -20,7 +20,8 @@ export class SparqlQueriesService {
 
   constructor(
     private http: HttpClient,
-    private namespaceService: PrefixesService
+    private namespaceService: PrefixesService,
+    private loadingScreenService: DataLoaderService
   ) {
 
     // default url

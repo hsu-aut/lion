@@ -1,0 +1,17 @@
+.loading-screen-wrapper {
+  z-index: 10000000000;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.6);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  
+}
+
+.loading-screen-text {
+  position: absolute;
+  margin-top: 25vh;
+}
+.loading-screen-icon {
+  width: 60px;
+}

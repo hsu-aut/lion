@@ -1,0 +1,21 @@
+<!-- <div class="loading-screen-wrapper" class="spinner-border" role="status" *ngIf="loading">
+    <span class="sr-only">Currently loading: {{loading}}</span>
+</div> -->
+<div class="loading-screen-wrapper" *ngIf="loading">
+<div class="container"  style="width: 200px">
+  <div class="row" style="padding-top: 25vh">
+    
+    <div class="col sm-1">
+      <p style="text-align: center"> Currently loading: {{loading}} </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col" style="text-align: center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only "></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
