@@ -1,11 +1,9 @@
 <!-- Namespaces of Ontologies Card -->
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
   <h5 class="card-header">
-    Configuration of Namespaces of Ontologies
+    Local Configuration of Namespaces of Ontologies
   </h5>
   <div class="card-body">
-    <p class="card-text"> Existing namespaces and their prefixes are shown below. Click on the table to delete or
-      edit existing namespaces. </p>
     <app-table [currentTable]="PREFIXES" [tableTitle]="nameSpaceTableTitle" [tableExplanation]="nameSpaceTableSubTitle"
       (tableClickedRow)="prefixTableClick($event)"></app-table>
     <form>
@@ -53,70 +51,53 @@
 
 <!-- Konfigurationsübersicht -->
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <h5 class="card-header"> Backend Configuration </h5>
+  <h5 class="card-header"> Graph Database Configuration </h5>
   <div class="card-body">
 
-    <div class="row" style="height: 450px;">
-      <div class="col">
-        <!-- Graph Database Configuration -->
-        <div class="card h-90">
-          <div class="card-header">
-            <h6>Graph Database Configuration</h6>
+      <div class="form-row">
+          <div class="form-group col-sm">
+            <label> Hostname </label>
+            <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName">
           </div>
-          <div class="card-body">
-
-            <div class="form-row">
-              <div class="form-group col-sm">
-                <label> Hostname </label>
-                <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName">
-              </div>
-              <div class="form-group col-sm">
-                <label> Repository name </label>
-                <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
-                  placeholder="repositoryName">
-              </div>
-            </div>
-
-            <div class="form-row pr-5">
-              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3"
-                  (click)="setGraphDBConfig(hostName, repositoryName)"> Save Configuraton
-                </button></div>
-              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="refreshServices()">
-                  Reload Data
-                </button></div>
-              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="loadTBoxes()">
-                  Load Tboxes
-                </button></div>
-              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="clearRepository()">
-                  Clear Repository
-                </button></div>
-            </div>
+          <div class="form-group col-sm">
+            <label> Repository name </label>
+            <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
+              placeholder="repositoryName">
           </div>
         </div>
-      </div>
+
+        <div class="form-row">
+          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3"
+              (click)="setGraphDBConfig(hostName, repositoryName)"> Save Configuraton
+            </button></div>
+          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="refreshServices()">
+              Reload Data
+            </button></div>
+          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="loadTBoxes()">
+              Load Tboxes
+            </button></div>
+          <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="clearRepository()">
+              Clear Repository
+            </button></div>
+        </div>
 
 
-      <div class="col">
-        <!-- Upload / Download Configurations -->
+
+
+      <!-- <div class="col">
         <div class="card h-40">
           <div class="card-header">
             <h6>Save / Load Configurations</h6>
           </div>
           <div class="card-body">
-
-
             <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button> {{savingDate}}
-
             <label for="file-upload" class="btn btn-secondary">
               Load
             </label>
             <input id="file-upload" type="file" (change)="loadSelectedFile($event)"> {{loadDate}}
-
           </div>
         </div>
+      </div> -->
 
-
-        </div>
-      </div>
-    </div>
   </div>
+</div>

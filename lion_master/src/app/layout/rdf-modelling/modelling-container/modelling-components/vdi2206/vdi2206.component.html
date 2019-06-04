@@ -202,21 +202,37 @@
       </div>
   </div>
 </div>
-<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <div class="card-body">
-    <div class="row">
-      <div class="col">
-        <h5 class="card-title">Available Structural Entities in Database by containment</h5>
-      </div>
-
-      <div class="btn-group col-sm-3" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-secondary" (click)="renderTable('System')">by
-          System</button>
-        <button type="button" class="btn btn-secondary" (click)="renderTable('Module')">by
-          Module</button>
-      </div>
+<!-- <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <div class="card-body"> -->
+      <div class="px-sm-2 py-sm-2">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab" aria-controls="sys"
+                aria-selected="true" (click)="setTableOption('System_BUTTON')"> System </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab" aria-controls="mod"
+                aria-selected="false" (click)="setTableOption('Module_BUTTON')"> Module </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab" aria-controls="com"
+                aria-selected="false" (click)="setTableOption('Component_BUTTON')"> Component </a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
+              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
+            </div>
+            <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
+              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
+            </div>
+            <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
+              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
+            </div>
+          </div>
     </div>
-  </div>
-</div>
-<app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-(tableClickedCell)="iriTableClick($event)"></app-table>
+  <!-- </div>
+</div> -->

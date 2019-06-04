@@ -15,6 +15,7 @@ export class Vdi2206Component implements OnInit {
   // util variables
   keys = Object.keys;
   currentTable: Array<Object> = [];
+  _currentOption: string;
 
   // stats 
   NoOfSystems: number;
@@ -28,8 +29,10 @@ export class Vdi2206Component implements OnInit {
   // graph db data
   allStructureInfoContainmentbySys: any = [];
   allStructureInfoContainmentbyMod: any = [];
+  allStructureInfoContainmentbyCOM: any = [];
   allStructureInfoInheritancebySys: any = [];
   allStructureInfoInheritancebyMod: any = [];
+  allStructureInfoInheritancebyCOM: any = [];
   allClasses: any;
 
   //user input variables
@@ -55,12 +58,16 @@ export class Vdi2206Component implements OnInit {
     private dlService: DownloadService,
     private vdi2206Service: Vdi2206ModelService,
     private loadingScreenService: DataLoaderService
-    ) { }
+    ) { 
+      
+    }
 
   ngOnInit() {
     this.allClasses = this.vdi2206Service.getLIST_OF_CLASSES();
     this.getAllStructuralInfo();
     this.getStatisticInfo();
+    this._currentOption = 'System_BUTTON';
+    this.setTableOption(this._currentOption);
   }
 
 
@@ -202,8 +209,10 @@ export class Vdi2206Component implements OnInit {
     //get containment info for sys
     this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
     this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
+    this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
     this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
     this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
+    this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
   }
   
   setAllStructuralInfo() {
@@ -212,21 +221,37 @@ export class Vdi2206Component implements OnInit {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoContainmentbySys = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS(data);
+      this.setTableOption(this._currentOption);
     });
     this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD().subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoContainmentbyMod = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD(data);
+      this.setTableOption(this._currentOption);
+    });
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.allStructureInfoContainmentbyCOM = data;
+      this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM(data);
+      this.setTableOption(this._currentOption);
     });
     this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS().subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoInheritancebySys = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS(data);
+      this.setTableOption(this._currentOption);
     });
     this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD().subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoInheritancebyMod = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD(data);
+      this.setTableOption(this._currentOption);
+    });
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.allStructureInfoInheritancebyCOM = data;
+      this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM(data);
+      this.setTableOption(this._currentOption);
     });
   }
   // getStatisticInfo() {
@@ -269,18 +294,44 @@ export class Vdi2206Component implements OnInit {
     });
 
   }
-  renderTable(StructureTable: string) {
-    this.StructureView = StructureTable;
-    if (StructureTable == "System" && (this.StructureOptions == "newEntities" || this.StructureOptions == "existingEntitiesContainment")) {
-      this.currentTable = this.allStructureInfoContainmentbySys;
-      console.log(this.currentTable)
-    } else if (StructureTable == "Module" && (this.StructureOptions == "newEntities" || this.StructureOptions == "existingEntitiesContainment")) {
-      this.currentTable = this.allStructureInfoContainmentbyMod;
-    } else if (StructureTable == "System" && this.StructureOptions == "existingEntitiesInheritance") {
-      this.currentTable = this.allStructureInfoInheritancebySys;
-    } else if (StructureTable == "Module" && this.StructureOptions == "existingEntitiesInheritance") {
-      this.currentTable = this.allStructureInfoInheritancebyMod;
+  setTableOption(StructureTable: string) {
+
+    switch (StructureTable) {
+      case "System_BUTTON": {
+        if(this.StructureOptions == "existingEntitiesInheritance"){this.currentTable = this.allStructureInfoInheritancebySys;}
+        else {this.currentTable = this.allStructureInfoContainmentbySys;}
+        this._currentOption = StructureTable;
+        break;
+      }
+      case "Module_BUTTON": {
+        if(this.StructureOptions == "existingEntitiesInheritance"){this.currentTable = this.allStructureInfoInheritancebyMod;}
+        else {this.currentTable = this.allStructureInfoContainmentbyMod;}
+        this._currentOption = StructureTable;
+        break;
+      }
+      case "Component_BUTTON": {
+        if(this.StructureOptions == "existingEntitiesInheritance"){this.currentTable = this.allStructureInfoInheritancebyCOM;}
+        else {this.currentTable = this.allStructureInfoContainmentbyCOM;}
+        this._currentOption = StructureTable;
+        break;
+      }
+      default: {
+        // no default statements
+        break;
+      }
     }
+
+    // this.StructureView = StructureTable;
+    // if (StructureTable == "System" && (this.StructureOptions == "newEntities" || this.StructureOptions == "existingEntitiesContainment")) {
+    //   this.currentTable = this.allStructureInfoContainmentbySys;
+    //   console.log(this.currentTable)
+    // } else if (StructureTable == "Module" && (this.StructureOptions == "newEntities" || this.StructureOptions == "existingEntitiesContainment")) {
+    //   this.currentTable = this.allStructureInfoContainmentbyMod;
+    // } else if (StructureTable == "System" && this.StructureOptions == "existingEntitiesInheritance") {
+    //   this.currentTable = this.allStructureInfoInheritancebySys;
+    // } else if (StructureTable == "Module" && this.StructureOptions == "existingEntitiesInheritance") {
+    //   this.currentTable = this.allStructureInfoInheritancebyMod;
+    // } 
 
   }
 
