@@ -17,7 +17,7 @@ export class BackEndRequestsService {
   }
 
   loadTBoxes(repositoryName, TBox) {
-    
+
     var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'none',
@@ -28,7 +28,7 @@ export class BackEndRequestsService {
     console.log(request, httpOptions);
     var dbObservale = new Observable((observer) => {
       this.http.get(request, httpOptions).subscribe((data: any) => {
-        
+
         console.log(data)
         observer.next(data)
         observer.complete()
@@ -48,7 +48,7 @@ export class BackEndRequestsService {
     console.log(request, httpOptions);
     var dbObservale = new Observable((observer) => {
       this.http.get(request, httpOptions).subscribe((data: any) => {
-        
+
         console.log(data)
         observer.next(data)
         observer.complete()

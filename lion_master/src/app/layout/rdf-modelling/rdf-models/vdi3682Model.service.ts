@@ -88,18 +88,22 @@ export class Vdi3682ModelService {
     return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_ALL_CLASSES, 0);
   }
   public loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass) {
+    this.loadingScreenService.startLoading();
     owlClass = this.nameService.parseToIRI(owlClass);
     return this.query.selectList(this.vdi3682data.selectPredicateByDomain(owlClass), 0);
   }
   public loadLIST_OF_CLASSES_BY_RANGE(predicate) {
+    this.loadingScreenService.startLoading();
     predicate = this.nameService.parseToIRI(predicate);
     return this.query.selectList(this.vdi3682data.selectClassByRange(predicate), 0);
   }
   public loadLIST_OF_CLASS_MEMBERSHIP(individual) {
+    this.loadingScreenService.startLoading();
     individual = this.nameService.parseToIRI(individual);
     return this.query.selectList(this.vdi3682data.selectClass(individual), 0);
   }
   public loadLIST_OF_INDIVIDUALS_BY_CLASS(Class) {
+    this.loadingScreenService.startLoading();
     Class = this.nameService.parseToIRI(Class);
     return this.query.selectList(this.vdi3682data.selectIndividualByClass(Class), 0);
   }

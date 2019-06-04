@@ -6,6 +6,8 @@ import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+
 
 
 
@@ -23,6 +25,7 @@ export class Isa88Component implements OnInit {
     private namespaceParser: PrefixesService,
     private modelService: Isa88ModelService,
     private vdi3682ModelService: Vdi3682ModelService, 
+    private loadingScreenService: DataLoaderService
     ) { }
   // util variables
   keys = Object.keys;
@@ -83,6 +86,7 @@ export class Isa88Component implements OnInit {
 
   refreshISA88(){
     this.modelService.loadISA88BehaviorInfo().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.currentTable = data
       this.modelService.setISA88BehaviorInfo(data)
     });

@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DataLoaderService } from "../services/dataLoader.service";
 import { Subscription } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 
 @Component({
@@ -16,7 +17,9 @@ export class LoaderComponent implements OnInit, OnDestroy {
   constructor(private loadingScreenService: DataLoaderService) { }
 
   ngOnInit() {
-    this.loadingSubscription = this.loadingScreenService.loadingStatus.subscribe((value) => {
+    this.loadingSubscription = this.loadingScreenService.loadingStatus.pipe(
+      debounceTime(200)
+    ).subscribe((value) => {
       this.loading = value;
     });
   }

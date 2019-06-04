@@ -5,6 +5,8 @@ import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+
 
 
 @Component({
@@ -52,7 +54,8 @@ export class VDI3682Component implements OnInit {
     private query: SparqlQueriesService,
     private dlService: DownloadService,
     private namespaceParser: PrefixesService,
-    private modelService: Vdi3682ModelService
+    private modelService: Vdi3682ModelService,
+    private loadingScreenService: DataLoaderService
   ) { }
 
 
@@ -216,6 +219,7 @@ export class VDI3682Component implements OnInit {
 
   loadAllProcessInfo() {
     this.modelService.loadALL_PROCESS_INFO_TABLE().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.allProcessInfo = data
       this.modelService.setALL_PROCESS_INFO_TABLE(this.allProcessInfo)
     });
@@ -247,14 +251,17 @@ export class VDI3682Component implements OnInit {
 
   loadStatisticInfo() {
     this.modelService.loadLIST_OF_PROCESSES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.NoOfProcesses = data.length
       this.modelService.setLIST_OF_PROCESSES(data)
     });
     this.modelService.loadLIST_OF_INPUTS_AND_OUTPUTS().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.NoOfInOuts = data.length
       this.modelService.setLIST_OF_INPUTS_AND_OUTPUTS(data)
     });
     this.modelService.loadLIST_OF_TECHNICAL_RESOURCES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.NoOfTechnicalResources = data.length
       this.modelService.setLIST_OF_TECHNICAL_RESOURCES(data)
     });

@@ -64,14 +64,33 @@
             <h6>Graph Database Configuration</h6>
           </div>
           <div class="card-body">
-            <label><input class="form-control" [(ngModel)]="hostName" name="url" type="text"
-                placeholder="hostName"></label><br>
-            <label><input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
-                placeholder="repositoryName"></label><br>
 
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <label> Hostname </label>
+                <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName">
+              </div>
+              <div class="form-group col-sm">
+                <label> Repository name </label>
+                <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
+                  placeholder="repositoryName">
+              </div>
+            </div>
 
-            <button class="btn btn-secondary" (click)="setGraphDBConfig(hostName, repositoryName)">
-              Set GraphDB Config </button>
+            <div class="form-row pr-5">
+              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3"
+                  (click)="setGraphDBConfig(hostName, repositoryName)"> Save Configuraton
+                </button></div>
+              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="refreshServices()">
+                  Reload Data
+                </button></div>
+              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="loadTBoxes()">
+                  Load Tboxes
+                </button></div>
+              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="clearRepository()">
+                  Clear Repository
+                </button></div>
+            </div>
           </div>
         </div>
       </div>
@@ -87,8 +106,7 @@
 
 
             <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button> {{savingDate}}
-            <br>
-            <br>
+
             <label for="file-upload" class="btn btn-secondary">
               Load
             </label>
@@ -96,88 +114,9 @@
 
           </div>
         </div>
-        <br>
-        <!-- Backend Configuration -->
-        <div class="card h-40">
-          <div class="card-header">
-            <h6>Backend Configuration</h6>
-          </div>
-          <div class="card-body">
 
-            <!-- <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text"
-                placeholder="{{eclassUrl}}"></label><br>
 
-            <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button> -->
-
-            <div class="form-row">
-              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3"
-                  (click)="loadTBoxes()"> Load Tboxes
-              </button></div>
-              <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="clearRepository()">
-                  Clear Repository
-                  Namesapce
-                </button></div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Graph Database Configuration -->
-  <div *ngIf="TemplateOption === 'graphDatabase'">
-
-    <div class="card">
-      <div class="card-header">
-        Graph Database Configuration
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">Configuring the connection to the graph database</h5>
-        <label><input class="form-control" [(ngModel)]="hostName" name="url" type="text"
-            placeholder="hostName"></label><br>
-        <label><input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
-            placeholder="repositoryName"></label><br>
-        <!-- <label><input class="form-control" [(ngModel)]="Username" name="username" type="text"
-            placeholder="[Username]"></label><br>
-        <label><input class="form-control" [(ngModel)]="Password" name="password" type="text"
-            placeholder="[Password]"></label><br> -->
-
-        <button class="btn btn-secondary" (click)="submitGraphConfig(URL, Repository)">submit</button>
-      </div>
-    </div>
-  </div>
-
-
-
-  <!-- Backend Configuration -->
-  <div *ngIf="TemplateOption === 'backend'">
-
-    <div class="card">
-      <div class="card-header">
-        Backend Configuration
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">Configuring Routes to Backend Services </h5>
-        <h5></h5>
-        <label><input class="form-control" [(ngModel)]="EClass" name="eclass" type="text"
-            placeholder="{{eclassUrl}}"></label><br>
-
-        <button class="btn btn-secondary" (click)="submitBackendConfig(EClass)">submit</button>
-
-      </div>
-    </div>
-  </div>
-  <!-- Upload / Download Configurations -->
-  <div *ngIf="TemplateOption === 'upload'">
-
-    <div class="card">
-      <div class="card-header">
-        Upload / Download Configurations
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">Upload or Download configuration files</h5>
-        <button class="btn btn-secondary" (click)="buildTypeInsert()">Download</button>
-        <button class="btn btn-secondary" (click)="insertDINEN61360()">Upload</button>
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ import { EclassSearchService } from '../../../rdf-models/services/eclass-search.
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 
 
 
@@ -90,7 +91,8 @@ export class Dinen61360Component implements OnInit {
     private namespaceParser: PrefixesService,
     private dinen61360Service: Dinen61360Service,
     private vdi3682Service: Vdi3682ModelService,
-    private isa88Service: Isa88ModelService
+    private isa88Service: Isa88ModelService,
+    private loadingScreenService: DataLoaderService
     ) { }
 
   ngOnInit() {
@@ -220,11 +222,10 @@ export class Dinen61360Component implements OnInit {
   }
 
   setAllTypes() {
-    this._loaderShow = true;
     this.dinen61360Service.loadTABLE_All_TYPES().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.allTypes = data;
       this.dinen61360Service.setTABLE_All_TYPES(data)
-      this._loaderShow = false;
     });
   }
   // getStatisticInfo() {
@@ -251,22 +252,23 @@ export class Dinen61360Component implements OnInit {
   }
 
   setStatisticInfo() {
-  this._loaderShow = true;
+
     // set stats of functions in TS
     this.dinen61360Service.loadLIST_All_DE().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.NoOfDE = data.length;
       this.dinen61360Service.setLIST_All_DE(data)
-      this._loaderShow = false;
+
     });
     this.dinen61360Service.loadLIST_All_DET().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.NoOfDET = data.length;
       this.dinen61360Service.setLIST_All_DET(data)
-      this._loaderShow = false;
     });
     this.dinen61360Service.loadLIST_All_DEI().subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.NoOfDEI = data.length;
       this.dinen61360Service.setLIST_All_DEI(data)
-      this._loaderShow = false;
     });
   }
 

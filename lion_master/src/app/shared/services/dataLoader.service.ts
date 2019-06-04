@@ -26,5 +26,8 @@ startLoading() {
 
 stopLoading() {
   this.loading--;
+  if(this.loading < 0){
+    this.loading = 0;
+  }
 }
 }

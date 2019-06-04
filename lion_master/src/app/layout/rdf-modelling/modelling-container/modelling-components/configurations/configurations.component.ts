@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { Subscription } from "rxjs";
+import { Subscription, concat, Observable } from "rxjs";
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
@@ -11,8 +11,10 @@ import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../../../rdf-models/dinen61360.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
+import { DashboardService } from '../../modelling-components/dashboard/dashboard.service';
 
 import { DataLoaderService } from "../../../../../shared/services/dataLoader.service";
+import { finalize } from 'rxjs/operators';
 
 
 
@@ -70,10 +72,11 @@ export class ConfigurationsComponent implements OnInit {
     private ISA_Service: Isa88ModelService,
     private DINEIN61360_Service: Dinen61360Service,
     private VDI2206_Service: Vdi2206ModelService,
-    private VDI3862_Service: Vdi3682ModelService
+    private VDI3862_Service: Vdi3682ModelService,
+    private Dashboard_Service: DashboardService
 
 
-    ) {
+  ) {
     this.hostName = query.getHost();
     this.repositoryName = query.getRepository();
     this.eclassUrl = eclass.getEclassUrl();
@@ -153,46 +156,47 @@ export class ConfigurationsComponent implements OnInit {
     this.prefixService.editNamespace(this.userKey, this.userPrefix, this.userNamespace);
   }
 
-  deleteNamespace() { 
+  deleteNamespace() {
     this.prefixService.deleteNamespace(this.userKey);
   }
-  setActiveNamespace(){
+  setActiveNamespace() {
     this.prefixService.setActiveNamespace(this.userKey);
     this.getActiveNamespace();
   }
-  getActiveNamespace(){
+  getActiveNamespace() {
     this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()];
   }
 
-  loadTBoxes(){
+  loadTBoxes() {
 
-    this.backEnd.loadTBoxes(this.query.getRepository(),"VDI3682").subscribe((data: any) => {
+    var ObservableSequence =     concat(
+      this.backEnd.loadTBoxes(this.query.getRepository(), "VDI3682"),
+      this.backEnd.loadTBoxes(this.query.getRepository(), "WADL"),
+      this.backEnd.loadTBoxes(this.query.getRepository(), "ISA88"),
+      this.backEnd.loadTBoxes(this.query.getRepository(), "DINEN61360"),
+      this.backEnd.loadTBoxes(this.query.getRepository(), "VDI2206"),
 
-      console.log(data)
-    })
-    this.backEnd.loadTBoxes(this.query.getRepository(),"WADL").subscribe((data: any) => {
 
-      console.log(data)
-    })
-    this.backEnd.loadTBoxes(this.query.getRepository(),"ISA88").subscribe((data: any) => {
+    ).pipe(
+      finalize(() => this.refreshServices()) // Execute when the observable completes
+    )
 
-      console.log(data)
-    })
-    this.backEnd.loadTBoxes(this.query.getRepository(),"DINEN61360").subscribe((data: any) => {
+    ObservableSequence.subscribe((data: any) => console.log(data));
 
-      console.log(data)
-    })
-    this.backEnd.loadTBoxes(this.query.getRepository(),"VDI2206").subscribe((data: any) => {
+  }
 
-      console.log(data)
+  clearRepository() {
+    this.backEnd.clearRepo(this.query.getRepository()).subscribe((data: any) => {
+      console.info("Repository cleared ...")
     })
   }
 
-  clearRepository(){
-    this.backEnd.clearRepo(this.query.getRepository()).subscribe((data: any) => {
-
-      console.log("got data")
-      // console.log(data)
-    })
+  refreshServices() {
+    console.info("Refreshing data ...")
+      this.VDI3862_Service.initializeVDI3682();
+      this.VDI2206_Service.initializeVDI2206();
+      this.ISA_Service.initializeISA88();
+      this.DINEIN61360_Service.initializeDINEN61360();
+      this.Dashboard_Service.initializeDashboard();
   }
 }
