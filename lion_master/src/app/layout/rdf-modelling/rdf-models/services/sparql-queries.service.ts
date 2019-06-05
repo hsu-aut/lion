@@ -27,6 +27,7 @@ export class SparqlQueriesService {
     // default url
     this.host = 'http://localhost:7200';
     this.repository = 'testdb';
+    this.setNamedGraphs();
   }
 
   // getter and setter for repository and host
@@ -159,7 +160,7 @@ export class SparqlQueriesService {
 
           currentList.push(data.results.bindings[i].id.value)
 
-          if(i == (data.results.bindings.length - 1)){
+          if (i == (data.results.bindings.length - 1)) {
             observer.next(currentList)
             observer.complete()
           }
@@ -170,7 +171,70 @@ export class SparqlQueriesService {
     return listObservable;
   }
 
+  setNamedGraphs() {
 
+    var selectString = `
+    SELECT DISTINCT ?g 
+    WHERE {
+    GRAPH ?g { ?s ?p ?o }
+    }`;
+
+    this.selectList(selectString, 0).subscribe((data: any) => {
+      for (let i = 0; i < data.length; i++) {
+        this.namespaceService.GRAPHS.push(data[i]);
+      }
+    });
+  }
+
+  getTriplesOfNamedGraph(graph: string) {
+
+    var namedGraphURL_encoded = encodeURIComponent(graph);
+    console.log(namedGraphURL_encoded)
+    var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-turtle',
+        'Accept': 'application/x-turtle',
+
+      })
+    };
+    var options = { httpOptions, responseType: 'text' as 'text' }
+
+    var re = this.http.get(url, options);
+    return re;
+  }
+
+  deleteTriplesOfNamedGraph(graph: string) {
+    var body = "";
+    var namedGraphURL_encoded = encodeURIComponent(graph);
+    console.log(namedGraphURL_encoded)
+    var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-turtle',
+        'Accept': 'application/x-turtle'
+      })
+    };
+    
+    var re = this.http.put(url, body, httpOptions);
+    return re;
+  }
+
+  deleteNamedGraph(graph: string) {
+
+    var namedGraphURL_encoded = encodeURIComponent(graph);
+    console.log(namedGraphURL_encoded)
+    var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/x-turtle',
+        'Accept': 'application/x-turtle'
+      })
+    };
+
+    var re = this.http.delete(url, httpOptions);
+    return re;
+  }
 }
 
 

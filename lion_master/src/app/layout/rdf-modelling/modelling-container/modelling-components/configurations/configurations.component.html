@@ -46,6 +46,42 @@
 
       </div>
     </form>
+    <div class="form-row">
+      <div class="form-group col-sm">
+        <label> Active Graph IRI </label>
+        <input class="form-control" [(ngModel)]="currentGraph" name="url" type="text" placeholder="hostName" readonly>
+      </div>
+      <div class="form-group col-sm">
+        <label> Existing Graph IRIs </label>
+        <select [(ngModel)]="newGraph" name="newGraph" class="form-control">
+          <option *ngFor='let x of graphList'>
+            {{x}}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="setActiveGraph(newGraph)">
+          Change Graph
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#CREATE_GRAPH_IRI_MODAL">
+          Create Graph
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#DOWNLOAD_GRAPH">
+          Download Graph
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#DELETE_TRIPLES_OF_GRAPH">
+          Delete Triples of Graph
+        </button></div>
+      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
+          data-target="#DELETE_GRAPH">
+          Delete Graph
+        </button></div>
+    </div>
   </div>
 </div>
 
@@ -108,12 +144,12 @@
 
 <!-- Modals -->
 <!-- CLEAR REPOSITORY MODAL -->
-<div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="clearModal" tabindex="-1" role="dialog" aria-labelledby="clearModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Clear the Repository</h5>
+        <h5 class="modal-title" id="clearModalLabel">Clear the Repository</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -130,12 +166,12 @@
   </div>
 </div>
 <!-- CREATE REPOSITORY MODAL -->
-<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModalModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"> Create a new Repository </h5>
+        <h5 class="modal-title" id="CreateModalModalLabel"> Create a new Repository </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -161,12 +197,12 @@
   </div>
 </div>
 <!-- SET REPOSITORY MODAL -->
-<div class="modal fade" id="SetRepoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="SetRepoModal" tabindex="-1" role="dialog" aria-labelledby="SetRepoModalLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"> Set active Repository</h5>
+        <h5 class="modal-title" id="SetRepoModalLabel"> Set active Repository</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -197,12 +233,12 @@
   </div>
 </div>
 <!-- LOAD TBOX MODAL -->
-<div class="modal fade" id="TBOX_MODAL" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="TBOX_MODAL" tabindex="-1" role="dialog" aria-labelledby="TBOX_MODALLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"> Load TBoxes </h5>
+        <h5 class="modal-title" id="TBOX_MODALLabel"> Load TBoxes </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -239,12 +275,12 @@
   </div>
 </div>
 <!-- Reload Data Modal -->
-<div class="modal fade" id="RELOAD_MODAL" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="RELOAD_MODAL" tabindex="-1" role="dialog" aria-labelledby="RELOAD_MODALLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"> Reload Data </h5>
+        <h5 class="modal-title" id="RELOAD_MODALLabel"> Reload Data </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -258,6 +294,134 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
         <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="refreshServices()">
           Reload Data </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE GRAPH Modal -->
+<div class="modal fade" id="CREATE_GRAPH_IRI_MODAL" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Create a new graph </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group col-sm">
+            <label> By pushing the button below, a new named graph with the user defined name will be created. Please
+              note, that the graph will remain in this tool and empty unless you add triples to the graph. </label>
+            <div class="input-group-prepend">
+              <span class="input-group-text input-group-prepend" id="inputGroupPrepend">http://</span>
+              <input [(ngModel)]="newGraph" name="newRepositoryname" type="text"
+                placeholder="[name of the new named graph]" class="form-control">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="createNamedGraph(newGraph)">
+          Create Graph </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD_GRAPH Modal -->
+<div class="modal fade" id="DOWNLOAD_GRAPH" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Download Triples of named Graph </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group col-sm">
+          <label> You can download the triples of a named graph by choosing the named graph below and confirming the
+            action. The standard serialization will be Turtle (.ttl). </label>
+          <select [(ngModel)]="graphToDownload" name="graphToDownload" class="form-control">
+            <option *ngFor='let x of graphList'>
+              {{x}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="downloadGraph(graphToDownload)">
+          Download </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE_TRIPLES_OF_GRAPH Modal -->
+<div class="modal fade" id="DELETE_TRIPLES_OF_GRAPH" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Delete Triples of named Graph </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group col-sm">
+          <label> You are about to delete all triples of a named graph. The graph itself will be stored within the tool,
+            but empty graphs will be deleted by the GraphDB.
+            Select a graph whose triples should be deleted below: </label>
+          <select [(ngModel)]="graphToDeleteTriples" name="graphToDeleteTriples" class="form-control">
+            <option *ngFor='let x of graphList'>
+              {{x}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal"
+          (click)="deleteTriplesOfNamedGraph(graphToDeleteTriples)">
+          Delete Triples </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE_GRAPH Modal -->
+<div class="modal fade" id="DELETE_GRAPH" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Delete named Graph </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group col-sm">
+          <label> You are about to delete a named graph, including all the triples that are stored within that graph.
+            Select a graph to be deleted below </label>
+          <select [(ngModel)]="graphToDelete" name="graphToDelete" class="form-control">
+            <option *ngFor='let x of graphList'>
+              {{x}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteNamedGraph(graphToDelete)">
+          Delete selected graph </button>
       </div>
     </div>
   </div>

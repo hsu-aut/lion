@@ -117,27 +117,34 @@ export class VDI3682Component implements OnInit {
     this.selectedSubject = name;
 
     this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       var owlClass = data[0];
       this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
         this.existingPredicates = data;
       });
     });
 
   }
 
-  getObjectClasses() {
-    if (this.selectedPredicate) {
-      var predicate = this.selectedPredicate;
+  getObjectClasses(predicate: string) {
+    if (predicate) {
+      this.selectedObjectClass = undefined;
+      this.existingObjectClasses = undefined;
       this.modelService.loadLIST_OF_CLASSES_BY_RANGE(predicate).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
         this.existingObjectClasses = data;
       });
     }
   }
 
-  getExistingObjects() {
-    if (this.selectedObjectClass) {
-      var owlClass = this.selectedObjectClass
+  getExistingObjects(owlClass: string) {
+    if (owlClass) {
+      console.log(owlClass)
+      this.existingObjects = undefined;
+      this.selectedObject = undefined;
       this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
         this.existingObjects = data;
       });
     }
@@ -155,6 +162,11 @@ export class VDI3682Component implements OnInit {
     this.modelService.insertTripel(this.modelVariables.simpleStatement).subscribe((data: any) => {
         this.loadAllProcessInfo();
         this.loadStatisticInfo();
+        this.selectedPredicate = undefined;
+        this.selectedObjectClass = undefined;
+        this.selectedObject = undefined;
+        this.existingObjectClasses = undefined;
+        this.existingObjects = undefined;
       });
   }
 

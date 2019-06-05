@@ -4,7 +4,9 @@ import { PrefixesService } from './services/prefixes.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { Tables } from '../utils/tables';
 
-var nameService = new PrefixesService;
+import { Namespace } from '../utils/prefixes'
+
+var nameService = new Namespace;
 
 @Injectable({
         providedIn: 'root'
@@ -48,13 +50,19 @@ export class Isa88ModelService {
                 var PREFIXES = this.nameService.getPrefixes();
                 var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                return this.query.insert(this.isa88Insert.buildISA88(variables, namespace));
+                var GRAPHS = this.nameService.getGraphs();
+                var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+                return this.query.insert(this.isa88Insert.buildISA88(variables, namespace, activeGraph));
         }
         public buildStateMachine(variables: ISA88Variables) {
                 var PREFIXES = this.nameService.getPrefixes();
                 var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                return this.isa88Insert.buildISA88(variables, namespace);
+                var GRAPHS = this.nameService.getGraphs();
+                var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+                return this.isa88Insert.buildISA88(variables, namespace, activeGraph);
         }
 
 }
@@ -93,7 +101,7 @@ export class ISA88Variables {
 
 export class ISA88Insert {
 
-        public buildISA88(variables: ISA88Variables, activeNameSpace): string {
+        public buildISA88(variables: ISA88Variables, activeNameSpace: string, activeGraph: string): string {
                 var namespace = activeNameSpace;
                 var SystemName = nameService.parseToName(variables.SystemName);
                 var SystemIRI = nameService.parseToIRI(variables.SystemName);
@@ -112,7 +120,7 @@ PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
 # ${mode} Mode
 
 INSERT {
-
+        GRAPH <${activeGraph}>{
 # Declaration of individuals for states
   ?Aborting rdf:type ISA88:Aborting;         
       a owl:NamedIndividual.                    
@@ -306,7 +314,7 @@ INSERT {
       ISA88:described_by_ISA88_Element ?Unholding_State_Complete;
       ISA88:described_by_ISA88_Element ?Unsuspending_State_Complete;
       ISA88:described_by_ISA88_Element ?Unsuspend_Command. 
-
+        }
 } WHERE {
 
   { SELECT  

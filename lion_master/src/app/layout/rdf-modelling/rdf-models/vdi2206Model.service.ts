@@ -201,6 +201,9 @@ public insertTripel(graph: tripel) {
   var PREFIXES = this.nameService.getPrefixes();
   var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
+  var GRAPHS = this.nameService.getGraphs();
+  var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
   if(graph.subject.search("http://") != -1){
     graph.subject = graph.subject;
   } else if(graph.subject.search(":") != -1){
@@ -211,13 +214,16 @@ public insertTripel(graph: tripel) {
   graph.predicate = this.nameService.parseToIRI(graph.predicate);
   graph.object = this.nameService.parseToIRI(graph.object);
 
-  return this.query.insert(this.vdi2206Insert.createEntity(graph));
+  return this.query.insert(this.vdi2206Insert.createEntity(graph, activeGraph));
 }
 
 public buildTripel(graph: tripel) {
   var PREFIXES = this.nameService.getPrefixes();
   var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
+  var GRAPHS = this.nameService.getGraphs();
+  var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
   if(graph.subject.search("http://") != -1){
     graph.subject = graph.subject;
   } else if(graph.subject.search(":") != -1){
@@ -228,7 +234,7 @@ public buildTripel(graph: tripel) {
   graph.predicate = this.nameService.parseToIRI(graph.predicate);
   graph.object = this.nameService.parseToIRI(graph.object);
 
-  return this.vdi2206Insert.createEntity(graph);
+  return this.vdi2206Insert.createEntity(graph, activeGraph);
 }
 
 }
@@ -411,12 +417,13 @@ export class VDI2206VARIABLES {
 
 export class VDI2206INSERT {
 
-  public createEntity(graph: tripel) {
+  public createEntity(graph: tripel, activeGraph) {
 
       var insertString = `
       INSERT { 
+        GRAPH <${activeGraph}>{
           ?subject ?predicate ?object;
-          a owl:NamedIndividual.
+          a owl:NamedIndividual.}
       } WHERE {
           BIND(IRI(STR("${graph.subject}")) AS ?subject).
           BIND(IRI(STR("${graph.predicate}")) AS ?predicate).

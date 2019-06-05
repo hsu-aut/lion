@@ -84,11 +84,18 @@ export class Vdi2206Component implements OnInit {
     this.vdi2206Service.insertTripel(triples).subscribe((data: any) => {
       this.setAllStructuralInfo();
       this.setStatisticInfo();
+      this.selectedPredicate = undefined;
+      this.selectedObjectClass = undefined;
+      this.selectedObject = undefined;
+      this.existingObjectClasses = undefined;
+      this.existingObjects = undefined;
     });
   }
 
   getObjectClasses() {
     if (this.selectedPredicate) {
+      this.selectedObjectClass = undefined;
+      this.existingObjectClasses = undefined;
       var predicate = this.selectedPredicate;
       this.vdi2206Service.loadLIST_OF_CLASSES_BY_RANGE(predicate).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
@@ -99,6 +106,8 @@ export class Vdi2206Component implements OnInit {
 
 
   getExistingObjects() {
+    this.existingObjects = undefined;
+    this.selectedObject = undefined;
     if (this.selectedObjectClass) {
       var owlClass = this.selectedObjectClass
       this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {

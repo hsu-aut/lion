@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbCarouselModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { FormsModule } from '@angular/forms';
 
 
 import { RdfModellingRoutingModule } from './rdf-modelling-routing.module';
@@ -18,7 +18,8 @@ import { LoaderComponent } from '../../shared/loader/loader.component'
     CommonModule,
     NgbCarouselModule,
     NgbAlertModule,
-    RdfModellingRoutingModule
+    RdfModellingRoutingModule,
+    FormsModule
   ],
   declarations: [
     RdfModellingComponent, 

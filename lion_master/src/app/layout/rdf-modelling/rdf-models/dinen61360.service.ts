@@ -3,7 +3,9 @@ import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 
-var nameService = new PrefixesService;
+import { Namespace } from '../utils/prefixes'
+
+var nameService = new Namespace;
 
 @Injectable({
   providedIn: 'root'
@@ -95,28 +97,40 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, namespace));
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+    return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, namespace, activeGraph));
   }
   public buildDET(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    return this.dinen61360insert.buildDINEN61360T(variables, namespace);
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+    return this.dinen61360insert.buildDINEN61360T(variables, namespace, activeGraph);
   }
   public insertDEI(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, namespace));
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+    return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, namespace, activeGraph));
   }
   public buildDEI(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    return this.dinen61360insert.buildDINEN61360I(variables, namespace);
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+    return this.dinen61360insert.buildDINEN61360I(variables, namespace, activeGraph);
   }
 
-}
+} 
 
 export class DINEN61360Data {
   public IRI: Array<String>;
@@ -214,7 +228,7 @@ export class DINEN61360Variables {
 
 export class DINEN61360Insert {
 
-  public buildDINEN61360T(variables: DINEN61360Variables, activeNamespace) {
+  public buildDINEN61360T(variables: DINEN61360Variables, activeNamespace: string, activeGraph: string) {
     // activeNamespace
     var activeNamespace = activeNamespace;
     // type info
@@ -285,6 +299,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
 
 INSERT {
+  GRAPH <${activeGraph}>{
     # Declaration of individuals
 
   ?DE_TypeIRI rdf:type DE6:Type_Description;											    # Definition of DE Type Description
@@ -323,7 +338,7 @@ INSERT {
       
         #case-dependent
       DE6:Unit_of_Measure ?Unit_of_Measure.
-                                        
+      }                                 
   
 } WHERE {
 
@@ -389,7 +404,7 @@ INSERT {
     return insertString
   }
 
-  public buildDINEN61360I(variables: DINEN61360Variables, activeNamespace) {
+  public buildDINEN61360I(variables: DINEN61360Variables, activeNamespace: string, activeGraph: string) {
     // activeNamespace
     var activeNamespace = activeNamespace;
 
@@ -434,6 +449,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
 
 INSERT {
+  GRAPH <${activeGraph}>{
     # Declaration of individuals
   ?DE_uuid rdf:type DE6:Data_Element;													# Definition of Data Element (DE)
       a owl:NamedIndividual;
@@ -456,7 +472,7 @@ INSERT {
       DE6:Logic_Interpretation ?Logic_Interpretation;										# Enumeration {"<" , "<=" , "=" , ">" , ">="}
       DE6:Value ?Value;
     DE6:Created_at_Date ?Created_at_Date.  									            # Time stamp format  CCYY-MM-DDThh:mm:ss
-                                
+  }                             
   
 } WHERE {
 

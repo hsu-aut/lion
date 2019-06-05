@@ -59,7 +59,11 @@ export class ConfigurationsComponent implements OnInit {
   userKey: number;
   activeNamespace: any;
 
-  
+  // graph config
+  graphList;
+  currentGraph: string;
+  newGraph: string;
+ 
 
 
   constructor(
@@ -92,6 +96,7 @@ export class ConfigurationsComponent implements OnInit {
     this.getListOfRepos();
     this.hostName = this.query.getHost();
     this.repositoryName = this.query.getRepository();
+    this.getCurrentGraphConfig();
   }
 
 
@@ -214,4 +219,57 @@ export class ConfigurationsComponent implements OnInit {
       this.getListOfRepos();
     })
   }
+
+  getCurrentGraphConfig(){
+    this.graphList = this.prefixService.getGraphs();
+    this.currentGraph = this.graphList[this.prefixService.getActiveGraph()];
+  }
+
+  createNamedGraph(newGraphName: string){
+    let newGraph = newGraphName;
+    if(newGraphName.search("http://") != -1){
+      this.prefixService.addGraph(newGraph);
+    } else {
+      newGraph = "http://" + newGraph
+      this.prefixService.addGraph(newGraph);
+    }  
+    this.getCurrentGraphConfig();
+  }
+  setActiveGraph(graph: string){
+    for (let i = 0; i < this.graphList.length; i++) {
+      if(this.graphList[i].search(graph) != -1){
+        this.prefixService.setActiveGraph(i);
+        this.getCurrentGraphConfig();
+      }
+    }
+  }
+
+  downloadGraph(graph: string){
+    this.query.getTriplesOfNamedGraph(graph).subscribe((data: string) => {
+      const blob = new Blob([data], { type: 'text' });
+      // Dateiname
+      const name = graph + '.ttl';
+      // Downloadservice
+      this.dlService.download(blob, name);
+    })
+  }
+
+  deleteTriplesOfNamedGraph(graph){
+    this.query.deleteTriplesOfNamedGraph(graph).subscribe((data: string) => {
+      console.log(data);
+    })
+  }
+
+  deleteNamedGraph(graph){
+    this.query.deleteNamedGraph(graph).subscribe((data: string) => {
+      console.log(data);
+      for (let i = 0; i < this.graphList.length; i++) {
+        if(this.graphList[i].search(graph) != -1){
+          this.prefixService.deleteGraph(i);
+          this.getCurrentGraphConfig();
+        }
+      }
+    })
+  }
+
 }

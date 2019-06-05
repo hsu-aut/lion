@@ -127,6 +127,10 @@ export class Vdi3682ModelService {
   public insertTripel(graph: tripel) {
     var PREFIXES = this.nameService.getPrefixes();
     var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
     if(graph.subject.search("http://") != -1){
       graph.subject = graph.subject;
     } else if(graph.subject.search(":") != -1){
@@ -136,12 +140,14 @@ export class Vdi3682ModelService {
     }
     graph.predicate = this.nameService.parseToIRI(graph.predicate);
     graph.object = this.nameService.parseToIRI(graph.object);
-    return this.query.insert(this.vdi3682insert.createEntity(graph));
+    return this.query.insert(this.vdi3682insert.createEntity(graph, activeGraph));
   }
 
   public buildTripel(graph: tripel) {
     var PREFIXES = this.nameService.getPrefixes();
     var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
     if(graph.subject.search("http://") != -1){
       graph.subject = graph.subject;
@@ -152,7 +158,7 @@ export class Vdi3682ModelService {
     }
     graph.predicate = this.nameService.parseToIRI(graph.predicate);
     graph.object = this.nameService.parseToIRI(graph.object);
-    return this.vdi3682insert.createEntity(graph);
+    return this.vdi3682insert.createEntity(graph, activeGraph);
   }
 
 
@@ -296,12 +302,13 @@ export class VDI3682VARIABLES {
 
 export class VDI3682INSERT {
 
-  public createEntity(graph: tripel) {
+  public createEntity(graph: tripel, activeGraph: string) {
 
     var insertString = `
       INSERT { 
-          ?subject ?predicate ?object;
-          a owl:NamedIndividual.
+        GRAPH <${activeGraph}>{
+            ?subject ?predicate ?object;
+            a owl:NamedIndividual.}
       } WHERE {
           BIND(IRI(STR("${graph.subject}")) AS ?subject).
           BIND(IRI(STR("${graph.predicate}")) AS ?predicate).

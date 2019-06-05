@@ -101,7 +101,7 @@
           <div *ngIf="existingPredicates; then thenBlock else elseBlock"></div>
           <ng-template #thenBlock>
             <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
-              (click)="getObjectClasses()">
+              (click)="getObjectClasses(selectedPredicate)">
               <option *ngFor='let x of existingPredicates'>
                 {{x}}
               </option>
@@ -115,7 +115,7 @@
           <div *ngIf="existingObjectClasses; then thenBlock2 else elseBlock2"></div>
           <ng-template #thenBlock2>
             <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
-              (click)="getExistingObjects()">
+              (click)="getExistingObjects(selectedObjectClass)">
               <option *ngFor='let x of existingObjectClasses'>
                 {{x}}
               </option>
