@@ -1,44 +1,14 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
   <h5 class="card-header">VDI2206 Template</h5>
   <div class="card-body">
-    <h5 class="card-title">Options & Statistics</h5>
-    <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to an
-      existing system structure or create a new system structure.</p>
+    <h5 class="card-title"> Mechatronic System Structure</h5>
+
     <div class="row" style="height: 200px;">
 
       <div class="col">
-        <div class="card h-100">
-          <div class="card-header">
-            Template Options
-          </div>
-          <div class="card-body">
-            <div class="form-check">
-              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio1" name="StructureOptions"
-                class="custom-control-input" value="newEntities" (click)="setBack()">
-              <label class="custom-control-label" for="functionalRadio1">Create new Entities </label>
-            </div>
-            <div class="form-check">
-              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio2" name="StructureOptions"
-                class="custom-control-input" value="existingEntitiesContainment" (click)="setBack()">
-              <label class="custom-control-label" for="functionalRadio2">Connect existing Entities by containment
-              </label>
-            </div>
-            <!-- ToDo add flow relations -->
-            <!-- <div class="form-check">
-              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio3" name="StructureOptions"
-                class="custom-control-input" value="existingEntitiesFlow">
-              <label class="custom-control-label" for="functionalRadio3">Connect existing Entities by flow relation
-              </label>
-            </div> -->
-            <!-- ToDo add inheritance relations -->
-            <div class="form-check">
-              <input [(ngModel)]="StructureOptions" type="radio" id="functionalRadio4" name="StructureOptions"
-                class="custom-control-input" value="existingEntitiesInheritance" (click)="setBack()">
-              <label class="custom-control-label" for="functionalRadio4">Connect existing Entities by inheritance
-              </label>
-            </div>
-          </div>
-        </div>
+          <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to an
+              existing system structure or create a new system structure. <button type="button" class="badge badge-pill badge-light"
+                data-toggle="modal" data-target="#MCS_HELPER">?</button></p>
 
       </div>
       <div class="col">
@@ -68,171 +38,191 @@
       </div>
     </div>
 
-  </div>
-</div>
+    <div class="px-sm-2 py-3">
+      <!-- tabs -->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
+            aria-controls="newIndi" aria-selected="true" (click)="setStructureOption('newIndi')"> Create new individuals
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="existingIndiContain-tab" data-toggle="tab" href="#existingIndiContain" role="tab"
+            aria-controls="existingIndiContain" aria-selected="false"
+            (click)="setStructureOption('existingIndiContain')"> Connect by containment</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="existingIndiInheritance-tab" data-toggle="tab" href="#existingIndiInheritance"
+            role="tab" aria-controls="existingIndiInheritance" aria-selected="false"
+            (click)="setStructureOption('existingIndiInheritance')"> Connect by inheritance</a>
+        </li>
+      </ul>
 
-<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded" *ngIf="StructureOptions!==undefined">
-  <div class="card-body">
-    <h5 class="card-title"> Structure Insert Template</h5>
-    <p *ngIf="StructureOptions===undefined" class="card-text">Select an option to add structure information.</p>
-    <div *ngIf="StructureOptions === 'newEntities'">
-
-      <div class="row">
-        <div class="col">The Subject of the created statement</div>
-        <div class="col">The Predicate of the created statement</div>
-        <div class="col">The Object of the created statement</div>
-        <div class="w-100"></div>
-        <div class="col">
-          <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
-        </div>
-        <div class="col">
-          <input class="form-control" type="text" placeholder="rdf:type" readonly>
-        </div>
-        <div class="col">
-          <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
-            <option *ngFor='let x of allClasses'>
-              {{x}}
-            </option>
-          </select>
-        </div>
-      </div>
-      <div class="row">
-        <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
-        <button class="btn btn-secondary col m-3" (click)="executeInsert()">execute INSERT</button>
-      </div>
-    </div>
-    <div *ngIf="StructureOptions === 'existingEntitiesContainment'">
-      <div class="row">
-        <div class="col">The Subject of the created statement</div>
-        <div class="col">The Predicate of the created statement</div>
-        <div class="col">The Class of the Object of the created statement</div>
-        <div class="col">The Object of the created statement</div>
-        <div class="w-100"></div>
-        <div class="col">
-          <input [(ngModel)]="selectedSubject" class="form-control" type="text"
-            placeholder="Select an Entity from Table" readonly>
-        </div>
-        <div class="col">
-          <div *ngIf="existingPredicates; then thenBlock else elseBlock"></div>
-          <ng-template #thenBlock>
-            <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
-              (click)="getObjectClasses()">
-              <option *ngFor='let x of existingPredicates'>
-                {{x}}
-              </option>
-            </select>
-          </ng-template>
-          <ng-template #elseBlock>
-            <input class="form-control" type="text" placeholder="Select an Entity from Table" readonly>
-          </ng-template>
-        </div>
-        <div class="col">
-          <div *ngIf="existingObjectClasses; then thenBlock2 else elseBlock2"></div>
-          <ng-template #thenBlock2>
-            <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
-              (click)="getExistingObjects()">
-              <option *ngFor='let x of existingObjectClasses'>
-                {{x}}
-              </option>
-            </select>
-          </ng-template>
-          <ng-template #elseBlock2>
-            <input class="form-control" type="text" placeholder="Select a Predicate" readonly>
-          </ng-template>
-        </div>
-        <div class="col">
-          <div *ngIf="existingObjects; then thenBlock3 else elseBlock3"></div>
-          <ng-template #thenBlock3>
-            <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
-              <option *ngFor='let x of existingObjects'>
-                {{x}}
-              </option>
-            </select>
-          </ng-template>
-          <ng-template #elseBlock3>
-            <input class="form-control" type="text" placeholder="Select a Class of Objects" readonly>
-          </ng-template>
-        </div>
-      </div>
-      <div class="row">
-        <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
-        <button class="btn btn-secondary col m-3" (click)="executeInsert()">execute INSERT</button>
-      </div>
-    </div>
-    <div *ngIf="StructureOptions === 'existingEntitiesInheritance'">
-        <div class="row">
-          <div class="col">The Subject of the created statement</div>
-          <div class="col">The Predicate of the created statement</div>
-          <div class="col">The Object of the created statement</div>
-          <div class="w-100"></div>
-          <div class="col">
-            <input [(ngModel)]="selectedSubject" class="form-control" type="text"
-              placeholder="Select an Entity from Table" readonly>
-          </div>
-          <div class="col">
-            <div *ngIf="existingPredicates; then thenBlock else elseBlock"></div>
-            <ng-template #thenBlock>
-              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control" (click)="getExistingObjects()">
-                <option>VDI2206:hasChild</option>
-                <option>VDI2206:hasParent</option>
+      <div class="tab-content py-3" id="myTabContent">
+        <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
+          <!-- content to create new individuals -->
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> The Subject of the created statement </label>
+              <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
+            </div>
+            <div class="form-group col-sm">
+              <label> The Predicate of the created statement </label>
+              <input class="form-control" type="text" placeholder="rdf:type" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Object of the created statement </label>
+              <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
+                <option *ngFor='let x of allClasses'>
+                  {{x}}
+                </option>
               </select>
-            </ng-template>
-            <ng-template #elseBlock>
-              <input class="form-control" type="text" placeholder="Select an Entity from Table" readonly>
-            </ng-template>
+            </div>
           </div>
-          <div class="col">
-            <div *ngIf="existingObjects; then thenBlock3 else elseBlock3"></div>
-            <ng-template #thenBlock3>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="buildInsert('newIndi')">build INSERT</button>
+            </div>
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="executeInsert('newIndi')">execute INSERT</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane " id="existingIndiContain" role="tabpanel" aria-labelledby="existingIndiContain-tab">
+          <!-- content to connect existing individuals -->
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> The Subject of the created statement </label>
+              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
+                placeholder="Select an Entity from Table" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Predicate of the created statement </label>
+              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
+                (click)="getObjectClasses()">
+                <option *ngFor='let x of existingPredicates'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Class of the Object of the created statement </label>
+              <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
+                (click)="getExistingObjects()">
+                <option *ngFor='let x of existingObjectClasses'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Object of the created statement </label>
               <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
                 <option *ngFor='let x of existingObjects'>
                   {{x}}
                 </option>
               </select>
-            </ng-template>
-            <ng-template #elseBlock3>
-              <input class="form-control" type="text" placeholder="Select a Class of Objects" readonly>
-            </ng-template>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">build
+                INSERT</button>
+            </div>
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="executeInsert('existingIndiContain')">execute
+                INSERT</button>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
-          <button class="btn btn-secondary col m-3" (click)="executeInsert()">execute INSERT</button>
+        <div class="tab-pane " id="existingIndiInheritance" role="tabpanel"
+          aria-labelledby="existingIndiInheritance-tab">
+          <!-- content to connect existing individuals -->
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> The Subject of the created statement </label>
+              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
+                placeholder="Select an Entity from Table" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Predicate of the created statement </label>
+              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
+                (click)="getExistingObjects()">
+                <option>VDI2206:hasChild</option>
+                <option>VDI2206:hasParent</option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Object of the created statement </label>
+              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
+                <option *ngFor='let x of existingObjects'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">build INSERT</button>
+            </div>
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="executeInsert('existingIndiContain')">execute INSERT</button>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab" aria-controls="sys"
+            aria-selected="true" (click)="setTableOption('System_BUTTON')"> System </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab" aria-controls="mod"
+            aria-selected="false" (click)="setTableOption('Module_BUTTON')"> Module </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab" aria-controls="com"
+            aria-selected="false" (click)="setTableOption('Component_BUTTON')"> Component </a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
+          <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+            (tableClickedCell)="tableClick($event)"></app-table>
+        </div>
+        <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
+          <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+            (tableClickedCell)="tableClick($event)"></app-table>
+        </div>
+        <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
+          <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+            (tableClickedCell)="tableClick($event)"></app-table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-<!-- <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <div class="card-body"> -->
-      <div class="px-sm-2 py-sm-2">
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab" aria-controls="sys"
-                aria-selected="true" (click)="setTableOption('System_BUTTON')"> System </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab" aria-controls="mod"
-                aria-selected="false" (click)="setTableOption('Module_BUTTON')"> Module </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab" aria-controls="com"
-                aria-selected="false" (click)="setTableOption('Component_BUTTON')"> Component </a>
-            </li>
-          </ul>
-          <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
-              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-                (tableClickedCell)="tableClick($event)"></app-table>
-            </div>
-            <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
-              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-                (tableClickedCell)="tableClick($event)"></app-table>
-            </div>
-            <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
-              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-                (tableClickedCell)="tableClick($event)"></app-table>
-            </div>
-          </div>
+
+<div class="modal fade" id="MCS_HELPER" tabindex="-1" role="dialog" aria-labelledby="MCS_HELPER" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="MCS_HELPER"> The Structure of mechatronic Systems </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <img src="../../../../../../assets/images/vdi2206_grafical_notion.png" class="card-img-top">
+          <p class="card-text"> HERE SHOULD BE SOME EXPLANATORY TEXT </p>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Got it! </button>
+        </div>
+      </div>
     </div>
-  <!-- </div>
-</div> -->
+  </div>

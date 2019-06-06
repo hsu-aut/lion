@@ -51,7 +51,6 @@ export class Vdi2206Component implements OnInit {
   insertUrl;
 
   StructureOptions: string;
-  StructureView: string;
 
   constructor(
     private query: SparqlQueriesService, 
@@ -71,15 +70,15 @@ export class Vdi2206Component implements OnInit {
   }
 
 
-  buildInsert() {
-    var triples = this.getTriples(this.StructureOptions);
+  buildInsert(structureOption) {
+    var triples = this.getTriples(structureOption);
     var insertString = this.vdi2206Service.buildTripel(triples);
     const blob = new Blob([insertString], { type: 'text/plain' });
     const name = 'insert.txt';
     this.dlService.download(blob, name);
   }
-  executeInsert() {
-    var triples = this.getTriples(this.StructureOptions);
+  executeInsert(structureOption) {
+    var triples = this.getTriples(structureOption);
     console.log(triples);
     this.vdi2206Service.insertTripel(triples).subscribe((data: any) => {
       this.setAllStructuralInfo();
@@ -94,27 +93,27 @@ export class Vdi2206Component implements OnInit {
 
   getObjectClasses() {
     if (this.selectedPredicate) {
-      this.selectedObjectClass = undefined;
-      this.existingObjectClasses = undefined;
+
       var predicate = this.selectedPredicate;
       this.vdi2206Service.loadLIST_OF_CLASSES_BY_RANGE(predicate).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjectClasses = data;
+        this.selectedObjectClass = data[0];
       });
     }
   }
 
 
   getExistingObjects() {
-    this.existingObjects = undefined;
-    this.selectedObject = undefined;
+
     if (this.selectedObjectClass) {
       var owlClass = this.selectedObjectClass
       this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjects = data;
+        this.selectedObject = data[0];
       });
-    } else if (this.StructureOptions == "existingEntitiesInheritance" && this.selectedPredicate != undefined) {
+    } else if (this.StructureOptions == "existingIndiInheritance" && this.selectedPredicate != undefined) {
       var subject = this.selectedSubject;
       this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(subject).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
@@ -122,6 +121,7 @@ export class Vdi2206Component implements OnInit {
         this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
           this.loadingScreenService.stopLoading();
           this.existingObjects = data;
+          this.selectedObject = data[0];
         });
       });
     }
@@ -129,15 +129,13 @@ export class Vdi2206Component implements OnInit {
 
   tableClick(name: string) {
     this.selectedSubject = name;
-    console.log(this.selectedSubject)
     this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       var owlClass = data[0];
-      console.log(owlClass)
       this.vdi2206Service.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingPredicates = data;
-        console.log(data)
+        this.selectedPredicate = data[0];
       });
     });
   }
@@ -222,19 +220,19 @@ export class Vdi2206Component implements OnInit {
 
     switch (StructureTable) {
       case "System_BUTTON": {
-        if(this.StructureOptions == "existingEntitiesInheritance"){this.currentTable = this.allStructureInfoInheritancebySys;}
+        if(this.StructureOptions == "existingIndiInheritance"){this.currentTable = this.allStructureInfoInheritancebySys;}
         else {this.currentTable = this.allStructureInfoContainmentbySys;}
         this._currentOption = StructureTable;
         break;
       }
       case "Module_BUTTON": {
-        if(this.StructureOptions == "existingEntitiesInheritance"){this.currentTable = this.allStructureInfoInheritancebyMod;}
+        if(this.StructureOptions == "existingIndiInheritance"){this.currentTable = this.allStructureInfoInheritancebyMod;}
         else {this.currentTable = this.allStructureInfoContainmentbyMod;}
         this._currentOption = StructureTable;
         break;
       }
       case "Component_BUTTON": {
-        if(this.StructureOptions == "existingEntitiesInheritance"){this.currentTable = this.allStructureInfoInheritancebyCOM;}
+        if(this.StructureOptions == "existingIndiInheritance"){this.currentTable = this.allStructureInfoInheritancebyCOM;}
         else {this.currentTable = this.allStructureInfoContainmentbyCOM;}
         this._currentOption = StructureTable;
         break;
@@ -252,19 +250,19 @@ export class Vdi2206Component implements OnInit {
   }
 
   getTriples(structureOption: string) {
-    if (structureOption == "newEntities") {
+    if (structureOption == "newIndi") {
       this.modelVariables.simpleStatement = {
         subject: this.newSubject,
         predicate: this.newPredicate,
         object: this.selectedClass,
       }
-    } else if (structureOption == "existingEntitiesInheritance") {
+    } else if (structureOption == "existingIndiInheritance") {
       this.modelVariables.simpleStatement = {
         subject: this.selectedSubject,
         predicate: this.selectedPredicate,
         object: this.selectedObject,
       }
-    } else if (structureOption == "existingEntitiesContainment") {
+    } else if (structureOption == "existingIndiContain") {
       this.modelVariables.simpleStatement = {
         subject: this.selectedSubject,
         predicate: this.selectedPredicate,
@@ -278,6 +276,11 @@ export class Vdi2206Component implements OnInit {
     this.selectedSubject = undefined;
     this.selectedPredicate = undefined;
     this.selectedObject = undefined;
+  }
+
+  setStructureOption(option: string){
+    this.StructureOptions = option;
+    this.setTableOption(this._currentOption);
   }
 
 

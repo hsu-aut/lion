@@ -122,30 +122,29 @@ export class VDI3682Component implements OnInit {
       this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingPredicates = data;
+        this.selectedPredicate = data[0];
       });
     });
 
   }
 
   getObjectClasses(predicate: string) {
+    this.selectedObject = undefined;
     if (predicate) {
-      this.selectedObjectClass = undefined;
-      this.existingObjectClasses = undefined;
       this.modelService.loadLIST_OF_CLASSES_BY_RANGE(predicate).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjectClasses = data;
+        this.selectedObjectClass = data[0]
       });
     }
   }
 
   getExistingObjects(owlClass: string) {
     if (owlClass) {
-      console.log(owlClass)
-      this.existingObjects = undefined;
-      this.selectedObject = undefined;
       this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjects = data;
+        this.selectedObject = data[0];
       });
     }
   }
