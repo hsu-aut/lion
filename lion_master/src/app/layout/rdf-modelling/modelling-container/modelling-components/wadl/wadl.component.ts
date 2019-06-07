@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
-import { WADLDATA, WADLINSERT, WADLVARIABLES } from '../../../rdf-models/wadl';
+import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
+import { WadlModelService, WADLVARIABLES, WADLDATA, WADLINSERT} from '../../../rdf-models/wadlModel.service';
+import { Vdi3682ModelService} from '../../../rdf-models/vdi3682Model.service';
+
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 
 
 @Component({
@@ -19,6 +22,9 @@ export class WadlComponent implements OnInit {
   // graph db data
   allAvailableMethods: any;
   availableResources: any;
+  methodDoesNotExistYet: Boolean;
+
+  availableTechnicalResources: any;
 
   //user input variables
   selectedMethod: string;
@@ -42,10 +48,9 @@ export class WadlComponent implements OnInit {
   availableParameters: any;
 
 
-
-
   // util variables
   keys = Object.keys;
+  //namespaceParser = new Namespace();
   TableUtil = new Tables();
 
 
@@ -56,53 +61,50 @@ export class WadlComponent implements OnInit {
 
 
 
-  constructor(
-    private query: SparqlQueriesService, 
+  constructor(private query: SparqlQueriesService,
     private dlService: DownloadService,
-    private namespaceParser: PrefixesService
-    ) {
-
-
+    private namespaceParser: PrefixesService,
+    private modelService: WadlModelService,
+    private vdi3682Service: Vdi3682ModelService,
+    private loadingScreenService: DataLoaderService) {
   }
 
 
   ngOnInit() {
-    // Temporäre Variable um Parameter Matrix, Plain und Template auszustellen
-    var turnOnParameters = false;
-    //Abfrage welche Methoden verfügbar sind (T-Box)
-    this.query.select(this.modelData.availableMethods).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      console.log(data);
-      this.allAvailableMethods = data;
-      console.log(this.allAvailableMethods)
-      // parse prefixes where possible 
-    });
-
-    this.updateResourceTable();
+    this.allAvailableMethods = this.modelService.getLIST_OF_METHODS();
+    console.log('StartWadl')
+    this.availableResources = this.modelService.getTABLE_OF_RESOURCES();
+    //this.updateResourceTable();
   }
 
   // Tabelle mit verfügbaren Ressourcen
   updateResourceTable() {
-    this.query.select(this.modelData.availableResources).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.availableResources = this.TableUtil.buildTable(data);
-      console.log(this.availableResources)
-    });
+    this.availableResources = this.modelService.reloadTABLE_OF_RESOURCES();
   };
 
   //Tabellenfunktion 
-  resourceTableClick(baseUrl: string, resource: string) {
-    this.baseUrl = baseUrl;
-    this.resource = resource;
+  resourceTableClick(baseUrl: string, resource: string, modelIri: string) {
+    if (baseUrl.length > 0) {
+      this.baseUrl = baseUrl;
+      this.resource = resource;
+    } else {
+      this.modelIri = modelIri;
+    }
   };
+
+  deleteServiceProvider(baseUrl: string, serviceProvider: string) {
+    this.modelService.deleteServiceProvider(baseUrl, serviceProvider).subscribe((data: any) => {
+      this.updateResourceTable();
+    });
+  }
 
   buildResourceInsert() {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    var insertString = this.modelInsert.createEntity(this.modelVariables.mandatoryInformations);
+    const insertString = this.modelService.buildCreateEntity(this.modelVariables.mandatoryInformations);
     const blob = new Blob([insertString], { type: 'text/plain' });
     const name = 'wadlInsert.txt';
     this.dlService.download(blob, name);
@@ -112,11 +114,10 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    var insertString = this.modelInsert.createEntity(this.modelVariables.mandatoryInformations);
-    this.query.insert(insertString).subscribe((data: any) => {
-      console.log(data);
+    this.modelService.insertCreateEntity(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.updateResourceTable();
       if (this.selectedParameter === 'all') {
         this.updateAllParameterTable();
@@ -125,10 +126,8 @@ export class WadlComponent implements OnInit {
         this.updateQueryParameterTable();
       };
       if (this.selectedParameter === 'header') {
-
         this.updateHeaderParameterTable();
       };
-
     });
 
   };
@@ -137,9 +136,10 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    var insertString = this.modelInsert.createEntityWithModel(this.modelVariables.mandatoryInformations, this.modelIri);
+    var insertString = this.modelService.buildCreateEntityWithModel(this.modelVariables.mandatoryInformations, this.modelIri)
+    // var insertString2 = this.modelInsert.createEntityWithModel();
     const blob = new Blob([insertString], { type: 'text/plain' });
     const name = 'wadlInsert.txt';
     this.dlService.download(blob, name);
@@ -149,11 +149,9 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    var insertString = this.modelInsert.createEntityWithModel(this.modelVariables.mandatoryInformations, this.modelIri);
-    this.query.insert(insertString).subscribe((data: any) => {
-      console.log(data);
+    this.modelService.insertCreateEntityWithModel(this.modelVariables.mandatoryInformations, this.modelIri).subscribe((data: any) => {
       this.updateResourceTable();
       if (this.selectedParameter === 'all') {
         this.updateAllParameterTable();
@@ -174,12 +172,15 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    this.query.select(this.modelData.getAllParamtersTemp(this.modelVariables.mandatoryInformations)).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.availableParameters = this.TableUtil.buildTable(data);
-      console.log(this.availableParameters)
+    this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.methodDoesNotExistYet = data.boolean;
+    });
+
+    this.modelService.loadTABLE_OF_ALL_PARAMETERS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.availableParameters = data;
     });
   };
 
@@ -188,12 +189,16 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    this.query.select(this.modelData.getQueryParameters(this.modelVariables.mandatoryInformations)).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.availableParameters = this.TableUtil.buildTable(data);
-      console.log(this.availableParameters)
+
+    this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.methodDoesNotExistYet = data.boolean;
+    });
+
+    this.modelService.loadTABLE_OF_QUERY_PARAMETERS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.availableParameters = data;
     });
   };
 
@@ -201,59 +206,97 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
     this.modelVariables.parameterInfo = {
       paramName: this.queryParameterName,
       paramType: this.queryParameterType,
       optionValue: this.queryParameterValue
     };
-    var insertString = this.modelInsert.createQueryParameter(this.modelVariables.mandatoryInformations, this.modelVariables.parameterInfo);
-
+    var insertString = this.modelService.buildCreateQueryParameter(this.modelVariables.mandatoryInformations, this.modelVariables.parameterInfo);
     const blob = new Blob([insertString], { type: 'text/plain' });
-    // Dateiname
     const name = 'wadlInsert.txt';
     this.dlService.download(blob, name);
-  };
- 
-  queryTableClick(key: string, type: string) {
-    this.queryParameterName = key;
-    this.queryParameterType = type;
   };
 
   executeQueryParameterInsert() {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
     this.modelVariables.parameterInfo = {
       paramName: this.queryParameterName,
       paramType: this.queryParameterType,
       optionValue: this.queryParameterValue
     };
-    var insertString = this.modelInsert.createQueryParameter(this.modelVariables.mandatoryInformations, this.modelVariables.parameterInfo);
-
-    this.query.insert(insertString).subscribe((data: any) => {
-      console.log(data);
+    this.modelService.insertCreateQueryParameter(this.modelVariables.mandatoryInformations, this.modelVariables.parameterInfo).subscribe((data: any) => {
       this.updateQueryParameterTable();
     });
-
   };
 
+  queryTableClick(key: string, type: string) {
+    this.queryParameterName = key;
+    this.queryParameterType = type;
+  };
 
+  deleteFunction(action: string, key: string, type: string, optionValue: string) {
+    this.modelVariables.mandatoryInformations = {
+      baseUrl: this.baseUrl,
+      resourceName: this.resource,
+      method: this.namespaceParser.parseToName(this.selectedMethod)
+    };
+    this.modelVariables.parameterInfo = {
+      paramName: key,
+      paramType: type,
+      optionValue: optionValue
+    };
+
+    if (action == "queryParameter") {
+      this.modelService.deleteQueryParameter(this.modelVariables.mandatoryInformations,
+        this.modelVariables.parameterInfo).subscribe((data: any) => {
+          this.updateQueryParameterTable();
+        });
+    };
+
+    if (action == "optionValue") {
+      this.modelService.deleteQueryOptionValue(this.modelVariables.mandatoryInformations,
+        this.modelVariables.parameterInfo).subscribe((data: any) => {
+          this.updateQueryParameterTable();
+        });
+    };
+    if (action == "parameterType") {
+      this.modelService.deleteQueryParameterType(this.modelVariables.mandatoryInformations,
+        this.modelVariables.parameterInfo).subscribe((data: any) => {
+          this.updateQueryParameterTable();
+        });
+    };
+    if (action == "headerParameter") {
+      this.modelVariables.headerInformations = {
+        key: key,
+        mediaType: type
+      }
+      this.modelService.deleteHeaderParameter(this.modelVariables.mandatoryInformations, this.modelVariables.headerInformations).subscribe((data: any) => {
+        this.updateHeaderParameterTable();
+      });
+    };
+  };
 
   updateHeaderParameterTable() {
     this.selectedParameter = 'header';
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-    this.query.select(this.modelData.getHeaderParamters(this.modelVariables.mandatoryInformations)).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
-      this.availableParameters = this.TableUtil.buildTable(data);
-      console.log(this.availableParameters);
+
+    this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.methodDoesNotExistYet = data.boolean;
+    });
+
+    this.modelService.loadTABLE_OF_HEADER_PARAMETERS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.availableParameters = data;
     });
   };
 
@@ -261,12 +304,15 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-
-    var insertString = this.modelInsert.createHeaderParameter(this.modelVariables.mandatoryInformations, this.headerParameterKey, this.headerParameterMediaType);
+    this.modelVariables.headerInformations = {
+      key: this.headerParameterKey,
+      mediaType: this.headerParameterMediaType
+    };
+    var insertString = this.modelService.buildCreateHeaderParameter(this.modelVariables.mandatoryInformations,
+      this.modelVariables.headerInformations);
     const blob = new Blob([insertString], { type: 'text/plain' });
-    // Dateiname
     const name = 'wadlInsert.txt';
     this.dlService.download(blob, name);
   };
@@ -275,23 +321,35 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
-
-    var insertString = this.modelInsert.createHeaderParameter(this.modelVariables.mandatoryInformations,this.headerParameterKey, this.headerParameterMediaType);
-
-    this.query.insert(insertString).subscribe((data: any) => {
-      console.log(data);
-      this.updateHeaderParameterTable();
-    });
-
+    this.modelVariables.headerInformations = {
+      key: this.headerParameterKey,
+      mediaType: this.headerParameterMediaType
+    };
+    this.modelService.insertCreateHeaderParameter(this.modelVariables.mandatoryInformations,
+      this.modelVariables.headerInformations).subscribe((data: any) => {
+        this.updateHeaderParameterTable();
+      });
   };
 
-  
   headerTableClick(key: string, type: string) {
     this.headerParameterKey = key;
     this.headerParameterMediaType = type;
   };
 
+  getAvailableTechnicalResources() {
+    this.availableTechnicalResources = this.vdi3682Service.getLIST_OF_TECHNICAL_RESOURCES();
+  };
 
+  getAvailableStructureElements() {
+    this.query.select(this.modelData.getStructureElements).subscribe((data: any) => {
+      this.namespaceParser.parseToPrefix(data);
+      this.availableTechnicalResources = this.TableUtil.buildTable(data);
+    });
+  };
+
+  modelTableClick(selected: string) {
+    this.modelIri = this.namespaceParser.parseToIRI(selected);
+  };
 }
