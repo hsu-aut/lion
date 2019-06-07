@@ -6,7 +6,7 @@ import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
-
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -106,7 +106,7 @@ export class VDI3682Component implements OnInit {
       object: this.selectedClass,
     }
 
-    this.modelService.insertTripel(this.modelVariables.simpleStatement).subscribe((data: any) => {
+    this.modelService.insertTripel(this.modelVariables.simpleStatement).pipe(take(1)).subscribe((data: any) => {
         this.loadAllProcessInfo();
         this.loadStatisticInfo();
       });
@@ -116,10 +116,10 @@ export class VDI3682Component implements OnInit {
   iriTableClick(name: string) {
     this.selectedSubject = name;
 
-    this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).subscribe((data: any) => {
+    this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       var owlClass = data[0];
-      this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).subscribe((data: any) => {
+      this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingPredicates = data;
         this.selectedPredicate = data[0];
@@ -131,7 +131,7 @@ export class VDI3682Component implements OnInit {
   getObjectClasses(predicate: string) {
     this.selectedObject = undefined;
     if (predicate) {
-      this.modelService.loadLIST_OF_CLASSES_BY_RANGE(predicate).subscribe((data: any) => {
+      this.modelService.loadLIST_OF_CLASSES_BY_RANGE(predicate).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjectClasses = data;
         this.selectedObjectClass = data[0]
@@ -141,7 +141,7 @@ export class VDI3682Component implements OnInit {
 
   getExistingObjects(owlClass: string) {
     if (owlClass) {
-      this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
+      this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjects = data;
         this.selectedObject = data[0];
@@ -158,7 +158,7 @@ export class VDI3682Component implements OnInit {
       predicate: this.selectedPredicate,
       object: this.selectedObject,
     }
-    this.modelService.insertTripel(this.modelVariables.simpleStatement).subscribe((data: any) => {
+    this.modelService.insertTripel(this.modelVariables.simpleStatement).pipe(take(1)).subscribe((data: any) => {
         this.loadAllProcessInfo();
         this.loadStatisticInfo();
         this.selectedPredicate = undefined;
@@ -171,7 +171,7 @@ export class VDI3682Component implements OnInit {
 
 
   loadAllProcessInfo() {
-    this.modelService.loadALL_PROCESS_INFO_TABLE().subscribe((data: any) => {
+    this.modelService.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allProcessInfo = data
       this.modelService.setALL_PROCESS_INFO_TABLE(this.allProcessInfo)
@@ -187,17 +187,17 @@ export class VDI3682Component implements OnInit {
   }
 
   loadStatisticInfo() {
-    this.modelService.loadLIST_OF_PROCESSES().subscribe((data: any) => {
+    this.modelService.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfProcesses = data.length
       this.modelService.setLIST_OF_PROCESSES(data)
     });
-    this.modelService.loadLIST_OF_INPUTS_AND_OUTPUTS().subscribe((data: any) => {
+    this.modelService.loadLIST_OF_INPUTS_AND_OUTPUTS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfInOuts = data.length
       this.modelService.setLIST_OF_INPUTS_AND_OUTPUTS(data)
     });
-    this.modelService.loadLIST_OF_TECHNICAL_RESOURCES().subscribe((data: any) => {
+    this.modelService.loadLIST_OF_TECHNICAL_RESOURCES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfTechnicalResources = data.length
       this.modelService.setLIST_OF_TECHNICAL_RESOURCES(data)

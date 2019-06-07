@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
-
+import { take } from 'rxjs/operators';
 import { Namespace } from '../utils/prefixes'
 
 var nameService = new Namespace;
@@ -31,19 +31,19 @@ export class Dinen61360Service {
   }
 
   public initializeDINEN61360() {
-    this.loadTABLE_All_TYPES().subscribe((data: any) => {
+    this.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.TABLE_All_TYPES = data;
     });
-    this.loadLIST_All_DE().subscribe((data: any) => {
+    this.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_All_DE = data;
     });
-    this.loadLIST_All_DEI().subscribe((data: any) => {
+    this.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_All_DEI = data;
     });
-    this.loadLIST_All_DET().subscribe((data: any) => {
+    this.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_All_DET = data;
     });

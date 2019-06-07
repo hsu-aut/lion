@@ -7,6 +7,7 @@ import { Dinen61360Service } from '../../../rdf-models/dinen61360.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { DashboardService } from './dashboard.service';
 
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -138,7 +139,7 @@ export class DashboardComponent implements OnInit {
 
 
   tableClick(individual) {
-    this.query.getRelatedTriples(individual).subscribe((data: any) => {
+    this.query.getRelatedTriples(individual).pipe(take(1)).subscribe((data: any) => {
       this.currentTable = data
       this.tableTitle = "Triples related to: " + '"' + individual + '"';
       this.tableSubTitle = "Click on a cell to load triples related to this element."

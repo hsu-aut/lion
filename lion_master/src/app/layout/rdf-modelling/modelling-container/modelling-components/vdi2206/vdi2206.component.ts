@@ -4,6 +4,7 @@ import { Vdi2206ModelService, VDI2206INSERT, VDI2206VARIABLES } from '../../../r
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vdi2206',
@@ -70,6 +71,7 @@ export class Vdi2206Component implements OnInit {
   }
 
 
+
   buildInsert(structureOption) {
     var triples = this.getTriples(structureOption);
     var insertString = this.vdi2206Service.buildTripel(triples);
@@ -95,7 +97,7 @@ export class Vdi2206Component implements OnInit {
     if (this.selectedPredicate) {
 
       var predicate = this.selectedPredicate;
-      this.vdi2206Service.loadLIST_OF_CLASSES_BY_RANGE(predicate).subscribe((data: any) => {
+      this.vdi2206Service.loadLIST_OF_CLASSES_BY_RANGE(predicate).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjectClasses = data;
         this.selectedObjectClass = data[0];
@@ -108,17 +110,17 @@ export class Vdi2206Component implements OnInit {
 
     if (this.selectedObjectClass) {
       var owlClass = this.selectedObjectClass
-      this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
+      this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjects = data;
         this.selectedObject = data[0];
       });
     } else if (this.StructureOptions == "existingIndiInheritance" && this.selectedPredicate != undefined) {
       var subject = this.selectedSubject;
-      this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(subject).subscribe((data: any) => {
+      this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(subject).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         var owlClass = data[0];
-        this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).subscribe((data: any) => {
+        this.vdi2206Service.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
           this.loadingScreenService.stopLoading();
           this.existingObjects = data;
           this.selectedObject = data[0];
@@ -129,10 +131,10 @@ export class Vdi2206Component implements OnInit {
 
   tableClick(name: string) {
     this.selectedSubject = name;
-    this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).subscribe((data: any) => {
+    this.vdi2206Service.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       var owlClass = data[0];
-      this.vdi2206Service.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).subscribe((data: any) => {
+      this.vdi2206Service.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingPredicates = data;
         this.selectedPredicate = data[0];
@@ -153,37 +155,37 @@ export class Vdi2206Component implements OnInit {
   
   setAllStructuralInfo() {
     //set containment info for sys
-    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS().subscribe((data: any) => {
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoContainmentbySys = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS(data);
       this.setTableOption(this._currentOption);
     });
-    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD().subscribe((data: any) => {
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoContainmentbyMod = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD(data);
       this.setTableOption(this._currentOption);
     });
-    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM().subscribe((data: any) => {
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoContainmentbyCOM = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM(data);
       this.setTableOption(this._currentOption);
     });
-    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS().subscribe((data: any) => {
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoInheritancebySys = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS(data);
       this.setTableOption(this._currentOption);
     });
-    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD().subscribe((data: any) => {
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoInheritancebyMod = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD(data);
       this.setTableOption(this._currentOption);
     });
-    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM().subscribe((data: any) => {
+    this.vdi2206Service.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allStructureInfoInheritancebyCOM = data;
       this.vdi2206Service.setTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM(data);
@@ -199,17 +201,17 @@ export class Vdi2206Component implements OnInit {
   }
   setStatisticInfo() {
     // set stats of structure in TS
-    this.vdi2206Service.loadLIST_OF_SYSTEMS().subscribe((data: any) => {
+    this.vdi2206Service.loadLIST_OF_SYSTEMS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfSystems = data.length;
       this.vdi2206Service.setLIST_OF_SYSTEMS(data);
     });
-    this.vdi2206Service.loadLIST_OF_MODULES().subscribe((data: any) => {
+    this.vdi2206Service.loadLIST_OF_MODULES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfModules = data.length;
       this.vdi2206Service.setLIST_OF_MODULES(data);
     });
-    this.vdi2206Service.loadLIST_OF_COMPONENTS().subscribe((data: any) => {
+    this.vdi2206Service.loadLIST_OF_COMPONENTS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfComponents = data.length;
       this.vdi2206Service.setLIST_OF_COMPONENTS(data);

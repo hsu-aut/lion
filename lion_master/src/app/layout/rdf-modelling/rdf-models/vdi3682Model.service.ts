@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
-
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -28,23 +28,23 @@ export class Vdi3682ModelService {
   }
 
   public initializeVDI3682(){
-    this.loadLIST_OF_PROCESSES().subscribe((data: any) => {
+    this.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_OF_PROCESSES = data;
     });
-    this.loadLIST_OF_TECHNICAL_RESOURCES().subscribe((data: any) => {
+    this.loadLIST_OF_TECHNICAL_RESOURCES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_OF_TECHNICAL_RESOURCES = data;
     });
-    this.loadLIST_OF_INPUTS_AND_OUTPUTS().subscribe((data: any) => {
+    this.loadLIST_OF_INPUTS_AND_OUTPUTS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_OF_INPUTS_AND_OUTPUTS = data;
     });
-    this.loadALL_PROCESS_INFO_TABLE().subscribe((data: any) => {
+    this.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.TABLE_OF_PROCESS_INFO = data;
     });
-    this.loadLIST_OF_ALL_CLASSES().subscribe((data: any) => {
+    this.loadLIST_OF_ALL_CLASSES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.LIST_OF_ALL_CLASSES = data;
     });

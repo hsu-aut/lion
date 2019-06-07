@@ -10,7 +10,7 @@ import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 
-
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dinen61360',
@@ -135,7 +135,7 @@ export class Dinen61360Component implements OnInit {
 
   searchByPreferredName(search_name: string) {
     this._loaderShow = true;
-    this.eclass.getPropertyList(search_name).subscribe((rawlist: any) => {
+    this.eclass.getPropertyList(search_name).pipe(take(1)).subscribe((rawlist: any) => {
       this.propertyList = rawlist;
       this._loaderShow = false;
       this.currentTable = this.propertyList;
@@ -173,7 +173,7 @@ export class Dinen61360Component implements OnInit {
   }
   insertDINEN61360T() {
     var varia = this.getVariables();
-    this.dinen61360Service.insertDET(varia).subscribe((data: any) => {
+    this.dinen61360Service.insertDET(varia).pipe(take(1)).subscribe((data: any) => {
       this.setAllTypes();
       this.setStatisticInfo();
     });
@@ -181,14 +181,14 @@ export class Dinen61360Component implements OnInit {
   }
   insertDINEN61360I() {
     var varia = this.getVariables();
-    this.dinen61360Service.insertDEI(varia).subscribe((data: any) => {
+    this.dinen61360Service.insertDEI(varia).pipe(take(1)).subscribe((data: any) => {
       this.setStatisticInfo();
     });
 
   }
 
   executeSelect(selectString) {
-    this.query.selectTable(selectString).subscribe((data: any) => {
+    this.query.selectTable(selectString).pipe(take(1)).subscribe((data: any) => {
       this.customTable = data;
       this.setTableDescription(this.instanceOption);
     });
@@ -212,7 +212,7 @@ export class Dinen61360Component implements OnInit {
   }
 
   setAllTypes() {
-    this.dinen61360Service.loadTABLE_All_TYPES().subscribe((data: any) => {
+    this.dinen61360Service.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allTypes = data;
       this.dinen61360Service.setTABLE_All_TYPES(data)
@@ -230,18 +230,18 @@ export class Dinen61360Component implements OnInit {
   setStatisticInfo() {
 
     // set stats of functions in TS
-    this.dinen61360Service.loadLIST_All_DE().subscribe((data: any) => {
+    this.dinen61360Service.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfDE = data.length;
       this.dinen61360Service.setLIST_All_DE(data)
 
     });
-    this.dinen61360Service.loadLIST_All_DET().subscribe((data: any) => {
+    this.dinen61360Service.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfDET = data.length;
       this.dinen61360Service.setLIST_All_DET(data)
     });
-    this.dinen61360Service.loadLIST_All_DEI().subscribe((data: any) => {
+    this.dinen61360Service.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.NoOfDEI = data.length;
       this.dinen61360Service.setLIST_All_DEI(data)

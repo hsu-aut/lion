@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
-
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -34,43 +34,43 @@ constructor(
 }
 
 public initializeVDI2206(){
-  this.loadLIST_OF_SYSTEMS().subscribe((data: any) => {
+  this.loadLIST_OF_SYSTEMS().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.LIST_OF_SYSTEMS = data;
   });
-  this.loadLIST_OF_MODULES().subscribe((data: any) => {
+  this.loadLIST_OF_MODULES().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.LIST_OF_MODULES = data;
   });
-  this.loadLIST_OF_COMPONENTS().subscribe((data: any) => {
+  this.loadLIST_OF_COMPONENTS().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.LIST_OF_COMPONENTS = data;
   });
-  this.loadLIST_OF_CLASSES().subscribe((data: any) => {
+  this.loadLIST_OF_CLASSES().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.LIST_OF_CLASSES = data;
   });
-  this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS().subscribe((data: any) => {
+  this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS = data;
   });
-  this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD().subscribe((data: any) => {
+  this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD = data;
   });
-  this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM().subscribe((data: any) => {
+  this.loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM = data;
   });
-  this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS().subscribe((data: any) => {
+  this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS = data;
   });
-  this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD().subscribe((data: any) => {
+  this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD = data;
   });
-  this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM().subscribe((data: any) => {
+  this.loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM().pipe(take(1)).subscribe((data: any) => {
     this.loadingScreenService.stopLoading();
     this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM = data;
   });

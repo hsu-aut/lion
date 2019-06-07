@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { PrefixesService } from './services/prefixes.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
-import { Tables } from '../utils/tables';
-
+import { take } from 'rxjs/operators';
 import { Namespace } from '../utils/prefixes'
 
 var nameService = new Namespace;
@@ -28,7 +27,7 @@ export class Isa88ModelService {
         }
 
         public initializeISA88() {
-                this.loadISA88BehaviorInfo().subscribe((data: any) => {
+                this.loadISA88BehaviorInfo().pipe(take(1)).subscribe((data: any) => {
                         this.loadingScreenService.stopLoading();
                         this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = data;
                 });

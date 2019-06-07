@@ -14,7 +14,7 @@ import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { DashboardService } from '../../modelling-components/dashboard/dashboard.service';
 
 import { finalize } from 'rxjs/operators';
-
+import { take } from 'rxjs/operators';
 
 
 interface Cfg {
@@ -89,7 +89,7 @@ export class ConfigurationsComponent implements OnInit {
     this.PREFIXES = this.prefixService.getPrefixes();
     this.getActiveNamespace();
     this.eclassUrl = this.eclass.getEclassUrl();
-    // this.eclass.getTBox().subscribe((data: any) => {
+    // this.eclass.getTBox().pipe(take(1)).subscribe((data: any) => {
     //   // log + assign data and stop loader
     //   console.log(data);
     // });;
@@ -194,7 +194,7 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   clearRepository() {
-    this.backEnd.clearRepo(this.query.getRepository()).subscribe((data: any) => {
+    this.backEnd.clearRepo(this.query.getRepository()).pipe(take(1)).subscribe((data: any) => {
       console.info("Repository cleared ...")
     })
   }
@@ -209,13 +209,13 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   getListOfRepos() {
-    this.query.getListOfRepositories().subscribe((data: any) => {
+    this.query.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
       this.repositoryList = data
     })
   }
 
   createNewRepo(NewRepositoryName: string){
-    this.backEnd.createRepo(NewRepositoryName).subscribe((data: any) => {
+    this.backEnd.createRepo(NewRepositoryName).pipe(take(1)).subscribe((data: any) => {
       this.getListOfRepos();
     })
   }
@@ -245,7 +245,7 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   downloadGraph(graph: string){
-    this.query.getTriplesOfNamedGraph(graph).subscribe((data: string) => {
+    this.query.getTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       const blob = new Blob([data], { type: 'text' });
       // Dateiname
       const name = graph + '.ttl';
@@ -255,13 +255,13 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   deleteTriplesOfNamedGraph(graph){
-    this.query.deleteTriplesOfNamedGraph(graph).subscribe((data: string) => {
+    this.query.deleteTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
     })
   }
 
   deleteNamedGraph(graph){
-    this.query.deleteNamedGraph(graph).subscribe((data: string) => {
+    this.query.deleteNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
       for (let i = 0; i < this.graphList.length; i++) {
         if(this.graphList[i].search(graph) != -1){

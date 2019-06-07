@@ -7,7 +7,7 @@ import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
-
+import { take } from 'rxjs/operators';
 
 
 
@@ -63,7 +63,7 @@ export class Isa88Component implements OnInit {
 
   executeInsert() {
     var variables = this.getVariables();
-    this.modelService.insertStateMachine(variables).subscribe((data: any) => {
+    this.modelService.insertStateMachine(variables).pipe(take(1)).subscribe((data: any) => {
       this.insertreturn = data
       this.refreshISA88();
     });
@@ -85,7 +85,7 @@ export class Isa88Component implements OnInit {
   }
 
   refreshISA88(){
-    this.modelService.loadISA88BehaviorInfo().subscribe((data: any) => {
+    this.modelService.loadISA88BehaviorInfo().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.currentTable = data
       this.modelService.setISA88BehaviorInfo(data)
