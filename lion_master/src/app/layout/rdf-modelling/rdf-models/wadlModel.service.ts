@@ -30,17 +30,15 @@ export class WadlModelService {
         this.LIST_OF_METHODS[x] = this.nameService.parseToName(data[x]);
       }
     });
-    console.log('StartService')
-    /*
+
     this.loadTABLE_OF_RESOURCES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
-      this.TABLE_OF_RESOURCES = data;
       for (let x = 0; x < data.length; x++) {
-        this.TABLE_OF_RESOURCES[x].Method = this.nameService.parseToName(this.TABLE_OF_RESOURCES[x].Method);
+        data[x].Method = this.nameService.parseToName(data[x].Method);
+       
       }
+      this.TABLE_OF_RESOURCES = data;
     });
-    */
-    this.TABLE_OF_RESOURCES = this.reloadTABLE_OF_RESOURCES();
   }
 
   // loader
@@ -72,26 +70,26 @@ export class WadlModelService {
     return this.query.select(this.wadlData.ASK_METHOD_EXISTS(activeNamespace, graph));
   }
 
-  public loadTABLE_OF_QUERY_PARAMETERS(graph: mandInfos) {
+  public loadTABLE_OF_PARAMETERS(parameterType: string, graph: mandInfos){
     var PREFIXES = this.nameService.getPrefixes();
     var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_QUERY_PARAMETERS(activeNamespace, graph));
+    if(parameterType === 'all'){
+      return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_ALL_PARAMETERS(activeNamespace, graph));
+    }
+    if(parameterType === 'header'){
+      return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_HEADER_PARAMETERS(activeNamespace, graph));
+    }
+    if(parameterType === 'query'){
+      return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_QUERY_PARAMETERS(activeNamespace, graph));
+    }
+
   }
 
-  public loadTABLE_OF_HEADER_PARAMETERS(graph: mandInfos) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_HEADER_PARAMETERS(activeNamespace, graph));
-  }
+  public setTABLE_OF_RESOURCES(table){
+    this.TABLE_OF_RESOURCES = table;
+  };
 
-  public loadTABLE_OF_ALL_PARAMETERS(graph: mandInfos) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_ALL_PARAMETERS(activeNamespace, graph));
-  }
 
   public getLIST_OF_METHODS() {
     return this.LIST_OF_METHODS;

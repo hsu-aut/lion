@@ -28,10 +28,7 @@
                     <div *ngIf="allAvailableMethods; else noConnection" class="row align-items-center">
 
                       <select [(ngModel)]="selectedMethod" name="selectedMethod" class="form-control">
-                        <!--
-                        <option *ngFor='let x of keys(allAvailableMethods.results.bindings)'>
-                          {{allAvailableMethods.results.bindings[x].availableMethods.value}}
-                        </option>-->
+                        <option></option>
                         <option *ngFor='let x of allAvailableMethods'>{{x}}</option>
                       </select>
                     </div>
@@ -108,7 +105,7 @@
                     </div>
                   </div>
                   <br>
-                  <div class="row" *ngIf="AddToModelOptions === 'technicalResource' && availableTechnicalResources">
+                  <div class="row" *ngIf="AddToModelOptions === 'technicalResource' && availableTechnicalResources?.length">
                     <table class="table table-hover table-sm">
                       <thead>
                         <tr>
@@ -129,7 +126,7 @@
                     </table>
                   </div>
 
-                  <div class="row" *ngIf="AddToModelOptions === 'structureElement' && availableTechnicalResources">
+                  <div class="row" *ngIf="AddToModelOptions === 'structureElement' && availableTechnicalResources?.length">
                     <table class="table table-hover table-sm">
                       <thead>
                         <tr>
@@ -163,42 +160,7 @@
               </div>
             </div>
           </div>
-          <br>
-          <div class="row">
-            <div class="col">
-              <div class="card">
-                <div class="card-header">Select Parameter</div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col">
-                      <div class="form-check">
-                        <input [(ngModel)]="ParameterOptions" type="radio" (click)="updateAllParameterTable()"
-                          id="functionalRadio1" name="ParameterOptions" class="custom-control-input"
-                          value="allParameter">
-                        <label class="custom-control-label" for="functionalRadio1">All</label>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="form-check">
-                        <input [(ngModel)]="ParameterOptions" type="radio" (click)="updateQueryParameterTable()"
-                          id="functionalRadio2" name="ParameterOptions" class="custom-control-input"
-                          value="queryParameter">
-                        <label class="custom-control-label" for="functionalRadio2">Query</label>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="form-check">
-                        <input [(ngModel)]="ParameterOptions" type="radio" (click)="updateHeaderParameterTable()"
-                          id="functionalRadio3" name="ParameterOptions" class="custom-control-input"
-                          value="headerParameter">
-                        <label class="custom-control-label" for="functionalRadio3">Header</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
         <!-- End Top Card left Side Second Row-->
       </div>
@@ -268,203 +230,217 @@
 </div>
 <!-- End Top Card-->
 
-<!-- Start Bottom Card-->
-<!-- All Parameter-->
-<div *ngIf="ParameterOptions === 'allParameter' && availableParameters">
+<!-- Testing Start-->
+<div *ngIf="selectedMethod?.length && baseUrl?.length && resource?.length">
+  <br>
   <div class="card">
-    <div class="card-body">
-      <div class="card">
-        <div class="card-header">
-          All Parameters <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
-            yet.</a>
-        </div>
-        <div class="card-body">
-          <div *ngIf="availableParameters?.length" class="row align-items-center">
-            <table class="table table-hover table-sm">
-              <thead>
-                <tr>
-                  <!-- take first result binding and iterate over keys, these keys are table columns -->
-                  <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
 
-                </tr>
-              </thead>
-              <tbody>
-                <!-- one row for each binding -->
-                <tr *ngFor="let tableRow of availableParameters">
-                  <!-- one entry for each key in each binding -->
-                  <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="allParameter-tab" data-toggle="tab" href="#allParameter" role="tab"
+            aria-controls="allParameter" aria-selected="false" (click)="setTableOption('All_Parameter_BUTTON')"> All
+            Parameters </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="queryParameter-tab" data-toggle="tab" href="#queryParameter" role="tab"
+            aria-controls="queryParameter" aria-selected="false" (click)="setTableOption('Query_Parameter_BUTTON')">
+            Query Parameters </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="headerParameter-tab" data-toggle="tab" href="#headerParameter" role="tab"
+            aria-controls="headerParameter" aria-selected="false" (click)="setTableOption('Header_Parameter_BUTTON')">
+            Header Parameters </a>
+        </li>
+      </ul>
 
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="allParameter" role="tabpanel" aria-labelledby="allParameter-tab">
 
-<!-- Query Parameter-->
-<div *ngIf="ParameterOptions === 'queryParameter' && availableParameters">
-  <div class="card">
-    <div class="card-body">
-      <div class="card">
-        <div class="card-header">
-          QueryParameters <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
-            yet.</a>
-        </div>
-        <div class="card-body">
-          <div class="row align-items-center">
-            <table class="table table-hover table-sm">
-              <thead *ngIf="availableParameters?.length; else noQueryParameter">
-                <tr>
-                  <!-- take first result binding and iterate over keys, these keys are table columns -->
-                  <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <ng-template #noQueryParameter>
+          <div class="card-body">
+            <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the
+              database
+              yet.</a>
+            <div *ngIf="availableParameters?.length" class="row align-items-center">
+              <table class="table table-hover table-sm">
                 <thead>
-                  <th>Key</th>
-                  <th>Type</th>
-                  <th>OptionValue</th>
-                  <th>Action</th>
-                  <th></th>
+                  <tr>
+                    <!-- take first result binding and iterate over keys, these keys are table columns -->
+                    <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+
+                  </tr>
                 </thead>
-              </ng-template>
-              <tbody>
-                <!-- one row for each binding -->
-                <tr *ngFor="let tableRow of availableParameters">
-                  <!-- one entry for each key in each binding -->
-                  <td (click)="queryTableClick(tableRow.Key, tableRow.Type)" *ngFor="let x of keys(tableRow)">
-                    {{tableRow[x]}}</td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-secondary col dropdown-toggle" type="button"
-                        id="queryParameterDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">Delete
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="queryParameterDropdownMenuButton">
-                        <h5 class="dropdown-header">Attention: Will be executed directly</h5>
-                        <a (click)="deleteFunction('parameterType', tableRow.Key, tableRow.Type, tableRow.OptionValue)"
-                          class="dropdown-item">delete Type</a>
-                        <a (click)="deleteFunction('optionValue', tableRow.Key, tableRow.Type, tableRow.OptionValue)"
-                          class="dropdown-item">delete
-                          Option Value</a>
-                        <div class="dropdown-divider"></div>
-                        <a (click)="deleteFunction('queryParameter', tableRow.Key, '', '')" class="dropdown-item">delete
-                          whole Parameter {{tableRow.Key}}</a>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input [(ngModel)]="queryParameterName" name="queryParameterName" class="form-control" type="text"
-                      placeholder="Query Name">
-                  </td>
-                  <td>
-                    <input [(ngModel)]="queryParameterType" name="queryParameterType" class="form-control" type="text"
-                      placeholder="Query Type">
-                  </td>
-                  <td>
-                    <input [(ngModel)]="queryParameterValue" name="queryParameterValue" class="form-control" type="text"
-                      placeholder="Option Value">
-                  </td>
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-secondary col dropdown-toggle" type="button"
-                        id="queryParameterExecuteDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">Insert
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-right"
-                        aria-labelledby="queryParameterExecuteDropdownMenuButton">
-                        <a (click)="buildQueryParameterInsert()" class="dropdown-item">build INSERT</a>
-                        <a (click)="executeQueryParameterInsert()" class="dropdown-item">execute
-                          INSERT</a>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                <tbody>
+                  <!-- one row for each binding -->
+                  <tr *ngFor="let tableRow of availableParameters">
+                    <!-- one entry for each key in each binding -->
+                    <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+        <div class="tab-pane " id="queryParameter" role="tabpanel" aria-labelledby="queryParameter-tab">
+          <div class="card-body">
+            <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
+              yet.</a>
+            <div class="row align-items-center">
+              <table class="table table-hover table-sm">
+                <thead *ngIf="availableParameters?.length; else noQueryParameter">
+                  <tr>
+                    <!-- take first result binding and iterate over keys, these keys are table columns -->
+                    <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <ng-template #noQueryParameter>
+                  <thead>
+                    <th>Key</th>
+                    <th>Type</th>
+                    <th>OptionValue</th>
+                    <th>Action</th>
+                    <th></th>
+                  </thead>
+                </ng-template>
+                <tbody>
+                  <!-- one row for each binding -->
+                  <tr *ngFor="let tableRow of availableParameters">
+                    <!-- one entry for each key in each binding -->
+                    <td (click)="queryTableClick(tableRow.Key, tableRow.Type)" *ngFor="let x of keys(tableRow)">
+                      {{tableRow[x]}}</td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-secondary col dropdown-toggle" type="button"
+                          id="queryParameterDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                          aria-expanded="false">Delete
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right"
+                          aria-labelledby="queryParameterDropdownMenuButton">
+                          <h5 class="dropdown-header">Attention: Will be executed directly</h5>
+                          <a (click)="deleteFunction('parameterType', tableRow.Key, tableRow.Type, tableRow.OptionValue)"
+                            class="dropdown-item">delete Type</a>
+                          <a (click)="deleteFunction('optionValue', tableRow.Key, tableRow.Type, tableRow.OptionValue)"
+                            class="dropdown-item">delete
+                            Option Value</a>
+                          <div class="dropdown-divider"></div>
+                          <a (click)="deleteFunction('queryParameter', tableRow.Key, '', '')"
+                            class="dropdown-item">delete
+                            whole Parameter {{tableRow.Key}}</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input [(ngModel)]="queryParameterName" name="queryParameterName" class="form-control" type="text"
+                        placeholder="Query Name">
+                    </td>
+                    <td>
+                      <input [(ngModel)]="queryParameterType" name="queryParameterType" class="form-control" type="text"
+                        placeholder="Query Type">
+                    </td>
+                    <td>
+                      <input [(ngModel)]="queryParameterValue" name="queryParameterValue" class="form-control"
+                        type="text" placeholder="Option Value">
+                    </td>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-secondary col dropdown-toggle" type="button"
+                          id="queryParameterExecuteDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                          aria-expanded="false">Insert
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right"
+                          aria-labelledby="queryParameterExecuteDropdownMenuButton">
+                          <a (click)="buildQueryParameterInsert()" class="dropdown-item">build INSERT</a>
+                          <a (click)="executeQueryParameterInsert()" class="dropdown-item">execute
+                            INSERT</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-<!-- Header Parameter-->
-<div *ngIf="ParameterOptions === 'headerParameter' && availableParameters">
-  <div class="card">
-    <div class="card-body">
 
-      <div class="card">
-        <div class="card-header">
-          HeaderParameters <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
-            yet.</a>
+
+
+
+
         </div>
+        <div class="tab-pane " id="headerParameter" role="tabpanel" aria-labelledby="headerParameter-tab">
 
-        <div class="card-body">
 
-          <div *ngIf="availableParameters" class="row align-items-center">
-            <table class="table table-hover table-sm">
-              <thead *ngIf="availableParameters?.length; else noHeaderParameter">
-                <tr>
-                  <!-- take first result binding and iterate over keys, these keys are table columns -->
-                  <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+
+          <div class="card-body"><a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
+              yet.</a>
+
+            <div *ngIf="availableParameters" class="row align-items-center">
+              <table class="table table-hover table-sm">
+                <thead *ngIf="availableParameters?.length; else noHeaderParameter">
+                  <tr>
+                    <!-- take first result binding and iterate over keys, these keys are table columns -->
+                    <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <ng-template #noHeaderParameter>
+                  <th>Key</th>
+                  <th>MediaType</th>
                   <th>Action</th>
-                </tr>
-              </thead>
-              <ng-template #noHeaderParameter>
-                <th>Key</th>
-                <th>MediaType</th>
-                <th>Action</th>
-              </ng-template>
-              <tbody>
-                <!-- one row for each binding -->
-                <tr *ngFor="let tableRow of availableParameters">
-                  <!-- one entry for each key in each binding -->
-                  <td (click)="headerTableClick(tableRow.Key, tableRow.MediaType)" *ngFor="let x of keys(tableRow)">
-                    {{tableRow[x]}}</td>
-                  <td><button class="btn btn-secondary col"
-                      (click)="deleteFunction('headerParameter', tableRow.Key, tableRow.MediaType, '')">delete
-                      HeaderParameter</button></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>
-                    <input [(ngModel)]="headerParameterKey" name="headerParameterKey" class="form-control" type="text"
-                      placeholder="Key">
-                  </td>
-                  <td>
-                    <input [(ngModel)]="headerParameterMediaType" name="headerParameterMediaType" class="form-control"
-                      type="text" placeholder="Media Type">
-                  </td>
+                </ng-template>
+                <tbody>
+                  <!-- one row for each binding -->
+                  <tr *ngFor="let tableRow of availableParameters">
+                    <!-- one entry for each key in each binding -->
+                    <td (click)="headerTableClick(tableRow.Key, tableRow.MediaType)" *ngFor="let x of keys(tableRow)">
+                      {{tableRow[x]}}</td>
+                    <td><button class="btn btn-secondary col"
+                        (click)="deleteFunction('headerParameter', tableRow.Key, tableRow.MediaType, '')">delete
+                        HeaderParameter</button></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <input [(ngModel)]="headerParameterKey" name="headerParameterKey" class="form-control" type="text"
+                        placeholder="Key">
+                    </td>
+                    <td>
+                      <input [(ngModel)]="headerParameterMediaType" name="headerParameterMediaType" class="form-control"
+                        type="text" placeholder="Media Type">
+                    </td>
 
-                  <td>
-                    <div class="dropdown">
-                      <button class="btn btn-secondary col dropdown-toggle" type="button"
-                        id="headerParameterExecuteDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">Insert
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-right"
-                        aria-labelledby="headerParameterExecuteDropdownMenuButton">
-                        <a (click)="buildHeaderParameterInsert()" class="dropdown-item">build INSERT</a>
-                        <a (click)="executeHeaderParameterInsert()" class="dropdown-item">execute
-                          INSERT</a>
+                    <td>
+                      <div class="dropdown">
+                        <button class="btn btn-secondary col dropdown-toggle" type="button"
+                          id="headerParameterExecuteDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                          aria-expanded="false">Insert
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right"
+                          aria-labelledby="headerParameterExecuteDropdownMenuButton">
+                          <a (click)="buildHeaderParameterInsert()" class="dropdown-item">build INSERT</a>
+                          <a (click)="executeHeaderParameterInsert()" class="dropdown-item">execute
+                            INSERT</a>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+
+
+
+
+
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- End Bottom Card-->
+</div>
+<!-- Testing END-->

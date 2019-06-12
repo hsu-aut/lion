@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
-import { WadlModelService, WADLVARIABLES, WADLDATA, WADLINSERT} from '../../../rdf-models/wadlModel.service';
-import { Vdi3682ModelService} from '../../../rdf-models/vdi3682Model.service';
+import { WadlModelService, WADLVARIABLES, WADLDATA, WADLINSERT } from '../../../rdf-models/wadlModel.service';
+import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
+import { take } from 'rxjs/operators';
 
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
@@ -63,7 +64,8 @@ export class WadlComponent implements OnInit {
 
   constructor(private query: SparqlQueriesService,
     private dlService: DownloadService,
-    private namespaceParser: PrefixesService,
+    //    private namespaceParser: PrefixesService,
+    private nameService: PrefixesService,
     private modelService: WadlModelService,
     private vdi3682Service: Vdi3682ModelService,
     private loadingScreenService: DataLoaderService) {
@@ -72,14 +74,20 @@ export class WadlComponent implements OnInit {
 
   ngOnInit() {
     this.allAvailableMethods = this.modelService.getLIST_OF_METHODS();
-    console.log('StartWadl')
-    this.availableResources = this.modelService.getTABLE_OF_RESOURCES();
-    //this.updateResourceTable();
+    this.updateResourceTable();
   }
 
   // Tabelle mit verfügbaren Ressourcen
   updateResourceTable() {
-    this.availableResources = this.modelService.reloadTABLE_OF_RESOURCES();
+    this.modelService.loadTABLE_OF_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      for (let x = 0; x < data.length; x++) {
+        data[x].Method = this.nameService.parseToName(data[x].Method);
+      }
+      this.availableResources = data;
+      this.modelService.setTABLE_OF_RESOURCES(this.availableResources);
+
+    });
   };
 
   //Tabellenfunktion 
@@ -119,14 +127,8 @@ export class WadlComponent implements OnInit {
     this.modelService.insertCreateEntity(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.updateResourceTable();
-      if (this.selectedParameter === 'all') {
-        this.updateAllParameterTable();
-      };
-      if (this.selectedParameter === 'query') {
-        this.updateQueryParameterTable();
-      };
-      if (this.selectedParameter === 'header') {
-        this.updateHeaderParameterTable();
+      if (this.selectedParameter != null) {
+        this.updateParameterTable(this.selectedParameter);
       };
     });
 
@@ -153,22 +155,14 @@ export class WadlComponent implements OnInit {
     };
     this.modelService.insertCreateEntityWithModel(this.modelVariables.mandatoryInformations, this.modelIri).subscribe((data: any) => {
       this.updateResourceTable();
-      if (this.selectedParameter === 'all') {
-        this.updateAllParameterTable();
-      };
-      if (this.selectedParameter === 'query') {
-        this.updateQueryParameterTable();
-      };
-      if (this.selectedParameter === 'header') {
-
-        this.updateHeaderParameterTable();
+      if (this.selectedParameter != null) {
+        this.updateParameterTable(this.selectedParameter);
       };
     });
   };
 
-
-  updateAllParameterTable() {
-    this.selectedParameter = 'all';
+  updateParameterTable(parameterType: string) {
+    this.selectedParameter = parameterType;
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
@@ -177,30 +171,11 @@ export class WadlComponent implements OnInit {
     this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
       this.methodDoesNotExistYet = data.boolean;
     });
-
-    this.modelService.loadTABLE_OF_ALL_PARAMETERS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+    this.modelService.loadTABLE_OF_PARAMETERS(this.selectedParameter, this.modelVariables.mandatoryInformations).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.availableParameters = data;
     });
-  };
-
-  updateQueryParameterTable() {
-    this.selectedParameter = 'query';
-    this.modelVariables.mandatoryInformations = {
-      baseUrl: this.baseUrl,
-      resourceName: this.resource,
-      method: this.selectedMethod
-    };
-
-    this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
-      this.methodDoesNotExistYet = data.boolean;
-    });
-
-    this.modelService.loadTABLE_OF_QUERY_PARAMETERS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.availableParameters = data;
-    });
-  };
+  }
 
   buildQueryParameterInsert() {
     this.modelVariables.mandatoryInformations = {
@@ -231,7 +206,7 @@ export class WadlComponent implements OnInit {
       optionValue: this.queryParameterValue
     };
     this.modelService.insertCreateQueryParameter(this.modelVariables.mandatoryInformations, this.modelVariables.parameterInfo).subscribe((data: any) => {
-      this.updateQueryParameterTable();
+      this.updateParameterTable('query');
     });
   };
 
@@ -244,7 +219,7 @@ export class WadlComponent implements OnInit {
     this.modelVariables.mandatoryInformations = {
       baseUrl: this.baseUrl,
       resourceName: this.resource,
-      method: this.namespaceParser.parseToName(this.selectedMethod)
+      method: this.selectedMethod
     };
     this.modelVariables.parameterInfo = {
       paramName: key,
@@ -255,20 +230,20 @@ export class WadlComponent implements OnInit {
     if (action == "queryParameter") {
       this.modelService.deleteQueryParameter(this.modelVariables.mandatoryInformations,
         this.modelVariables.parameterInfo).subscribe((data: any) => {
-          this.updateQueryParameterTable();
+          this.updateParameterTable('query');
         });
     };
 
     if (action == "optionValue") {
       this.modelService.deleteQueryOptionValue(this.modelVariables.mandatoryInformations,
         this.modelVariables.parameterInfo).subscribe((data: any) => {
-          this.updateQueryParameterTable();
+          this.updateParameterTable('query');
         });
     };
     if (action == "parameterType") {
       this.modelService.deleteQueryParameterType(this.modelVariables.mandatoryInformations,
         this.modelVariables.parameterInfo).subscribe((data: any) => {
-          this.updateQueryParameterTable();
+          this.updateParameterTable('query');
         });
     };
     if (action == "headerParameter") {
@@ -277,27 +252,9 @@ export class WadlComponent implements OnInit {
         mediaType: type
       }
       this.modelService.deleteHeaderParameter(this.modelVariables.mandatoryInformations, this.modelVariables.headerInformations).subscribe((data: any) => {
-        this.updateHeaderParameterTable();
+        this.updateParameterTable('header');
       });
     };
-  };
-
-  updateHeaderParameterTable() {
-    this.selectedParameter = 'header';
-    this.modelVariables.mandatoryInformations = {
-      baseUrl: this.baseUrl,
-      resourceName: this.resource,
-      method: this.selectedMethod
-    };
-
-    this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
-      this.methodDoesNotExistYet = data.boolean;
-    });
-
-    this.modelService.loadTABLE_OF_HEADER_PARAMETERS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.availableParameters = data;
-    });
   };
 
   buildHeaderParameterInsert() {
@@ -329,7 +286,7 @@ export class WadlComponent implements OnInit {
     };
     this.modelService.insertCreateHeaderParameter(this.modelVariables.mandatoryInformations,
       this.modelVariables.headerInformations).subscribe((data: any) => {
-        this.updateHeaderParameterTable();
+        this.updateParameterTable(this.selectedParameter);
       });
   };
 
@@ -344,12 +301,43 @@ export class WadlComponent implements OnInit {
 
   getAvailableStructureElements() {
     this.query.select(this.modelData.getStructureElements).subscribe((data: any) => {
-      this.namespaceParser.parseToPrefix(data);
+      this.nameService.parseToPrefix(data);
       this.availableTechnicalResources = this.TableUtil.buildTable(data);
     });
   };
 
   modelTableClick(selected: string) {
-    this.modelIri = this.namespaceParser.parseToIRI(selected);
+    this.modelIri = this.nameService.parseToIRI(selected);
   };
+
+
+  setTableOption(ParameterTable: string) {
+    switch (ParameterTable) {
+      case "All_Parameter_BUTTON": {
+        this.updateParameterTable('all');
+
+
+        break;
+      }
+      case "Query_Parameter_BUTTON": {
+        this.updateParameterTable('query');
+
+
+
+        break;
+      }
+      case "Header_Parameter_BUTTON": {
+        this.updateParameterTable('header');
+
+
+        break;
+      }
+
+
+    }
+
+
+  }
+
+
 }
