@@ -37,7 +37,7 @@ exports.setRepository = function (name) {
                     owlim:in-memory-literal-properties "true" ;
                     owlim:enable-literal-index "true" ;
         
-                    owlim:check-for-inconsistencies "false" ;
+                    owlim:check-for-inconsistencies "true" ;
                     owlim:disable-sameAs  "false" ;
                     owlim:query-timeout  "0" ;
                     owlim:query-limit-results  "0" ;
