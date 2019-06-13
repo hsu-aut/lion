@@ -67,6 +67,7 @@ export class WadlModelService {
   public loadASK_METHOD_EXISTS(graph: mandInfos) {
     var PREFIXES = this.nameService.getPrefixes();
     var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+    this.loadingScreenService.startLoading();
     return this.query.select(this.wadlData.ASK_METHOD_EXISTS(activeNamespace, graph));
   }
 

@@ -70,6 +70,7 @@ export class DashboardComponent implements OnInit {
   currentTable = [];
   tableTitle: string;
   tableSubTitle: string;
+  filterOption: boolean = true;
 
   constructor(
     private namespaceService: PrefixesService,

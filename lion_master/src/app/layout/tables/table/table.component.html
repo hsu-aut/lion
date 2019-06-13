@@ -4,7 +4,24 @@
     <div class="card-body ">
       <!-- titles -->
       <h5 class="card-title">{{tableTitle}}</h5>
-      <p class="card-text">{{tableExplanation}}</p>
+
+      <div class="row py-3">
+        <div class="col">
+          <p class="card-text">{{tableExplanation}}</p>
+        </div>
+        <div class="col" *ngIf="filter">
+          <div class="input-group mb-3">
+            <select [(ngModel)]="filterRow" class="custom-select" id="inputGroupSelect03">
+              <option *ngFor='let col of keys(pagedTable[0][0])'>
+                {{col}}
+              </option>
+            </select>
+            <input (keyup)="applyFilter($event, filterRow)" class="form-control" type="text"
+              placeholder="write a filter here">
+          </div>
+        </div>
+      </div>
+
       <div class="row align-items-center px-sm-2">
         <!-- table -->
         <table class="table table-hover table-sm" style="cursor: pointer">

@@ -90,7 +90,7 @@ export class PrefixesService {
     return prefixString
   }
 
-  // depreciated, should not be used!!!!!!!!
+  
   parseToName(IndividualWithPrefix: string): string {
     var PREFIXES = this.getPrefixes();
     //console.log(PREFIXES)

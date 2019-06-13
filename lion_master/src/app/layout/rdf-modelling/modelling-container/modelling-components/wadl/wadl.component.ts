@@ -169,6 +169,7 @@ export class WadlComponent implements OnInit {
       method: this.selectedMethod
     };
     this.modelService.loadASK_METHOD_EXISTS(this.modelVariables.mandatoryInformations).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.methodDoesNotExistYet = data.boolean;
     });
     this.modelService.loadTABLE_OF_PARAMETERS(this.selectedParameter, this.modelVariables.mandatoryInformations).subscribe((data: any) => {
