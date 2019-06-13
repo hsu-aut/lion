@@ -93,7 +93,7 @@ export class PrefixesService {
   // depreciated, should not be used!!!!!!!!
   parseToName(IndividualWithPrefix: string): string {
     var PREFIXES = this.getPrefixes();
-    console.log(PREFIXES)
+    //console.log(PREFIXES)
     var prefixedName: string = IndividualWithPrefix;
     var name: string;
     var parsed: boolean;
@@ -107,7 +107,7 @@ export class PrefixesService {
       if (prefixedName.search(PREFIXES[i].prefix) != -1) {
 
         name = prefixedName.replace(PREFIXES[i].prefix, "");
-        console.log(name);
+        //console.log(name);
         parsed = true;
       }
     }
