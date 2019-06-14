@@ -3,7 +3,7 @@ import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
-import { Dinen61360Service } from '../../../rdf-models/dinen61360.service';
+import { Dinen61360Service } from '../../../rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { DashboardService } from './dashboard.service';
 
