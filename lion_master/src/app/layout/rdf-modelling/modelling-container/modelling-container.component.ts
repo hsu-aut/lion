@@ -3,8 +3,10 @@ import { PrefixesService } from '../rdf-models/services/prefixes.service';
 import { SparqlQueriesService } from '../rdf-models/services/sparql-queries.service';
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
-import { Dinen61360Service } from '../rdf-models/dinen61360.service';
+import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../rdf-models/isa88Model.service';
+import { WadlModelService } from '../rdf-models/wadlModel.service';
+import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
 import { DashboardService } from './modelling-components/dashboard/dashboard.service';
 import { EclassSearchService } from '../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../rdf-models/services/backEndRequests.service';
@@ -35,7 +37,9 @@ export class ModellingContainerComponent implements OnInit {
     private DINEIN61360_Service: Dinen61360Service,
     private VDI2206_Service: Vdi2206ModelService,
     private VDI3862_Service: Vdi3682ModelService,
-    private Dashboard_Service: DashboardService
+    private Dashboard_Service: DashboardService,
+    private wadl_service: WadlModelService,
+    private iso22400Service: Iso22400_2ModelService
   ) {
 
   }

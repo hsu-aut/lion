@@ -6,9 +6,10 @@
     <div class="row" style="height: 200px;">
 
       <div class="col">
-          <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to an
-              existing system structure or create a new system structure. <button type="button" class="badge badge-pill badge-light"
-                data-toggle="modal" data-target="#MCS_HELPER">?</button></p>
+        <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to
+          an
+          existing system structure or create a new system structure. <button type="button"
+            class="badge badge-pill badge-light" data-toggle="modal" data-target="#MCS_HELPER">?</button></p>
 
       </div>
       <div class="col">
@@ -71,12 +72,18 @@
               <input class="form-control" type="text" placeholder="rdf:type" readonly>
             </div>
             <div class="form-group col-sm">
+
               <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
-                <option *ngFor='let x of allClasses'>
-                  {{x}}
-                </option>
-              </select>
+              <div class="input-group mb-3">
+                <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control" id="inputGroupSelect01">
+                  <option *ngFor='let x of allClasses'>
+                    {{x}}
+                  </option>
+                </select>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#MCS_HELPER"> i </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="form-row">
@@ -163,10 +170,12 @@
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">build INSERT</button>
+              <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">build
+                INSERT</button>
             </div>
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsert('existingIndiContain')">execute INSERT</button>
+              <button class="btn btn-secondary col m-3" (click)="executeInsert('existingIndiContain')">execute
+                INSERT</button>
             </div>
           </div>
         </div>
@@ -205,24 +214,28 @@
   </div>
 </div>
 
-<div class="modal fade" id="MCS_HELPER" tabindex="-1" role="dialog" aria-labelledby="MCS_HELPER" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="MCS_HELPER"> The Structure of mechatronic Systems </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <img src="../../../../../../assets/images/vdi2206_grafical_notion.png" class="card-img-top">
-          <p class="card-text"> HERE SHOULD BE SOME EXPLANATORY TEXT </p>
-        </div>
-  
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">
-            Got it! </button>
-        </div>
+<div class="modal fade bd-example-modal-lg" id="MCS_HELPER" tabindex="-1" role="dialog" aria-labelledby="MCS_HELPER"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="MCS_HELPER"> The Structure of mechatronic Systems </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="../../../../../../assets/images/vdi2206_grafical_notion.png"
+          class="card-img-top rounded mx-auto d-block" style="width: 60%">
+        <p class="card-text"> system, module, component, sensor actuator information processing, basic system, energy,
+          information product
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          Got it! </button>
       </div>
     </div>
   </div>
+</div>

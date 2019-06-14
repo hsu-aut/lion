@@ -12,6 +12,7 @@ import { Dinen61360Component } from './modelling-components/dinen61360/dinen6136
 import { Vdi2206Component } from './modelling-components/vdi2206/vdi2206.component';
 import { WadlComponent } from './modelling-components/wadl/wadl.component';
 import { Isa88Component } from './modelling-components/isa88/isa88.component';
+import { Iso22400_2Component } from './modelling-components/iso22400-2/iso22400-2.component'
 import { ConfigurationsComponent } from './modelling-components/configurations/configurations.component';
 
 
@@ -38,6 +39,7 @@ import { ChartsModule as Ng2Charts } from 'ng2-charts';
     Vdi2206Component,
     WadlComponent,
     Isa88Component,
+    Iso22400_2Component,
     ConfigurationsComponent,
     
     // util components

@@ -1,0 +1,234 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h5 class="card-header"> ISO 22400-2 Template</h5>
+  <div class="card-body">
+    <h5 class="card-title"> Key Performance Indicators for Manufacturing Operations Management
+    </h5>
+
+    <div class="row">
+
+      <div class="col">
+        <p class="card-text">The ISO 2400-2 template uses a tabular approach for building a graph. One can add elements
+          to an existing key performance indicator or create a new key performance indicator or one of its constituents.
+          <button type="button" class="badge badge-pill badge-light" data-toggle="modal"
+            data-target="#FPD_HELPER">?</button></p>
+
+      </div>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-header">
+            Template Statistics
+          </div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No# KPIs</th>
+                  <th scope="col">No# Elements</th>
+                  <th scope="col">No# Entitys</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{NoOfKPIs}}</td>
+                  <td>{{NoOfElements}}</td>
+                  <td>{{NoOfEntities}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-sm-2 py-3">
+      <!-- tabs -->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
+            aria-controls="newIndi" aria-selected="true"> Create new
+            simple element </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="existingIndi-tab" data-toggle="tab" href="#existingIndi" role="tab"
+            aria-controls="existingIndi" aria-selected="false"> Create new KPI </a>
+        </li>
+      </ul>
+
+      <div class="tab-content py-3" id="myTabContent">
+        <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
+          <!-- content to create new simple element -->
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> New element to create </label>
+              <input [(ngModel)]="newElementName" class="form-control" name="newElementName" type="text"
+                placeholder="[xsd:string]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Group of new element </label>
+              <select [(ngModel)]="selectedElementGroup" name="selectedElementGroup" class="form-control"
+                (click)="loadClasses(selectedElementGroup)">
+                <option *ngFor='let x of elementGroups'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Class of the new element </label>
+              <select [(ngModel)]="selectedElementClass" name="selectedElementClass" class="form-control"
+                (click)="setValueVisibility(selectedElementClass)">
+                <option *ngFor='let x of allClassesPerGroup'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Described physical entity </label>
+              <input [(ngModel)]="describedEntityName" class="form-control" name="object" type="text"
+                placeholder="[xsd:string]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Class of entity </label>
+              <select [(ngModel)]="selectedEntityClass" name="selectedEntityClass" class="form-control">
+                <option *ngFor='let x of organizationalElementClasses'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The relevant period of the element </label>
+              <input [(ngModel)]="newPeriod" class="form-control" name="object" type="text"
+                placeholder="[YYYY-MM-DDThh:mm:ss]">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> The value of the element </label>
+              <input [(ngModel)]="newSimpleValue" class="form-control" name="object" type="text"
+                placeholder="[xsd:string]" [readonly]="anyValueReadOnly === false">
+            </div>
+            <div class="form-group col-sm">
+              <label> The value´s unit of measure </label>
+              <input [(ngModel)]="newUnitOfMeasure" class="form-control" name="object" type="text"
+                placeholder="[xsd:string]" [readonly]="anyValueReadOnly === false">
+            </div>
+            <div class="form-group col-sm">
+              <label> The relevant duration </label>
+              <input [(ngModel)]="newDuration" class="form-control" name="object" type="text"
+                placeholder="[xsd:duration]" [readonly]="timeValueReadOnly === false">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="createTripel(false)">build INSERT</button>
+
+            </div>
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="createTripel(true)">execute INSERT</button>
+            </div>
+          </div>
+          <div class="px-sm-2 py-sm-2">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="vdiEntity-tab" data-toggle="tab" href="#vdiEntity" role="tab"
+                  aria-controls="vdiEntity" aria-selected="true" (click)="setTableOption('VDI_BUTTON')"> VDI 3682/2206 entities </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="isoEntity-tab" data-toggle="tab" href="#isoEntity" role="tab"
+                  aria-controls="isoEntity" aria-selected="false" (click)="setTableOption('ISO_BUTTON')"> ISO entities </a>
+              </li>
+
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="vdiEntity" role="tabpanel" aria-labelledby="vdiEntity-tab">
+                <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                  (tableClickedCell)="tableClick($event)"></app-table>
+              </div>
+              <div class="tab-pane " id="isoEntity" role="tabpanel" aria-labelledby="isoEntity-tab">
+                <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                  (tableClickedCell)="tableClick($event)"></app-table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
+          <!-- content to connect existing individuals -->
+          <!-- <div class="form-row">
+            <div class="form-group col-sm">
+              <label> The Subject of the created statement </label>
+              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
+                placeholder="Select a Function from Table" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Predicate of the created statement </label>
+              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
+                (click)="getObjectClasses(selectedPredicate)">
+                <option *ngFor='let x of existingPredicates'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Class of the Object of the created statement </label>
+              <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
+                (click)="getExistingObjects(selectedObjectClass)">
+                <option *ngFor='let x of existingObjectClasses'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Object of the created statement </label>
+              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
+                <option *ngFor='let x of existingObjects'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div> -->
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
+            </div>
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="executeInsertRelations()">execute INSERT</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="FPD_HELPER" tabindex="-1" role="dialog" aria-labelledby="FPD_HELPER" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="FPD_HELPER"> Key Performance Indicators for Manufacturing Operations Management
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="../../../../../../assets/images/iso22400-2_grafical_notion_times_01.png" class="card-img-top">
+        <p class="card-text"> The scope of ISO 22400 is to give a clear and unique definition of Key Performance
+          Indicators (KPIs) used in Manufacturing
+          Operations Management (MOM). ISO 22400-2 presents a selected number of KPIs in current practice. The KPIs are
+          presented by means of their formula
+          and corresponding elements, their time behavior, unit/dimension and rating. It also indicates the User group
+          where the KPIs are used and to what
+          production type they fit.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          Got it! </button>
+      </div>
+    </div>
+  </div>
+</div>
