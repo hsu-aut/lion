@@ -55,6 +55,7 @@
       </ul>
 
       <div class="tab-content py-3" id="myTabContent">
+        <!-- parameter tab -->
         <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
           <!-- content to create new simple element -->
           <div class="form-row">
@@ -66,7 +67,7 @@
             <div class="form-group col-sm">
               <label> Group of new element </label>
               <select [(ngModel)]="selectedElementGroup" name="selectedElementGroup" class="form-control"
-                (click)="loadClasses(selectedElementGroup)">
+                (click)="loadClassesElement(selectedElementGroup)">
                 <option *ngFor='let x of elementGroups'>
                   {{x}}
                 </option>
@@ -76,7 +77,7 @@
               <label> The Class of the new element </label>
               <select [(ngModel)]="selectedElementClass" name="selectedElementClass" class="form-control"
                 (click)="setValueVisibility(selectedElementClass)">
-                <option *ngFor='let x of allClassesPerGroup'>
+                <option *ngFor='let x of allElementClassesPerGroup'>
                   {{x}}
                 </option>
               </select>
@@ -121,82 +122,115 @@
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(false)">build INSERT</button>
+              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'element')">build INSERT</button>
 
             </div>
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(true)">execute INSERT</button>
+              <button class="btn btn-secondary col m-3" (click)="createTripel(true, 'element')">execute INSERT</button>
             </div>
           </div>
-          <div class="px-sm-2 py-sm-2">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" id="vdiEntity-tab" data-toggle="tab" href="#vdiEntity" role="tab"
-                  aria-controls="vdiEntity" aria-selected="true" (click)="setTableOption('VDI_BUTTON')"> VDI 3682/2206 entities </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="isoEntity-tab" data-toggle="tab" href="#isoEntity" role="tab"
-                  aria-controls="isoEntity" aria-selected="false" (click)="setTableOption('ISO_BUTTON')"> ISO entities </a>
-              </li>
+        </div>
+        <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
+          <!-- kpi tab -->
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> New element to create </label>
+              <input [(ngModel)]="newKPIName" class="form-control" name="newElementName" type="text"
+                placeholder="[xsd:string]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Group of new KPI </label>
+              <select [(ngModel)]="selectedKPIGroup" name="selectedKPIGroup" class="form-control"
+                (click)="loadClassesKPI(selectedKPIGroup)">
+                <option *ngFor='let x of KPIGroups'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The Class of the new element </label>
+              <select [(ngModel)]="selectedKPIClass" name="selectedKPIClass" class="form-control"
+                (click)="loadTimingConstraint(selectedKPIClass)">
+                <option *ngFor='let x of allKPIClassesPerGroup'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Described physical entity </label>
+              <input [(ngModel)]="describedEntityName" class="form-control" name="object" type="text"
+                placeholder="[xsd:string]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Class of entity </label>
+              <select [(ngModel)]="selectedEntityClass" name="selectedEntityClass" class="form-control">
+                <option *ngFor='let x of organizationalElementClasses'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The relevant period of the element </label>
+              <input [(ngModel)]="newPeriod" class="form-control" name="object" type="text"
+                placeholder="[YYYY-MM-DDThh:mm:ss]">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Timing of the KPI </label>
+              <select [(ngModel)]="selectedTiming" name="selectedTiming" class="form-control">
+                <option *ngFor='let x of possibleTiming'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The value of the element </label>
+              <input [(ngModel)]="newSimpleValue" class="form-control" name="object" type="text"
+                placeholder="[xsd:string]">
+            </div>
+            <div class="form-group col-sm">
+              <label> The value´s unit of measure </label>
+              <input [(ngModel)]="newUnitOfMeasure" class="form-control" name="object" type="text"
+                placeholder="[xsd:string]">
+            </div>
 
-            </ul>
-            <div class="tab-content" id="myTabContent">
-              <div class="tab-pane fade show active" id="vdiEntity" role="tabpanel" aria-labelledby="vdiEntity-tab">
-                <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-                  (tableClickedCell)="tableClick($event)"></app-table>
-              </div>
-              <div class="tab-pane " id="isoEntity" role="tabpanel" aria-labelledby="isoEntity-tab">
-                <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-                  (tableClickedCell)="tableClick($event)"></app-table>
-              </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'KPI')">build INSERT</button>
+            </div>
+            <div class="form-group col-sm">
+              <button class="btn btn-secondary col m-3" (click)="createTripel(true, 'KPI')">execute INSERT</button>
             </div>
           </div>
 
         </div>
-        <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
-          <!-- content to connect existing individuals -->
-          <!-- <div class="form-row">
-            <div class="form-group col-sm">
-              <label> The Subject of the created statement </label>
-              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
-                placeholder="Select a Function from Table" readonly>
+        <div class="px-sm-2 py-sm-2">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="vdiEntity-tab" data-toggle="tab" href="#vdiEntity" role="tab"
+                aria-controls="vdiEntity" aria-selected="true" (click)="setTableOption('VDI_BUTTON')"> VDI 3682/2206
+                entities </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="isoEntity-tab" data-toggle="tab" href="#isoEntity" role="tab"
+                aria-controls="isoEntity" aria-selected="false" (click)="setTableOption('ISO_BUTTON')"> ISO entities
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="vdiEntity" role="tabpanel" aria-labelledby="vdiEntity-tab">
+              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
             </div>
-            <div class="form-group col-sm">
-              <label> The Predicate of the created statement </label>
-              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
-                (click)="getObjectClasses(selectedPredicate)">
-                <option *ngFor='let x of existingPredicates'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Class of the Object of the created statement </label>
-              <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
-                (click)="getExistingObjects(selectedObjectClass)">
-                <option *ngFor='let x of existingObjectClasses'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
-                <option *ngFor='let x of existingObjects'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-          </div> -->
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert()">build INSERT</button>
-            </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsertRelations()">execute INSERT</button>
+            <div class="tab-pane " id="isoEntity" role="tabpanel" aria-labelledby="isoEntity-tab">
+              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
             </div>
           </div>
-
         </div>
       </div>
     </div>

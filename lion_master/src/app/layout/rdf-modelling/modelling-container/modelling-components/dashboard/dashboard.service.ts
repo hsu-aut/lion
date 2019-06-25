@@ -14,7 +14,7 @@ export class DashboardService {
     labels: []
   }
 
-  chartPrefixes: Array<number> = [0, 1, 2, 3, 4]
+  chartPrefixes: Array<number> = [0, 1, 2, 3, 4, 5]
 
   constructor(
     private query: SparqlQueriesService,

@@ -17,8 +17,10 @@ export class Iso22400_2ModelService {
   private LIST_OF_ELEMENT_GROUPS = [];
   private LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES = [];
   private LIST_OF_KPIs = [];
+  private LIST_OF_KPI_GROUPS = [];
   private LIST_OF_ORGANIZATIONAL_ELEMENTS = [];
   private LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = [];
+  private LIST_OF_CLASS_CONSTRAINT_ENUM = [];
   private TABLE_ALL_ENTITY_INFO = [];
 
   constructor(
@@ -53,6 +55,10 @@ export class Iso22400_2ModelService {
       this.loadingScreenService.stopLoading();
       this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = data;
     });
+    this.loadLIST_OF_KPI_GROUPS().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_OF_KPI_GROUPS = data;
+    });
     this.loadTABLE_ALL_ENTITY_INFO().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.TABLE_ALL_ENTITY_INFO = data;
@@ -60,6 +66,10 @@ export class Iso22400_2ModelService {
   }
 
   // loaders
+  public loadLIST_OF_KPI_GROUPS() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.isoData.SELECT_LIST_OF_KPI_GROUPS, 0);
+  }
   public loadTABLE_ALL_ENTITY_INFO() {
     this.loadingScreenService.startLoading();
     return this.query.selectTable(this.isoData.SELECT_TABLE_ALL_ENTITY_INFO);
@@ -90,10 +100,20 @@ export class Iso22400_2ModelService {
     groupNameIRI = this.nameService.parseToIRI(groupNameIRI);
     return this.query.selectList(this.isoData.SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI), 0);
   }
+  public loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string) {
+    this.loadingScreenService.startLoading();
+    KPI_Class = this.nameService.parseToIRI(KPI_Class);
+    ConstrainingDataProperty = this.nameService.parseToIRI(ConstrainingDataProperty);
+    return this.query.selectList(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
+  }
 
+  
   // getters
   public getTABLE_ALL_ENTITY_INFO() {
     return this.TABLE_ALL_ENTITY_INFO;
+  }
+  public getLIST_OF_KPI_GROUPS() {
+    return this.LIST_OF_KPI_GROUPS;
   }
   public getLIST_OF_KPIs() {
     return this.LIST_OF_KPIs;
@@ -126,7 +146,7 @@ export class Iso22400_2ModelService {
   }
 
   // builders
-  public createTripel(variables: elementVariables, execute: boolean) {
+  public createElement(variables: elementVariables, execute: boolean) {
     var PREFIXES = this.nameService.getPrefixes();
     var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
@@ -155,6 +175,45 @@ export class Iso22400_2ModelService {
     } else {
       var blobObserver = new Observable((observer) => {
         let insertString = this.isoInsert.createElement(variables, activeGraph);
+        const blob = new Blob([insertString], { type: 'text/plain' });
+        const name = 'insert.txt';
+        this.downloadService.download(blob, name);
+        observer.next();
+        observer.complete();
+      });
+      return blobObserver;
+    }
+
+  }
+  public createKPI(KPIVariables: KPIVariables, execute: boolean) {
+    var PREFIXES = this.nameService.getPrefixes();
+    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+
+    if (KPIVariables.KPI_IRI.search("http://") != -1) {
+      KPIVariables.KPI_IRI = KPIVariables.KPI_IRI;
+    } else if (KPIVariables.KPI_IRI.search(":") != -1) {
+      KPIVariables.KPI_IRI = this.nameService.parseToIRI(KPIVariables.KPI_IRI);
+    } else {
+      KPIVariables.KPI_IRI = activeNamespace + KPIVariables.KPI_IRI;
+    }
+    if (KPIVariables.entityIRI.search("http://") != -1) {
+      KPIVariables.entityIRI = KPIVariables.entityIRI;
+    } else if (KPIVariables.entityIRI.search(":") != -1) {
+      KPIVariables.entityIRI = this.nameService.parseToIRI(KPIVariables.entityIRI);
+    } else {
+      KPIVariables.entityIRI = activeNamespace + KPIVariables.entityIRI;
+    }
+    KPIVariables.KPI_Class = this.nameService.parseToIRI(KPIVariables.KPI_Class);
+    KPIVariables.entityClass = this.nameService.parseToIRI(KPIVariables.entityClass);
+    if (execute) {
+      return this.query.insert(this.isoInsert.createKPI(KPIVariables, activeGraph));
+    } else {
+      var blobObserver = new Observable((observer) => {
+        let insertString = this.isoInsert.createKPI(KPIVariables, activeGraph);
         const blob = new Blob([insertString], { type: 'text/plain' });
         const name = 'insert.txt';
         this.downloadService.download(blob, name);
@@ -211,6 +270,14 @@ export class ISO22400_2DATA {
    ?ISO_Elements sesame:directSubClassOf ISO:Elements.
   }`
 
+  public SELECT_LIST_OF_KPI_GROUPS = `
+  PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+
+  SELECT ?ISO_KPIs
+  WHERE { 
+   ?ISO_KPIs sesame:directSubClassOf ISO:KeyPerformanceIndicator.
+  }`
+
   public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES = `
   PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -255,10 +322,31 @@ export class ISO22400_2DATA {
     return selectString
   }
 
+  public SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string){
+    let selectString = `
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT DISTINCT ?ConstraintEnum
+    WHERE {
+        <${KPI_Class}> rdfs:subClassOf ?OnPropertyBlankNode.
+        ?OnPropertyBlankNode owl:onProperty <${ConstrainingDataProperty}>.
+        <${ConstrainingDataProperty}> a owl:DatatypeProperty.
+        ?OnPropertyBlankNode ?anyOwl ?someValuesFromBlankNode.
+        ?someValuesFromBlankNode owl:unionOf ?unionBlankNode.
+        ?unionBlankNode rdf:rest* ?restBlankNode.
+        ?restBlankNode rdf:first ?firstBlankNode.
+        ?firstBlankNode owl:oneOf ?oneOfBlankNode.
+        ?oneOfBlankNode rdf:first ?ConstraintEnum.
+    }`
+    return selectString
+  }
+
 }
 
 export class ISO22400_2VARIABLES {
   simpleElement: elementVariables
+  KPI: KPIVariables
 }
 
 
@@ -280,7 +368,7 @@ export class ISO22400_2INSERT {
       nonTimeElement: `?newElement  ISO:Value "${value}"^^xsd:string;
                                     ISO:UnitOfMeasure "${UnitOfMeasure}"^^xsd:string.`,
       timeElement: `?newElement ISO:timeSpan "${duration}"^^xsd:duration.`,
-
+      forPeriod: `?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp`,
 
     }
 
@@ -305,13 +393,13 @@ export class ISO22400_2INSERT {
             rdf:type ?IsoUnit;
             a owl:NamedIndividual.
     ?newElement rdf:type ?elementClass;
-            a owl:NamedIndividual;
-            ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.
+            a owl:NamedIndividual.
             
     
     #        optional, depending on whether it is a time element or not
     ${optionals.nonTimeElement}      
-    ${optionals.timeElement}  
+    ${optionals.timeElement} 
+    ${optionals.forPeriod} 
 
         }
     } WHERE {
@@ -319,6 +407,63 @@ export class ISO22400_2INSERT {
         BIND(IRI(STR("${entityClass}")) AS ?IsoUnit).   
         BIND(IRI(STR("${elementIRI}")) AS ?newElement).
         BIND(IRI(STR("${elementClass}")) AS ?elementClass).
+    }
+    `
+    console.log(insertString)
+    return insertString;
+  }
+  public createKPI(KPIVariables: KPIVariables, activeGraph: string) {
+
+    let value = KPIVariables.simpleValue;
+    let entityIRI = KPIVariables.entityIRI;
+    let entityClass = KPIVariables.entityClass;
+    let KPI_IRI = KPIVariables.KPI_IRI;
+    let KPI_Class = KPIVariables.KPI_Class;
+    let KPI_Timing = KPIVariables.timing;
+    let relevantPeriod = KPIVariables.relevantPeriod;
+    let UnitOfMeasure = KPIVariables.UnitOfMeasure;
+
+    var optionals = {
+      nonTimeElement: `?newKPI  ISO:Value "${value}"^^xsd:string;
+                                    ISO:UnitOfMeasure "${UnitOfMeasure}"^^xsd:string.`,
+      forPeriod: `?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp`,
+
+    }
+
+    // add a check for empties and if one is found delete the string
+    for (const i in optionals) {
+
+      const element = optionals[i];
+      if (element.search(`undefined`) != -1) { optionals[i] = "" }
+    }
+
+    var insertString = `
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    
+    INSERT {
+        
+    GRAPH <${activeGraph}>{
+    
+    ?entity ISO:hasKeyPerformanceIndicator ?newKPI;
+            rdf:type ?IsoUnit;
+            a owl:NamedIndividual.
+    ?newKPI rdf:type ?KPI_Class;
+            a owl:NamedIndividual;
+            ISO:Timing "${KPI_Timing}"^^xsd:string.
+            
+    
+    #        optional, depending on whether it is a time element or not
+    ${optionals.nonTimeElement}       
+    ${optionals.forPeriod}
+        }
+    } WHERE {
+        BIND(IRI(STR("${entityIRI}")) AS ?entity).      
+        BIND(IRI(STR("${entityClass}")) AS ?IsoUnit).   
+        BIND(IRI(STR("${KPI_IRI}")) AS ?newKPI).
+        BIND(IRI(STR("${KPI_Class}")) AS ?KPI_Class).
     }
     `
     console.log(insertString)
@@ -336,4 +481,15 @@ class elementVariables {
   UnitOfMeasure: string;
   simpleValue: string;
   duration: string;
+}
+
+class KPIVariables {
+  entityIRI: string;
+  entityClass: string;
+  KPI_IRI: string;
+  KPI_Class: string;
+  timing: string;
+  relevantPeriod: string;
+  UnitOfMeasure: string;
+  simpleValue: string;
 }

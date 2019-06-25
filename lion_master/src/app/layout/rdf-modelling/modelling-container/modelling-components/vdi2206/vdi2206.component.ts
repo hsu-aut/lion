@@ -35,6 +35,7 @@ export class Vdi2206Component implements OnInit {
   allStructureInfoInheritancebyMod: any = [];
   allStructureInfoInheritancebyCOM: any = [];
   allClasses: any;
+  allPatternComment: any;
 
   //user input variables
   newSubject: string;

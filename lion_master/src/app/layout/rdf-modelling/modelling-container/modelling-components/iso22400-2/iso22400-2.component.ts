@@ -20,7 +20,7 @@ export class Iso22400_2Component implements OnInit {
   _currentTableOption: string = "VDI_BUTTON";
   tableTitle: string;
   tableSubTitle: string;
-  
+
 
   // stats 
   NoOfKPIs: number;
@@ -29,24 +29,33 @@ export class Iso22400_2Component implements OnInit {
 
   // model data
   elementVariables = new ISO22400_2VARIABLES().simpleElement;
+  KPIVariables = new ISO22400_2VARIABLES().KPI;
 
   // graph db data
   elementGroups: Array<string> = [];
-  allClassesPerGroup: Array<string> = [];
+  KPIGroups: Array<string> = [];
+  allElementClassesPerGroup: Array<string> = [];
+  allKPIClassesPerGroup: Array<string> = [];
+  possibleTiming: Array<string> = [];
   organizationalElementClasses: Array<string> = [];
   allVDIInfo: Array<Object> = [];
   allIsoEntityInfo: Array<Object> = [];
+
 
   //user input variables
   newElementName: string;
   newPeriod: string;
   newUnitOfMeasure: string;
   newDuration: string;
+  newKPIName: string;
   newSimpleValue: string;
   describedEntityName: string;
   selectedElementGroup: string;
   selectedElementClass: string;
   selectedEntityClass: string;
+  selectedKPIGroup: string;
+  selectedKPIClass: string;
+  selectedTiming: string;
 
   // conditionals
   anyValueReadOnly: boolean = false;
@@ -69,16 +78,37 @@ export class Iso22400_2Component implements OnInit {
 
   getDropwDownInfo() {
     this.elementGroups = this.isoService.getLIST_OF_ELEMENT_GROUPS();
+    this.KPIGroups = this.isoService.getLIST_OF_KPI_GROUPS();
     this.organizationalElementClasses = this.isoService.getLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES();
   }
 
-  loadClasses(selectedElementGroup) {
+  loadClassesElement(selectedElementGroup) {
     if (selectedElementGroup) {
       this.isoService.loadLIST_OF_ELEMENTS_BY_GROUP(selectedElementGroup).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
-        this.allClassesPerGroup = data;
-        this.selectedElementClass = this.allClassesPerGroup[0];
+        this.allElementClassesPerGroup = data;
+        this.selectedElementClass = this.allElementClassesPerGroup[0];
         this.setValueVisibility(this.selectedElementClass);
+      });
+    }
+  }
+  loadClassesKPI(selectedKPIGroup) {
+    if (selectedKPIGroup) {
+      this.isoService.loadLIST_OF_ELEMENTS_BY_GROUP(selectedKPIGroup).pipe(take(1)).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
+        this.allKPIClassesPerGroup = data;
+        this.selectedKPIClass = this.allKPIClassesPerGroup[0];
+      });
+    }
+  }
+
+  loadTimingConstraint(KPI_Class) {
+    if (KPI_Class) {
+      let ConstraingDataProperty = "http://www.hsu-ifa.de/ontologies/ISO22400-2#Timing"
+      this.isoService.loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstraingDataProperty).pipe(take(1)).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
+        this.possibleTiming = data;
+        this.selectedTiming = this.possibleTiming[0];
       });
     }
   }
@@ -93,22 +123,37 @@ export class Iso22400_2Component implements OnInit {
     }
   }
 
-  createTripel(execute: boolean) {
+  createTripel(execute: boolean, option: string) {
+    if (option == "element") {
+      this.elementVariables = {
+        elementIRI: this.newElementName,
+        elementClass: this.selectedElementClass,
+        entityIRI: this.describedEntityName,
+        entityClass: this.selectedEntityClass,
+        relevantPeriod: this.newPeriod,
+        UnitOfMeasure: this.newUnitOfMeasure,
+        duration: this.newDuration,
+        simpleValue: this.newSimpleValue
+      }
 
-    this.elementVariables = {
-      elementIRI: this.newElementName,
-      elementClass: this.selectedElementClass,
-      entityIRI: this.describedEntityName,
-      entityClass: this.selectedEntityClass,
-      relevantPeriod: this.newPeriod,
-      UnitOfMeasure: this.newUnitOfMeasure,
-      duration: this.newDuration,
-      simpleValue: this.newSimpleValue
+      this.isoService.createElement(this.elementVariables, execute).pipe(take(1)).subscribe((data: any) => {
+        this.loadAllStatistics();
+      });
+    } else if (option == "KPI") {
+      this.KPIVariables = {
+        entityIRI: this.describedEntityName,
+        entityClass: this.selectedEntityClass,
+        KPI_IRI: this.newKPIName,
+        KPI_Class: this.selectedKPIClass,
+        timing: this.selectedTiming,
+        relevantPeriod: this.newPeriod,
+        UnitOfMeasure: this.newUnitOfMeasure,
+        simpleValue: this.newSimpleValue,
+      }
+      this.isoService.createKPI(this.KPIVariables, execute).pipe(take(1)).subscribe((data: any) => {
+        this.loadAllStatistics();
+      });
     }
-
-    this.isoService.createTripel(this.elementVariables, execute).pipe(take(1)).subscribe((data: any) => {
-      this.loadAllStatistics();
-    });
   }
 
   getAllStatistics() {
@@ -135,14 +180,14 @@ export class Iso22400_2Component implements OnInit {
     });
   }
 
-  tableClick(entityName: string){
+  tableClick(entityName: string) {
     this.describedEntityName = entityName;
   }
 
   getAllEntityInfo() {
     let cols = ["VDI2206:System", "VDI3682:TechnicalResource"]
     let data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi3682Service.getLIST_OF_TECHNICAL_RESOURCES()]
-    this.allVDIInfo = this.tableUtil.concatListsToTable(cols,data)
+    this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data)
     this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
   }
 
