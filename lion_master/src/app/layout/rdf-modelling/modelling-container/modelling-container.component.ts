@@ -64,6 +64,8 @@ export class ModellingContainerComponent implements OnInit {
     this.ISA_Service.initializeISA88();
     this.DINEIN61360_Service.initializeDINEN61360();
     this.Dashboard_Service.initializeDashboard();
+    this.wadl_service.initializeWADL();
+    this.iso22400Service.initializeISO22400_2();
   }
 
   getListOfRepos() {

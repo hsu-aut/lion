@@ -1,446 +1,703 @@
-<!-- Start Top Card-->
-<div class="card">
-  <h5 class="card-header">Web Application Description Language (WADL) Insert Template</h5>
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h5 class="card-header">WADL Template</h5>
   <div class="card-body">
+    <h5 class="card-title"> Web Application Description Language </h5>
+
     <div class="row">
-      <!--Start Top Card left Side   col-7 col-lg-8 -->
+
       <div class="col">
-        <!--  58/42 Split Small Devices / 66/33 Split Large Devices-->
-        <!-- Start Top Card left Side First Row-->
-        <div class="row">
-          <div class="col">
-            <div class="card">
-              <div class="card-header">First Row Left</div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col">
-                    <h6>Method</h6>
-                  </div>
-                  <div class="col">
-                    <h6>BaseUrl</h6>
-                  </div>
-                  <div class="col">
-                    <h6>Resource</h6>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div *ngIf="allAvailableMethods; else noConnection" class="row align-items-center">
+        <p class="card-text">The WADL template uses a tabular approach for building a graph.
+          First, a resource base path, and optionally a physical entity that provides that resource, have to be created.
+          Afterwards, services can be added to existing resources. After having defined the services, requests and
+          responses can be added as well.
+          <button type="button" class="badge badge-pill badge-light" data-toggle="modal"
+            data-target="#WADL_HELPER">?</button></p>
 
-                      <select [(ngModel)]="selectedMethod" name="selectedMethod" class="form-control">
-                        <option></option>
-                        <option *ngFor='let x of allAvailableMethods'>{{x}}</option>
-                      </select>
-                    </div>
-                    <ng-template #noConnection>
-                      <select class="form-control">
-                        <option>
-                          ----
-                        </option>
-                      </select>
-                    </ng-template>
-                  </div>
-
-                  <div class="col">
-                    <input id="baseUrl" [(ngModel)]="baseUrl" name="baseUrl" class="form-control" type="text"
-                      placeholder="BaseUrl">
-                  </div>
-                  <div class="col">
-                    <input [(ngModel)]="resource" name="resource" class="form-control" type="text"
-                      placeholder="Resource">
-                  </div>
-                </div>
-                <br>
-
-                <div class="row">
-                  <div class="col">
-                    <button class="btn btn-secondary col" (click)="buildResourceInsert()">build INSERT</button>
-                  </div>
-                  <div class="col">
-                    <button class="btn btn-secondary col" (click)="executeInsertResoruce()">execute
-                      INSERT</button>
-                  </div>
-
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- End Top Card left Side First Row-->
-        <!-- Start Top Card left Side Second Row-->
-        <br>
-
-        <div *ngIf="selectedMethod && baseUrl && resource">
-          <!-- Start Card Add Service to a ServiceProvider-->
-          <div class="row">
-            <div class="col">
-              <div class="card">
-                <div class="card-header">Add Service to a ServiceProvider</div>
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col"><input id="modelIri" [(ngModel)]="modelIri" name="modelIri" class="form-control"
-                        type="text" placeholder="http:// Provider IRI">
-                    </div>
-                  </div>
-                  <br>
-                  <div class="row">
-                    <div class="col">
-                      <div class="form-check">
-                        <input [(ngModel)]="AddToModelOptions" type="radio" (click)="getAvailableTechnicalResources()"
-                          id="addToTechnicalResource" name="AddToModelOptions" class="custom-control-input"
-                          value="technicalResource">
-                        <label class="custom-control-label" for="addToTechnicalResource">Add to a technical
-                          resource</label>
-                      </div>
-                    </div>
-                    <div class="col">
-                      <div class="form-check">
-                        <input [(ngModel)]="AddToModelOptions" type="radio" (click)="getAvailableStructureElements()"
-                          id="addToStructureElement" name="AddToModelOptions" class="custom-control-input"
-                          value="structureElement">
-                        <label class="custom-control-label" for="addToStructureElement">Add to a structure
-                          element</label>
-                      </div>
-                    </div>
-                  </div>
-                  <br>
-                  <div class="row" *ngIf="AddToModelOptions === 'technicalResource' && availableTechnicalResources?.length">
-                    <table class="table table-hover table-sm">
-                      <thead>
-                        <tr>
-                          <!--
-                          <th *ngFor="let col of keys(availableTechnicalResources[0])" scope="col">{{col}} </th>
-                          -->
-                          <th>Technical Resource</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let tableRow of availableTechnicalResources">
-                          <!--
-                          <td *ngFor="let x of keys(tableRow)" (click)="modelTableClick(tableRow[x])">{{tableRow[x]}} 
-                          </td>-->
-                          <td (click)="modelTableClick(tableRow)">{{tableRow}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <div class="row" *ngIf="AddToModelOptions === 'structureElement' && availableTechnicalResources?.length">
-                    <table class="table table-hover table-sm">
-                      <thead>
-                        <tr>
-                          <!-- take first result binding and iterate over keys, these keys are table columns -->
-                          <th *ngFor="let col of keys(availableTechnicalResources[0])" scope="col">{{col}} </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <!-- one row for each binding -->
-                        <tr *ngFor="let tableRow of availableTechnicalResources">
-                          <!-- one entry for each key in each binding -->
-                          <td (click)="modelTableClick(tableRow['Element'])">{{tableRow['Element']}}
-                          </td>
-                          <td>{{tableRow['EntityType']}}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div class="row">
-                    <div class="col">
-                      <button class="btn btn-secondary col" (click)="buildResourceInsertWithModel()">build
-                        INSERT</button>
-                    </div>
-                    <div class="col">
-                      <button class="btn btn-secondary col" (click)="executeInsertResourceWithModel()">execute
-                        INSERT</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <!-- End Top Card left Side Second Row-->
       </div>
-      <!--End Top Card left Side-->
-      <!--Start Top right side -5 col-lg-4"-->
       <div class="col">
-        <!--  58/42 Split Small Devices / 66/33 Split Large Devices-->
-        <div class="row h-100">
-
-          <div class="card">
-
-            <div class="card-header">Available Services</div>
-            <div class="card-body">
-              <div *ngIf="availableResources?.length; else noServices" class="row align-items-center">
-                <table class="table table-hover table-sm">
-                  <thead>
-                    <tr>
-                      <th *ngFor="let col of keys(availableResources[0])" scope="col">
-                        <a *ngIf="col=='Resource'">{{col}} (Method)</a>
-                        <a *ngIf="col!='Method' && col!='Resource'">{{col}}</a>
-                      </th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- one row for each binding -->
-                    <tr *ngFor="let tableRow of availableResources">
-                      <!-- one entry for each key in each binding -->
-                      <td (click)="resourceTableClick(tableRow.BaseUrl, '', '')">{{tableRow.BaseUrl}}</td>
-                      <td (click)="resourceTableClick(tableRow.BaseUrl, tableRow.Resource, '')">{{tableRow.Resource}}
-                        ({{tableRow.Method}})</td>
-                      <td></td>
-                      <td (click)="resourceTableClick('', '', tableRow.ServiceProvider)">{{tableRow.ServiceProvider}}
-                      </td>
-                      <td>
-                        <div class="dropdown">
-
-                          <button *ngIf="tableRow.ServiceProvider?.length"
-                            class="btn btn-secondary btn-sm dropdown-toggle" type="button"
-                            id="serviceProviderDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false">
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-right"
-                            aria-labelledby="serviceProviderDropdownMenuButton">
-                            <h5 class="dropdown-header">Attention: Will be executed directly</h5>
-                            <a (click)="deleteServiceProvider(tableRow.BaseUrl, tableRow.ServiceProvider)"
-                              class="dropdown-item">Delete Service from ServiceProvider</a>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <ng-template #noServices>
-                no Services
-              </ng-template>
-            </div>
-
+        <div class="card h-100">
+          <div class="card-header">
+            Template Statistics
           </div>
-
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No# base resources</th>
+                  <th scope="col">No# services</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{NoOfResourceBasePaths}}</td>
+                  <td>{{NoOfServices}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <!-- End Top rigt Side-->
     </div>
-  </div>
-</div>
-<!-- End Top Card-->
 
-<!-- Testing Start-->
-<div *ngIf="selectedMethod?.length && baseUrl?.length && resource?.length">
-  <br>
-  <div class="card">
+    <div class="px-sm-2 py-3">
+      <!-- tabs -->
 
-    <div class="px-sm-2 py-sm-2">
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="allParameter-tab" data-toggle="tab" href="#allParameter" role="tab"
-            aria-controls="allParameter" aria-selected="false" (click)="setTableOption('All_Parameter_BUTTON')"> All
-            Parameters </a>
+          <a class="nav-link active" id="createResource-tab" data-toggle="tab" href="#createResource" role="tab"
+            aria-controls="createResource" aria-selected="true"> Create new
+            base resource </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="queryParameter-tab" data-toggle="tab" href="#queryParameter" role="tab"
-            aria-controls="queryParameter" aria-selected="false" (click)="setTableOption('Query_Parameter_BUTTON')">
-            Query Parameters </a>
+          <a class="nav-link" id="createService-tab" data-toggle="tab" href="#createService" role="tab"
+            aria-controls="createService" aria-selected="false"> Add new service </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="headerParameter-tab" data-toggle="tab" href="#headerParameter" role="tab"
-            aria-controls="headerParameter" aria-selected="false" (click)="setTableOption('Header_Parameter_BUTTON')">
-            Header Parameters </a>
+          <a class="nav-link" id="createRequest-tab" data-toggle="tab" href="#createRequest" role="tab"
+            aria-controls="createRequest" aria-selected="false"> Add new requests </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="createResponse-tab" data-toggle="tab" href="#createResponse" role="tab"
+            aria-controls="createResponse" aria-selected="false"> Add new responses </a>
         </li>
       </ul>
 
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="allParameter" role="tabpanel" aria-labelledby="allParameter-tab">
 
-          <div class="card-body">
-            <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the
-              database
-              yet.</a>
-            <div *ngIf="availableParameters?.length" class="row align-items-center">
-              <table class="table table-hover table-sm">
-                <thead>
-                  <tr>
-                    <!-- take first result binding and iterate over keys, these keys are table columns -->
-                    <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
 
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- one row for each binding -->
-                  <tr *ngFor="let tableRow of availableParameters">
-                    <!-- one entry for each key in each binding -->
-                    <td *ngFor="let x of keys(tableRow)" (click)="iriTableClick(tableRow[x])">{{tableRow[x]}}</td>
+      <div class="tab-content py-3" id="myTabContent">
+        <div class="tab-pane fade show active" id="createResource" role="tabpanel" aria-labelledby="createResource-tab">
+          <!-- content to create resource -->
+          <form class="form-row" [formGroup]="baseResourceForm">
+            <div class="form-group col-sm">
+              <label> The physical entity providing the base resource </label>
+              <input formControlName="serviceProvider" class="form-control" name="serviceProvider" type="text"
+                placeholder="[Click from table below]" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> The resource base path </label>
+              <div class="input-group-prepend">
+                <span class="input-group-text input-group-prepend" id="inputGroupPrepend">http://</span>
+                <input formControlName="resourceBasePath" name="resourceBasePath" type="text"
+                  placeholder="[URL of resource base path]" class="form-control">
+              </div>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'baseResource', baseResourceForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createTripel('delete', 'baseResource', baseResourceForm)">Delete
+                      base resource</a>
+                    <a class="dropdown-item" (click)="createTripel('build', 'baseResource', baseResourceForm)">Download
+                      SPARQL INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
 
-                  </tr>
-                </tbody>
-              </table>
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="VDI-tab" data-toggle="tab" href="#VDI" role="tab" aria-controls="VDI"
+                aria-selected="true"> VDI 3682/2206 individuals </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="ISO-tab" data-toggle="tab" href="#ISO" role="tab" aria-controls="ISO"
+                aria-selected="false"> ISO 22400 individuals </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="WADL_BASE_RESOURCES-tab" data-toggle="tab" href="#WADL_BASE_RESOURCES" role="tab"
+                aria-controls="WADL_BASE_RESOURCES" aria-selected="false"> WADL base resources </a>
+            </li>
+          </ul>
+          <div class="tab-content py-3" id="myTabContent">
+            <div class="tab-pane fade show active" id="VDI" role="tabpanel" aria-labelledby="VDI-tab">
+              <!-- table for VDI3682/2206 individuals -->
+              <app-table [currentTable]="allVDIInfo" (tableClickedCell)="tableClick('VDI',$event)">
+              </app-table>
+            </div>
+            <div class="tab-pane fade" id="ISO" role="tabpanel" aria-labelledby="ISO-tab">
+              <!-- table for ISO 22400-2 individuals -->
+              <app-table [currentTable]="allIsoEntityInfo" (tableClickedRow)="tableClick('ISO',$event)">
+              </app-table>
+            </div>
+            <div class="tab-pane fade" id="WADL_BASE_RESOURCES" role="tabpanel"
+              aria-labelledby="WADL_BASE_RESOURCES-tab">
+              <!-- table for ISO 22400-2 individuals -->
+              <app-table [currentTable]="baseResourcesTable" (tableClickedRow)="tableClick('WADL',$event)">
+              </app-table>
             </div>
           </div>
         </div>
-        <div class="tab-pane " id="queryParameter" role="tabpanel" aria-labelledby="queryParameter-tab">
-          <div class="card-body">
-            <a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
-              yet.</a>
-            <div class="row align-items-center">
-              <table class="table table-hover table-sm">
-                <thead *ngIf="availableParameters?.length; else noQueryParameter">
-                  <tr>
-                    <!-- take first result binding and iterate over keys, these keys are table columns -->
-                    <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <ng-template #noQueryParameter>
-                  <thead>
-                    <th>Key</th>
-                    <th>Type</th>
-                    <th>OptionValue</th>
-                    <th>Action</th>
-                    <th></th>
-                  </thead>
-                </ng-template>
-                <tbody>
-                  <!-- one row for each binding -->
-                  <tr *ngFor="let tableRow of availableParameters">
-                    <!-- one entry for each key in each binding -->
-                    <td (click)="queryTableClick(tableRow.Key, tableRow.Type)" *ngFor="let x of keys(tableRow)">
-                      {{tableRow[x]}}</td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-secondary col dropdown-toggle" type="button"
-                          id="queryParameterDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">Delete
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right"
-                          aria-labelledby="queryParameterDropdownMenuButton">
-                          <h5 class="dropdown-header">Attention: Will be executed directly</h5>
-                          <a (click)="deleteFunction('parameterType', tableRow.Key, tableRow.Type, tableRow.OptionValue)"
-                            class="dropdown-item">delete Type</a>
-                          <a (click)="deleteFunction('optionValue', tableRow.Key, tableRow.Type, tableRow.OptionValue)"
-                            class="dropdown-item">delete
-                            Option Value</a>
-                          <div class="dropdown-divider"></div>
-                          <a (click)="deleteFunction('queryParameter', tableRow.Key, '', '')"
-                            class="dropdown-item">delete
-                            whole Parameter {{tableRow.Key}}</a>
-                        </div>
+        <div class="tab-pane " id="createService" role="tabpanel" aria-labelledby="createService-tab">
+          <!-- content to create service -->
+          <div class="form-row" [formGroup]="serviceForm">
+            <div class="form-group col-sm">
+              <label> The resource base path </label>
+              <select formControlName=resourceBasePath name="resourceBasePath" class="form-control">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of resourceBasePaths'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> Path of the new service </label>
+              <div class="input-group-prepend">
+                <span class="input-group-text input-group-prepend" id="inputGroupPrepend">/</span>
+                <input formControlName=servicePath name="servicePath" type="text" placeholder="[URL of service path]"
+                  class="form-control">
+              </div>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'service', serviceForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createTripel('delete', 'service', serviceForm)">Delete service</a>
+                    <a class="dropdown-item" (click)="createTripel('build', 'service', serviceForm)">Download SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <app-table [currentTable]="servicesTable" (tableClickedRow)="tableClick('SERVICE', $event)"></app-table>
+
+        </div>
+        <div class="tab-pane " id="createRequest" role="tabpanel" aria-labelledby="createRequest-tab">
+          <!-- content to create new requests -->
+          <div class="form-row" [formGroup]="requestForm">
+            <div class="form-group col-sm">
+              <label> The resource base path </label>
+              <select formControlName=resourceBasePath name="resourceBasePath" class="form-control"
+                (click)="getExistingServicesByBase(requestForm.controls['resourceBasePath'].value)">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of resourceBasePaths'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The service path </label>
+              <select formControlName=servicePath name="servicePath" class="form-control"
+                (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
+                (click)="getExistingRepresentation(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, 'request')">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of servicePaths'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> Method </label>
+              <select formControlName=method name="method" class="form-control"
+                (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
+                (click)="getExistingRepresentation(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, 'request')">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of methods'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> Parameter type </label>
+              <select formControlName=parameterType name="parameterType" class="form-control"
+                (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
+                (click)="getExistingRepresentation(requestForm.controls['servicePath'].value, requestForm.controls['method'].value , 'request')">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of parameterTypes'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row" [formGroup]="requestForm">
+            <div class="form-group col-sm">
+              <label> Parameter key </label>
+              <input formControlName=parameterKey class="form-control" name="parameterKey" type="text"
+                placeholder="[the key of your parameter/representation]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Data type </label>
+              <div class="input-group">
+                <input formControlName=dataType class="form-control" name="dataType" type="text"
+                  placeholder="[the required data type]" [readonly]="requestForm.controls['ontologicalDataType'].value">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#ONTO_HELPER"
+                    (click)="setOntologicalDataType('requestParameter')">
+                    O </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm">
+              <label> Option value </label>
+              <input formControlName=optionValue class="form-control" name="optionValue" type="text"
+                placeholder="[the key´s option values]">
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'requestParameter', requestForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createTripel('delete', 'requestParameter', requestForm)">Delete
+                      request</a>
+                    <a class="dropdown-item" (click)="createTripel('build', 'requestParameter', requestForm)">Download
+                      SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- div is repeated for number of entries in requestFormParameterArray -->
+          <div [formGroup]="requestForm">
+            <div formArrayName="requestFormParameterArray">
+              <div class="form-row" *ngFor="let x of requestFormParameterArray.controls; let i=index"
+                [formGroupName]="i">
+                <div class="form-group col-sm">
+                  <input formControlName="parameterKey" class="form-control" name="parameterKey" type="text" readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <div class="input-group">
+                    <input formControlName="dataType" class="form-control" name="dataType" type="text" readonly>
+                    <div class="input-group-append">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="optionValue" class="form-control" name="optionValue" type="text" readonly>
+                </div>
+                <div class="form-group col-sm-1 align-self-end">
+                  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group" role="group">
+                      <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="addButton">
+                        <a class="dropdown-item"
+                          (click)="deleteParameter('key', x.controls['parameterKey'].value)">Delete key</a>
+                        <a class="dropdown-item"
+                          (click)="deleteParameter('option', x.controls['parameterKey'].value)">Delete options</a>
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input [(ngModel)]="queryParameterName" name="queryParameterName" class="form-control" type="text"
-                        placeholder="Query Name">
-                    </td>
-                    <td>
-                      <input [(ngModel)]="queryParameterType" name="queryParameterType" class="form-control" type="text"
-                        placeholder="Query Type">
-                    </td>
-                    <td>
-                      <input [(ngModel)]="queryParameterValue" name="queryParameterValue" class="form-control"
-                        type="text" placeholder="Option Value">
-                    </td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-secondary col dropdown-toggle" type="button"
-                          id="queryParameterExecuteDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">Insert
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right"
-                          aria-labelledby="queryParameterExecuteDropdownMenuButton">
-                          <a (click)="buildQueryParameterInsert()" class="dropdown-item">build INSERT</a>
-                          <a (click)="executeQueryParameterInsert()" class="dropdown-item">execute
-                            INSERT</a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-
-
-
-
-
-        </div>
-        <div class="tab-pane " id="headerParameter" role="tabpanel" aria-labelledby="headerParameter-tab">
-
-
-
-          <div class="card-body"><a *ngIf="!methodDoesNotExistYet"> - Attention: Method has not been added to the database
-              yet.</a>
-
-            <div *ngIf="availableParameters" class="row align-items-center">
-              <table class="table table-hover table-sm">
-                <thead *ngIf="availableParameters?.length; else noHeaderParameter">
-                  <tr>
-                    <!-- take first result binding and iterate over keys, these keys are table columns -->
-                    <th *ngFor="let col of keys(availableParameters[0])" scope="col">{{col}} </th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <ng-template #noHeaderParameter>
-                  <th>Key</th>
-                  <th>MediaType</th>
-                  <th>Action</th>
-                </ng-template>
-                <tbody>
-                  <!-- one row for each binding -->
-                  <tr *ngFor="let tableRow of availableParameters">
-                    <!-- one entry for each key in each binding -->
-                    <td (click)="headerTableClick(tableRow.Key, tableRow.MediaType)" *ngFor="let x of keys(tableRow)">
-                      {{tableRow[x]}}</td>
-                    <td><button class="btn btn-secondary col"
-                        (click)="deleteFunction('headerParameter', tableRow.Key, tableRow.MediaType, '')">delete
-                        HeaderParameter</button></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <input [(ngModel)]="headerParameterKey" name="headerParameterKey" class="form-control" type="text"
-                        placeholder="Key">
-                    </td>
-                    <td>
-                      <input [(ngModel)]="headerParameterMediaType" name="headerParameterMediaType" class="form-control"
-                        type="text" placeholder="Media Type">
-                    </td>
-
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-secondary col dropdown-toggle" type="button"
-                          id="headerParameterExecuteDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">Insert
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right"
-                          aria-labelledby="headerParameterExecuteDropdownMenuButton">
-                          <a (click)="buildHeaderParameterInsert()" class="dropdown-item">build INSERT</a>
-                          <a (click)="executeHeaderParameterInsert()" class="dropdown-item">execute
-                            INSERT</a>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <div class="custom-control custom-checkbox">
+                <input [(ngModel)]="requestBodyRepresentationCheck" type="checkbox" class="custom-control-input"
+                  id="requestBodyRepresentationCheck">
+                <label class="custom-control-label" for="requestBodyRepresentationCheck">Include body
+                  representation</label>
+              </div>
             </div>
           </div>
 
+          <div class="form-row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
+            <div class="form-group col-sm">
+              <label> Body media type </label>
+              <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text"
+                placeholder="[the required media type of the body]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Body parameter key </label>
+              <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey" type="text"
+                placeholder="[the key of the body representation]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Body data type </label>
+              <div class="input-group">
+                <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text"
+                  placeholder="[the required data type]"
+                  [readonly]="requestForm.controls['ontologicalBodyDataType'].value">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#ONTO_HELPER"
+                    (click)="setOntologicalDataType('requestBodyParameter')">
+                    O </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm">
+              <label> Body option value </label>
+              <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue" type="text"
+                placeholder="[the option values]">
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'requestRepresentationParameter', requestForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                      (click)="createTripel('delete', 'requestRepresentationParameter', requestForm)">Delete
+                      body representation</a>
+                    <a class="dropdown-item"
+                      (click)="createTripel('build', 'requestRepresentationParameter', requestForm)">Download
+                      SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- div is repeated for number of entries in requestFormRepresentationArray -->
 
-
-
-
+          <div [formGroup]="requestForm"
+            *ngIf="requestBodyRepresentationCheck && requestFormRepresentationArray.value[0]">
+            <div formArrayName="requestFormRepresentationArray">
+              <div class="form-row" *ngFor="let x of requestFormRepresentationArray.controls; let i=index"
+                [formGroupName]="i">
+                <div class="form-group col-sm">
+                  <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text" readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey" type="text"
+                    readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text" readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue" type="text"
+                    readonly>
+                </div>
+                <div class="form-group col-sm-1 align-self-end">
+                  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group" role="group">
+                      <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="addButton">
+                        <a class="dropdown-item"
+                          (click)="deleteParameter('key', x.controls['bodyParameterKey'].value)">Delete key</a>
+                        <a class="dropdown-item"
+                          (click)="deleteParameter('option', x.controls['bodyParameterKey'].value)">Delete options</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+
+        <div class="tab-pane " id="createResponse" role="tabpanel" aria-labelledby="createResponse-tab">
+          <!-- content to create new responses -->
+          <div [formGroup]="responseForm" class="form-row">
+            <div class="form-group col-sm">
+              <label> The resource base path </label>
+              <select formControlName="resourceBasePath" name="resourceBasePath" class="form-control"
+                (click)="getExistingServicesByBase(responseForm.controls['resourceBasePath'].value)">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of resourceBasePaths'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> The service path </label>
+              <select formControlName="servicePath" name="servicePath" class="form-control">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of servicePaths'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> Method </label>
+              <select formControlName="method" name="method" class="form-control"
+                (click)="getExistingRepresentation(responseForm.controls['servicePath'].value, responseForm.controls['method'].value, 'response')">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of methods'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div [formGroup]="responseForm" class="form-row">
+            <div class="form-group col-sm">
+              <label> Response code </label>
+              <select formControlName="responseCode" name="responseCode" class="form-control"
+                (click)="getExistingRepresentation(responseForm.controls['servicePath'].value, responseForm.controls['method'].value, 'response')">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of responseCodes'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'response', responseForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createTripel('delete', 'response', responseForm)">Delete
+                      response</a>
+                    <a class="dropdown-item" (click)="createTripel('build', 'response', responseForm)">Download SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <div class="custom-control custom-checkbox">
+                <input [(ngModel)]="responseBodyRepresentationCheck" type="checkbox" class="custom-control-input"
+                  id="responseBodyRepresentationCheck">
+                <label class="custom-control-label" for="responseBodyRepresentationCheck">Include body
+                  representation</label>
+              </div>
+            </div>
+          </div>
+
+          <div [formGroup]="responseForm" class="form-row" *ngIf="responseBodyRepresentationCheck">
+            <div class="form-group col-sm">
+              <label> Body media type </label>
+              <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text"
+                placeholder="[the required media type of the body]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Body parameter key </label>
+              <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey" type="text"
+                placeholder="[the key of the body representation]">
+            </div>
+            <div class="form-group col-sm">
+              <label> Body data type </label>
+              <div class="input-group">
+                <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text"
+                  placeholder="[the required data type]"
+                  [readonly]="responseForm.controls['ontologicalBodyDataType'].value">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#ONTO_HELPER"
+                    (click)="setOntologicalDataType('responseBodyParameter')">
+                    O </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group col-sm">
+              <label> Body option value </label>
+              <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue" type="text"
+                placeholder="[the option values]">
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'responseRepresentationParameter', responseForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                      (click)="createTripel('delete', 'responseRepresentationParameter', responseForm)">Delete</a>
+                    <a class="dropdown-item"
+                      (click)="createTripel('build', 'responseRepresentationParameter', responseForm)">Download
+                      SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- div is repeated for number of entries in responseFormRepresentationArray -->
+
+          <div [formGroup]="responseForm"
+            *ngIf="responseBodyRepresentationCheck && responseFormRepresentationArray.value[0]">
+            <div formArrayName="responseFormRepresentationArray">
+              <div class="form-row" *ngFor="let x of responseFormRepresentationArray.controls; let i=index"
+                [formGroupName]="i">
+                <div class="form-group col-sm">
+                  <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text" readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey" type="text"
+                    readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text" readonly>
+                </div>
+                <div class="form-group col-sm">
+                  <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue" type="text"
+                    readonly>
+                </div>
+                <div class="form-group col-sm-1 align-self-end">
+                  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group" role="group">
+                      <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      </button>
+                      <div class="dropdown-menu" aria-labelledby="addButton">
+                        <a class="dropdown-item"
+                          (click)="deleteParameter('key', x.controls['bodyParameterKey'].value)">Delete key</a>
+                        <a class="dropdown-item"
+                          (click)="deleteParameter('option', x.controls['bodyParameterKey'].value)">Delete options</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="WADL_HELPER" tabindex="-1" role="dialog" aria-labelledby="FPD_HELPER" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"> The Web Application Description Language </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="../../../../../../assets/images/vdi3682_grafical_notion.png" class="card-img-top">
+        <p class="card-text"> Here should be explaining text about wadl </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          Got it! </button>
       </div>
     </div>
   </div>
-
 </div>
-<!-- Testing END-->
+
+<div class="modal fade bd-example-modal-lg" id="ONTO_HELPER" tabindex="-1" role="dialog" aria-labelledby="ONTO_HELPER"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ONTO_HELPER"> Data type based on ontological definitions </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="../../../../../../assets/images/ontologicalDataType.png" class="card-img-top">
+        <p class="card-text"> There are three options for adding a data type to a parameter, which are shown above. The
+          first option is to define the data type
+          manually. This is suitable for xsd data types for instance. It is also possible to type the parameter with
+          TBox classes, or to set their data type
+          in the context of an ABox individual. </p>
+        <div class="form-row">
+          <div class="form-group col-sm">
+            <div class="custom-control custom-radio custom-control-inline mx-5">
+              <input [(ngModel)]="ontologicalDataTypeRadio" value="ontologicalDataTypeTBox" type="radio"
+                id="ontologicalDataTypeTBox" name="ontologicalDataType" class="custom-control-input">
+              <label class="custom-control-label" for="ontologicalDataTypeTBox">Include TBox data type</label>
+            </div>
+          </div>
+          <div class="form-group col-sm">
+            <div class="custom-control custom-radio custom-control-inline mx-5">
+              <input [(ngModel)]="ontologicalDataTypeRadio" value="ontologicalDataTypeABox" type="radio"
+                id="ontologicalDataTypeABox" name="ontologicalDataType" class="custom-control-input">
+              <label class="custom-control-label" for="ontologicalDataTypeABox">Include ABox data type
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div [formGroup]="ontologicalDataType" class="form-row"
+          *ngIf="ontologicalDataTypeRadio === 'ontologicalDataTypeTBox'">
+          <div class="form-group col-sm">
+            <label> Select a TBox </label>
+            <select formControlName="TBox" name="TBox" class="form-control"
+              (click)="getExistingClasses(ontologicalDataType.controls['TBox'].value)">
+              <option value=null disabled selected hidden></option>
+              <option *ngFor='let x of tboxes'>
+                {{x}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group col-sm">
+            <label> Select a class </label>
+            <select formControlName="type" name="type" class="form-control">
+              <option value=null disabled selected hidden></option>
+              <option *ngFor='let x of classes'>
+                {{x}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div [formGroup]="ontologicalDataType" *ngIf="ontologicalDataTypeRadio === 'ontologicalDataTypeABox'">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Select a TBox </label>
+              <select formControlName="TBox" name="TBox" class="form-control"
+                (click)="getExistingClasses(ontologicalDataType.controls['TBox'].value)">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of tboxes'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> Select a class </label>
+              <select formControlName="type" name="selectedClassORProperty" class="form-control"
+                (click)="getExistingIndividuals(ontologicalDataType.controls['type'].value)">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of classes'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm">
+              <label> Select the individual </label>
+              <select formControlName="individual" name="individual" class="form-control">
+                <option value=null disabled selected hidden></option>
+                <option *ngFor='let x of individuals'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+          (click)="setDataType(null, requestBodyRepresentationRadio)">
+          Revert changes </button>
+        <button *ngIf="ontologicalDataTypeRadio === 'ontologicalDataTypeTBox'" type="button" class="btn btn-primary"
+          data-dismiss="modal"
+          (click)="setDataType(ontologicalDataType.controls['type'].value, ontologicalDataTypeRadio)">
+          Use this IRI as a data type </button>
+        <button *ngIf="ontologicalDataTypeRadio === 'ontologicalDataTypeABox'" type="button" class="btn btn-primary"
+          data-dismiss="modal"
+          (click)="setDataType(ontologicalDataType.controls['individual'].value, ontologicalDataTypeRadio)">
+          Use this IRI as a data type </button>
+      </div>
+    </div>
+  </div>
+</div>
