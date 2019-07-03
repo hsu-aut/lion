@@ -18,7 +18,7 @@ export class LoaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadingSubscription = this.loadingScreenService.loadingStatus.pipe(
-      debounceTime(200)
+      debounceTime(400)
     ).subscribe((value) => {
       this.loading = value;
     });
