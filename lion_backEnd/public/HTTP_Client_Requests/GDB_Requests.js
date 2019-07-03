@@ -23,6 +23,10 @@ function getTox(pattern) {
       url = TBOX_URLs.WADL;
       break;
     }
+    case "ISO22400_2": {
+      url = TBOX_URLs.ISO22400_2;
+      break;
+    }
     default: {
       // no default statements
       break;
@@ -203,5 +207,6 @@ var TBOX_URLs = {
   VDI2206: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/VDI%202206/VDI2206.owl",
   ISA88: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/ISA%2088/ISA88.owl",
   DINEN61360: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/DIN%20EN%2061360/DINEN61360.owl",
-  WADL: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/WADL/WADL.owl"
+  WADL: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/WADL/WADL.owl",
+  ISO22400_2: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/ISO%2022400-2/ISO22400-2.owl"
 };
