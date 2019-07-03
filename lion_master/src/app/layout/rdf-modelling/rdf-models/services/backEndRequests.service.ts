@@ -17,7 +17,7 @@ export class BackEndRequestsService {
   }
 
   loadTBoxes(repositoryName, TBox) {
-
+    
     var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'none',
@@ -26,9 +26,12 @@ export class BackEndRequestsService {
     };
     var request = this.url + `/repositories/buildTBox?pattern=${TBox}&repositoryName=${repositoryName}`
     console.log(request, httpOptions);
+
+    this.loadingScreenService.startLoading();
+
     var dbObservale = new Observable((observer) => {
       this.http.get(request, httpOptions).subscribe((data: any) => {
-
+        this.loadingScreenService.stopLoading();
         console.log(data)
         observer.next(data)
         observer.complete()
