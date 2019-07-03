@@ -4,6 +4,7 @@ import { NgbCarouselModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModellingContainerComponent } from './modelling-container.component';
 import { ModellingContainerRoutingModule } from './modelling-container-routing.module'
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 // rdf model components
 import { DashboardComponent } from './modelling-components/dashboard/dashboard.component';
@@ -28,7 +29,8 @@ import { ChartsModule as Ng2Charts } from 'ng2-charts';
     FormsModule,
     Ng2Charts,
     NgbCarouselModule, 
-    NgbAlertModule
+    NgbAlertModule,
+    ReactiveFormsModule
   ],
   declarations: [
     ModellingContainerComponent,
