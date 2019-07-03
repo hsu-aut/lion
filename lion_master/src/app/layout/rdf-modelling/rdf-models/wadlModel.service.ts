@@ -2,642 +2,1212 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
+import { DownloadService } from '../rdf-models/services/download.service';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { keyframes } from '@angular/animations';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class WadlModelService {
+
   wadlData = new WADLDATA();
   wadlInsert = new WADLINSERT();
 
-  private LIST_OF_METHODS = [];
-  private TABLE_OF_RESOURCES = [];
+  public TABLE_BASE_RESOURCES: Array<Object> = [];
+  public TABLE_SERVICES: Array<Object> = [];
+  public TABLE_OF_REQUEST_PARAMETERS: Array<Object> = [];
+
+  public LIST_BASE_RESOURCES: Array<string> = [];
+  public LIST_SERVICES: Array<string> = [];
+  public LIST_OF_METHODS: Array<string> = [];
+  public LIST_OF_PARAMETER_TYPES: Array<string> = [];
+  public LIST_OF_RESPONSE_CODES: Array<string> = [];
+  public LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE: Array<string> = [];
 
   constructor(
     private query: SparqlQueriesService,
     private nameService: PrefixesService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private downloadService: DownloadService
   ) {
     this.initializeWADL();
   }
 
   public initializeWADL() {
+
+    this.loadTABLE_BASE_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.TABLE_BASE_RESOURCES = data;
+    });
+    this.loadTABLE_SERVICES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.TABLE_SERVICES = data;
+    });
+    this.loadLIST_BASE_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_BASE_RESOURCES = data;
+    });
+    this.loadLIST_SERVICES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_SERVICES = data;
+    });
     this.loadLIST_OF_METHODS().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
-      for (let x in data) {
-        this.LIST_OF_METHODS[x] = this.nameService.parseToName(data[x]);
-      }
+      this.LIST_OF_METHODS = data;
     });
-
-    this.loadTABLE_OF_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+    this.loadLIST_OF_PARAMETER_TYPES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
-      for (let x = 0; x < data.length; x++) {
-        data[x].Method = this.nameService.parseToName(data[x].Method);
-       
-      }
-      this.TABLE_OF_RESOURCES = data;
+      this.LIST_OF_PARAMETER_TYPES = data;
+    });
+    this.loadLIST_OF_RESPONSE_CODES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_OF_RESPONSE_CODES = data;
     });
   }
 
   // loader
-
+  public loadTABLE_BASE_RESOURCES() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.wadlData.SELECT_TABLE_BASE_RESOURCES);
+  }
+  public loadTABLE_SERVICES() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.wadlData.SELECT_TABLE_SERVICES);
+  }
+  public loadLIST_BASE_RESOURCES() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.wadlData.SELECT_TABLE_BASE_RESOURCES, 0);
+  }
+  public loadLIST_SERVICES() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.wadlData.SELECT_TABLE_SERVICES, 1);
+  }
   public loadLIST_OF_METHODS() {
     this.loadingScreenService.startLoading();
     return this.query.selectList(this.wadlData.SELECT_LIST_OF_METHODS, 0);
   }
-
-  public loadTABLE_OF_RESOURCES() {
+  public loadLIST_OF_PARAMETER_TYPES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_RESOURCES);
+    return this.query.selectList(this.wadlData.SELECT_LIST_OF_PARAMETER_TYPES, 0);
   }
+  public loadLIST_OF_RESPONSE_CODES() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.wadlData.SELECT_LIST_OF_RESPONSE_CODES, 0);
+  }
+  public loadLIST_OF_SERVICES_BY_BASE(BASE_IRI) {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.wadlData.SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI), 0);
+  }
+  public loadTABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI) {
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI));
+  }
+  public loadTABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI) {
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI));
+  }
+  public loadTABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
+  }
+  public loadLIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity) {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
+  }
+  public loadLIST_INDIVIDUALS_BY_CLASS(classIRI) {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.wadlData.SELECT_LIST_INDIVIDUALS_BY_CLASS(classIRI), 0);
+  }
+  // setter 
+  public setTABLE_BASE_RESOURCES(table) { this.TABLE_BASE_RESOURCES = table; }
+  public setTABLE_SERVICES(table) { this.TABLE_SERVICES = table; }
+  public setLIST_BASE_RESOURCES(list) { this.LIST_BASE_RESOURCES = list; }
+  public setLIST_SERVICES(list) { this.LIST_SERVICES = list; }
 
-  public reloadTABLE_OF_RESOURCES() {
-    this.loadTABLE_OF_RESOURCES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_OF_RESOURCES = data;
-      for (let x = 0; x < data.length; x++) {
-        this.TABLE_OF_RESOURCES[x].Method = this.nameService.parseToName(this.TABLE_OF_RESOURCES[x].Method);
+
+  // getter
+  public getTABLE_BASE_RESOURCES() { return this.TABLE_BASE_RESOURCES; }
+  public getTABLE_SERVICES() { return this.TABLE_SERVICES; }
+  public getLIST_BASE_RESOURCES() { return this.LIST_BASE_RESOURCES; }
+  public getLIST_SERVICES() { return this.LIST_SERVICES; }
+  public getLIST_OF_METHODS() { return this.LIST_OF_METHODS }
+  public getLIST_OF_PARAMETER_TYPES() { return this.LIST_OF_PARAMETER_TYPES }
+  public getLIST_OF_RESPONSE_CODES() { return this.LIST_OF_RESPONSE_CODES }
+
+  public modifyBaseResource(variables: WADLVARIABLES, action: string) {
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    switch (action) {
+      case "add": {
+        console.log("i was executed")
+        console.log(this.wadlInsert.createBaseResource(variables, activeGraph))
+        return this.query.insert(this.wadlInsert.createBaseResource(variables, activeGraph));
       }
-    });
-    return this.TABLE_OF_RESOURCES;
-  }
-
-  public loadASK_METHOD_EXISTS(graph: mandInfos) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    this.loadingScreenService.startLoading();
-    return this.query.select(this.wadlData.ASK_METHOD_EXISTS(activeNamespace, graph));
-  }
-
-  public loadTABLE_OF_PARAMETERS(parameterType: string, graph: mandInfos){
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    this.loadingScreenService.startLoading();
-    if(parameterType === 'all'){
-      return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_ALL_PARAMETERS(activeNamespace, graph));
-    }
-    if(parameterType === 'header'){
-      return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_HEADER_PARAMETERS(activeNamespace, graph));
-    }
-    if(parameterType === 'query'){
-      return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_QUERY_PARAMETERS(activeNamespace, graph));
+      case "delete": {
+        return this.query.insert(this.wadlInsert.deleteBaseResource(variables));
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.wadlInsert.createBaseResource(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.downloadService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
     }
 
   }
 
-  public setTABLE_OF_RESOURCES(table){
-    this.TABLE_OF_RESOURCES = table;
-  };
-
-
-  public getLIST_OF_METHODS() {
-    return this.LIST_OF_METHODS;
-  }
-
-  public getTABLE_OF_RESOURCES() {
-    return this.TABLE_OF_RESOURCES;
-  }
-
-  public insertCreateEntity(graph: mandInfos) {
-    this.loadingScreenService.startLoading();
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
+  public modifyService(variables: WADLVARIABLES, action: string) {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.query.insert(this.wadlInsert.createEntity(activeGraph, activeNamespace, graph));
-  }
 
-  public buildCreateEntity(graph: mandInfos) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.wadlInsert.createEntity(activeGraph, activeNamespace, graph);
-  }
-
-  public insertCreateEntityWithModel(graph: mandInfos, modelIri: String) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.query.insert(this.wadlInsert.createEntityWithModel(activeGraph, activeNamespace, graph, modelIri));
-  }
-
-  public buildCreateEntityWithModel(graph: mandInfos, modelIri: String) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.wadlInsert.createEntityWithModel(activeGraph, activeNamespace, graph, modelIri);
-  }
-
-  public insertCreateQueryParameter(graph: mandInfos, paramInfo: parameterInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.query.insert(this.wadlInsert.createQueryParameter(activeGraph, activeNamespace, graph, paramInfo));
-  }
-
-  public buildCreateQueryParameter(graph: mandInfos, paramInfo: parameterInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.wadlInsert.createQueryParameter(activeGraph, activeNamespace, graph, paramInfo);
-  }
-
-  public insertCreateHeaderParameter(graph: mandInfos, headerInfo: headerInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.query.insert(this.wadlInsert.createHeaderParameter(activeGraph, activeNamespace, graph, headerInfo));
-  }
-  public buildCreateHeaderParameter(graph: mandInfos, headerInfo: headerInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-    return this.wadlInsert.createHeaderParameter(activeGraph, activeNamespace, graph, headerInfo);
-  }
-
-
-  public deleteServiceProvider(baseUrl: string, serviceProvider: string) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    if (serviceProvider.search("http://") != -1) {
-      serviceProvider = serviceProvider;
-    } else if (serviceProvider.search(":") != -1) {
-      serviceProvider = this.nameService.parseToIRI(serviceProvider);
-    } else {
-      serviceProvider = activeNamespace + serviceProvider;
+    switch (action) {
+      case "add": {
+        console.log("i was executed")
+        console.log(this.wadlInsert.createService(variables, activeGraph))
+        return this.query.insert(this.wadlInsert.createService(variables, activeGraph));
+      }
+      case "delete": {
+        return this.query.insert(this.wadlInsert.deleteService(variables));
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.wadlInsert.createService(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.downloadService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
     }
-    baseUrl = activeNamespace + baseUrl;
-    return this.query.insert(this.wadlInsert.deleteServiceProvider(baseUrl, serviceProvider));
   }
+  public modifyRequest(variables: WADLVARIABLES, action: string) {
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-  public deleteQueryParameter(graph: mandInfos, paramInfo: parameterInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    return this.query.insert(this.wadlInsert.deleteQueryParameter(activeNamespace, graph, paramInfo));
-  };
-
-  public deleteQueryOptionValue(graph: mandInfos, paramInfo: parameterInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    return this.query.insert(this.wadlInsert.deleteQueryOptionValue(activeNamespace, graph, paramInfo));
+    switch (action) {
+      case "add": {
+        return this.query.insert(this.wadlInsert.createRequest(variables, activeGraph));
+      }
+      case "delete": {
+        return this.query.insert(this.wadlInsert.deleteRequest(variables));
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.wadlInsert.createRequest(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.downloadService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
+    }
   }
+  public modifyResponse(variables: WADLVARIABLES, action: string) {
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-  public deleteQueryParameterType(graph: mandInfos, paramInfo: parameterInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    return this.query.insert(this.wadlInsert.deleteQueryParameterType(activeNamespace, graph, paramInfo));
+    switch (action) {
+      case "add": {
+        return this.query.insert(this.wadlInsert.createResponse(variables, activeGraph));
+      }
+      case "delete": {
+        return this.query.insert(this.wadlInsert.deleteResponse(variables));
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.wadlInsert.createResponse(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.downloadService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
+    }
   }
-
-  public deleteHeaderParameter(graph: mandInfos, headerInfo: headerInfo) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    return this.query.insert(this.wadlInsert.deleteHeaderParameter(activeNamespace, graph, headerInfo));
+  public deleteOption(variables: WADLVARIABLES) {
+    return this.query.insert(this.wadlInsert.deleteOption(variables));
   }
-
+  public deleteParameter(variables: WADLVARIABLES) {
+    return this.query.insert(this.wadlInsert.deleteParameter(variables));
+  }
 }
 
-export class mandInfos {
-  baseUrl: string;
-  resourceName: string;
-  method: string;
-}
-export class parameterInfo {
-  paramName: string;
-  paramType: string;
-  optionValue: string;
-}
-
-export class headerInfo {
-  key: string;
-  mediaType: string;
-}
-
-export class WADLVARIABLES {
-  mandatoryInformations: mandInfos;
-  parameterInfo: parameterInfo;
-  headerInformations: headerInfo;
-}
 
 
 
 export class WADLDATA {
-  // Temporär -> Sollte in den eigenen Modellen hinterlegt sein
-  /*
-  public getTechnicalResources = `
-PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?TechnicalResource WHERE { 
-?TechnicalResource a VDI3682:TechnicalResource.
-}
-`;*/
-
-  public getStructureElements = `
-  PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-  SELECT DISTINCT ?Element ?EntityType WHERE { 
-      ?Element a ?EntityType.
-      VALUES ?EntityType { VDI2206:FunctionalUnit VDI2206:System VDI2206:BasicSystem VDI2206:Module VDI2206:Energy VDI2206:Information VDI2206:Product VDI2206:Actuator VDI2206:Sensor  VDI2206:Component}.
-  }
-  
-`;
 
 
-  public ASK_METHOD_EXISTS(activeNamespace: String, graph: mandInfos) {
-    var returnString = `    
-PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  public SELECT_TABLE_BASE_RESOURCES = `
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  SELECT ?baseResource ?basePath ?serviceProvider WHERE 
+	{ 
+     	?baseResource rdf:type wadl:Resources; 
+      a owl:NamedIndividual;
+      wadl:hasBase ?basePath;
+      wadl:RestResourcesAreProvidedByEntity ?serviceProvider.
+						         
+  } 
+  `
 
-ASK {
-        <${activeNamespace}${graph.baseUrl}${graph.resourceName}> wadl:hasMethod ?Method.
-        ?Method rdf:type ?MethodType.
-        FILTER(?MethodType = wadl:${graph.method})
-    }`;
-    return returnString;
-  };
+  public SELECT_TABLE_SERVICES = `
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  SELECT ?baseResource ?service ?basePath ?servicePath WHERE 
+	{ 
+    ?baseResource wadl:hasResource ?service;
+                  wadl:hasBase ?basePath.
+        
+    ?service rdf:type wadl:Resource; 
+    a owl:NamedIndividual;
+    wadl:hasPath ?servicePath. 			         
+  }`;
 
   public SELECT_LIST_OF_METHODS = `
-PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-SELECT DISTINCT ?availableMethods
-WHERE { 
-  ?availableMethods sesame:directSubClassOf wadl:Method. 
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  SELECT DISTINCT ?methods
+  WHERE { 
+    ?methods sesame:directSubClassOf wadl:Method. 
+  }`;
+
+  public SELECT_LIST_OF_RESPONSE_CODES = `
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  SELECT DISTINCT ?methods
+  WHERE { 
+    ?methods sesame:directSubClassOf wadl:Response. 
+  }`;
+
+  public SELECT_LIST_OF_PARAMETER_TYPES = `
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  SELECT DISTINCT ?parameter
+  WHERE { 
+    ?parameter sesame:directSubClassOf wadl:Parameter. 
+  }`;
+
+  public SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI) {
+
+    let selectString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT ?service WHERE 
+    { 
+      <${BASE_IRI}> wadl:hasResource ?service.
+      ?service rdf:type wadl:Resource. 			         
+    }`
+    return selectString;
+  }
+
+  public SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI) {
+
+    let selectString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    
+    SELECT DISTINCT ?parameter ?parameterKey ?dataType ?optionValue WHERE {
+      BIND(<${serviceIRI}> AS ?service).
+      BIND(<${methodIRI}> AS ?Method).
+      BIND(<${parameterTypeIRI}> AS ?Parameter).
+
+
+      ?service wadl:hasMethod ?method.  
+    
+      ?method rdf:type ?Method; 
+       	a owl:NamedIndividual;
+ 		    wadl:hasRequest ?request. 
+  
+      ?request rdf:type wadl:Request; 
+       	a owl:NamedIndividual;
+  	    wadl:hasParameter ?parameter.
+        
+      ?parameter rdf:type ?Parameter;
+        a owl:NamedIndividual; 
+        wadl:hasParameterName ?parameterKey.
+    
+        OPTIONAL {?parameter  wadl:hasParameterType ?nonOntologicalDataType.}
+        OPTIONAL {?parameter  wadl:hasOntologicalParameterType ?ontologicalDataTypeABox.}
+        OPTIONAL {?parameter  rdf:type ?ontologicalDataTypeTBox. MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
+        FILTER(STRSTARTS(STR(?ontologicalDataTypeTBox), "http://www.hsu-ifa.de"))
+        }
+        {BIND(IF(STRLEN(?nonOntologicalDataType) > 0 ,?nonOntologicalDataType,BNODE()) AS ?dataType).}UNION
+        {BIND(IF(BOUND(?ontologicalDataTypeABox),?ontologicalDataTypeABox,BNODE()) AS ?dataType).}UNION
+        {BIND(IF(BOUND(?ontologicalDataTypeTBox),?ontologicalDataTypeTBox,BNODE()) AS ?dataType).}
+        FILTER(!ISBLANK(?dataType))
+
+      OPTIONAL{
+        ?parameter wadl:hasParameterOption ?option.
+        ?option rdf:type wadl:Option;
+        a owl:NamedIndividual;
+        wadl:hasOptionValue ?optionValue.}
+      } `
+    return selectString;
+  }
+
+  public SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI) {
+    let selectString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT DISTINCT ?bodyRepresentation ?bodyMediaType ?bodyParameterKey ?bodyDataType ?bodyOptionValue WHERE {
+    BIND(<${serviceIRI}> AS ?service).
+    BIND(<${methodIRI}> AS ?Method).
+
+    ?service wadl:hasMethod ?method.  
+    
+    ?method rdf:type ?Method; 
+     	a owl:NamedIndividual;
+ 	    wadl:hasRequest ?request. 
+  
+    ?request rdf:type wadl:Request; 
+     	a owl:NamedIndividual;
+  	  wadl:hasRepresentation ?bodyRepresentation.
+        
+    ?bodyRepresentation rdf:type wadl:Representation;
+      a owl:NamedIndividual;
+      wadl:hasMediaType ?bodyMediaType;
+      wadl:hasParameter ?bodyRepresentationParameter.
+     
+    ?bodyRepresentationParameter rdf:type wadl:Parameter;
+      a owl:NamedIndividual;
+      wadl:hasParameterName ?bodyParameterKey.
+
+      OPTIONAL {?bodyRepresentationParameter  wadl:hasParameterType ?nonOntologicalDataType.}
+      OPTIONAL {?bodyRepresentationParameter  wadl:hasOntologicalParameterType ?ontologicalDataTypeABox.}
+      OPTIONAL {?bodyRepresentationParameter  rdf:type ?ontologicalDataTypeTBox. MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
+      FILTER(STRSTARTS(STR(?ontologicalDataTypeTBox), "http://www.hsu-ifa.de"))
+      }
+      {BIND(IF(STRLEN(?nonOntologicalDataType) > 0 ,?nonOntologicalDataType,BNODE()) AS ?bodyDataType).}UNION
+      {BIND(IF(BOUND(?ontologicalDataTypeABox),?ontologicalDataTypeABox,BNODE()) AS ?bodyDataType).}UNION
+      {BIND(IF(BOUND(?ontologicalDataTypeTBox),?ontologicalDataTypeTBox,BNODE()) AS ?bodyDataType).}
+      FILTER(!ISBLANK(?bodyDataType))
+
+    OPTIONAL {
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+        ?bodyRepresentationParameterOption rdf:type wadl:Option;
+        a owl:NamedIndividual;
+        wadl:hasOptionValue ?bodyOptionValue.
+    }} `
+    return selectString;
+  }
+  public SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
+    let selectString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT DISTINCT ?bodyRepresentation ?bodyMediaType ?bodyParameterKey ?bodyDataType ?bodyOptionValue WHERE {
+    BIND(<${serviceIRI}> AS ?service).
+    BIND(<${methodIRI}> AS ?Method).
+
+    ?service wadl:hasMethod ?method.  
+    
+    ?method rdf:type ?Method; 
+     	a owl:NamedIndividual;
+ 	    wadl:hasResponse ?response. 
+  
+    ?response rdf:type wadl:Response; 
+     	a owl:NamedIndividual;
+  	  wadl:hasRepresentation ?bodyRepresentation.
+        
+    ?bodyRepresentation rdf:type wadl:Representation;
+      a owl:NamedIndividual;
+      wadl:hasMediaType ?bodyMediaType;
+      wadl:hasParameter ?bodyRepresentationParameter.
+     
+    ?bodyRepresentationParameter rdf:type wadl:Parameter;
+      a owl:NamedIndividual;
+      wadl:hasParameterName ?bodyParameterKey.
+
+      OPTIONAL {?bodyRepresentationParameter  wadl:hasParameterType ?nonOntologicalDataType.}
+      OPTIONAL {?bodyRepresentationParameter  wadl:hasOntologicalParameterType ?ontologicalDataTypeABox.}
+      OPTIONAL {?bodyRepresentationParameter  rdf:type ?ontologicalDataTypeTBox. MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
+      FILTER(STRSTARTS(STR(?ontologicalDataTypeTBox), "http://www.hsu-ifa.de"))
+      }
+      {BIND(IF(STRLEN(?nonOntologicalDataType) > 0 ,?nonOntologicalDataType,BNODE()) AS ?bodyDataType).}UNION
+      {BIND(IF(BOUND(?ontologicalDataTypeABox),?ontologicalDataTypeABox,BNODE()) AS ?bodyDataType).}UNION
+      {BIND(IF(BOUND(?ontologicalDataTypeTBox),?ontologicalDataTypeTBox,BNODE()) AS ?bodyDataType).}
+      FILTER(!ISBLANK(?bodyDataType))
+
+    OPTIONAL {
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+        ?bodyRepresentationParameterOption rdf:type wadl:Option;
+        a owl:NamedIndividual;
+        wadl:hasOptionValue ?bodyOptionValue.
+    }} `
+    return selectString;
+  }
+
+  public SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(Namespace) {
+    let selectString = `
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX sesame: <http://www.openrdf.org/schema/sesame#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    SELECT DISTINCT ?class
+    WHERE { 
+      ?class a owl:Class. 
+      FILTER(STRSTARTS(STR(?class), "${Namespace}"))
+    }`
+    return selectString
+  }
+
+  public SELECT_LIST_INDIVIDUALS_BY_CLASS(ClassIRI) {
+    let selectString = `
+    SELECT ?individal WHERE { 
+      ?individal a <${ClassIRI}> .
+    }`
+    return selectString
+  }
+
 }
-`;
-
-  public SELECT_TABLE_OF_RESOURCES = `
-PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT ?BaseUrl ?Resource ?Method ?ServiceProvider 
-WHERE { 
-  ?Bas wadl:hasResource ?Res.
-  ?Bas wadl:hasBase ?BaseUrl.
-  ?Res wadl:hasPath ?Resource.
-  ?Res wadl:hasMethod ?Met.
-  ?Met rdf:type ?Method.
-  FILTER(?Method = wadl:GET || ?Method = wadl:POST || ?Method = wadl:DELETE || ?Method = wadl:POST ||?Method = wadl:HEAD ||?Method = wadl:PATCH ||?Method = wadl:PUT)
-  OPTIONAL{?ServiceProvider wadl:hasService ?Bas.}    
-}`;
-
-  public SELECT_TABLE_OF_QUERY_PARAMETERS(activeNamespace: String, graph: mandInfos) {
-    var selectString = `
-      PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-      PREFIX owl: <http://www.w3.org/2002/07/owl#>
-      PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT ?Key ?Type ?OptionValue 
-  WHERE {
-      <${activeNamespace}${graph.baseUrl}${graph.resourceName}> wadl:hasMethod ?Method.
-      ?Method rdf:type ?MethodType.
-      FILTER(?MethodType = wadl:${graph.method})
-      ?Method wadl:hasRequest ?Request.    
-      ?Request wadl:hasParameter ?Parameter.
-      ?Parameter rdf:type ?ParameterType. VALUES ?ParameterType {wadl:QueryParameter}
-    ?Parameter wadl:hasParameterName ?Key.
-      Optional{?Parameter wadl:hasParameterType ?Type.}
-      Optional{?Parameter wadl:hasParameterOption ?Option.
-          Optional{?Option wadl:hasOptionValue ?OptionValue}
-      }
-  }
-  `;
-    return selectString;
-  }
-  public SELECT_TABLE_OF_HEADER_PARAMETERS(activeNamespace: String, graph: mandInfos) {
-    var selectString = `
-  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-  PREFIX owl: <http://www.w3.org/2002/07/owl#>
-  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT ?Key ?MediaType
-  WHERE {
-      <${activeNamespace}${graph.baseUrl}${graph.resourceName}> wadl:hasMethod ?Method.
-      ?Method rdf:type ?MethodType.
-      FILTER(?MethodType = wadl:${graph.method})
-      ?Method wadl:hasRequest ?Request.    
-      ?Request wadl:hasParameter ?Parameter. 
-      ?Parameter rdf:type ?ParameterType. VALUES ?ParameterType {wadl:HeaderParameter}
-      Optional{?Parameter wadl:hasParameterName ?Key.
-      Optional{?Parameter wadl:hasRepresentation ?Rep.
-      Optional{?Rep wadl:hasMediaType ?MediaType}}
-
-      }
-  }
-  `;
-    return selectString;
-  }
-  public SELECT_TABLE_OF_ALL_PARAMETERS(activeNamespace: String, graph: mandInfos) {
-    var selectString = `
-  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-  PREFIX owl: <http://www.w3.org/2002/07/owl#>
-  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-
-SELECT ?Type ?Key ?ParameterType ?OptionValue ?mediaType
-  WHERE {
-      <${activeNamespace}${graph.baseUrl}${graph.resourceName}> wadl:hasMethod ?Method.
-      ?Method rdf:type ?MethodType.
-      FILTER(?MethodType = wadl:${graph.method})
-      ?Method wadl:hasRequest ?Request.    
-      ?Request wadl:hasParameter ?Parameter.
-      ?Parameter rdf:type ?Type. VALUES ?Type {wadl:QueryParameter wadl:HeaderParameter wadl:MatrixParameter wadl:PlainParameter wadl:TemplateParameter}
-  Optional{?Parameter wadl:hasParameterName ?Key.}
-      Optional{?Parameter wadl:hasParameterType ?ParameterType.}
-      Optional{?Parameter wadl:hasParameterOption ?Option.
-          Optional{?Option wadl:hasOptionValue ?OptionValue}
-      }
-  Optional{?Parameter wadl:hasRepresentation ?rep.
-      Optional{
-          ?rep wadl:hasMediaType ?mediaType.
-      }}
-  }
-  `;
-    return selectString;
-
-  }
+export class WADLVARIABLES {
+  serviceProviderIRI: string;
+  baseResourceIRI: string;
+  baseResourcePath: string;
+  serviceIRI: string;
+  servicePath: string;
+  methodTypeIRI: string;
+  methodIRI: string;
+  requestIRI: string;
+  parameterTypeIRI: string;
+  parameterIRI: string;
+  parameterKey: string;
+  parameterDataType: string;
+  parameterDataTypeABox: string;
+  parameterDataTypeTBox: string;
+  optionIRI: string;
+  optionValue: string;
+  bodyRepresentationIRI: string;
+  bodyRepresentationMediaType: string;
+  bodyRepresentationParameterIRI: string;
+  bodyRepresentationParameterKey: string;
+  bodyRepresentationParameterDataType: string;
+  bodyRepresentationParameterDataTypeOntologicalABox: string;
+  bodyRepresentationParameterDataTypeOntologicalTBox: string;
+  bodyRepresentationParameterOptionIRI: string;
+  bodyRepresentationParameterOptionValue: string;
+  responseIRI: string;
+  responseTypeIRI: string;
 
 }
 
 
 export class WADLINSERT {
-  public createEntity(activeGraph, activeNamespace: String, graph: mandInfos) {
+
+
+  public createBaseResource(variables: WADLVARIABLES, activeGraph: string) {
+
     var insertString = `
-          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-          PREFIX owl: <http://www.w3.org/2002/07/owl#>
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-          PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-          INSERT { GRAPH <${activeGraph}> {
-              ?resources rdf:type wadl:Resources; 
-              a owl:NamedIndividual;
-              wadl:hasBase "${graph.baseUrl}"^^xsd:anyURI.
-              
-              ?resource rdf:type wadl:Resource; 
-              a owl:NamedIndividual; 
-              wadl:hasPath ?path. 
-              
-              ?method rdf:type wadl:${graph.method};
-              a owl:NamedIndividual.
-              
-              ?resources wadl:hasResource ?resource.
-              ?resource wadl:hasMethod ?method.}
-                       
-                  } WHERE {
-                       BIND(STR("${activeNamespace}") AS ?Namespace).
-                          BIND(STR("${graph.baseUrl}") AS ?resources_name).
-                          BIND(IRI(CONCAT(?Namespace, ?resources_name)) AS ?resources).
-                          BIND(STR(?resources_name) AS ?base).
-              
-                          BIND(STR("${graph.resourceName}") AS ?resource_name).
-                            BIND(IRI(CONCAT(?Namespace, CONCAT(?resources_name, ?resource_name))) AS ?resource).
-                           BIND(?resource_name AS ?path).
-              
-                          BIND(STR(CONCAT(?resources_name, ?resource_name, "_${graph.method}" )) AS ?method_name).
-                          BIND(IRI(CONCAT(?Namespace, ?method_name)) AS ?method).
-              
-                  }
-          `;
-    return insertString;
-  };
-
-  public createEntityWithModel(activeGraph, activeNamespace: String, graph: mandInfos, modelIri: String) {
-    var insertString = `
-                  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-                  PREFIX owl: <http://www.w3.org/2002/07/owl#>
-                  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-                  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-                  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-                  INSERT { GRAPH <${activeGraph}> {
-                      <${modelIri}> wadl:hasService ?resources.
-                      
-                      ?resources rdf:type wadl:Resources; 
-                      a owl:NamedIndividual;
-                      wadl:hasBase "${graph.baseUrl}"^^xsd:anyURI.
-                      
-                      ?resource rdf:type wadl:Resource; 
-                      a owl:NamedIndividual; 
-                      wadl:hasPath ?path. 
-                      
-                      ?method rdf:type wadl:${graph.method};
-                      a owl:NamedIndividual.
-                      
-                      ?resources wadl:hasResource ?resource.
-                      ?resource wadl:hasMethod ?method.}
-                               
-                          } WHERE {
-                               BIND(STR("${activeNamespace}") AS ?Namespace).
-                                  BIND(STR("${graph.baseUrl}") AS ?resources_name).
-                                  BIND(IRI(CONCAT(?Namespace, ?resources_name)) AS ?resources).
-                                  BIND(STR(?resources_name) AS ?base).
-                      
-                                  BIND(STR("${graph.resourceName}") AS ?resource_name).
-                                    BIND(IRI(CONCAT(?Namespace, CONCAT(?resources_name, ?resource_name))) AS ?resource).
-                                   BIND(?resource_name AS ?path).
-                      
-                                  BIND(STR(CONCAT(?resources_name, ?resource_name, "_${graph.method}" )) AS ?method_name).
-                                  BIND(IRI(CONCAT(?Namespace, ?method_name)) AS ?method).
-                      
-                          }
-                  `;
-    return insertString;
-  };
-
-  public createQueryParameter(activeGraph, activeNamespace: String, graph: mandInfos, paramInfo: parameterInfo) {
-    var insertString = `
-          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-          PREFIX owl: <http://www.w3.org/2002/07/owl#>
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-          PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-          INSERT { GRAPH <${activeGraph}> {
-              ?method rdf:type wadl:${graph.method};
-              a owl:NamedIndividual.
-  
-              ?request rdf:type wadl:Request; 
-              a owl:NamedIndividual. 
-  
-              ?parameter rdf:type wadl:QueryParameter;
-              a owl:NamedIndividual; 
-              wadl:hasParameterName "${paramInfo.paramName}"^^xsd:NMTOKEN;
-              wadl:hasParameterType ?parameter_type.
-
-              ?option rdf:type wadl:Option;
-              a owl:NamedIndividual;
-              wadl:hasOptionValue ?option_value.
-              
-              ?method wadl:hasRequest ?request. 
-              ?request wadl:hasParameter ?parameter.
-              ?parameter wadl:hasParameterOption ?option.}
-
-                  } WHERE {
-                          BIND(STR("${activeNamespace}") AS ?Namespace).
-              
-                          BIND(STR(CONCAT("${graph.baseUrl}", "${graph.resourceName}", "_${graph.method}")) AS ?method_name).
-                          BIND(IRI(CONCAT(?Namespace, ?method_name)) AS ?method).
-
-                          BIND(STR(CONCAT(?method_name, "_Req")) AS ?request_name).
-                          BIND(IRI(CONCAT(?Namespace, ?request_name)) AS ?request).
-
-                          BIND(STR("${paramInfo.paramType}") AS ?parameter_type).
-                          BIND(STR("${paramInfo.paramName}") AS ?parameter_name).
-                          BIND(IRI(CONCAT(?Namespace, ?request_name, "_", ?parameter_name)) AS ?parameter).
-
-                          BIND(STR(CONCAT(?request_name, "_", ?parameter_name, "_Option")) AS ?option_name).
-                          BIND(IRI(CONCAT(?Namespace, ?option_name)) AS ?option).
-
-                          BIND(STR("${paramInfo.optionValue}") as ?option_value)
-              
-                  }
-          `;
-    return insertString;
-  };
-
-  public createHeaderParameter(activeGraph, activeNamespace: String, graph: mandInfos, headerInfo: headerInfo) {
-    var insertString = `
-          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-          PREFIX owl: <http://www.w3.org/2002/07/owl#>
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-          PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-          INSERT { GRAPH <${activeGraph}> {
-              ?method rdf:type wadl:${graph.method};
-              a owl:NamedIndividual.
-  
-              ?request rdf:type wadl:Request; 
-              a owl:NamedIndividual. 
-  
-              ?parameter rdf:type wadl:HeaderParameter;
-              a owl:NamedIndividual;
-              wadl:hasParameterName "${headerInfo.key}"^^xsd:NMTOKEN.
-
-              ?representation rdf:type wadl:Representation;
-              a owl:NamedIndividual;
-              wadl:hasMediaType "${headerInfo.mediaType}"^^rdfs:Literal.
-              
-              ?method wadl:hasRequest ?request. 
-              ?request wadl:hasParameter ?parameter.
-              ?parameter wadl:hasRepresentation ?representation.}
-
-                  } WHERE {
-                          BIND(STR("${activeNamespace}") AS ?Namespace).
-              
-                          BIND(STR(CONCAT("${graph.baseUrl}", "${graph.resourceName}", "_${graph.method}")) AS ?method_name).
-                          BIND(IRI(CONCAT(?Namespace, ?method_name)) AS ?method).
-
-                          BIND(STR(CONCAT(?method_name, "_Req")) AS ?request_name).
-                          BIND(IRI(CONCAT(?Namespace, ?request_name)) AS ?request).
-
-                          BIND(STR(CONCAT(?request_name, "_Head_${headerInfo.key}")) AS ?parameter_name).
-                          BIND(IRI(CONCAT(?Namespace, ?parameter_name)) AS ?parameter).
-
-                          BIND(STR(CONCAT(?parameter_name, "_Rep")) AS ?representation_name).
-                          BIND(IRI(CONCAT(?Namespace, ?representation_name)) AS ?representation).                
-                  }
-          `;
-    return insertString;
-  };
-
-  public deleteServiceProvider(baseUrl: String, serviceProvider: String) {
-    var deleteString = `			
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-          DELETE WHERE {
-          <${serviceProvider}> wadl:hasService <${baseUrl}>.
-          }
-      `;
-    return deleteString;
-  }
-
-  public deleteQueryParameter(activeNamespace: String, graph: mandInfos, paramInfo: parameterInfo) {
-    var deleteString = `
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-          PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-          PREFIX owl: <http://www.w3.org/2002/07/owl#>
-          PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-          
-          DELETE WHERE {
-                  <${activeNamespace}${graph.baseUrl}${graph.resourceName}_${graph.method}_Req_${paramInfo.paramName}> rdf:type wadl:QueryParameter;
-                          a owl:NamedIndividual;
-                          wadl:hasParameterName ?name;
-                          wadl:hasParameterType ?type;
-                          wadl:hasParameterOption ?option.
-                          ?option rdf:type wadl:Option;
-                          a owl:NamedIndividual;
-                          wadl:hasOptionValue ?value.
-                      };
-          
-          DELETE WHERE {
-              <${activeNamespace}${graph.baseUrl}${graph.resourceName}_${graph.method}_Req_${paramInfo.paramName}> rdf:type wadl:QueryParameter;
-                          a owl:NamedIndividual;
-                          wadl:hasParameterName ?name;
-                          wadl:hasParameterOption ?option.
-                          ?option rdf:type wadl:Option;
-                          a owl:NamedIndividual;
-                          wadl:hasOptionValue ?value.
-                      };
-          DELETE WHERE {
-              <${activeNamespace}${graph.baseUrl}${graph.resourceName}_${graph.method}_Req_${paramInfo.paramName}> rdf:type wadl:QueryParameter;
-                          a owl:NamedIndividual;
-                          wadl:hasParameterName ?name;
-                          wadl:hasParameterOption ?option.
-                          ?option rdf:type wadl:Option;
-                          a owl:NamedIndividual;
-                      };
-          `;
-
-    return deleteString;
-  };
-
-  public deleteQueryOptionValue(activeNamespace: String, graph: mandInfos, paramInfo: parameterInfo) {
-    var deleteString = `
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-
-          DELETE WHERE { 
-               <${activeNamespace}${graph.baseUrl}${graph.resourceName}_${graph.method}_Req_${paramInfo.paramName}_Option> wadl:hasOptionValue "${paramInfo.optionValue}";
-          }
-          `;
-    console.log(deleteString);
-    return deleteString;
-  };
-
-  public deleteQueryParameterType(activeNamespace: String, graph: mandInfos, paramInfo: parameterInfo) {
-    var deleteString = `
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-          DELETE WHERE { 
-               <${activeNamespace}${graph.baseUrl}${graph.resourceName}_${graph.method}_Req_${paramInfo.paramName}> wadl:hasParameterType "${paramInfo.paramType}";
-          }
-          `;
-
-    return deleteString;
-  };
-
-  public deleteHeaderParameter(activeNamespace: String, graph: mandInfos, headerInfo: headerInfo) {
-    var deleteString = `
-          PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-
-          DELETE WHERE {
-              <${activeNamespace}${graph.baseUrl}${graph.resourceName}_${graph.method}_Req_Head_${headerInfo.key}> rdf:type wadl:HeaderParameter;
-              a owl:NamedIndividual;
-              wadl:hasParameterName "${headerInfo.key}"^^xsd:NMTOKEN;
-          wadl:hasRepresentation ?rep.
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  INSERT 
+	{ GRAPH <${activeGraph}> {
         
-        ?rep rdf:type wadl:Representation;
-           a owl:NamedIndividual;
-              wadl:hasMediaType "${headerInfo.mediaType}"^^rdfs:Literal.
-    }
-          `;
-    return deleteString;
+     	?baseResource rdf:type wadl:Resources; 
+      a owl:NamedIndividual;
+      wadl:hasBase "${variables.baseResourcePath}"^^xsd:anyURI;
+      wadl:RestResourcesAreProvidedByEntity ?serviceProvider.
+		
+  }          
+  } WHERE {
+    BIND(<${variables.baseResourceIRI}> AS ?baseResource).
+    BIND(<${variables.serviceProviderIRI}> AS ?serviceProvider). 
   }
+  `
+    return insertString
+  }
+
+  public createService(variables: WADLVARIABLES, activeGraph: string) {
+    var insertString = `
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  INSERT 
+	{ GRAPH <${activeGraph}> {
+        
+     	  ?baseResource wadl:hasResource ?service.
+        
+        ?service rdf:type wadl:Resource; 
+        a owl:NamedIndividual;
+        wadl:hasPath "${variables.servicePath}"^^xsd:string. 
+  }          
+  } WHERE {
+    BIND(<${variables.baseResourceIRI}> AS ?baseResource).
+    BIND(<${variables.serviceIRI}> AS ?service).
+  }
+  `
+    return insertString
+  }
+
+  public createRequest(variables: WADLVARIABLES, activeGraph: string) {
+
+    var optionals = {
+      parameter: `        
+      BIND(<${variables.parameterIRI}> AS ?parameter).
+      BIND(<${variables.parameterTypeIRI}> AS ?parameterType)
+      `,
+      parameterOption: `BIND(<${variables.optionIRI}> AS ?option).`,
+      representation: `        
+      BIND(<${variables.bodyRepresentationIRI}> AS ?bodyRepresentation).
+      BIND(<${variables.bodyRepresentationParameterIRI}> AS ?bodyRepresentationParameter).`,
+      representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`,
+      parameterDataTypeNonOntological: `?parameter wadl:hasParameterType "${variables.parameterDataType}"^^xsd:string.`,
+      parameterDataTypeOntologicalABox: `?parameter wadl:hasOntologicalParameterType <${variables.parameterDataTypeABox}>.`,
+      parameterDataTypeOntologicalTBox: `?parameter rdf:type <${variables.parameterDataTypeTBox}>.`,
+
+      bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
+      bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
+      bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`
+    }
+
+    // add a check for empties and if one is found delete the string
+    for (const i in optionals) {
+      const element = optionals[i];
+      if (element.search('undefined') != -1) { optionals[i] = "" }
+      // console.log(element);
+    }
+
+    var insertString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    
+    INSERT { GRAPH <${activeGraph}> {
+      ?service wadl:hasMethod ?method.  
+    
+      ?method rdf:type <${variables.methodTypeIRI}>; 
+       	a owl:NamedIndividual;
+ 			 	wadl:hasRequest ?request. 
+        
+      ?request rdf:type wadl:Request; 
+         a owl:NamedIndividual.
+         
+       # for parameter
+      ?request	wadl:hasParameter ?parameter.
+        
+      ?parameter rdf:type ?parameterType;
+        a owl:NamedIndividual; 
+        wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+        wadl:hasParameterOption ?option.
+        ${optionals.parameterDataTypeNonOntological}
+        ${optionals.parameterDataTypeOntologicalTBox}
+        ${optionals.parameterDataTypeOntologicalABox}
+
+      ?option rdf:type wadl:Option;
+        a owl:NamedIndividual;
+        wadl:hasOptionValue "${variables.optionValue}"^^xsd:string.
+
+        # for representation
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation rdf:type wadl:Representation;
+         a owl:NamedIndividual;
+         wadl:hasMediaType "${variables.bodyRepresentationMediaType}";
+         wadl:hasParameter ?bodyRepresentationParameter.
+     
+         ?bodyRepresentationParameter rdf:type wadl:Parameter;
+         a owl:NamedIndividual;
+         wadl:hasParameterName "${variables.bodyRepresentationParameterKey}"^^xsd:NMTOKEN;
+         wadl:hasParameterOption ?bodyRepresentationParameterOption.
+         ${optionals.bodyParameterDataTypeNonOntological}
+         ${optionals.bodyParameterDataTypeOntologicalTBox}
+         ${optionals.bodyParameterDataTypeOntologicalABox}
+
+         ?bodyRepresentationParameterOption rdf:type wadl:Option;
+         a owl:NamedIndividual;
+         wadl:hasOptionValue "${variables.bodyRepresentationParameterOptionValue}"^^xsd:string.
+        }
+
+      } WHERE {
+        BIND(<${variables.serviceIRI}> AS ?service).
+        BIND(<${variables.methodIRI}> AS ?method).
+        BIND(<${variables.requestIRI}> AS ?request).
+        ${optionals.parameter}
+        ${optionals.parameterOption}
+        ${optionals.representation} 
+        ${optionals.representationOption}    
+      }`
+    console.log(insertString)
+    return insertString
+  }
+  public createResponse(variables: WADLVARIABLES, activeGraph: string) {
+
+    var optionals = {
+      representation: `        
+      BIND(<${variables.bodyRepresentationIRI}> AS ?bodyRepresentation).
+      BIND(<${variables.bodyRepresentationParameterIRI}> AS ?bodyRepresentationParameter).`,
+      bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
+      bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
+      bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`,
+      representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`
+
+    }
+
+    // add a check for empties and if one is found delete the string
+    for (const i in optionals) {
+      const element = optionals[i];
+      if (element.search(`undefined`) != -1) { optionals[i] = "" }
+      // console.log(element);
+    }
+
+    var insertString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    
+    INSERT { GRAPH <${activeGraph}> {
+      ?service wadl:hasMethod ?method.  
+    
+      ?method rdf:type <${variables.methodTypeIRI}>; 
+       	a owl:NamedIndividual;
+ 			 	wadl:hasResponse ?response. 
+        
+      ?response rdf:type wadl:Response; 
+        rdf:type <${variables.responseTypeIRI}>; 
+        a owl:NamedIndividual.
+    
+        # for representation
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation rdf:type wadl:Representation;
+         a owl:NamedIndividual;
+         wadl:hasMediaType "${variables.bodyRepresentationMediaType}";
+         wadl:hasParameter ?bodyRepresentationParameter.
+         ${optionals.bodyParameterDataTypeNonOntological}
+         ${optionals.bodyParameterDataTypeOntologicalTBox}
+         ${optionals.bodyParameterDataTypeOntologicalABox}
+     
+        ?bodyRepresentationParameter rdf:type wadl:Parameter;
+         a owl:NamedIndividual;
+         wadl:hasParameterName "${variables.bodyRepresentationParameterKey}"^^xsd:NMTOKEN;
+         wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+     
+        ?bodyRepresentationParameterOption rdf:type wadl:Option;
+         a owl:NamedIndividual;
+         wadl:hasOptionValue "${variables.bodyRepresentationParameterOptionValue}"^^xsd:string.
+        }
+
+      } WHERE {
+        BIND(<${variables.serviceIRI}> AS ?service).
+        BIND(<${variables.methodIRI}> AS ?method).
+        BIND(<${variables.responseIRI}> AS ?response).
+        ${optionals.representation}
+        ${optionals.representationOption}       
+      }`
+    console.log(insertString)
+    return insertString
+  }
+
+  public deleteOption(variables: WADLVARIABLES) {
+
+    let deleteString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    DELETE  {
+      ?parameter wadl:hasParameterOption ?option. 
+      ?option rdf:type wadl:Option;
+          a owl:NamedIndividual.
+          ?option wadl:hasOptionValue ?optionVal.
+      
+    } WHERE {
+      ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+      wadl:hasParameterOption ?option.
+      ?option rdf:type wadl:Option;
+      a owl:NamedIndividual.
+      ?option wadl:hasOptionValue ?optionVal.
+      }
+    `;
+    console.log(deleteString)
+    return deleteString
+
+  }
+
+  public deleteParameter(variables: WADLVARIABLES) {
+
+    let deleteString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    DELETE  { 
+      ?option ?predicate ?object.
+      
+    } WHERE {
+      ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+      wadl:hasParameterOption ?option.
+      ?option ?predicate ?object.
+      };     
+
+      DELETE  { 
+        ?parameter ?predicate ?object.
+        
+      } WHERE {
+        ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+            ?predicate ?object.
+        }
+    `;
+    console.log(deleteString)
+    return deleteString
+  }
+
+  deleteBaseResource(variables: WADLVARIABLES){
+    let deleteString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    DELETE {
+
+      ?bodyRepresentationParameterOption ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+        ?bodyRepresentationParameterOption ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameter ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+
+        ?bodyRepresentationParameter ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentation ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+
+        ?bodyRepresentation ?predicate ?object.
+      };
+      DELETE {
+
+        ?option ?predicate ?object.
+    
+      } WHERE {
+    
+          <${variables.baseResourceIRI}> wadl:hasResource ?service.
+          ?service wadl:hasMethod ?method.
+          ?method wadl:hasRequest ?request.
+          ?request wadl:hasParameter ?parameter.
+          ?parameter wadl:hasParameterOption ?option.
+
+          ?option ?predicate ?object.
+        };
+    DELETE {
+
+        ?parameter ?predicate ?object.
+    
+      } WHERE {
+    
+          <${variables.baseResourceIRI}> wadl:hasResource ?service.
+          ?service wadl:hasMethod ?method.
+          ?method wadl:hasRequest ?request.
+          ?request wadl:hasParameter ?parameter.
+  
+          ?parameter ?predicate ?object.
+        };
+    DELETE {
+
+      ?request ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+
+        ?request ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameterOption ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasResponse ?response.
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+        ?bodyRepresentationParameterOption ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameter ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasResponse ?response.
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+
+        ?bodyRepresentationParameter ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentation ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.baseResourceIRI}> wadl:hasResource ?service.
+        ?service wadl:hasMethod ?method.
+        ?method wadl:hasResponse ?response.
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        
+        ?bodyRepresentation ?predicate ?object.
+      };
+    
+    DELETE {
+
+    ?response ?predicate ?object.
+
+    } WHERE {
+
+      <${variables.baseResourceIRI}> wadl:hasResource ?service.
+      ?service wadl:hasMethod ?method.
+      ?method wadl:hasResponse ?response.
+
+      ?response ?predicate ?object.
+    };
+    DELETE {
+
+      ?method ?predicate ?object.
+
+    } WHERE {
+
+      <${variables.baseResourceIRI}> wadl:hasResource ?service.
+      ?service wadl:hasMethod ?method.
+
+      ?method ?predicate ?object.
+    };
+
+    DELETE {
+
+      ?service ?predicate ?object.
+
+    } WHERE {
+
+      <${variables.baseResourceIRI}> wadl:hasResource ?service.
+
+      ?service ?predicate ?object.
+    };    
+    DELETE WHERE { 
+      <${variables.baseResourceIRI}> ?predicate ?object.
+    }
+    `
+    console.log(deleteString)
+    return deleteString
+  }
+  deleteService(variables: WADLVARIABLES){
+    let deleteString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    DELETE {
+
+      ?bodyRepresentationParameterOption ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+        ?bodyRepresentationParameterOption ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameter ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+
+        ?bodyRepresentationParameter ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentation ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+        ?request wadl:hasRepresentation ?bodyRepresentation.
+
+        ?bodyRepresentation ?predicate ?object.
+      };
+      DELETE {
+
+        ?option ?predicate ?object.
+    
+      } WHERE {
+    
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+          ?method wadl:hasRequest ?request.
+          ?request wadl:hasParameter ?parameter.
+          ?parameter wadl:hasParameterOption ?option.
+
+          ?option ?predicate ?object.
+        };
+    DELETE {
+
+        ?parameter ?predicate ?object.
+    
+      } WHERE {
+    
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+          ?method wadl:hasRequest ?request.
+          ?request wadl:hasParameter ?parameter.
+  
+          ?parameter ?predicate ?object.
+        };
+    DELETE {
+
+      ?request ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasRequest ?request.
+
+        ?request ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameterOption ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasResponse ?response.
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+        ?bodyRepresentationParameterOption ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameter ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasResponse ?response.
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+
+        ?bodyRepresentationParameter ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentation ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.serviceIRI}> wadl:hasMethod ?method.
+        ?method wadl:hasResponse ?response.
+        ?response wadl:hasRepresentation ?bodyRepresentation.
+        
+        ?bodyRepresentation ?predicate ?object.
+      };
+    
+    DELETE {
+
+    ?response ?predicate ?object.
+
+    } WHERE {
+
+      <${variables.serviceIRI}> wadl:hasMethod ?method.
+      ?method wadl:hasResponse ?response.
+
+      ?response ?predicate ?object.
+    };
+    DELETE {
+
+      ?method ?predicate ?object.
+
+    } WHERE {
+
+      <${variables.serviceIRI}> wadl:hasMethod ?method.
+
+      ?method ?predicate ?object.
+    };    
+    DELETE WHERE { 
+      <${variables.serviceIRI}> ?predicate ?object.
+    }
+    `
+    console.log(deleteString)
+    return deleteString
+  }
+  deleteRequest(variables: WADLVARIABLES){
+    let deleteString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    DELETE {
+
+      ?bodyRepresentationParameterOption ?predicate ?object.
+  
+      } WHERE {
+        <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+        ?bodyRepresentationParameterOption ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameter ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+
+        ?bodyRepresentationParameter ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentation ?predicate ?object.
+  
+      } WHERE {
+
+        <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
+
+        ?bodyRepresentation ?predicate ?object.
+      };
+      DELETE {
+
+        ?option ?predicate ?object.
+    
+      } WHERE {
+    
+        <${variables.requestIRI}> wadl:hasParameter ?parameter.
+          ?parameter wadl:hasParameterOption ?option.
+
+          ?option ?predicate ?object.
+        };
+    DELETE {
+
+        ?parameter ?predicate ?object.
+    
+      } WHERE {
+          <${variables.requestIRI}> wadl:hasParameter ?parameter.
+  
+          ?parameter ?predicate ?object.
+        };
+  
+    DELETE WHERE { 
+      <${variables.requestIRI}> ?predicate ?object.
+    }
+    `
+    console.log(deleteString)
+    return deleteString
+  }
+
+  deleteResponse(variables: WADLVARIABLES){
+    let deleteString = `
+    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    DELETE {
+
+      ?bodyRepresentationParameterOption ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+
+        ?bodyRepresentationParameterOption ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentationParameter ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
+        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+
+        ?bodyRepresentationParameter ?predicate ?object.
+      };
+    DELETE {
+
+      ?bodyRepresentation ?predicate ?object.
+  
+      } WHERE {
+  
+        <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
+        
+        ?bodyRepresentation ?predicate ?object.
+      };
+       
+    DELETE WHERE { 
+      <${variables.responseIRI}> ?predicate ?object.
+    }
+    `
+    console.log(deleteString)
+    return deleteString
+  }
+  
+  
 }
