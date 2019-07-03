@@ -102,7 +102,7 @@ export class SparqlQueriesService {
   }
 
   insert(body) {
-
+    this.loadingScreenService.startLoading();
     var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/sparql-update'
@@ -172,17 +172,20 @@ export class SparqlQueriesService {
   }
 
   setNamedGraphs() {
-
+    let GRAPHS = this.namespaceService.getGraphs();
+    let activeGraph = GRAPHS[this.namespaceService.getActiveGraph()]
     var selectString = `
     SELECT DISTINCT ?g 
     WHERE {
     GRAPH ?g { ?s ?p ?o }
     }`;
 
+    this.namespaceService.GRAPHS.splice(0)
     this.selectList(selectString, 0).subscribe((data: any) => {
       for (let i = 0; i < data.length; i++) {
         this.namespaceService.GRAPHS.push(data[i]);
       }
+      if(this.namespaceService.GRAPHS.length == 0){this.namespaceService.GRAPHS.push(activeGraph)}
     });
   }
 
