@@ -8,7 +8,7 @@ import { Namespace } from '../../utils/prefixes';
 })
 export class PrefixesService {
 
-  constructor() {}
+  constructor() { }
 
   prefixes = new Namespace;
   PREFIXES = this.prefixes.PREFIXES;
@@ -90,7 +90,26 @@ export class PrefixesService {
     return prefixString
   }
 
-  
+  addOrParseNamespace(individual) {
+    var PREFIXES = this.getPrefixes();
+    var activeNamespace = PREFIXES[this.getActiveNamespace()].namespace;
+
+    if (individual.search("http://") != -1) {
+      individual = individual;
+    } else if (individual.search(":") != -1) {
+      let newindividual = this.parseToIRI(individual);
+      if (newindividual != individual) {
+        individual = newindividual
+      } else {
+        individual = activeNamespace + individual;
+      }
+    } else {
+      individual = activeNamespace + individual;
+    }
+    return individual
+  }
+
+
   parseToName(IndividualWithPrefix: string): string {
     var PREFIXES = this.getPrefixes();
     //console.log(PREFIXES)
