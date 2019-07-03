@@ -6,12 +6,16 @@ import { EclassSearchService } from '../../../rdf-models/services/eclass-search.
 import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../../../rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { DashboardService } from '../../modelling-components/dashboard/dashboard.service';
+import { WadlModelService } from '../../../rdf-models/wadlModel.service';
+import { Iso22400_2ModelService } from '../../../rdf-models/iso22400_2Model.service';
+
 
 import { finalize } from 'rxjs/operators';
 import { take } from 'rxjs/operators';
@@ -76,7 +80,10 @@ export class ConfigurationsComponent implements OnInit {
     private DINEIN61360_Service: Dinen61360Service,
     private VDI2206_Service: Vdi2206ModelService,
     private VDI3862_Service: Vdi3682ModelService,
-    private Dashboard_Service: DashboardService
+    private Dashboard_Service: DashboardService,
+    private DataLoaderService: DataLoaderService,
+    private WadlModelService: WadlModelService,
+    private Iso22400_2ModelService: Iso22400_2ModelService
 
 
   ) {
@@ -183,7 +190,7 @@ export class ConfigurationsComponent implements OnInit {
       this.backEnd.loadTBoxes(this.query.getRepository(), "ISA88"),
       this.backEnd.loadTBoxes(this.query.getRepository(), "DINEN61360"),
       this.backEnd.loadTBoxes(this.query.getRepository(), "VDI2206"),
-
+      this.backEnd.loadTBoxes(this.query.getRepository(), "ISO22400_2"),
 
     ).pipe(
       finalize(() => this.refreshServices()) // Execute when the observable completes
@@ -206,6 +213,8 @@ export class ConfigurationsComponent implements OnInit {
       this.ISA_Service.initializeISA88();
       this.DINEIN61360_Service.initializeDINEN61360();
       this.Dashboard_Service.initializeDashboard();
+      this.WadlModelService.initializeWADL();
+      this.Iso22400_2ModelService.initializeISO22400_2();
   }
 
   getListOfRepos() {
