@@ -64,6 +64,7 @@ export class Isa88Component implements OnInit {
   executeInsert() {
     var variables = this.getVariables();
     this.modelService.insertStateMachine(variables).pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.insertreturn = data
       this.refreshISA88();
     });

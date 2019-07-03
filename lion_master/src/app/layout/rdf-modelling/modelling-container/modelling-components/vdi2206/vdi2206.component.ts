@@ -84,6 +84,7 @@ export class Vdi2206Component implements OnInit {
     var triples = this.getTriples(structureOption);
     console.log(triples);
     this.vdi2206Service.insertTripel(triples).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.setAllStructuralInfo();
       this.setStatisticInfo();
       this.selectedPredicate = undefined;

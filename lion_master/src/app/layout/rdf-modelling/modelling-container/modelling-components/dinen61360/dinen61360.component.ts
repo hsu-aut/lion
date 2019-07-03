@@ -174,6 +174,7 @@ export class Dinen61360Component implements OnInit {
   insertDINEN61360T() {
     var varia = this.getVariables();
     this.dinen61360Service.insertDET(varia).pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.setAllTypes();
       this.setStatisticInfo();
     });
@@ -182,6 +183,7 @@ export class Dinen61360Component implements OnInit {
   insertDINEN61360I() {
     var varia = this.getVariables();
     this.dinen61360Service.insertDEI(varia).pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
       this.setStatisticInfo();
     });
 

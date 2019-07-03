@@ -107,9 +107,10 @@ export class VDI3682Component implements OnInit {
     }
 
     this.modelService.insertTripel(this.modelVariables.simpleStatement).pipe(take(1)).subscribe((data: any) => {
-        this.loadAllProcessInfo();
-        this.loadStatisticInfo();
-      });
+      this.loadingScreenService.stopLoading();
+      this.loadAllProcessInfo();
+      this.loadStatisticInfo();
+    });
   }
 
 
@@ -159,14 +160,15 @@ export class VDI3682Component implements OnInit {
       object: this.selectedObject,
     }
     this.modelService.insertTripel(this.modelVariables.simpleStatement).pipe(take(1)).subscribe((data: any) => {
-        this.loadAllProcessInfo();
-        this.loadStatisticInfo();
-        this.selectedPredicate = undefined;
-        this.selectedObjectClass = undefined;
-        this.selectedObject = undefined;
-        this.existingObjectClasses = undefined;
-        this.existingObjects = undefined;
-      });
+      this.loadingScreenService.stopLoading();
+      this.loadAllProcessInfo();
+      this.loadStatisticInfo();
+      this.selectedPredicate = undefined;
+      this.selectedObjectClass = undefined;
+      this.selectedObject = undefined;
+      this.existingObjectClasses = undefined;
+      this.existingObjects = undefined;
+    });
   }
 
 

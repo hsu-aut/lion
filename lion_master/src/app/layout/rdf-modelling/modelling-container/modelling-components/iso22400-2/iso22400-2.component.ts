@@ -137,6 +137,7 @@ export class Iso22400_2Component implements OnInit {
       }
 
       this.isoService.createElement(this.elementVariables, execute).pipe(take(1)).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
         this.loadAllStatistics();
       });
     } else if (option == "KPI") {
@@ -151,6 +152,7 @@ export class Iso22400_2Component implements OnInit {
         simpleValue: this.newSimpleValue,
       }
       this.isoService.createKPI(this.KPIVariables, execute).pipe(take(1)).subscribe((data: any) => {
+        this.loadingScreenService.stopLoading();
         this.loadAllStatistics();
       });
     }
