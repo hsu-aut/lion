@@ -12,6 +12,7 @@
         <div class="col" *ngIf="filter">
           <div class="input-group mb-3">
             <select [(ngModel)]="filterRow" class="custom-select" id="inputGroupSelect03">
+              <option value=null selected hidden></option>
               <option *ngFor='let col of keys(pagedTable[0][0])'>
                 {{col}}
               </option>

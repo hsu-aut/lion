@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { Tables } from '../../rdf-modelling/utils/tables';
+import { asTextData } from '@angular/core/src/view';
+import { IfStmt } from '@angular/compiler';
 
 
 @Component({
@@ -25,7 +27,7 @@ export class TableComponent implements OnInit {
   // layout variables
   paginationArray = this.TableUtil.paginationValues;
   paginationNumber = this.TableUtil.paginationValues[this.TableUtil.defaultPaginationIndex];
-  pagedTable: Array<Array<Object>> = [[]];
+  pagedTable: Array<Array<Object>>;
   numberOfRows: number;
   numberOfPages: number;
   pageArray: Array<number> = [];
@@ -35,17 +37,25 @@ export class TableComponent implements OnInit {
   emptyTable: Array<Object> = [];
 
 
-  constructor() { }
+  constructor() {
+
+  }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (typeof this.currentTable !== 'undefined') {
+
+      if (this.currentTable.length != 0) {
+
+        this.originalTableArray = this.currentTable;
+        this.initializeTable();
+      }
+    }
 
   }
-  ngOnChanges(changes: SimpleChanges) {
-    if (this.currentTable.length != 0) {
-      this.originalTableArray = this.currentTable;
-      this.initializeTable();
-    }
-  }
+
 
   initializeTable() {
     this.numberOfRows = this.currentTable.length;
@@ -111,42 +121,43 @@ export class TableComponent implements OnInit {
   }
 
   applyFilter(keyEvent, columnName: string) {
-    // use the original table
-    this.currentTable = this.originalTableArray;
-    // filtered elements is empty on method call
-    this.filteredElements = [];
 
-    // some helpers
-    let filterString: string = keyEvent.target.value;
-    let colKey: number;
-    let cols = Object.keys(this.currentTable[0])
-
-    // find key of searched column
-    for (let i = 0; i < cols.length; i++) {
-      if (cols[i] == columnName) {
-        colKey = i;
-        break;
+    if(columnName){    // use the original table
+      this.currentTable = this.originalTableArray;
+      // filtered elements is empty on method call
+      this.filteredElements = [];
+  
+      // some helpers
+      let filterString: string = keyEvent.target.value;
+      let colKey: number;
+      let cols = Object.keys(this.currentTable[0])
+  
+      // find key of searched column
+      for (let i = 0; i < cols.length; i++) {
+        if (cols[i] == columnName) {
+          colKey = i;
+          break;
+        }
       }
-    }
-
-    // create a filteredElements array with rows that have matching items
-    for (let i = 0; i < this.currentTable.length; i++) {
-      let value: string = Object.values(this.currentTable[i])[colKey];
-
-      if (value.search(filterString) != -1) {
-        this.filteredElements.push(this.currentTable[i])
+  
+      // create a filteredElements array with rows that have matching items
+      for (let i = 0; i < this.currentTable.length; i++) {
+        let value: string = Object.values(this.currentTable[i])[colKey];
+  
+        if (value.search(filterString) != -1) {
+          this.filteredElements.push(this.currentTable[i])
+        }
       }
+  
+      //  if there are matching items, assign them to the current table, if there arent any, asign the emptyTable
+      if (this.filteredElements.length != 0) {
+        this.currentTable = this.filteredElements;
+      } else {
+        this.currentTable = this.emptyTable;
+      }
+      this.initializeTable();
     }
 
-    //  if there are matching items, assign them to the current table, if there arent any, asign the emptyTable
-    if (this.filteredElements.length != 0) {
-      this.currentTable = this.filteredElements;
-    } else {
-      this.currentTable = this.emptyTable;
-    }
-
-
-    this.initializeTable();
   }
 
   setEmptyTable() {
