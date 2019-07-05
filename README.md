@@ -2,7 +2,13 @@
 
 This tool implements necessary functionalities to create and manipulate RDF/OWL data to describe manufacturing related knowledge like Products, Processes and Resources, as well as their properties. Whereby this tool offers two basic functionalities: Directly creating RDF/OWL data within a triple store owned by the user, or exporting of SPARQL INSERT templates that can be used by a Software developer to be executed by an application in a given event.
 
-As there is no release so far, only development mode is currently available. A more convenient set up will follow with the first release.
+As there is no release so far, only development mode is currently available. A more convenient set up will follow with the first release. Currently supported is the creation of RDF models with the following TBox (see also `https://github.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns`):
+- VDI 3682 (Formalized Process Descriptions)
+- VDI 2206 (Structures of Mechatronic Systems)
+- DIN EN 61360 (Data elements and data element types)
+- WADL (Web Application Description Language)
+- ISO 22400-2 (Key performance indicators for manufacturing operations management)
+- ISA 88 (State machines)
 
 ## How to set up LiOnS in development mode
 
