@@ -7,6 +7,8 @@ import { Dinen61360Service } from '../../../rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { DashboardService } from './dashboard.service';
 
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -79,7 +81,8 @@ export class DashboardComponent implements OnInit {
     private vdi2206Service: Vdi2206ModelService,
     private dinen61360Service: Dinen61360Service,
     private isa88Service: Isa88ModelService,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private loadingScreenService: DataLoaderService
 
   ) { }
 
@@ -96,6 +99,21 @@ export class DashboardComponent implements OnInit {
     this.getTriplesCount();
     this.getActiveNamespace();
 
+  }
+
+  refreshData() {
+    this.doughnutChartType = 'doughnut';
+    this.dashboardService.loadChartData().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.doughnutChartData = data.data;
+      this.doughnutChartLabels = data.labels;
+    });
+    this.VDI3682Table = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
+    this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
+    this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
+    this.DINEN61360Table = this.dinen61360Service.getTABLE_All_TYPES();
+    this.getTriplesCount();
+    this.getActiveNamespace();
   }
 
   getChartData() {
@@ -157,6 +175,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getTriplesCount() {
+    this.numberOfTriples = 0;
     for (let i = 0; i < this.doughnutChartData.length; i++) {
       this.numberOfTriples = this.numberOfTriples + this.doughnutChartData[i];
     }

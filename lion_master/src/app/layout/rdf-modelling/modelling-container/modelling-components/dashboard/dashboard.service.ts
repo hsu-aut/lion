@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class DashboardService {
   }
   
   public initializeDashboard(){
-    this.loadChartData().subscribe((data: any) => {
+    this.loadChartData().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.doughnutChartData = data;
     });
@@ -42,7 +43,7 @@ export class DashboardService {
 
     var chartDataObservable = new Observable((observer) => {
       for (let i = 0; i < this.chartPrefixes.length; i++) {
-        this.query.getTriplesCount(prefixes[i].namespace).subscribe((data: any) => {
+        this.query.getTriplesCount(prefixes[i].namespace).pipe(take(1)).subscribe((data: any) => {
 
           freshDoughnutChart.data.push(data.length)
           freshDoughnutChart.labels.push(prefixes[i].prefix);

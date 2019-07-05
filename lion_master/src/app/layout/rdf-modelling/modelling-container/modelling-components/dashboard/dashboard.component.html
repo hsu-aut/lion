@@ -13,7 +13,13 @@
   <div class="col col-sm-6">
     <div class="card mb-3" style="height: 100%">
       <div class="card-header">
-        Designed RDF Triples per assigned Class
+        <div class="row">
+          <div class="col">Designed RDF Triples per assigned Class</div>
+          <div class="col-1 align-self-end mx-2"><button type="button" class="btn btn-outline-success" (click)="refreshData()"><i
+                class="fas fa-sync"></i></button></div>
+        </div>
+
+
       </div>
       <div class="card-body">
         <!-- todo implmenet click event to trigger tables -->
@@ -51,24 +57,24 @@
   </ul>
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="3682" role="tabpanel" aria-labelledby="3682-tab">
-      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-        (tableClickedCell)="tableClick($event)"></app-table>
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="2206" role="tabpanel" aria-labelledby="2206-tab">
-      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-        (tableClickedCell)="tableClick($event)"></app-table>
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="isa88" role="tabpanel" aria-labelledby="isa88-tab">
-      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-        (tableClickedCell)="tableClick($event)"></app-table>
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="61360" role="tabpanel" aria-labelledby="61360-tab">
-      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-        (tableClickedCell)="tableClick($event)"></app-table>
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="wadl" role="tabpanel" aria-labelledby="wadl-tab">
-      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-        (tableClickedCell)="tableClick($event)"></app-table>
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
     </div>
   </div>
 
