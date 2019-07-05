@@ -41,8 +41,6 @@ interface Cfg {
 export class ConfigurationsComponent implements OnInit {
   // util variables
   keys = Object.keys;
-  nameSpaceTableTitle: string = undefined;
-  nameSpaceTableSubTitle: string = "Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.";
 
   savingDate: string;
   loadDate: string;
@@ -68,6 +66,9 @@ export class ConfigurationsComponent implements OnInit {
   currentGraph: string;
   newGraph: string;
  
+  // stats
+  NoOfNamespaces: number = this.prefixService.getPrefixes().length;
+  NoOfNamedGraphs: number = this.prefixService.getGraphs().length;
 
 
   constructor(
@@ -104,6 +105,7 @@ export class ConfigurationsComponent implements OnInit {
     this.hostName = this.query.getHost();
     this.repositoryName = this.query.getRepository();
     this.getCurrentGraphConfig();
+    
   }
 
 
@@ -165,14 +167,19 @@ export class ConfigurationsComponent implements OnInit {
   }
   addNamespace() {
     this.prefixService.addNamespace(this.userPrefix, this.userNamespace);
+    this.PREFIXES = this.prefixService.getPrefixes();
+    this.NoOfNamespaces = this.PREFIXES.length
   }
 
   editNamespace() {
     this.prefixService.editNamespace(this.userKey, this.userPrefix, this.userNamespace);
+    this.PREFIXES = this.prefixService.getPrefixes();
   }
 
   deleteNamespace() {
     this.prefixService.deleteNamespace(this.userKey);
+    this.PREFIXES = this.prefixService.getPrefixes();
+    this.NoOfNamespaces = this.PREFIXES.length
   }
   setActiveNamespace() {
     this.prefixService.setActiveNamespace(this.userKey);
@@ -232,6 +239,7 @@ export class ConfigurationsComponent implements OnInit {
   getCurrentGraphConfig(){
     this.graphList = this.prefixService.getGraphs();
     this.currentGraph = this.graphList[this.prefixService.getActiveGraph()];
+    this.NoOfNamedGraphs = this.graphList.length;
   }
 
   createNamedGraph(newGraphName: string){

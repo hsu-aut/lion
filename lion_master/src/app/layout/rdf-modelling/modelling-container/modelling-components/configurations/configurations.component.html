@@ -1,143 +1,178 @@
-<!-- Namespaces of Ontologies Card -->
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <h5 class="card-header">
-    Local Configuration of Namespaces of Ontologies
-  </h5>
+  <h5 class="card-header">Database configuration</h5>
   <div class="card-body">
-    <app-table [currentTable]="PREFIXES" [tableTitle]="nameSpaceTableTitle" [tableExplanation]="nameSpaceTableSubTitle"
-      (tableClickedRow)="prefixTableClick($event)"></app-table>
-    <form>
-      <div class="form-row">
-        <div class="form-group col-sm">
-          <label> Prefix of active Namespace </label>
-          <input [(ngModel)]="activeNamespace.prefix" class="form-control" name="activeNamespacePrefix" type="text"
-            readonly>
-        </div>
-        <div class="form-group col-sm">
-          <label> Active Namespace </label>
-          <input [(ngModel)]="activeNamespace.namespace" class="form-control" name="activeNamespaceIRI" type="text"
-            readonly>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-sm">
-          <label> Prefix </label>
-          <input [(ngModel)]="userPrefix" name="userPrefix" type="text" placeholder="[Prefix]" class="form-control">
-        </div>
-        <div class="form-group col-sm">
-          <label> Namesapce </label>
-          <input [(ngModel)]="userNamespace" name="userNamespace" type="text" placeholder="[Namesapce]"
-            class="form-control">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="addNamespace()"> Add
-            Namesapce
-          </button></div>
-        <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="editNamespace()"> Edit
-            Namesapce
-          </button></div>
-        <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="deleteNamespace()">
-            Delete Namesapce
-          </button></div>
-        <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="setActiveNamespace()">
-            Set as active Namesapce
-          </button></div>
+    <h5 class="card-title"> LiOnS configuration </h5>
+
+    <div class="row">
+
+      <div class="col-xl-8">
+        <p class="card-text">The LIOnS tool can be configured with respect to the following aspects:
+          <li>
+            Ontological namespaces: The prefixes that are used for rendering the namespaces in each view can be
+            customized. One can also add a user defined namespace for created triples.
+          </li>
+          <li>
+            Named Graphs: LIOnS inserts every tripel in a named graph, in order to retrieve/modify/delete the modelled
+            triples. One can add different named graphs in order to dissect the created triples.
+          </li>
+          <li>
+            Graph database: LIOnS requires a graph database (i.e. GraphDB) in order to work es expected. One can
+            add/change/delete repositories within LIOnS in order to manage different modelling projects.
+          </li>
+        </p>
 
       </div>
-    </form>
-    <div class="form-row">
-      <div class="form-group col-sm">
-        <label> Active Graph IRI </label>
-        <input class="form-control" [(ngModel)]="currentGraph" name="url" type="text" placeholder="hostName" readonly>
-      </div>
-      <div class="form-group col-sm">
-        <label> Existing Graph IRIs </label>
-        <select [(ngModel)]="newGraph" name="newGraph" class="form-control">
-          <option *ngFor='let x of graphList'>
-            {{x}}
-          </option>
-        </select>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" (click)="setActiveGraph(newGraph)">
-          Change Graph
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#CREATE_GRAPH_IRI_MODAL">
-          Create Graph
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#DOWNLOAD_GRAPH">
-          Download Graph
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#DELETE_TRIPLES_OF_GRAPH">
-          Delete Triples of Graph
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#DELETE_GRAPH">
-          Delete Graph
-        </button></div>
-    </div>
-  </div>
-</div>
-
-<!-- Konfigurationsübersicht -->
-<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <h5 class="card-header"> Graph Database Configuration </h5>
-  <div class="card-body">
-
-    <div class="form-row">
-      <div class="form-group col-sm">
-        <label> Hostname </label>
-        <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName" readonly>
-      </div>
-      <div class="form-group col-sm">
-        <label> Repository name </label>
-        <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
-          placeholder="repositoryName" readonly>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#SetRepoModal"> Change Configuration
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#RELOAD_MODAL">
-          Reload Data
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#TBOX_MODAL">
-          Load TBoxes
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#CreateModal">
-          Create new Repository
-        </button></div>
-      <div class="form-group col-sm"> <button class="btn btn-secondary col m-3" data-toggle="modal"
-          data-target="#clearModal">
-          Clear Repository
-        </button></div>
-    </div>
-
-    <!-- <div class="col">
-        <div class="card h-40">
+      <div class="col">
+        <div class="card">
           <div class="card-header">
-            <h6>Save / Load Configurations</h6>
+            Configuration Statistics
           </div>
           <div class="card-body">
-            <button class="btn btn-secondary" (click)="saveConfiguration()">Download</button> {{savingDate}}
-            <label for="file-upload" class="btn btn-secondary">
-              Load
-            </label>
-            <input id="file-upload" type="file" (change)="loadSelectedFile($event)"> {{loadDate}}
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No# Namespaces</th>
+                  <th scope="col">No# named Graphs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{NoOfNamespaces}}</td>
+                  <td>{{NoOfNamedGraphs}}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div> -->
+      </div>
+    </div>
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="namespace-tab" data-toggle="tab" href="#namespace" role="tab"
+            aria-controls="namespace" aria-selected="true"> Namespaces </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="namedGraph-tab" data-toggle="tab" href="#namedGraph" role="tab"
+            aria-controls="namedGraph" aria-selected="false"> Named Graphs </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="graphDatabase-tab" data-toggle="tab" href="#graphDatabase" role="tab"
+            aria-controls="graphDatabase" aria-selected="false"> Graph Database </a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="namespace" role="tabpanel" aria-labelledby="namespace-tab">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Prefix of active Namespace </label>
+              <input [(ngModel)]="activeNamespace.prefix" class="form-control" name="activeNamespacePrefix" type="text"
+                readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> Active Namespace </label>
+              <input [(ngModel)]="activeNamespace.namespace" class="form-control" name="activeNamespaceIRI" type="text"
+                readonly>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Prefix </label>
+              <input [(ngModel)]="userPrefix" name="userPrefix" type="text" placeholder="[Prefix]" class="form-control">
+            </div>
+            <div class="form-group col-sm">
+              <label> Namesapce </label>
+              <input [(ngModel)]="userNamespace" name="userNamespace" type="text" placeholder="[Namesapce]"
+                class="form-control">
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary" (click)="addNamespace()">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="editNamespace()">Edit</a>
+                    <a class="dropdown-item" (click)="deleteNamespace()">Delete</a>
+                    <a class="dropdown-item" (click)="setActiveNamespace()">Set as active</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <app-table [currentTable]="PREFIXES" [tableTitle]="'Namespaces and their prefixes'"
+            [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
+            (tableClickedRow)="prefixTableClick($event)"></app-table>
+        </div>
+        <div class="tab-pane py-4" id="namedGraph" role="tabpanel" aria-labelledby="namedGraph-tab">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Active Graph IRI </label>
+              <input class="form-control" [(ngModel)]="currentGraph" name="url" type="text" placeholder="hostName"
+                readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> Existing Graph IRIs </label>
+              <select [(ngModel)]="newGraph" name="newGraph" class="form-control">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of graphList'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-3 align-self-end">
+              <div class="btn-group dropup" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary" (click)="setActiveGraph(newGraph)">Change to
+                  selection</button>
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" data-toggle="modal" data-target="#CREATE_GRAPH_IRI_MODAL">Create graph</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#DOWNLOAD_GRAPH">Download triples from
+                      graph</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#DELETE_TRIPLES_OF_GRAPH">Delete triples
+                      from graph as active</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#DELETE_GRAPH">Delete named graph</a>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane py-4" id="graphDatabase" role="tabpanel" aria-labelledby="graphDatabase-tab">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Hostname </label>
+              <input class="form-control" [(ngModel)]="hostName" name="url" type="text" placeholder="hostName" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> Repository name </label>
+              <input class="form-control" [(ngModel)]="repositoryName" name="repository" type="text"
+                placeholder="repositoryName" readonly>
+            </div>
+            <div class="form-group col-sm-3 align-self-end">
+              <div class="btn-group dropup" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#SetRepoModal">Change
+                  Configuration</button>
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" data-toggle="modal" data-target="#RELOAD_MODAL">Reload data from
+                      repository</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#TBOX_MODAL">Load TBoxes</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#CreateModal">Create new
+                      repository</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#clearModal">Clear repository</a>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
@@ -155,12 +190,14 @@
         </button>
       </div>
       <div class="modal-body">
-        You are about to clear the repository, all (!) triples (including the T-Box triples) will be deleted. There is
+        You are about to clear the active repository, all (!) triples (including the T-Box triples) will be deleted.
+        There is
         no possiblity to restore them.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal"> Do not clear the repository </button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="clearRepository()"> I know what I am doing </button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="clearRepository()"> I know what I
+          am doing </button>
       </div>
     </div>
   </div>
@@ -216,6 +253,7 @@
           <div class="form-group col-sm">
             <label> Repositories </label>
             <select [(ngModel)]="repositoryName" name="repositoryName" class="form-control">
+              <option value=null selected hidden></option>
               <option *ngFor='let x of repositoryList'>
                 {{x}}
               </option>
@@ -351,6 +389,7 @@
           <label> You can download the triples of a named graph by choosing the named graph below and confirming the
             action. The standard serialization will be Turtle (.ttl). </label>
           <select [(ngModel)]="graphToDownload" name="graphToDownload" class="form-control">
+            <option value=null selected hidden></option>
             <option *ngFor='let x of graphList'>
               {{x}}
             </option>
@@ -379,10 +418,12 @@
       </div>
       <div class="modal-body">
         <div class="form-group col-sm">
-          <label> You are about to delete all triples of a named graph. The graph itself will be stored within the tool,
+          <label> You are about to delete all triples of a named graph. The graph itself will be stored within the
+            tool,
             but empty graphs will be deleted by the GraphDB.
             Select a graph whose triples should be deleted below: </label>
           <select [(ngModel)]="graphToDeleteTriples" name="graphToDeleteTriples" class="form-control">
+            <option value=null selected hidden></option>
             <option *ngFor='let x of graphList'>
               {{x}}
             </option>
@@ -415,6 +456,7 @@
           <label> You are about to delete a named graph, including all the triples that are stored within that graph.
             Select a graph to be deleted below </label>
           <select [(ngModel)]="graphToDelete" name="graphToDelete" class="form-control">
+            <option value=null selected hidden></option>
             <option *ngFor='let x of graphList'>
               {{x}}
             </option>
