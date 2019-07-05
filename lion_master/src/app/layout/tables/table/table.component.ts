@@ -129,6 +129,7 @@ export class TableComponent implements OnInit {
   
       // some helpers
       let filterString: string = keyEvent.target.value;
+      filterString = filterString.toLowerCase();
       let colKey: number;
       let cols = Object.keys(this.currentTable[0])
   
@@ -142,7 +143,7 @@ export class TableComponent implements OnInit {
   
       // create a filteredElements array with rows that have matching items
       for (let i = 0; i < this.currentTable.length; i++) {
-        let value: string = Object.values(this.currentTable[i])[colKey];
+        let value: string = Object.values(this.currentTable[i])[colKey].toLowerCase();
   
         if (value.search(filterString) != -1) {
           this.filteredElements.push(this.currentTable[i])
