@@ -215,7 +215,7 @@
                     <div class="form-group col-sm">
                         <label> Existing Graph IRIs </label>
                         <select [(ngModel)]="newGraph" name="newGraph" class="form-control">
-                            <option value=null disabled selected hidden></option>
+                            <option value=null selected hidden></option>
                             <option *ngFor='let x of graphList'>
                                 {{x}}
                             </option>
