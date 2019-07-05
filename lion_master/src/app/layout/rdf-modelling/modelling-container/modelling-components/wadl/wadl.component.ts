@@ -28,7 +28,6 @@ export class WadlComponent implements OnInit {
   tableUtil = new Tables();
   _OntologicalDataType: string;
 
-
   // model data
   modelVariables = new WADLVARIABLES();
 
