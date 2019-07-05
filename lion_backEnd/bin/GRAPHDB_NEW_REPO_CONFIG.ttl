@@ -8,7 +8,7 @@
         @prefix owlim: <http://www.ontotext.com/trree/owlim#>.
         
         [] a rep:Repository ;
-            rep:repositoryID "aljoshaTest" ;
+            rep:repositoryID "testdb" ;
             rdfs:label "GraphDB Free repository" ;
             rep:repositoryImpl [
                 rep:repositoryType "graphdb:FreeSailRepository" ;
@@ -31,7 +31,7 @@
                     owlim:in-memory-literal-properties "true" ;
                     owlim:enable-literal-index "true" ;
         
-                    owlim:check-for-inconsistencies "false" ;
+                    owlim:check-for-inconsistencies "true" ;
                     owlim:disable-sameAs  "false" ;
                     owlim:query-timeout  "0" ;
                     owlim:query-limit-results  "0" ;

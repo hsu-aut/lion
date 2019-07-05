@@ -1,16 +1,20 @@
 import { Component, OnInit, } from '@angular/core';
-import { Dinen61360Service, DINEN61360Insert, DINEN61360Variables, expressionGoal, logicInterpretation, datatype } from '../../../rdf-models/dinen61360Model.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray } from '@angular/forms';
+import { Validators } from '@angular/forms';
+
+import { Dinen61360Service, DINEN61360Variables } from '../../../rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
-import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
+import { Iso22400_2ModelService } from '../../../rdf-models/iso22400_2Model.service';
+
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { Tables } from '../../../utils/tables';
-import { DownloadService } from '../../../rdf-models/services/download.service';
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 
+import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
+import { Tables } from '../../../utils/tables';
 
 @Component({
   selector: 'app-dinen61360',
@@ -29,188 +33,250 @@ export class Dinen61360Component implements OnInit {
   _currentStructureOption: string;
   StructureOptions: string = "System_BUTTON";
 
-  // 61360 input form variables
-  code: string;
-  version: string;
-  revision: string;
-  preferred_name: string;
-  short_name: string;
-  definition: string;
-  UoM: string;
+  // stats
+  NoOfDE: number = 0;
+  NoOfDET: number = 0;
+  NoOfDEI: number = 0;
 
-  Synonymous_Name: string;
-  backwards_compatible_Revision: string;
-  backwards_compatible_Version: string;
-  Value_Format_Field_length: string;
-  Value_Format_Field_length_Variable: string;
-  Value_Format_non_quantitativ: string;
-  Value_Format_quantitativ: string;
-  Value_List: string;
-  Value_List_Member: string;
-  Source_Document_of_Definition: string;
-  Synonymous_Letter_Symbol: string;
-  Note: string;
-  Remark: string;
-  Preferred_Letter_Symbol: string;
-  Formula: string;
-  Drawing_Reference: string;
+  // model variables
+  modelVariables: DINEN61360Variables = {
+    optionalTypeVariables:
+    {
+      Synonymous_Name: undefined,
+      backwards_compatible_Revision: undefined,
+      backwards_compatible_Version: undefined,
+      Value_Format_Field_length: undefined,
+      Value_Format_Field_length_Variable: undefined,
+      Value_Format_non_quantitativ: undefined,
+      Value_Format_quantitativ: undefined,
+      Value_List: undefined,
+      Value_List_Member: undefined,
+      Source_Document_of_Definition: undefined,
+      Synonymous_Letter_Symbol: undefined,
+      Note: undefined,
+      Remark: undefined,
+      Preferred_Letter_Symbol: undefined,
+      Formula: undefined,
+      Drawing_Reference: undefined,
+    },
+    mandatoryTypeVariables: {
+      typeIRI: undefined,
+      code: undefined,
+      version: undefined,
+      revision: undefined,
+      preferredName: undefined,
+      shortName: undefined,
+      definition: undefined,
+      dataTypeIRI: undefined,
+      unitOfMeasure: undefined
+    },
+    instanceVariables: {
+      code: undefined,
+      expressionGoalString: undefined,
+      logicInterpretationString: undefined,
+      valueString: undefined,
+      describedIndividual: undefined
+    }
+  }
+  // forms
+  typeDescriptionForm = this.fb.group({
+    code: [undefined],
+    version: [undefined],
+    revision: [undefined],
+    preferred_name: [undefined],
+    short_name: [undefined],
+    definition: [undefined],
+    dataType: [undefined],
+    UoM: [undefined]
+  })
 
-  describedIndividual: string;
-  selectedExpressionGoal: any;
-  expressionGoal = expressionGoal;
-  selectedLogicInterpretation: any;
-  logicInterpretation = logicInterpretation;
-  selectedDataytpe: any;
-  datatype = datatype;
-  value: string;
+  instanceDescriptionForm = this.fb.group({
+    code: [undefined],
+    individual: [undefined],
+    expressionGoal: [undefined],
+    logicInterpretation: [undefined],
+    value: [undefined]
+  })
+
+  eclassSearchForm = this.fb.group({
+    searchTerm: [undefined],
+  })
 
   // graph db data - DIN EN 61360
-  din = new DINEN61360Insert();
-  NoOfDE = 0;
-  NoOfDET = 0;
-  NoOfDEI = 0;
-  allExTypes: Array<Object> = [];
-  allTypes: any;
+  allTypes: Array<Object> = [];
+  datatypes: Array<string> = [];
+  allInstances: Array<Object> = [];
+  logicInterpretations: Array<string> = [];
+  expressionGoals: Array<string> = [];
+
   insertString: string;
   customTable: Array<Object>;
-  selectString = this.namespaceParser.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
+  selectString = this.nameService.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
 
   // graph db data VDI 3682
-  allProcessInfo: any = [];
+  allProcessInfo: Array<Object> = [];
+  
 
   // graph db data ISA 88
-  allBehaviorInfo: any = [];
+  allBehaviorInfo: Array<Object> = [];
 
   //graph db data vdi2206
-  allStructureInfoContainmentbySys: any = [];
-  allStructureInfoContainmentbyMod: any = [];
-  allStructureInfoContainmentbyCOM: any = [];
-  allStructureInfoInheritancebySys: any = [];
-  allStructureInfoInheritancebyMod: any = [];
-  allStructureInfoInheritancebyCOM: any = [];
+  allStructureInfoContainmentbySys: Array<Object> = [];
+  allStructureInfoContainmentbyMod: Array<Object> = [];
+  allStructureInfoContainmentbyCOM: Array<Object> = [];
+  allStructureInfoInheritancebySys: Array<Object> = [];
+  allStructureInfoInheritancebyMod: Array<Object> = [];
+  allStructureInfoInheritancebyCOM: Array<Object> = [];
   structureTable: Array<Object>;
 
+  //graph db data iso 22400-2
+  isoInfo: Array<Object> = [];
+
   //eclass data from backend
-  propertyList = [];
+  propertyList: Array<Object> = [];
 
   constructor(
-    private query: SparqlQueriesService,
+    private fb: FormBuilder,
     private eclass: EclassSearchService,
-    private dlService: DownloadService,
-    private namespaceParser: PrefixesService,
+    private nameService: PrefixesService,
     private dinen61360Service: Dinen61360Service,
     private vdi3682Service: Vdi3682ModelService,
     private isa88Service: Isa88ModelService,
     private loadingScreenService: DataLoaderService,
-    private vdi2206Service: Vdi2206ModelService
+    private vdi2206Service: Vdi2206ModelService,
+    private isoService: Iso22400_2ModelService
   ) { }
 
   ngOnInit() {
     // get ProcessData
-    this.getAllProcessInfo();
-    this.getAllTypes();
+    this.getDropdowns();
+    this.getTables();
     this.getStatisticInfo();
-    this.getAllBehaviorInfo();
-    this.getAllStructuralInfo();
+
     this.structureTable = this.allStructureInfoContainmentbySys;
   }
 
-  buildTypeInsert() {
-    var varia = this.getVariables();
-    this.insertString = this.dinen61360Service.buildDET(varia);
-    const blob = new Blob([this.insertString], { type: 'text/plain' });
-    const name = 'insert.txt';
-    this.dlService.download(blob, name);
+  createTripel(action: string, context: string, form) {
+    switch (context) {
+      case "type": {
 
+        let typeModelVariables = {
+          typeIRI: this.nameService.addOrParseNamespace(this.typeDescriptionForm.controls['code'].value),
+          code: this.typeDescriptionForm.controls['code'].value,
+          version: this.typeDescriptionForm.controls['version'].value,
+          revision: this.typeDescriptionForm.controls['revision'].value,
+          preferredName: this.typeDescriptionForm.controls['preferred_name'].value,
+          shortName: this.typeDescriptionForm.controls['short_name'].value,
+          definition: this.typeDescriptionForm.controls['definition'].value,
+          dataTypeIRI: this.nameService.parseToIRI(this.typeDescriptionForm.controls['dataType'].value),
+          unitOfMeasure: this.typeDescriptionForm.controls['UoM'].value
+        }
+        this.modelVariables.mandatoryTypeVariables = typeModelVariables;
+        console.log(this.modelVariables)
+        this.dinen61360Service.modifyType(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.setAllTypes();
+          this.setStatisticInfo();
+        });
+        console.log(action)
+        console.log(form)
+
+        break;
+      }
+      case "instance": {
+        let instanceModelVariables = {
+          code: this.instanceDescriptionForm.controls['code'].value,
+          expressionGoalString: this.instanceDescriptionForm.controls['expressionGoal'].value,
+          logicInterpretationString: this.instanceDescriptionForm.controls['logicInterpretation'].value,
+          valueString: this.instanceDescriptionForm.controls['value'].value,
+          describedIndividual: this.nameService.addOrParseNamespace(this.instanceDescriptionForm.controls['individual'].value)
+        }
+        this.modelVariables.instanceVariables = instanceModelVariables;
+        console.log(this.modelVariables)
+        this.dinen61360Service.modifyInstance(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.setAllInstances();
+          this.setStatisticInfo();
+        });
+        console.log(action)
+        console.log(form)
+        break;
+      }
+
+    }
   }
 
-  buildInstanceInsert() {
-    var varia = this.getVariables();
-    this.insertString = this.dinen61360Service.buildDEI(varia);
-    const blob = new Blob([this.insertString], { type: 'text/plain' });
-    const name = 'insert.txt';
-    this.dlService.download(blob, name);
+  typeTableClick(context, row) {
+    switch (context) {
+      case "type": {
+        this.typeDescriptionForm.controls['code'].setValue(row.code);
+        this.typeDescriptionForm.controls['version'].setValue(row.version);
+        this.typeDescriptionForm.controls['revision'].setValue(row.revision);
+        this.typeDescriptionForm.controls['preferred_name'].setValue(row.preferredName);
+        this.typeDescriptionForm.controls['short_name'].setValue(row.shortName);
+        this.typeDescriptionForm.controls['definition'].setValue(row.definition);
+        this.typeDescriptionForm.controls['dataType'].setValue(row.dataType);
+        this.typeDescriptionForm.controls['UoM'].setValue(row.unitOfMeasure);
+        break;
+      }
+      case "instance": {
+        this.instanceDescriptionForm.controls['code'].setValue(row.code);
+        break;
+      }
+    }
   }
 
+  anyTableClick(name: string) {
+    this.instanceDescriptionForm.controls['individual'].setValue(name);
+  }
 
-  searchByPreferredName(search_name: string) {
-    this._loaderShow = true;
-    this.eclass.getPropertyList(search_name).pipe(take(1)).subscribe((rawlist: any) => {
+  eclassSearch(searchForm: FormGroup) {
+    this.eclass.getPropertyList(searchForm.controls['searchTerm'].value).pipe(take(1)).subscribe((rawlist: any) => {
       this.propertyList = rawlist;
-      this._loaderShow = false;
-      this.currentTable = this.propertyList;
     });
   }
 
   eclassTableClick(row) {
-    this.code = row.Identifier;
-    this.version = row.VersionNumber;
-    this.revision = row.RevisionNumber;
-    this.preferred_name = row.PreferredName;
-    this.short_name = row.ShortName;
-    this.definition = row.Definition;
+    this.typeDescriptionForm.controls['code'].setValue(row.Identifier);
+    this.typeDescriptionForm.controls['version'].setValue(row.VersionNumber);
+    this.typeDescriptionForm.controls['revision'].setValue(row.RevisionNumber);
+    this.typeDescriptionForm.controls['preferred_name'].setValue(row.PreferredName);
+    this.typeDescriptionForm.controls['definition'].setValue(row.Definition);
+    this.typeDescriptionForm.controls['UoM'].setValue(row.DINNotation);
 
+    // check for the data type of the eclass property
     var str = row.DataType.toLowerCase();
-    for (const key in datatype) {
-      if (datatype.hasOwnProperty(key)) {
-        const element = datatype[key].toString();
-        if (str.includes(element.toLowerCase())) {
-          this.selectedDataytpe = element;
-        }
+    for (let i = 0; i < this.datatypes.length; i++) {
+      let element = this.nameService.parseToName(this.datatypes[i]);
+      if (str.includes(element.toLowerCase())) {
+        this.typeDescriptionForm.controls['dataType'].setValue(this.datatypes[i]);
       }
     }
-
     if (row.ShortName == "") {
-      this.short_name = row.PreferredName.substring(0, 8)
+      this.typeDescriptionForm.controls['short_name'].setValue(row.PreferredName.substring(0, 8));
     } else {
-      this.short_name = row.ShortName;
+      this.typeDescriptionForm.controls['short_name'].setValue(row.ShortName);
     }
-    this.UoM = row.DINNotation;
   }
 
-  propertyTableClick(row) {
-    this.code = row.ID;
-  }
-  insertDINEN61360T() {
-    var varia = this.getVariables();
-    this.dinen61360Service.insertDET(varia).pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.setAllTypes();
-      this.setStatisticInfo();
-    });
-
-  }
-  insertDINEN61360I() {
-    var varia = this.getVariables();
-    this.dinen61360Service.insertDEI(varia).pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.setStatisticInfo();
-    });
-
+  getDropdowns() {
+    this.datatypes = this.dinen61360Service.getLIST_DATA_TYPES();
+    this.logicInterpretations = this.dinen61360Service.getLIST_LOGIC_INTERPRETATIONS();
+    this.expressionGoals = this.dinen61360Service.getLIST_EXPRESSION_GOALS();
   }
 
-  executeSelect(selectString) {
-    this.query.selectTable(selectString).pipe(take(1)).subscribe((data: any) => {
-      this.customTable = data;
-      this.setTableDescription(this.instanceOption);
-    });
-  }
-
-  iriTableClick(name: string) {
-    this.describedIndividual = name;
-  }
-
-
-  getAllProcessInfo() {
+  getTables() {
     this.allProcessInfo = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
-  }
-
-  getAllBehaviorInfo() {
     this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
-  }
-
-  getAllTypes() {
     this.allTypes = this.dinen61360Service.getTABLE_All_TYPES();
+    this.allInstances = this.dinen61360Service.getTABLE_ALL_INSTANCE_INFO();
+    this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
+    this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
+    this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
+    this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
+    this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
+    this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
+    this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
   }
 
   setAllTypes() {
@@ -218,6 +284,14 @@ export class Dinen61360Component implements OnInit {
       this.loadingScreenService.stopLoading();
       this.allTypes = data;
       this.dinen61360Service.setTABLE_All_TYPES(data)
+    });
+  }
+
+  setAllInstances(){
+    this.dinen61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.allInstances = data;
+      this.dinen61360Service.setTABLE_ALL_INSTANCE_INFO(data)
     });
   }
 
@@ -230,7 +304,6 @@ export class Dinen61360Component implements OnInit {
   }
 
   setStatisticInfo() {
-
     // set stats of functions in TS
     this.dinen61360Service.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
@@ -250,107 +323,11 @@ export class Dinen61360Component implements OnInit {
     });
   }
 
-
-  getVariables() {
-    var varia: DINEN61360Variables = {
-      optionalTypeVariables:
-      {
-        Synonymous_Name: this.Synonymous_Name,
-        backwards_compatible_Revision: this.backwards_compatible_Revision,
-        backwards_compatible_Version: this.backwards_compatible_Version,
-        Value_Format_Field_length: this.Value_Format_Field_length,
-        Value_Format_Field_length_Variable: this.Value_Format_Field_length_Variable,
-        Value_Format_non_quantitativ: this.Value_Format_non_quantitativ,
-        Value_Format_quantitativ: this.Value_Format_quantitativ,
-        Value_List: this.Value_List,
-        Value_List_Member: this.Value_List_Member,
-        Source_Document_of_Definition: this.Source_Document_of_Definition,
-        Synonymous_Letter_Symbol: this.Synonymous_Letter_Symbol,
-        Note: this.Note,
-        Remark: this.Remark,
-        Preferred_Letter_Symbol: this.Preferred_Letter_Symbol,
-        Formula: this.Formula,
-        Drawing_Reference: this.Drawing_Reference,
-      },
-      mandatoryTypeVariables: {
-        code: this.code,
-        version: this.version,
-        revision: this.revision,
-        preferredName: this.preferred_name,
-        shortName: this.short_name,
-        definition: this.definition,
-        datatypeString: this.selectedDataytpe,
-        unitOfMeasure: this.UoM
-      },
-      instanceVariables: {
-        expressionGoalString: this.selectedExpressionGoal,
-        logicInterpretationString: this.selectedLogicInterpretation,
-        valueString: this.value,
-        describedIndividual: this.describedIndividual
-      }
-    }
-    return varia
-  }
-
   getAllStructuralInfo() {
     //get containment info for sys
     this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
     this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
     this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
-    this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
-    this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
-    this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
-  }
-
-  setTableDescription(option) {
-    this.instanceOption = option;
-    if (this.instanceOption == "allTypeDescriptions") {
-      this.tableTitle = "Available Type Descriptions in Database";
-      this.tableSubTitle = "Click on a row to create an instance of this type description.";
-    } else if (this.instanceOption == "allProcessTable") {
-      this.tableTitle = "Available Process Description Entities in Database";
-      this.tableSubTitle = "Click on a row to asign a data element to it.";
-    } else if (this.instanceOption == "ISA88") {
-      this.tableTitle = "Available Behavior Entities in Database";
-      this.tableSubTitle = "Click on a row to asign a data element to it.";
-    } else if (this.instanceOption == "CustomTable") {
-      this.tableTitle = "Return of custom Query";
-      this.tableSubTitle = "Click on a row to asign a data element to it.";
-    } else if (this.instanceOption == "structureTable") {
-      this.tableTitle = "Availeable structural Entities in Database";
-      this.tableSubTitle = "Click on a row to asign a data element to it.";
-    } else if (this.instanceOption == undefined) {
-      this.tableTitle = undefined;
-      this.tableSubTitle = undefined;
-    }
-  }
-
-  setStructureTable(StructureTable: string) {
-    switch (StructureTable) {
-      case "System_BUTTON": {
-        if (this.StructureOptions == "existingEntitiesInheritance") { this.currentTable = this.allStructureInfoInheritancebySys; }
-        else { this.structureTable = this.allStructureInfoContainmentbySys; }
-        this._currentStructureOption = StructureTable;
-        break;
-      }
-      case "Module_BUTTON": {
-        if (this.StructureOptions == "existingEntitiesInheritance") { this.currentTable = this.allStructureInfoInheritancebyMod; }
-        else { this.structureTable = this.allStructureInfoContainmentbyMod; }
-        this._currentStructureOption = StructureTable;
-        break;
-      }
-      case "Component_BUTTON": {
-        if (this.StructureOptions == "existingEntitiesInheritance") { this.currentTable = this.allStructureInfoInheritancebyCOM; }
-        else { this.structureTable = this.allStructureInfoContainmentbyCOM; }
-        this._currentStructureOption = StructureTable;
-        break;
-      }
-      default: {
-        // no default statements
-        break;
-      }
-    }
-
   }
 }
 

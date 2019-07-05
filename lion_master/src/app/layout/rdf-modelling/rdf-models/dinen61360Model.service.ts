@@ -2,20 +2,24 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
+import { DownloadService } from '../rdf-models/services/download.service';
 import { take } from 'rxjs/operators';
-import { Namespace } from '../utils/prefixes'
-
-var nameService = new Namespace;
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class Dinen61360Service {
 
-  private TABLE_All_TYPES = [];
+  private TABLE_ALL_TYPE_INFO = [];
+  private TABLE_ALL_INSTANCE_INFO = [];
+
+  private LIST_DATA_TYPES = [];
   private LIST_All_DE = [];
   private LIST_All_DET = [];
   private LIST_All_DEI = [];
+  private LIST_LOGIC_INTERPRETATIONS = [];
+  private LIST_EXPRESSION_GOALS = [];
 
   dinen61360data = new DINEN61360Data();
   dinen61360insert = new DINEN61360Insert();
@@ -23,7 +27,8 @@ export class Dinen61360Service {
   constructor(
     private query: SparqlQueriesService,
     private nameService: PrefixesService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private dlService: DownloadService
   ) {
 
     this.initializeDINEN61360();
@@ -33,7 +38,7 @@ export class Dinen61360Service {
   public initializeDINEN61360() {
     this.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
-      this.TABLE_All_TYPES = data;
+      this.TABLE_ALL_TYPE_INFO = data;
     });
     this.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
@@ -47,11 +52,27 @@ export class Dinen61360Service {
       this.loadingScreenService.stopLoading();
       this.LIST_All_DET = data;
     });
+    this.loadLIST_DATA_TYPES().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_DATA_TYPES = data;
+    });
+    this.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.TABLE_ALL_INSTANCE_INFO = data;
+    });
+    this.loadLIST_EXPRESSION_GOALS().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_EXPRESSION_GOALS = data;
+    });
+    this.loadLIST_LOGIC_INTERPRETATIONS().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.LIST_LOGIC_INTERPRETATIONS = data;
+    });
   }
 
   public loadTABLE_All_TYPES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.dinen61360data.SPARQL_SELECT_allTypes);
+    return this.query.selectTable(this.dinen61360data.SELECT_TABLE_ALL_TYPE_INFO);
   }
   public loadLIST_All_DE() {
     this.loadingScreenService.startLoading();
@@ -65,10 +86,29 @@ export class Dinen61360Service {
     this.loadingScreenService.startLoading();
     return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDET, 0);
   }
+  public loadLIST_DATA_TYPES() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.dinen61360data.SELECT_LIST_DATA_TYPES, 0);
+  }
+  public loadLIST_LOGIC_INTERPRETATIONS() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.dinen61360data.SELECT_LIST_LOGIC_INTERPRETATIONS, 0);
+  }
+  public loadLIST_EXPRESSION_GOALS() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectList(this.dinen61360data.SELECT_LIST_EXPRESSION_GOALS, 0);
+  }
+  public loadTABLE_ALL_INSTANCE_INFO() {
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.dinen61360data.SELECT_TABLE_ALL_INSTANCE_INFO);
+  }
 
 
   public setTABLE_All_TYPES(table) {
-    this.TABLE_All_TYPES = table;
+    this.TABLE_ALL_TYPE_INFO = table;
+  }
+  public setTABLE_ALL_INSTANCE_INFO(table) {
+    this.TABLE_ALL_INSTANCE_INFO = table;
   }
   public setLIST_All_DE(list) {
     this.LIST_All_DE = list;
@@ -80,19 +120,65 @@ export class Dinen61360Service {
     this.LIST_All_DEI = list;
   }
 
-  public getTABLE_All_TYPES() {
-    return this.TABLE_All_TYPES;
-  }
-  public getLIST_All_DE() {
-    return this.LIST_All_DE
-  }
-  public getLIST_All_DET() {
-    return this.LIST_All_DET
-  }
-  public getLIST_All_DEI() {
-    return this.LIST_All_DEI
-  }
 
+  public getTABLE_All_TYPES() { return this.TABLE_ALL_TYPE_INFO }
+  public getLIST_All_DE() { return this.LIST_All_DE }
+  public getLIST_All_DET() { return this.LIST_All_DET }
+  public getLIST_All_DEI() { return this.LIST_All_DEI }
+  public getLIST_DATA_TYPES() { return this.LIST_DATA_TYPES }
+  public getTABLE_ALL_INSTANCE_INFO() { return this.TABLE_ALL_INSTANCE_INFO }
+  public getLIST_EXPRESSION_GOALS() { return this.LIST_EXPRESSION_GOALS }
+  public getLIST_LOGIC_INTERPRETATIONS() { return this.LIST_LOGIC_INTERPRETATIONS }
+
+  public modifyInstance(action: string, variables: DINEN61360Variables) {
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+    switch (action) {
+      case "add": {
+        return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
+      }
+      case "delete": {
+        console.log("not implemented yet")
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.dlService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
+    }
+  }
+  public modifyType(action: string, variables: DINEN61360Variables) {
+    var GRAPHS = this.nameService.getGraphs();
+    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+    switch (action) {
+      case "add": {
+        return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
+      }
+      case "delete": {
+        console.log("not implemented yet")
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.dlService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
+    }
+
+  }
   public insertDET(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
@@ -100,7 +186,7 @@ export class Dinen61360Service {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-    return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, namespace, activeGraph));
+    return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
   }
   public buildDET(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
@@ -109,7 +195,7 @@ export class Dinen61360Service {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-    return this.dinen61360insert.buildDINEN61360T(variables, namespace, activeGraph);
+    return this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
   }
   public insertDEI(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
@@ -118,7 +204,7 @@ export class Dinen61360Service {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-    return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, namespace, activeGraph));
+    return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
   }
   public buildDEI(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
@@ -127,29 +213,88 @@ export class Dinen61360Service {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-    return this.dinen61360insert.buildDINEN61360I(variables, namespace, activeGraph);
+    return this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
   }
 
-} 
+}
 
 export class DINEN61360Data {
   public IRI: Array<String>;
 
-  public SPARQL_SELECT_allTypes = `
+  public SELECT_TABLE_ALL_TYPE_INFO = `
   PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-  SELECT DISTINCT ?Type ?ID ?Name ?Definition ?Unit_Of_Measure ?Data_Type WHERE { 
+  SELECT DISTINCT ?type ?code ?revision ?version ?preferredName ?shortName ?definition ?unitOfMeasure ?dataType WHERE { 
             
-  ?Type a DE6:Type_Description.
-  OPTIONAL{ ?Type DE6:Code ?ID.}
-  OPTIONAL{ ?Type DE6:Definition ?Definition.}
-  OPTIONAL{ ?Type DE6:Unit_of_Measure ?Unit_Of_Measure.}
-  OPTIONAL{ ?Type DE6:Preferred_Name ?Name.}
-  OPTIONAL{ ?Type a ?Data_Type.
-              ?Data_Type rdfs:subClassOf ?a.
+  ?type a DE6:Type_Description.
+  OPTIONAL{ ?type DE6:Code ?code.}
+  OPTIONAL{ ?type DE6:Definition ?definition.}
+  OPTIONAL{ ?type DE6:Unit_of_Measure ?unitOfMeasure.}
+  OPTIONAL{ ?type DE6:Revision_Number ?revision.}
+  OPTIONAL{ ?type DE6:Version_Number ?version.}
+  OPTIONAL{ ?type DE6:Short_Name ?shortName.}
+  OPTIONAL{ ?type DE6:Preferred_Name ?preferredName.}
+  OPTIONAL{ ?type a ?dataType.
+              ?dataType rdfs:subClassOf ?a.
               VALUES ?a
               {DE6:Array DE6:Bag DE6:List DE6:Set DE6:Boolean DE6:Integer DE6:Real DE6:String}}
   }   `;
+
+  public SELECT_TABLE_ALL_INSTANCE_INFO = `
+  PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  SELECT DISTINCT ?individual ?instance ?type ?expressionGoal ?logicInterpretation ?value WHERE { 
+  
+  ?individual DE6:has_Data_Element ?DE.
+  ?DE DE6:has_Instance_Description ?DEI.
+  ?DEI a DE6:Instance_Description;
+       DE6:Instance_Description_has_Type ?type;
+            rdfs:label ?instance;
+            DE6:Expression_Goal ?expressionGoal;
+            DE6:Logic_Interpretation ?logicInterpretation;
+            DE6:Value ?value.
+
+  }`
+  public SELECT_LIST_LOGIC_INTERPRETATIONS = `
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+  SELECT DISTINCT ?enum
+  WHERE {
+
+  DE6:Logic_Interpretation rdfs:range ?RangeBlankNode.
+  ?RangeBlankNode owl:oneOf ?oneOfBlankNode.
+    ?oneOfBlankNode rdf:rest* ?restBlankNode.
+    ?restBlankNode rdf:first ?enum.
+
+  }`
+  public SELECT_LIST_EXPRESSION_GOALS = `
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+  SELECT DISTINCT ?enum
+  WHERE {
+
+  DE6:Expression_Goal rdfs:range ?RangeBlankNode.
+  ?RangeBlankNode owl:oneOf ?oneOfBlankNode.
+      ?oneOfBlankNode rdf:rest* ?restBlankNode.
+      ?restBlankNode rdf:first ?enum.
+
+  }
+  `
+  public SELECT_LIST_DATA_TYPES = `
+  PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  SELECT DISTINCT ?dataType WHERE { 
+            
+    ?simpleDataType sesame:directSubClassOf DE6:Simple_Data_Type.
+    ?complexDataType sesame:directSubClassOf DE6:Complex_Data_Type.
+      {BIND(?simpleDataType AS ?dataType).}UNION
+      {BIND(?complexDataType AS ?dataType).}
+  }
+  `
 
   public SPARQL_SELECT_allDE = `
   PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
@@ -180,9 +325,10 @@ export class DINEN61360Data {
 
 export enum expressionGoal { Actual_Value = "Actual_Value", Assurance = "Assurance", Requirement = "Requirement" }
 export enum logicInterpretation { "<" = "<", "<=" = "<=", "=" = "=", ">" = ">", ">=" = ">=" }
-export enum datatype { Boolean = "Boolean", Integer = "Integer", Real = "Real", String = "String", Array = "Array", Bag = "Bag", List = "List", Set = "Set" }
+// export enum datatype { Boolean = "Boolean", Integer = "Integer", Real = "Real", String = "String", Array = "Array", Bag = "Bag", List = "List", Set = "Set" }
 
 class InstanceVariables {
+  code: string;
   expressionGoalString: string;
   logicInterpretationString: logicInterpretation;
   valueString: string;
@@ -190,6 +336,7 @@ class InstanceVariables {
 }
 
 class MandatoryTypeVariables {
+  typeIRI: string;
   code: string;
   version: string;
   revision: string;
@@ -197,7 +344,7 @@ class MandatoryTypeVariables {
   shortName: string;
   definition: string;
   unitOfMeasure: string;
-  datatypeString: datatype
+  dataTypeIRI: string;
 }
 class OptionalTypeVariables {
   Synonymous_Name: string;
@@ -228,55 +375,26 @@ export class DINEN61360Variables {
 
 export class DINEN61360Insert {
 
-  public buildDINEN61360T(variables: DINEN61360Variables, activeNamespace: string, activeGraph: string) {
-    // activeNamespace
-    var activeNamespace = activeNamespace;
-    // type info
-    var code = variables.mandatoryTypeVariables.code
-    var version = variables.mandatoryTypeVariables.version
-    var revision = variables.mandatoryTypeVariables.revision
-    var preferredName = variables.mandatoryTypeVariables.preferredName
-    var shortName = variables.mandatoryTypeVariables.shortName
-    var definition = variables.mandatoryTypeVariables.definition
-    var datatype = variables.mandatoryTypeVariables.datatypeString
-
-    // case dependent
-    var unitOfMeasure = variables.mandatoryTypeVariables.unitOfMeasure;
-
-    var Synonymous_Name = variables.optionalTypeVariables.Synonymous_Name
-    var backwards_compatible_Revision = variables.optionalTypeVariables.backwards_compatible_Revision
-    var backwards_compatible_Version = variables.optionalTypeVariables.backwards_compatible_Version
-    var Value_Format_Field_length = variables.optionalTypeVariables.Value_Format_Field_length
-    var Value_Format_Field_length_Variable = variables.optionalTypeVariables.Value_Format_Field_length_Variable
-    var Value_Format_non_quantitativ = variables.optionalTypeVariables.Value_Format_non_quantitativ
-    var Value_Format_quantitativ = variables.optionalTypeVariables.Value_Format_quantitativ
-    var Value_List = variables.optionalTypeVariables.Value_List
-    var Value_List_Member = variables.optionalTypeVariables.Value_List_Member
-    var Source_Document_of_Definition = variables.optionalTypeVariables.Source_Document_of_Definition
-    var Synonymous_Letter_Symbol = variables.optionalTypeVariables.Synonymous_Letter_Symbol
-    var Note = variables.optionalTypeVariables.Note
-    var Remark = variables.optionalTypeVariables.Remark
-    var Preferred_Letter_Symbol = variables.optionalTypeVariables.Preferred_Letter_Symbol
-    var Formula = variables.optionalTypeVariables.Formula
-    var Drawing_Reference = variables.optionalTypeVariables.Drawing_Reference
+  public buildDINEN61360T(variables: DINEN61360Variables, activeGraph: string) {
 
     var optionals = {
-      boundSynonymous_Name: `BIND(STR("${Synonymous_Name}") AS ?Synonymous_Name).`,
-      boundbackwards_compatible_Revision: `BIND(STR("${backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
-      boundbackwards_compatible_Version: `BIND(STR("${backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
-      boundValue_Format_Field_length: `BIND(STR("${Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
-      boundValue_Format_Field_length_Variable: `BIND(STR("${Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
-      boundValue_Format_non_quantitativ: `BIND(STR("${Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
-      boundValue_Format_quantitativ: `BIND(STR("${Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
-      boundValue_List: `BIND(STR("${Value_List}") AS ?Value_List).`,
-      boundValue_List_Member: `BIND(STR("${Value_List_Member}") AS ?Value_List_Member).`,
-      boundSource_Document_of_Definition: `BIND(STR("${Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
-      boundSynonymous_Letter_Symbol: `BIND(STR("${Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
-      boundNote: `BIND(STR("${Note}") AS ?Note).`,
-      boundRemark: `BIND(STR("${Remark}") AS ?Remark).`,
-      boundPreferred_Letter_Symbol: `BIND(STR("${Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
-      boundFormula: `BIND(STR("${Formula}") AS ?Formula).`,
-      boundDrawing_Reference: `BIND(STR("${Drawing_Reference}") AS ?Drawing_Reference).`,
+      boundSynonymous_Name: `BIND(STR("${variables.optionalTypeVariables.Synonymous_Name}") AS ?Synonymous_Name).`,
+      boundbackwards_compatible_Revision: `BIND(STR("${variables.optionalTypeVariables.backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
+      boundbackwards_compatible_Version: `BIND(STR("${variables.optionalTypeVariables.backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
+      boundValue_Format_Field_length: `BIND(STR("${variables.optionalTypeVariables.Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
+      boundValue_Format_Field_length_Variable: `BIND(STR("${variables.optionalTypeVariables.Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
+      boundValue_Format_non_quantitativ: `BIND(STR("${variables.optionalTypeVariables.Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
+      boundValue_Format_quantitativ: `BIND(STR("${variables.optionalTypeVariables.Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
+      boundValue_List: `BIND(STR("${variables.optionalTypeVariables.Value_List}") AS ?Value_List).`,
+      boundValue_List_Member: `BIND(STR("${variables.optionalTypeVariables.Value_List_Member}") AS ?Value_List_Member).`,
+      boundSource_Document_of_Definition: `BIND(STR("${variables.optionalTypeVariables.Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
+      boundSynonymous_Letter_Symbol: `BIND(STR("${variables.optionalTypeVariables.Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
+      boundNote: `BIND(STR("${variables.optionalTypeVariables.Note}") AS ?Note).`,
+      boundRemark: `BIND(STR("${variables.optionalTypeVariables.Remark}") AS ?Remark).`,
+      boundPreferred_Letter_Symbol: `BIND(STR("${variables.optionalTypeVariables.Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
+      boundFormula: `BIND(STR("${variables.optionalTypeVariables.Formula}") AS ?Formula).`,
+      boundDrawing_Reference: `BIND(STR("${variables.optionalTypeVariables.Drawing_Reference}") AS ?Drawing_Reference).`,
+      boundUnitOfMeasure: `BIND(STR("${variables.mandatoryTypeVariables.unitOfMeasure}") AS ?Unit_of_Measure).`,
     }
 
     // add a check for empties and if one is found delete the string
@@ -358,16 +476,14 @@ INSERT {
   WHERE
     {    
       # CHANGES TO THIS PART ALWAYS REQUIRED
-     
-          BIND(STR("${datatype}") AS ?DataType).
-      
+           
           #non optional
-          BIND(STR("${code}") AS ?Code).
-          BIND(STR("${version}") AS ?Version_Number).
-          BIND(STR("${revision}") AS ?Revision_Number).
-          BIND(STR("${preferredName}") AS ?Preferred_Name).
-          BIND(STR("${shortName}") AS ?Short_Name).
-          BIND(STR("${definition}") AS ?Definition).
+          BIND(STR("${variables.mandatoryTypeVariables.code}") AS ?Code).
+          BIND(STR("${variables.mandatoryTypeVariables.version}") AS ?Version_Number).
+          BIND(STR("${variables.mandatoryTypeVariables.revision}") AS ?Revision_Number).
+          BIND(STR("${variables.mandatoryTypeVariables.preferredName}") AS ?Preferred_Name).
+          BIND(STR("${variables.mandatoryTypeVariables.shortName}") AS ?Short_Name).
+          BIND(STR("${variables.mandatoryTypeVariables.definition}") AS ?Definition).
           #optional
           ${optionals.boundSynonymous_Name}
           ${optionals.boundbackwards_compatible_Revision}
@@ -385,42 +501,25 @@ INSERT {
           ${optionals.boundPreferred_Letter_Symbol}
           ${optionals.boundFormula}
           ${optionals.boundDrawing_Reference}
-          #case-dependent
-          BIND(STR("${unitOfMeasure}") AS ?Unit_of_Measure).
+          ${optionals.boundUnitOfMeasure}
 
       # ----------------------------------------------------------------- #
       # NO CHANGES TO THIS PART EVER
       # Defines the general namespace for all individuals
-      BIND(STR("${activeNamespace}") AS ?NameSpace).
       BIND(?Preferred_Name AS ?DET_Label).
-      BIND(IRI(CONCAT(?NameSpace,?Code)) AS ?DE_TypeIRI).
-      BIND(IRI(CONCAT("http://www.hsu-ifa.de/ontologies/DINEN61360#",?DataType)) AS ?DataTypeIRI).
+      BIND(<${variables.mandatoryTypeVariables.typeIRI}> AS ?DE_TypeIRI).
+      BIND(<${variables.mandatoryTypeVariables.dataTypeIRI}> AS ?DataTypeIRI).
     }
   }
-
-}      
-      
-      `
+  }`
     return insertString
   }
 
-  public buildDINEN61360I(variables: DINEN61360Variables, activeNamespace: string, activeGraph: string) {
-    // activeNamespace
-    var activeNamespace = activeNamespace;
-
-    // individual to be described by data element
-    var describedIRI = nameService.parseToIRI(variables.instanceVariables.describedIndividual);
-
-    // type info
-    var code = variables.mandatoryTypeVariables.code
-
-    // instance info
-    var expressionGoal = variables.instanceVariables.expressionGoalString
-    var logicInterpretation = variables.instanceVariables.logicInterpretationString
+  public buildDINEN61360I(variables: DINEN61360Variables, activeGraph: string) {
 
     var optionals = {
-      boundExpressionGoal: `BIND(STR("${expressionGoal}") AS ?Expression_Goal).`,
-      boundLogicInterpretation: `BIND(STR("${logicInterpretation}") AS ?Logic_Interpretation).`
+      boundExpressionGoal: `BIND(STR("${variables.instanceVariables.expressionGoalString}") AS ?Expression_Goal).`,
+      boundLogicInterpretation: `BIND(STR("${variables.instanceVariables.logicInterpretationString}") AS ?Logic_Interpretation).`
 
     }
 
@@ -431,11 +530,12 @@ INSERT {
       if (element.search(`undefined`) != -1) { optionals[i] = "" }
       // console.log(element);
     }
+    for (const i in optionals) {
 
-
-    // value info
-    var value = variables.instanceVariables.valueString
-
+      const element = optionals[i];
+      if (element.search(`null`) != -1) { optionals[i] = "" }
+      // console.log(element);
+    }
 
     var insertString = `
 # DINEN61360_INSERT_SIMPLE with UUID bindings
@@ -500,23 +600,21 @@ INSERT {
       # CHANGES TO THIS PART ALWAYS REQUIRED
 
       # Define the individual to be described by the data element
-      BIND(IRI(STR("${describedIRI}")) AS ?DescribedIndividualIRI).
+      BIND(<${variables.instanceVariables.describedIndividual}> AS ?DescribedIndividualIRI).
      
       # Define the data element instance attributes
       ${optionals.boundExpressionGoal}
       ${optionals.boundLogicInterpretation}
   
       # Define the value to use
-      BIND(STR("${value}") AS ?Value).
+      BIND(STR("${variables.instanceVariables.valueString}") AS ?Value).
       
-      BIND(STR("${code}") AS ?Code).
+      BIND(STR("${variables.instanceVariables.code}") AS ?Code).
       ?DE_TypeIRI DE6:Code ?Code;
       rdfs:label ?DET_Label.
 
       # ----------------------------------------------------------------- #
       # NO CHANGES TO THIS PART EVER
-      # Defines the general namespace for all individuals
-      BIND(STR("${activeNamespace}") AS ?NameSpace).
       BIND(CONCAT(?DET_Label,"_Data_Element") AS ?DE_Label).
       BIND(CONCAT(?DET_Label,"_Instance") AS ?DEI_Label).
       BIND(NOW() AS ?Created_at_Date).
@@ -526,7 +624,6 @@ INSERT {
   }
 
 }`
-    console.log(insertString);
     return insertString
 
   }
