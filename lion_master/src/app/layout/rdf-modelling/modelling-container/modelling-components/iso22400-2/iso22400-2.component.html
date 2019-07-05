@@ -68,6 +68,7 @@
               <label> Group of new element </label>
               <select [(ngModel)]="selectedElementGroup" name="selectedElementGroup" class="form-control"
                 (click)="loadClassesElement(selectedElementGroup)">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of elementGroups'>
                   {{x}}
                 </option>
@@ -77,6 +78,7 @@
               <label> The Class of the new element </label>
               <select [(ngModel)]="selectedElementClass" name="selectedElementClass" class="form-control"
                 (click)="setValueVisibility(selectedElementClass)">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of allElementClassesPerGroup'>
                   {{x}}
                 </option>
@@ -92,6 +94,7 @@
             <div class="form-group col-sm">
               <label> Class of entity </label>
               <select [(ngModel)]="selectedEntityClass" name="selectedEntityClass" class="form-control">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of organizationalElementClasses'>
                   {{x}}
                 </option>
@@ -122,7 +125,8 @@
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'element')">Download SPARQL INSERT</button>
+              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'element')">Download SPARQL
+                INSERT</button>
 
             </div>
             <div class="form-group col-sm">
@@ -142,6 +146,7 @@
               <label> Group of new KPI </label>
               <select [(ngModel)]="selectedKPIGroup" name="selectedKPIGroup" class="form-control"
                 (click)="loadClassesKPI(selectedKPIGroup)">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of KPIGroups'>
                   {{x}}
                 </option>
@@ -151,6 +156,7 @@
               <label> The Class of the new element </label>
               <select [(ngModel)]="selectedKPIClass" name="selectedKPIClass" class="form-control"
                 (click)="loadTimingConstraint(selectedKPIClass)">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of allKPIClassesPerGroup'>
                   {{x}}
                 </option>
@@ -166,6 +172,7 @@
             <div class="form-group col-sm">
               <label> Class of entity </label>
               <select [(ngModel)]="selectedEntityClass" name="selectedEntityClass" class="form-control">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of organizationalElementClasses'>
                   {{x}}
                 </option>
@@ -181,6 +188,7 @@
             <div class="form-group col-sm">
               <label> Timing of the KPI </label>
               <select [(ngModel)]="selectedTiming" name="selectedTiming" class="form-control">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of possibleTiming'>
                   {{x}}
                 </option>
@@ -200,7 +208,8 @@
           </div>
           <div class="form-row">
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'KPI')">Download SPARQL INSERT</button>
+              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'KPI')">Download SPARQL
+                INSERT</button>
             </div>
             <div class="form-group col-sm">
               <button class="btn btn-secondary col m-3" (click)="createTripel(true, 'KPI')">Add</button>
@@ -212,22 +221,22 @@
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" id="vdiEntity-tab" data-toggle="tab" href="#vdiEntity" role="tab"
-                aria-controls="vdiEntity" aria-selected="true" (click)="setTableOption('VDI_BUTTON')"> VDI 3682/2206
+                aria-controls="vdiEntity" aria-selected="true"> VDI 3682/2206
                 entities </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="isoEntity-tab" data-toggle="tab" href="#isoEntity" role="tab"
-                aria-controls="isoEntity" aria-selected="false" (click)="setTableOption('ISO_BUTTON')"> ISO entities
+                aria-controls="isoEntity" aria-selected="false"> ISO entities
               </a>
             </li>
           </ul>
           <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="vdiEntity" role="tabpanel" aria-labelledby="vdiEntity-tab">
-              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+              <app-table [currentTable]="allVDIInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
                 (tableClickedCell)="tableClick($event)"></app-table>
             </div>
             <div class="tab-pane " id="isoEntity" role="tabpanel" aria-labelledby="isoEntity-tab">
-              <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+              <app-table [currentTable]="allIsoEntityInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
                 (tableClickedCell)="tableClick($event)"></app-table>
             </div>
           </div>

@@ -62,7 +62,6 @@ export class Iso22400_2Component implements OnInit {
   timeValueReadOnly: boolean = false;
 
   constructor(
-    private query: SparqlQueriesService,
     private isoService: Iso22400_2ModelService,
     private loadingScreenService: DataLoaderService,
     private vdi2206Service: Vdi2206ModelService,
@@ -139,6 +138,7 @@ export class Iso22400_2Component implements OnInit {
       this.isoService.createElement(this.elementVariables, execute).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.loadAllStatistics();
+        this.loadISOEntityInfo();
       });
     } else if (option == "KPI") {
       this.KPIVariables = {
@@ -154,6 +154,7 @@ export class Iso22400_2Component implements OnInit {
       this.isoService.createKPI(this.KPIVariables, execute).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.loadAllStatistics();
+        this.loadISOEntityInfo();
       });
     }
   }
@@ -191,6 +192,14 @@ export class Iso22400_2Component implements OnInit {
     let data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi3682Service.getLIST_OF_TECHNICAL_RESOURCES()]
     this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data)
     this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
+  }
+
+  loadISOEntityInfo(){
+    this.isoService.loadTABLE_ALL_ENTITY_INFO().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.allIsoEntityInfo = data
+      this.isoService.setTABLE_ALL_ENTITY_INFO(data)
+    });
   }
 
   setTableOption(entityTable: string) {

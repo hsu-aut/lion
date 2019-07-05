@@ -298,9 +298,11 @@ export class ISO22400_2DATA {
 
   SELECT ?Entity ?EntityType
   WHERE { 
-   	?Entity a ISO:OrganizationalTerms.
+    ?Entity a ISO:OrganizationalTerms.
     ?Entity rdf:type ?EntityType.
-    ?EntityType sesame:directSubClassOf ISO:OrganizationalTerms.
+    ?EntityType rdfs:subClassOf ISO:OrganizationalTerms.
+    FILTER (?EntityType != ISO:OrganizationalTerms)
+    FILTER (?EntityType != ISO:OperationCluster)
   }
   `
 
