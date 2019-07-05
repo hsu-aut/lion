@@ -140,6 +140,7 @@ export class Dinen61360Service {
       }
       case "delete": {
         console.log("not implemented yet")
+        break;
       }
       case "build": {
         var blobObserver = new Observable((observer) => {
@@ -164,6 +165,7 @@ export class Dinen61360Service {
       }
       case "delete": {
         console.log("not implemented yet")
+        break;
       }
       case "build": {
         var blobObserver = new Observable((observer) => {
