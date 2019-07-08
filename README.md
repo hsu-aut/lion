@@ -33,7 +33,7 @@ npm install
 
 ### Install GraphDB
 
-LiOnS requires a local (or remote) graph database. Currently, only GraphDB (see: `http://graphdb.ontotext.com/`) is supported. Get yourself a local (or remote) access, by installing GraphDB on your device for instance.
+LiOnS requires a local (or remote) graph database. Currently, only GraphDB (see: `http://graphdb.ontotext.com/`) is supported. Get yourself a local (or remote) access, by installing GraphDB (e.g. GraphDB Free) on your (or remote) device.
 
 After having installed GraphDB, you will have to enable CORS, as the front end currently sends HTTP requests to the DB. This will be done by the back end in the future. However, in order to enable CORS, click on `Settings...` in your GraphDB instance (not the Workbench). By default, GraphDB should run on port `http://localhost:7200`. Set the port to `7200`. Write in the text area the following command in order to enable CORS:
 ```
