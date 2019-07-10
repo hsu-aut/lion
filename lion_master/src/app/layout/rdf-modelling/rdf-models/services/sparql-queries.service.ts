@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PrefixesService } from './prefixes.service';
 import { Tables } from '../../utils/tables';
 import { DataLoaderService } from "../../../../shared/services/dataLoader.service";
+import { MessagesService } from "../../../../shared/services/messages.service";
+import { error } from '@angular/compiler/src/util';
 
 //const url = `http://localhost:7200/repositories/Airbus_CTC_01`;
 
@@ -21,7 +23,8 @@ export class SparqlQueriesService {
   constructor(
     private http: HttpClient,
     private namespaceService: PrefixesService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private messageService: MessagesService
   ) {
 
     // default url
@@ -71,10 +74,15 @@ export class SparqlQueriesService {
 
     var tableObservable = new Observable((observer) => {
       this.http.post(this.getURL(), Query, httpOptions).subscribe((data: any) => {
+        
         this.namespaceService.parseToPrefix(data);
         currentTable = this.TableUtil.buildTable(data)
         observer.next(currentTable)
         observer.complete()
+      },
+      error => {
+        this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status}`);
+        this.loadingScreenService.stopLoading();
       });
     })
 
@@ -95,6 +103,10 @@ export class SparqlQueriesService {
         currentList = this.TableUtil.buildList(data, varPosition)
         observer.next(currentList)
         observer.complete()
+      },
+      error => {
+        this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status}`);
+        this.loadingScreenService.stopLoading();
       });
     })
 
