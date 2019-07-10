@@ -75,18 +75,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
       // do some message stuff
       switch (messageObject['type']) {
         case "success": {
-          console.log(messageObject['type'])
-          let body = messageObject['body'] + Math.random()
-          this.setSuccessFormArray(messageObject['head'], body)
+          this.setSuccessFormArray(messageObject['head'], messageObject['body'])
           break;
         }
         case "warning": {
-          console.log(messageObject['type'])
           this.setWarningFormArray(messageObject['head'], messageObject['body'])
           break;
         }
         case "error": {
-          console.log(messageObject['type'])
           this.setErrorFormArray(messageObject['head'], messageObject['body'])
           break;
         }
@@ -101,17 +97,14 @@ export class MessagesComponent implements OnInit, OnDestroy {
   removeMessage(type, index) {
     switch (type) {
       case "success": {
-        console.log(type)
         this.successFormArray.removeAt(index);
         break;
       }
       case "warning": {
-        console.log(type)
         this.warningFormArray.removeAt(index);
         break;
       }
       case "error": {
-        console.log(type)
         this.errorFormArray.removeAt(index);
         break;
       }
