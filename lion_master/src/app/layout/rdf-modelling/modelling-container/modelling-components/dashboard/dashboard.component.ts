@@ -5,6 +5,8 @@ import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../../../rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../../../rdf-models/isa88Model.service';
+import { WadlModelService } from '../../../rdf-models/wadlModel.service';
+
 import { DashboardService } from './dashboard.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
@@ -82,7 +84,8 @@ export class DashboardComponent implements OnInit {
     private dinen61360Service: Dinen61360Service,
     private isa88Service: Isa88ModelService,
     private dashboardService: DashboardService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private wadlService: WadlModelService
 
   ) { }
 
@@ -96,6 +99,7 @@ export class DashboardComponent implements OnInit {
     this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
     this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
     this.DINEN61360Table = this.dinen61360Service.getTABLE_All_TYPES();
+    this.WADLTable = this.wadlService.getTABLE_BASE_RESOURCES();
     this.getTriplesCount();
     this.getActiveNamespace();
 
@@ -156,13 +160,28 @@ export class DashboardComponent implements OnInit {
 
   }
 
-
   tableClick(individual) {
-    this.query.getRelatedTriples(individual).pipe(take(1)).subscribe((data: any) => {
-      this.currentTable = data
-      this.tableTitle = "Triples related to: " + '"' + individual + '"';
-      this.tableSubTitle = "Click on a cell to load triples related to this element."
-    })
+    let PREFIXES = this.namespaceService.getPrefixes();
+
+    // if known prefix contained in individual, get related triples
+    for (let i = 0; i < PREFIXES.length; i++) {
+      if (individual.search(PREFIXES[i].prefix) != -1) {
+        this.query.getRelatedTriples(individual).pipe(take(1)).subscribe((data: any) => {
+          this.currentTable = data
+          this.tableTitle = "Triples related to: " + '"' + individual + '"';
+          this.tableSubTitle = "Click on a cell to load triples related to this element."
+        })
+      }
+    }
+    // if http: or urn: is contained in individial, get related triples
+    if (individual.search("http:") != -1 || individual.search("urn:") != -1) {
+      this.query.getRelatedTriples(individual).pipe(take(1)).subscribe((data: any) => {
+        this.currentTable = data
+        this.tableTitle = "Triples related to: " + '"' + individual + '"';
+        this.tableSubTitle = "Click on a cell to load triples related to this element."
+      })
+    } 
+
   }
 
   setTable(table) {
@@ -180,6 +199,7 @@ export class DashboardComponent implements OnInit {
       this.numberOfTriples = this.numberOfTriples + this.doughnutChartData[i];
     }
   }
+
   getActiveNamespace() {
     var PREFIXES = this.namespaceService.getPrefixes();
     this.activeNamespace = PREFIXES[this.namespaceService.getActiveNamespace()].namespace;
