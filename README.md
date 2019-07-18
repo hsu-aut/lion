@@ -18,6 +18,13 @@ The set up includes setting up LiOnS (front and backend) in development mode in 
 
 Clone/download the repository in the directory of your choice.
 
+### Install Visual Studio Code, nodeJS and AngularCLI
+
+Go to `https://code.visualstudio.com/` and download the IDE for your operating system. Afterwards, download the latest stable version of nodeJS from `https://nodejs.org/en/`. This should include the node package manager (npm). Now, open a terminal in Visual Studio Code and install the Angular CLI via:
+```
+npm install -g @angular/cli
+```
+
 ### Install LiOnS dependencies
 
 For the back end, open a terminal in visual studio code. Then, run the following commands:
