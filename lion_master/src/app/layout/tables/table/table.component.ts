@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { Tables } from '../../rdf-modelling/utils/tables';
-import { asTextData } from '@angular/core/src/view';
 import { IfStmt } from '@angular/compiler';
 
 
