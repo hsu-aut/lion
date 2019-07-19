@@ -105,7 +105,7 @@ export class SparqlQueriesService {
         observer.complete()
       },
       error => {
-        this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status}`);
+        this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status} code`);
         this.loadingScreenService.stopLoading();
       });
     })
