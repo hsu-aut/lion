@@ -43,7 +43,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     return this.messageForm.get('warningFormArray') as FormArray;
   }
   setWarningFormArray(head, body) {
-    this.successFormArray.push(this.fb.group({
+    this.warningFormArray.push(this.fb.group({
       head: head,
       body: body
     }));
