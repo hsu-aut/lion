@@ -11,7 +11,9 @@ import { Vdi3682ModelService } from '../../../../rdf-modelling/rdf-models/vdi368
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
+
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { MessagesService } from '../../../../../shared/services/messages.service';
 import { Tables } from '../../../utils/tables';
 import { take } from 'rxjs/operators';
 
@@ -19,7 +21,7 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-wadl',
   templateUrl: './wadl.component.html',
-  styleUrls: ['./wadl.component.scss']
+  styleUrls: ['../../../../../../app/app.component.scss', './wadl.component.scss']
 })
 export class WadlComponent implements OnInit {
 
@@ -37,55 +39,55 @@ export class WadlComponent implements OnInit {
 
   // forms
   baseResourceForm = this.fb.group({
-    resourceBasePath: [undefined, Validators.required],
+    resourceBasePath: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]],
     serviceProvider: [undefined]
   })
 
   serviceForm = this.fb.group({
-    resourceBasePath: [undefined],
-    servicePath: [undefined]
+    resourceBasePath: [undefined, Validators.required],
+    servicePath: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]]
   })
 
   requestForm = this.fb.group({
-    resourceBasePath: [undefined],
-    servicePath: [undefined],
-    method: [undefined],
-    parameterType: [undefined],
+    resourceBasePath: [undefined, Validators.required],
+    servicePath: [undefined, Validators.required],
+    method: [undefined, Validators.required],
+    parameterType: [undefined, Validators.required],
     requestFormParameterArray: this.fb.array([
       this.fb.control('')
     ]),
-    parameterKey: [undefined],
-    dataType: [undefined],
+    parameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    dataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     ontologicalDataType: [undefined],
-    optionValue: [undefined],
+    optionValue: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     requestFormRepresentationArray: this.fb.array([
       this.fb.control('')
     ]),
-    bodyMediaType: [undefined],
-    bodyParameterKey: [undefined],
-    bodyDataType: [undefined],
+    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyParameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyDataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     ontologicalBodyDataType: [undefined],
-    bodyOptionValue: [undefined],
+    bodyOptionValue: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
   })
 
   responseForm = this.fb.group({
-    resourceBasePath: [undefined],
-    servicePath: [undefined],
-    method: [undefined],
-    responseCode: [undefined],
+    resourceBasePath: [undefined, Validators.required],
+    servicePath: [undefined, Validators.required],
+    method: [undefined, Validators.required],
+    responseCode: [undefined, Validators.required],
     responseFormRepresentationArray: this.fb.array([
       this.fb.control('')
     ]),
-    bodyMediaType: [undefined],
-    bodyParameterKey: [undefined],
-    bodyDataType: [undefined],
+    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyParameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyDataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     ontologicalBodyDataType: [undefined],
-    bodyOptionValue: [undefined],
+    bodyOptionValue: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
   })
 
   ontologicalDataType = this.fb.group({
-    TBox: [undefined],
-    type: [undefined],
+    TBox: [undefined, Validators.required],
+    type: [undefined, Validators.required],
     individual: [undefined]
   })
 
@@ -172,7 +174,9 @@ export class WadlComponent implements OnInit {
     private vdi3682Service: Vdi3682ModelService,
     private vdi2206Service: Vdi2206ModelService,
     private isoService: Iso22400_2ModelService,
-    private loadingScreenService: DataLoaderService) {
+    private loadingScreenService: DataLoaderService,
+    private messageService: MessagesService
+  ) {
   }
 
 
@@ -183,127 +187,134 @@ export class WadlComponent implements OnInit {
   }
 
   createTripel(action: string, context: string, form) {
-    switch (context) {
-      case "baseResource": {
-        this.modelVariables.baseResourcePath = "http://" + form.controls['resourceBasePath'].value;
-        this.modelVariables.baseResourceIRI = this.nameService.addOrParseNamespace(form.controls['resourceBasePath'].value);
-        this.modelVariables.serviceProviderIRI = this.nameService.addOrParseNamespace(form.controls['serviceProvider'].value);
-        this.wadlService.modifyBaseResource(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.loadDynamicDropdowns();
-          this.loadDynamicTables();
-          this.modelVariables = new WADLVARIABLES();
-        });
+    if (form.valid) {
+      switch (context) {
+        case "baseResource": {
+          this.modelVariables.baseResourcePath = "http://" + form.controls['resourceBasePath'].value;
+          this.modelVariables.baseResourceIRI = this.nameService.addOrParseNamespace(form.controls['resourceBasePath'].value);
+          this.modelVariables.serviceProviderIRI = this.nameService.addOrParseNamespace(form.controls['serviceProvider'].value);
+          this.wadlService.modifyBaseResource(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.loadDynamicDropdowns();
+            this.loadDynamicTables();
+            this.modelVariables = new WADLVARIABLES();
+          });
 
-        break;
-      }
-      case "service": {
-        this.modelVariables.baseResourceIRI = this.nameService.addOrParseNamespace(form.controls['resourceBasePath'].value);
-        this.modelVariables.servicePath = "/" + form.controls['servicePath'].value;
-        this.modelVariables.serviceIRI = this.modelVariables.baseResourceIRI + this.modelVariables.servicePath;
-        this.wadlService.modifyService(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.loadDynamicDropdowns();
-          this.loadDynamicTables();
-          this.modelVariables = new WADLVARIABLES();
-        });
-        break;
-      }
-      case "requestParameter": {
-        this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
-        this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
-        this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
-        this.modelVariables.requestIRI = this.modelVariables.methodIRI + "_Req";
-        this.modelVariables.parameterKey = form.controls['parameterKey'].value;
-        this.modelVariables.parameterIRI = this.modelVariables.requestIRI + "_" + this.modelVariables.parameterKey;
-        this.modelVariables.parameterTypeIRI = this.nameService.parseToIRI(form.controls['parameterType'].value);
-        if (form.controls['ontologicalDataType'].value == "ontologicalDataTypeTBox") {
-          this.modelVariables.parameterDataTypeTBox = this.nameService.parseToIRI(form.controls['dataType'].value);
-        } else if (form.controls['ontologicalDataType'].value == "ontologicalDataTypeABox") {
-          this.modelVariables.parameterDataTypeABox = this.nameService.parseToIRI(form.controls['dataType'].value);
-        } else {
-          this.modelVariables.parameterDataType = form.controls['dataType'].value;
+          break;
         }
-        this.modelVariables.optionValue = form.controls['optionValue'].value;
-        if (this.modelVariables.optionValue != "" && this.modelVariables.optionValue) { this.modelVariables.optionIRI = this.modelVariables.parameterIRI + "_Option"; }
-        this.wadlService.modifyRequest(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.loadDynamicDropdowns();
-          this.loadDynamicTables();
-          this.getExistingParameter(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, this.requestForm.controls['parameterType'].value);
-          this.modelVariables = new WADLVARIABLES();
-        });
-        break;
-      }
-      case "requestRepresentationParameter": {
-        this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
-        this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
-        this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
-        this.modelVariables.requestIRI = this.modelVariables.methodIRI + "_Req";
-        this.modelVariables.bodyRepresentationMediaType = form.controls['bodyMediaType'].value;
-        this.modelVariables.bodyRepresentationIRI = this.modelVariables.requestIRI + "_BodyRep_" + this.modelVariables.bodyRepresentationMediaType;
-        this.modelVariables.bodyRepresentationParameterKey = form.controls['bodyParameterKey'].value;
+        case "service": {
+          this.modelVariables.baseResourceIRI = this.nameService.addOrParseNamespace(form.controls['resourceBasePath'].value);
+          this.modelVariables.servicePath = "/" + form.controls['servicePath'].value;
+          this.modelVariables.serviceIRI = this.modelVariables.baseResourceIRI + this.modelVariables.servicePath;
+          this.wadlService.modifyService(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.loadDynamicDropdowns();
+            this.loadDynamicTables();
+            this.modelVariables = new WADLVARIABLES();
+          });
+          break;
+        }
+        case "requestParameter": {
+          this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
+          this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
+          this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
+          this.modelVariables.requestIRI = this.modelVariables.methodIRI + "_Req";
+          if (form.controls['parameterType'].value != "none" && form.controls['parameterKey'].value != "") {
+            this.modelVariables.parameterKey = form.controls['parameterKey'].value;
+            this.modelVariables.parameterIRI = this.modelVariables.requestIRI + "_" + this.modelVariables.parameterKey;
+            this.modelVariables.parameterTypeIRI = this.nameService.parseToIRI(form.controls['parameterType'].value);
+          }
+          if (form.controls['ontologicalDataType'].value == "ontologicalDataTypeTBox") {
+            this.modelVariables.parameterDataTypeTBox = this.nameService.parseToIRI(form.controls['dataType'].value);
+          } else if (form.controls['ontologicalDataType'].value == "ontologicalDataTypeABox") {
+            this.modelVariables.parameterDataTypeABox = this.nameService.parseToIRI(form.controls['dataType'].value);
+          } else {
+            this.modelVariables.parameterDataType = form.controls['dataType'].value;
+          }
+          this.modelVariables.optionValue = form.controls['optionValue'].value;
+          if (this.modelVariables.optionValue != "" && this.modelVariables.optionValue) { this.modelVariables.optionIRI = this.modelVariables.parameterIRI + "_Option"; }
+          console.log(this.modelVariables)
+          this.wadlService.modifyRequest(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.loadDynamicDropdowns();
+            this.loadDynamicTables();
+            this.getExistingParameter(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, this.requestForm.controls['parameterType'].value);
+            this.modelVariables = new WADLVARIABLES();
+          });
+          break;
+        }
+        case "requestRepresentationParameter": {
+          this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
+          this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
+          this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
+          this.modelVariables.requestIRI = this.modelVariables.methodIRI + "_Req";
+          this.modelVariables.bodyRepresentationMediaType = form.controls['bodyMediaType'].value;
+          this.modelVariables.bodyRepresentationIRI = this.modelVariables.requestIRI + "_BodyRep_" + this.modelVariables.bodyRepresentationMediaType;
+          this.modelVariables.bodyRepresentationParameterKey = form.controls['bodyParameterKey'].value;
 
-        if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
-          this.modelVariables.bodyRepresentationParameterDataTypeOntologicalTBox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
-        } else if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
-          this.modelVariables.bodyRepresentationParameterDataTypeOntologicalABox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
-        } else {
+          if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
+            this.modelVariables.bodyRepresentationParameterDataTypeOntologicalTBox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
+          } else if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
+            this.modelVariables.bodyRepresentationParameterDataTypeOntologicalABox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
+          } else {
+            this.modelVariables.bodyRepresentationParameterDataType = form.controls['bodyDataType'].value;
+          }
+
           this.modelVariables.bodyRepresentationParameterDataType = form.controls['bodyDataType'].value;
+          this.modelVariables.bodyRepresentationParameterIRI = this.modelVariables.bodyRepresentationIRI + "_" + this.modelVariables.bodyRepresentationParameterKey;
+          this.modelVariables.bodyRepresentationParameterOptionValue = form.controls['bodyOptionValue'].value;
+          if (this.modelVariables.bodyRepresentationParameterOptionValue != "" && this.modelVariables.bodyRepresentationParameterOptionValue) { this.modelVariables.bodyRepresentationParameterOptionIRI = this.modelVariables.bodyRepresentationParameterIRI + "_Option"; }
+          this.wadlService.modifyRequest(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.getExistingRepresentation(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, "request");
+            this.modelVariables = new WADLVARIABLES();
+          });
+          break;
         }
+        case "response": {
+          this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
+          this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
+          this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
+          this.modelVariables.responseTypeIRI = this.nameService.parseToIRI(form.controls['responseCode'].value);
+          this.modelVariables.responseIRI = this.modelVariables.methodIRI + "_Res" + this.nameService.parseToName(form.controls['responseCode'].value);
+          this.wadlService.modifyResponse(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.modelVariables = new WADLVARIABLES();
+          });
+          break;
+        }
+        case "responseRepresentationParameter": {
+          this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
+          this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
+          this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
+          this.modelVariables.responseIRI = this.modelVariables.methodIRI + "_Res" + this.nameService.parseToName(form.controls['responseCode'].value);
+          this.modelVariables.responseTypeIRI = this.nameService.parseToIRI(form.controls['responseCode'].value);
+          this.modelVariables.bodyRepresentationMediaType = form.controls['bodyMediaType'].value;
+          this.modelVariables.bodyRepresentationIRI = this.modelVariables.responseIRI + "_BodyRep_" + this.modelVariables.bodyRepresentationMediaType;
+          this.modelVariables.bodyRepresentationParameterKey = form.controls['bodyParameterKey'].value;
 
-        this.modelVariables.bodyRepresentationParameterDataType = form.controls['bodyDataType'].value;
-        this.modelVariables.bodyRepresentationParameterIRI = this.modelVariables.bodyRepresentationIRI + "_" + this.modelVariables.bodyRepresentationParameterKey;
-        this.modelVariables.bodyRepresentationParameterOptionValue = form.controls['bodyOptionValue'].value;
-        if (this.modelVariables.bodyRepresentationParameterOptionValue != "" && this.modelVariables.bodyRepresentationParameterOptionValue) { this.modelVariables.bodyRepresentationParameterOptionIRI = this.modelVariables.bodyRepresentationParameterIRI + "_Option"; }
-        this.wadlService.modifyRequest(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.getExistingRepresentation(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, "request");
-          this.modelVariables = new WADLVARIABLES();
-        });
-        break;
-      }
-      case "response": {
-        this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
-        this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
-        this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
-        this.modelVariables.responseTypeIRI = this.nameService.parseToIRI(form.controls['responseCode'].value);
-        this.modelVariables.responseIRI = this.modelVariables.methodIRI + "_Res" + this.nameService.parseToName(form.controls['responseCode'].value);
-        this.wadlService.modifyResponse(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.modelVariables = new WADLVARIABLES();
-        });
-        break;
-      }
-      case "responseRepresentationParameter": {
-        this.modelVariables.serviceIRI = this.nameService.parseToIRI(form.controls['servicePath'].value);
-        this.modelVariables.methodTypeIRI = this.nameService.parseToIRI(form.controls['method'].value);
-        this.modelVariables.methodIRI = this.modelVariables.serviceIRI + "_" + this.nameService.parseToName(form.controls['method'].value);
-        this.modelVariables.responseIRI = this.modelVariables.methodIRI + "_Res" + this.nameService.parseToName(form.controls['responseCode'].value);
-        this.modelVariables.responseTypeIRI = this.nameService.parseToIRI(form.controls['responseCode'].value);
-        this.modelVariables.bodyRepresentationMediaType = form.controls['bodyMediaType'].value;
-        this.modelVariables.bodyRepresentationIRI = this.modelVariables.responseIRI + "_BodyRep_" + this.modelVariables.bodyRepresentationMediaType;
-        this.modelVariables.bodyRepresentationParameterKey = form.controls['bodyParameterKey'].value;
+          if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
+            this.modelVariables.bodyRepresentationParameterDataTypeOntologicalTBox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
+          } else if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
+            this.modelVariables.bodyRepresentationParameterDataTypeOntologicalABox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
+          } else {
+            this.modelVariables.bodyRepresentationParameterDataType = form.controls['bodyDataType'].value;
+          }
 
-        if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
-          this.modelVariables.bodyRepresentationParameterDataTypeOntologicalTBox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
-        } else if (form.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
-          this.modelVariables.bodyRepresentationParameterDataTypeOntologicalABox = this.nameService.parseToIRI(form.controls['bodyDataType'].value);
-        } else {
           this.modelVariables.bodyRepresentationParameterDataType = form.controls['bodyDataType'].value;
+          this.modelVariables.bodyRepresentationParameterIRI = this.modelVariables.bodyRepresentationIRI + "_" + this.modelVariables.bodyRepresentationParameterKey;
+          this.modelVariables.bodyRepresentationParameterOptionValue = form.controls['bodyOptionValue'].value;
+          if (this.modelVariables.bodyRepresentationParameterOptionValue != "" && this.modelVariables.bodyRepresentationParameterOptionValue) { this.modelVariables.bodyRepresentationParameterOptionIRI = this.modelVariables.bodyRepresentationParameterIRI + "_Option"; }
+          this.wadlService.modifyResponse(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.getExistingRepresentation(this.responseForm.controls['servicePath'].value, this.responseForm.controls['method'].value, "response");
+            this.modelVariables = new WADLVARIABLES();
+          });
+          break;
         }
-
-        this.modelVariables.bodyRepresentationParameterDataType = form.controls['bodyDataType'].value;
-        this.modelVariables.bodyRepresentationParameterIRI = this.modelVariables.bodyRepresentationIRI + "_" + this.modelVariables.bodyRepresentationParameterKey;
-        this.modelVariables.bodyRepresentationParameterOptionValue = form.controls['bodyOptionValue'].value;
-        if (this.modelVariables.bodyRepresentationParameterOptionValue != "" && this.modelVariables.bodyRepresentationParameterOptionValue) { this.modelVariables.bodyRepresentationParameterOptionIRI = this.modelVariables.bodyRepresentationParameterIRI + "_Option"; }
-        this.wadlService.modifyResponse(this.modelVariables, action).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.getExistingRepresentation(this.responseForm.controls['servicePath'].value, this.responseForm.controls['method'].value, "response");
-          this.modelVariables = new WADLVARIABLES();
-        });
-        break;
       }
+    } else if (form.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
   }
 
@@ -322,8 +333,12 @@ export class WadlComponent implements OnInit {
 
   getExistingParameter(servicePath, method, parameterType) {
     // this method should get the existing parameter table
-    if (servicePath && method && parameterType) {
-
+    this.requestForm.controls['parameterKey'].setValue('')
+    this.requestForm.controls['dataType'].setValue('')
+    this.requestForm.controls['optionValue'].setValue('')
+    if (parameterType == "none") {
+      this.setRequestFormParameter([])
+    } else if (servicePath && method && parameterType) {
       let serviceIRI = this.nameService.parseToIRI(servicePath);
       let methodIRI = this.nameService.parseToIRI(method);
       let parameterTypeIRI = this.nameService.parseToIRI(parameterType);
