@@ -13,13 +13,15 @@ import { EclassSearchService } from '../../../rdf-models/services/eclass-search.
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { MessagesService } from '../../../../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
 import { Tables } from '../../../utils/tables';
+
 
 @Component({
   selector: 'app-dinen61360',
   templateUrl: './dinen61360.component.html',
-  styleUrls: ['./dinen61360.component.scss']
+  styleUrls: ['../../../../../../app/app.component.scss', './dinen61360.component.scss']
 })
 export class Dinen61360Component implements OnInit {
   // util variables
@@ -80,22 +82,23 @@ export class Dinen61360Component implements OnInit {
   }
   // forms
   typeDescriptionForm = this.fb.group({
-    code: [undefined],
-    version: [undefined],
-    revision: [undefined],
-    preferred_name: [undefined],
-    short_name: [undefined],
-    definition: [undefined],
-    dataType: [undefined],
-    UoM: [undefined]
+    code: [undefined, [Validators.required, Validators.pattern('([A-Z]{3})([0-9]{3})')]],
+    version: [undefined, [Validators.required, Validators.pattern('([0-9]{1,})')]],
+    revision: [undefined, [Validators.required, Validators.pattern('([0-9]{1,})')]],
+    preferred_name: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z; ]{1,})')]],
+    short_name: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z]{1,})')]],
+    definition: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z;  ]{1,})|([0-9]{1,})')]],
+    dataType: [undefined, Validators.required],
+    UoM: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z]{1,})|([0-9]{0,})')]]
   })
 
+
   instanceDescriptionForm = this.fb.group({
-    code: [undefined],
-    individual: [undefined],
-    expressionGoal: [undefined],
-    logicInterpretation: [undefined],
-    value: [undefined]
+    code: [undefined, [Validators.required, Validators.pattern('([A-Z]{3})([0-9]{3})')]],
+    individual: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('(^((?!://).)*$)')]],
+    expressionGoal: [undefined, Validators.required],
+    logicInterpretation: [undefined, Validators.required],
+    value: [undefined, Validators.required]
   })
 
   eclassSearchForm = this.fb.group({
@@ -115,7 +118,7 @@ export class Dinen61360Component implements OnInit {
 
   // graph db data VDI 3682
   allProcessInfo: Array<Object> = [];
-  
+
 
   // graph db data ISA 88
   allBehaviorInfo: Array<Object> = [];
@@ -143,6 +146,7 @@ export class Dinen61360Component implements OnInit {
     private vdi3682Service: Vdi3682ModelService,
     private isa88Service: Isa88ModelService,
     private loadingScreenService: DataLoaderService,
+    private messageService: MessagesService,
     private vdi2206Service: Vdi2206ModelService,
     private isoService: Iso22400_2ModelService
   ) { }
@@ -157,53 +161,55 @@ export class Dinen61360Component implements OnInit {
   }
 
   createTripel(action: string, context: string, form) {
-    switch (context) {
-      case "type": {
-
-        let typeModelVariables = {
-          typeIRI: this.nameService.addOrParseNamespace(this.typeDescriptionForm.controls['code'].value),
-          code: this.typeDescriptionForm.controls['code'].value,
-          version: this.typeDescriptionForm.controls['version'].value,
-          revision: this.typeDescriptionForm.controls['revision'].value,
-          preferredName: this.typeDescriptionForm.controls['preferred_name'].value,
-          shortName: this.typeDescriptionForm.controls['short_name'].value,
-          definition: this.typeDescriptionForm.controls['definition'].value,
-          dataTypeIRI: this.nameService.parseToIRI(this.typeDescriptionForm.controls['dataType'].value),
-          unitOfMeasure: this.typeDescriptionForm.controls['UoM'].value
+    if (form.valid) {
+      switch (context) {
+        case "type": {
+          let typeModelVariables = {
+            typeIRI: this.nameService.addOrParseNamespace(this.typeDescriptionForm.controls['code'].value),
+            code: this.typeDescriptionForm.controls['code'].value,
+            version: this.typeDescriptionForm.controls['version'].value,
+            revision: this.typeDescriptionForm.controls['revision'].value,
+            preferredName: this.typeDescriptionForm.controls['preferred_name'].value,
+            shortName: this.typeDescriptionForm.controls['short_name'].value,
+            definition: this.typeDescriptionForm.controls['definition'].value,
+            dataTypeIRI: this.nameService.parseToIRI(this.typeDescriptionForm.controls['dataType'].value),
+            unitOfMeasure: this.typeDescriptionForm.controls['UoM'].value
+          }
+          this.modelVariables.mandatoryTypeVariables = typeModelVariables;
+          console.log(this.modelVariables)
+          this.dinen61360Service.modifyType(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.setAllTypes();
+            this.setStatisticInfo();
+          });
+          console.log(action)
+          console.log(form)
+          break;
         }
-        this.modelVariables.mandatoryTypeVariables = typeModelVariables;
-        console.log(this.modelVariables)
-        this.dinen61360Service.modifyType(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.setAllTypes();
-          this.setStatisticInfo();
-        });
-        console.log(action)
-        console.log(form)
-
-        break;
-      }
-      case "instance": {
-        let instanceModelVariables = {
-          code: this.instanceDescriptionForm.controls['code'].value,
-          expressionGoalString: this.instanceDescriptionForm.controls['expressionGoal'].value,
-          logicInterpretationString: this.instanceDescriptionForm.controls['logicInterpretation'].value,
-          valueString: this.instanceDescriptionForm.controls['value'].value,
-          describedIndividual: this.nameService.addOrParseNamespace(this.instanceDescriptionForm.controls['individual'].value)
+        case "instance": {
+          let instanceModelVariables = {
+            code: this.instanceDescriptionForm.controls['code'].value,
+            expressionGoalString: this.instanceDescriptionForm.controls['expressionGoal'].value,
+            logicInterpretationString: this.instanceDescriptionForm.controls['logicInterpretation'].value,
+            valueString: this.instanceDescriptionForm.controls['value'].value,
+            describedIndividual: this.nameService.addOrParseNamespace(this.instanceDescriptionForm.controls['individual'].value)
+          }
+          this.modelVariables.instanceVariables = instanceModelVariables;
+          console.log(this.modelVariables)
+          this.dinen61360Service.modifyInstance(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.setAllInstances();
+            this.setStatisticInfo();
+          });
+          console.log(action)
+          console.log(form)
+          break;
         }
-        this.modelVariables.instanceVariables = instanceModelVariables;
-        console.log(this.modelVariables)
-        this.dinen61360Service.modifyInstance(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.setAllInstances();
-          this.setStatisticInfo();
-        });
-        console.log(action)
-        console.log(form)
-        break;
       }
-
+    } else if (form.invalid) {
+      this.messageService.addMessage('error','Ups!','It seems like you are missing some data here...')
     }
+
   }
 
   typeTableClick(context, row) {
@@ -287,7 +293,7 @@ export class Dinen61360Component implements OnInit {
     });
   }
 
-  setAllInstances(){
+  setAllInstances() {
     this.dinen61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.allInstances = data;

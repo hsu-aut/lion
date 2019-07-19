@@ -54,46 +54,46 @@
                 <div class="tab-pane fade show active" id="type" role="tabpanel" aria-labelledby="type-tab">
                     <!-- content to create new type -->
                     <div class="form-row" [formGroup]="typeDescriptionForm">
-                        <div class="form-group col-sm">
+                        <div class="form-group col-sm cross-validation">
                             <label> Code </label>
                             <input class="form-control" formControlName="code" name="code" type="text"
-                                placeholder="e.g. 'ABC123'">
+                                placeholder="e.g. 'ABC123'" required>
                         </div>
                         <div class="form-group col-sm">
                             <label> Version </label>
                             <input class="form-control" formControlName="version" name="version" type="text"
-                                placeholder="e.g. '1'">
+                                placeholder="e.g. '1'" required>
                         </div>
                         <div class="form-group col-sm">
                             <label> Revision </label>
                             <input class="form-control" formControlName="revision" name="revision" type="text"
-                                placeholder="e.g. '1'">
+                                placeholder="e.g. '1'" required>
                         </div>
                         <div class="form-group col-sm">
                             <label> Preferred Name </label>
                             <input class="form-control" formControlName="preferred_name" name="preferred_name"
-                                type="text" placeholder="e.g. 'MyTypeOfProperty'">
+                                type="text" placeholder="e.g. 'MyTypeOfProperty'" required>
                         </div>
                     </div>
                     <div class="form-row" [formGroup]="typeDescriptionForm">
                         <div class="form-group col-sm">
                             <label> Short Name </label>
                             <input class="form-control" formControlName="short_name" name="short_name" type="text"
-                                placeholder="e.g. 'myProperty'">
+                                placeholder="e.g. 'myProperty'" required>
                         </div>
                         <div class="form-group col-sm">
                             <label> Definition </label>
                             <input class="form-control" formControlName="definition" name="definition" type="text"
-                                placeholder="e.g. 'My property is defined as...'">
+                                placeholder="e.g. 'My property is defined as...'" required>
                         </div>
                         <div class="form-group col-sm">
                             <label> Unit of Measure </label>
                             <input class="form-control" formControlName="UoM" name="UoM" type="text"
-                                placeholder="e.g. 'km/h'">
+                                placeholder="e.g. 'km/h'" required>
                         </div>
                         <div class="form-group col-sm">
                             <label> Data type </label>
-                            <select formControlName="dataType" name="dataType" class="form-control">
+                            <select formControlName="dataType" name="dataType" class="form-control" required>
                                 <option value=null selected hidden></option>
                                 <option *ngFor='let x of datatypes'>
                                     {{x}}
@@ -616,7 +616,8 @@
 </div> -->
 <!-- modals -->
 <!--  helper modal -->
-<div class="modal fade bd-example-modal-lg" id="DIN_HELPER" tabindex="-1" role="dialog" aria-labelledby="DIN_HELPER" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="DIN_HELPER" tabindex="-1" role="dialog" aria-labelledby="DIN_HELPER"
+    aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -636,7 +637,8 @@
                     possible properties or characteristics in general, and instances that can be used to express certain
                     values of a property (e.g. lot size = 4). The type description represents the characteristics of a
                     physical or logical object that can be used to describe this object (e.g. unit of measure for the
-                    lot size). Whenever a data element is instantiated, this data element receives an additional instance
+                    lot size). Whenever a data element is instantiated, this data element receives an additional
+                    instance
                     de-scription. The instance description complements the type description with further details, e.g. a
                     measured value (e.g. lot size = “4”). In order to describe the data elements in a
                     machine-interpretable way, attributes have to be used to further describe a type or an instance of a
