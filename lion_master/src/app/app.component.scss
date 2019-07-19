@@ -1,0 +1,12 @@
+input.ng-valid  {
+    border-left: 5px solid #42A948; /* green */
+}
+select.ng-valid  {
+    border-left: 5px solid #42A948; /* green */
+}
+input.ng-invalid:not(form)  {
+    border-left: 5px solid #a94442; /* red */
+}
+select.ng-invalid:not(form)  {
+    border-left: 5px solid #a94442; /* red */
+}
