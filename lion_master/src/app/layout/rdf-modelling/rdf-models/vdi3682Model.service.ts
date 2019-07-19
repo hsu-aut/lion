@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
+import { DownloadService } from '../rdf-models/services/download.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
+import { MessagesService } from '../../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
 
 @Injectable({
@@ -21,7 +24,9 @@ export class Vdi3682ModelService {
   constructor(
     private query: SparqlQueriesService,
     private nameService: PrefixesService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private messageService: MessagesService,
+    private downloadService: DownloadService
   ) {
 
     this.initializeVDI3682();
@@ -124,42 +129,69 @@ export class Vdi3682ModelService {
     return this.LIST_OF_ALL_CLASSES;
   }
 
-  public insertTripel(graph: tripel) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
-
-    if(graph.subject.search("http://") != -1){
-      graph.subject = graph.subject;
-    } else if(graph.subject.search(":") != -1){
-      graph.subject = this.nameService.parseToIRI(graph.subject);
-    } else {
-      graph.subject = activeNamespace + graph.subject;
+  public modifyTripel(variables: tripel, action: string){
+    
+      var GRAPHS = this.nameService.getGraphs();
+      var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+  
+      switch (action) {
+        case "add": {
+          return this.query.insert(this.vdi3682insert.createEntity(variables, activeGraph));
+        }
+        case "delete": {
+          this.messageService.addMessage('warning','Sorry!','This feature has not been implemented yet')
+          break;
+        }
+        case "build": {
+          var blobObserver = new Observable((observer) => {
+            let insertString = this.vdi3682insert.createEntity(variables, activeGraph);
+            const blob = new Blob([insertString], { type: 'text/plain' });
+            const name = 'insert.txt';
+            this.downloadService.download(blob, name);
+            observer.next();
+            observer.complete();
+          });
+          return blobObserver;
+        
+      }
     }
-    graph.predicate = this.nameService.parseToIRI(graph.predicate);
-    graph.object = this.nameService.parseToIRI(graph.object);
-    return this.query.insert(this.vdi3682insert.createEntity(graph, activeGraph));
   }
+  // public insertTripel(graph: tripel) {
+  //   var PREFIXES = this.nameService.getPrefixes();
+  //   var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-  public buildTripel(graph: tripel) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+  //   var GRAPHS = this.nameService.getGraphs();
+  //   var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-    if(graph.subject.search("http://") != -1){
-      graph.subject = graph.subject;
-    } else if(graph.subject.search(":") != -1){
-      graph.subject = this.nameService.parseToIRI(graph.subject);
-    } else {
-      graph.subject = activeNamespace + graph.subject;
-    }
-    graph.predicate = this.nameService.parseToIRI(graph.predicate);
-    graph.object = this.nameService.parseToIRI(graph.object);
-    return this.vdi3682insert.createEntity(graph, activeGraph);
-  }
+  //   if(graph.subject.search("http://") != -1){
+  //     graph.subject = graph.subject;
+  //   } else if(graph.subject.search(":") != -1){
+  //     graph.subject = this.nameService.parseToIRI(graph.subject);
+  //   } else {
+  //     graph.subject = activeNamespace + graph.subject;
+  //   }
+  //   graph.predicate = this.nameService.parseToIRI(graph.predicate);
+  //   graph.object = this.nameService.parseToIRI(graph.object);
+  //   return this.query.insert(this.vdi3682insert.createEntity(graph, activeGraph));
+  // }
+
+  // public buildTripel(graph: tripel) {
+  //   var PREFIXES = this.nameService.getPrefixes();
+  //   var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+  //   var GRAPHS = this.nameService.getGraphs();
+  //   var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+
+  //   if(graph.subject.search("http://") != -1){
+  //     graph.subject = graph.subject;
+  //   } else if(graph.subject.search(":") != -1){
+  //     graph.subject = this.nameService.parseToIRI(graph.subject);
+  //   } else {
+  //     graph.subject = activeNamespace + graph.subject;
+  //   }
+  //   graph.predicate = this.nameService.parseToIRI(graph.predicate);
+  //   graph.object = this.nameService.parseToIRI(graph.object);
+  //   return this.vdi3682insert.createEntity(graph, activeGraph);
+  // }
 
 
 

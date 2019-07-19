@@ -1,23 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Validators } from '@angular/forms';
+
 import { Vdi3682ModelService, VDI3682DATA, VDI3682VARIABLES, VDI3682INSERT } from '../../../rdf-models/vdi3682Model.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { Tables } from '../../../utils/tables';
-import { DownloadService } from '../../../rdf-models/services/download.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { MessagesService } from '../../../../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-vdi3682',
   templateUrl: './vdi3682.component.html',
-  styleUrls: ['./vdi3682.component.scss'],
+  styleUrls: ['../../../../../../app/app.component.scss', './vdi3682.component.scss'],
 })
 export class VDI3682Component implements OnInit {
   // util variables
   keys = Object.keys;
-  TableUtil = new Tables();
   tableTitle: string;
   tableSubTitle: string;
 
@@ -32,110 +31,97 @@ export class VDI3682Component implements OnInit {
   modelVariables = new VDI3682VARIABLES();
 
   // graph db data
-  allProcessInfo: any = [];
-  allClasses: any;
+  allProcessInfo: Array<Object> = [];
+  allClasses: Array<string> = [];
+  existingObjectClasses: Array<string> = [];
+  existingPredicates: Array<string> = [];
+  existingObjects: Array<string> = [];
 
-  //user input variables
-  newSubject: string;
-  newPredicate: string = "rdf:type";
-  newObject: string;
-  selectedClass: string;
-  selectedSubject: string;
-  selectedPredicate: string;
-  selectedObject: string;
-  selectedObjectClass: string;
-  existingObjectClasses: Array<string>;
-  existingPredicates: Array<string>;
-  existingObjects: Array<string>;
-  insertUrl;
+  // forms
+  newIndividualForm = this.fb.group({
+    name: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('(^((?!://).)*$)')]],
+    predicate: ['rdf:type'],
+    type: [undefined, Validators.required],
+  })
 
+  newConnectionForm = this.fb.group({
+    subject: [undefined, Validators.required],
+    predicate: [undefined, Validators.required],
+    objectClass: [undefined, Validators.required],
+    object: [undefined, Validators.required],
+  })
 
   constructor(
-    private query: SparqlQueriesService,
-    private dlService: DownloadService,
-    private namespaceParser: PrefixesService,
+    private nameService: PrefixesService,
     private modelService: Vdi3682ModelService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private messageService: MessagesService,
+    private fb: FormBuilder,
   ) { }
-
-
 
   ngOnInit() {
     this.allProcessInfo = this.modelService.getALL_PROCESS_INFO_TABLE();
     this.allClasses = this.modelService.getLIST_OF_ALL_CLASSES();
     this.setTableDescription();
     this.getStatisticInfo();
-
-
   }
 
-
-  buildInsert() {
-
-    this.modelVariables.simpleStatement = {
-      subject: this.newSubject,
-      predicate: this.newPredicate,
-      object: this.selectedClass
-
-    };
-    var insertString = this.modelService.buildTripel(this.modelVariables.simpleStatement);
-    const blob = new Blob([insertString], { type: 'text/plain' });
-    const name = 'insert.txt';
-    this.dlService.download(blob, name);
-  }
-
-  buildInsertRelations() {
-
-    this.modelVariables.simpleStatement = {
-      subject: this.selectedSubject,
-      predicate: this.selectedPredicate,
-      object: this.selectedObject,
+  modifyTripel(action: string, context: string, form: FormGroup) {
+    if (form.valid) {
+      switch (context) {
+        case "newIndividual": {
+          this.modelVariables.simpleStatement = {
+            subject: this.nameService.addOrParseNamespace(form.controls['name'].value),
+            predicate: this.nameService.parseToIRI(form.controls['predicate'].value),
+            object: this.nameService.parseToIRI(form.controls['type'].value)
+          };
+          this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.loadAllProcessInfo();
+            this.loadStatisticInfo();
+            this.modelVariables = new VDI3682VARIABLES();
+          });
+          break;
+        }
+        case "connectIndividual": {
+          this.modelVariables.simpleStatement = {
+            subject: this.nameService.parseToIRI(form.controls['subject'].value),
+            predicate: this.nameService.parseToIRI(form.controls['predicate'].value),
+            object: this.nameService.parseToIRI(form.controls['object'].value)
+          };
+          this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.loadAllProcessInfo();
+            this.loadStatisticInfo();
+            this.modelVariables = new VDI3682VARIABLES();
+          });
+          break;
+        }
+      }
+    } else if (form.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
-    var insertString = this.modelService.buildTripel(this.modelVariables.simpleStatement);
-    const blob = new Blob([insertString], { type: 'text/plain' });
-    // Dateiname
-    const name = 'vdi3682Insert.txt';
-    this.dlService.download(blob, name);
   }
-
-  executeInsertEntities() {
-
-    this.modelVariables.simpleStatement = {
-      subject: this.newSubject,
-      predicate: this.newPredicate,
-      object: this.selectedClass,
-    }
-
-    this.modelService.insertTripel(this.modelVariables.simpleStatement).pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.loadAllProcessInfo();
-      this.loadStatisticInfo();
-    });
-  }
-
 
   iriTableClick(name: string) {
-    this.selectedSubject = name;
+    this.newConnectionForm.controls['subject'].setValue(name);
 
-    this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.selectedSubject).pipe(take(1)).subscribe((data: any) => {
+    this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value).pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       var owlClass = data[0];
       this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingPredicates = data;
-        this.selectedPredicate = data[0];
       });
     });
 
   }
 
   getObjectClasses(predicate: string) {
-    this.selectedObject = undefined;
     if (predicate) {
       this.modelService.loadLIST_OF_CLASSES_BY_RANGE(predicate).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjectClasses = data;
-        this.selectedObjectClass = data[0]
       });
     }
   }
@@ -145,32 +131,9 @@ export class VDI3682Component implements OnInit {
       this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
         this.loadingScreenService.stopLoading();
         this.existingObjects = data;
-        this.selectedObject = data[0];
       });
     }
   }
-
-
-
-  executeInsertRelations() {
-
-    this.modelVariables.simpleStatement = {
-      subject: this.selectedSubject,
-      predicate: this.selectedPredicate,
-      object: this.selectedObject,
-    }
-    this.modelService.insertTripel(this.modelVariables.simpleStatement).pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.loadAllProcessInfo();
-      this.loadStatisticInfo();
-      this.selectedPredicate = undefined;
-      this.selectedObjectClass = undefined;
-      this.selectedObject = undefined;
-      this.existingObjectClasses = undefined;
-      this.existingObjects = undefined;
-    });
-  }
-
 
   loadAllProcessInfo() {
     this.modelService.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {

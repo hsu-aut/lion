@@ -57,10 +57,11 @@
       <div class="tab-content py-3" id="myTabContent">
         <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
           <!-- content to create new individuals -->
-          <div class="form-row">
+          <div class="form-row" [formGroup]="newIndividualForm">
             <div class="form-group col-sm">
               <label> The Subject of the created statement </label>
-              <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
+              <input formControlName="name" class="form-control" name="name" type="text"
+                placeholder="[Name of your subject]">
             </div>
             <div class="form-group col-sm">
               <label> The Predicate of the created statement </label>
@@ -68,20 +69,30 @@
             </div>
             <div class="form-group col-sm">
               <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control">
+              <select formControlName="type" name="type" class="form-control">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of allClasses'>
                   {{x}}
                 </option>
               </select>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert()">Download SPARQL INSERT</button>
-
-            </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsertEntities()">Add</button>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="modifyTripel('add', 'newIndividual', newIndividualForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="modifyTripel('delete', 'newIndividual', newIndividualForm)">Delete
+                      statement</a>
+                    <a class="dropdown-item"
+                      (click)="modifyTripel('build', 'newIndividual', newIndividualForm)">Download SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -90,16 +101,17 @@
         </div>
         <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
           <!-- content to connect existing individuals -->
-          <div class="form-row">
+          <div class="form-row" [formGroup]="newConnectionForm">
             <div class="form-group col-sm">
               <label> The Subject of the created statement </label>
-              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
+              <input formControlName="subject" class="form-control" type="text"
                 placeholder="Select a Function from Table" readonly>
             </div>
             <div class="form-group col-sm">
               <label> The Predicate of the created statement </label>
-              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
-                (click)="getObjectClasses(selectedPredicate)">
+              <select formControlName="predicate" name="predicate" class="form-control"
+                (click)="getObjectClasses(newConnectionForm.controls['predicate'].value)">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of existingPredicates'>
                   {{x}}
                 </option>
@@ -107,8 +119,9 @@
             </div>
             <div class="form-group col-sm">
               <label> The Class of the Object of the created statement </label>
-              <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
-                (click)="getExistingObjects(selectedObjectClass)">
+              <select formControlName="objectClass" name="objectClass" class="form-control"
+                (click)="getExistingObjects(newConnectionForm.controls['objectClass'].value)">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of existingObjectClasses'>
                   {{x}}
                 </option>
@@ -116,19 +129,31 @@
             </div>
             <div class="form-group col-sm">
               <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
+              <select formControlName="object" name="object" class="form-control">
+                <option value=null selected hidden></option>
                 <option *ngFor='let x of existingObjects'>
                   {{x}}
                 </option>
               </select>
             </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert()">Download SPARQL INSERT</button>
-            </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsertRelations()">Add</button>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="modifyTripel('add', 'connectIndividual', newConnectionForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                      (click)="modifyTripel('delete', 'connectIndividual', newConnectionForm)">Delete
+                      statement</a>
+                    <a class="dropdown-item"
+                      (click)="modifyTripel('build', 'connectIndividual', newConnectionForm)">Download SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
