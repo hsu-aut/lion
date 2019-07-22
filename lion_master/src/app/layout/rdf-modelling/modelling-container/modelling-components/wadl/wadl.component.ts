@@ -63,7 +63,7 @@ export class WadlComponent implements OnInit {
     requestFormRepresentationArray: this.fb.array([
       this.fb.control('')
     ]),
-    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&()=?`´*+~_<>|@+^°;]*$)')],
     bodyParameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     bodyDataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     ontologicalBodyDataType: [undefined],
@@ -78,7 +78,7 @@ export class WadlComponent implements OnInit {
     responseFormRepresentationArray: this.fb.array([
       this.fb.control('')
     ]),
-    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&()=?`´*+~_<>|@+^°;]*$)')],
     bodyParameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     bodyDataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
     ontologicalBodyDataType: [undefined],
