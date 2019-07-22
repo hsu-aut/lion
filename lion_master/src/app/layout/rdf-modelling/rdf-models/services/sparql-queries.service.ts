@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { PrefixesService } from './prefixes.service';
 import { Tables } from '../../utils/tables';
 import { DataLoaderService } from "../../../../shared/services/dataLoader.service";
 import { MessagesService } from "../../../../shared/services/messages.service";
-import { error } from '@angular/compiler/src/util';
-
-//const url = `http://localhost:7200/repositories/Airbus_CTC_01`;
-
-
+import { take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -50,9 +47,6 @@ export class SparqlQueriesService {
     var url: string;
     return url = this.host + '/repositories/' + this.repository;
   }
-  // setURL(host: string, repository) {
-  //   this.url = host + '/repositories/' + repository;
-  // }
 
   select(body) {
     var httpOptions = {
@@ -74,16 +68,16 @@ export class SparqlQueriesService {
 
     var tableObservable = new Observable((observer) => {
       this.http.post(this.getURL(), Query, httpOptions).subscribe((data: any) => {
-        
+
         this.namespaceService.parseToPrefix(data);
         currentTable = this.TableUtil.buildTable(data)
         observer.next(currentTable)
         observer.complete()
       },
-      error => {
-        this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status}`);
-        this.loadingScreenService.stopLoading();
-      });
+        error => {
+          this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status}`);
+          this.loadingScreenService.stopLoading();
+        });
     })
 
     return tableObservable;
@@ -104,10 +98,10 @@ export class SparqlQueriesService {
         observer.next(currentList)
         observer.complete()
       },
-      error => {
-        this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status} code`);
-        this.loadingScreenService.stopLoading();
-      });
+        error => {
+          this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status} code`);
+          this.loadingScreenService.stopLoading();
+        });
     })
 
     return tableObservable;
@@ -121,8 +115,22 @@ export class SparqlQueriesService {
       })
     };
     var urlPOST = this.getURL() + "/statements";
-    var re = this.http.post(urlPOST, body, httpOptions);
-    return re;
+    var GRAPHS = this.namespaceService.getGraphs();
+    var graph = GRAPHS[this.namespaceService.getActiveGraph()];
+    var insertObservable = new Observable((observer) => {
+      this.http.post(urlPOST, body, httpOptions).pipe(take(1)).subscribe((data: any) => {
+        this.messageService.addMessage('success', 'Added!', `Added triples to the graph "${graph}"`);
+        observer.next()
+        observer.complete()
+      },
+        error => {
+          this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status} code`);
+          this.loadingScreenService.stopLoading();
+        });
+    })
+    
+    // var re = this.http.post(urlPOST, body, httpOptions);
+    return insertObservable;
   }
 
   getRelatedTriples(subject) {
@@ -197,7 +205,7 @@ export class SparqlQueriesService {
       for (let i = 0; i < data.length; i++) {
         this.namespaceService.GRAPHS.push(data[i]);
       }
-      if(this.namespaceService.GRAPHS.length == 0){this.namespaceService.GRAPHS.push(activeGraph)}
+      if (this.namespaceService.GRAPHS.length == 0) { this.namespaceService.GRAPHS.push(activeGraph) }
     });
   }
 
@@ -230,7 +238,7 @@ export class SparqlQueriesService {
         'Accept': 'application/x-turtle'
       })
     };
-    
+
     var re = this.http.put(url, body, httpOptions);
     return re;
   }
