@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Validators } from '@angular/forms';
 
 import { concat } from "rxjs";
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
@@ -7,6 +9,7 @@ import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequ
 import { DownloadService } from '../../../rdf-models/services/download.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { MessagesService } from '../../../../../shared/services/messages.service';
 
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
@@ -35,7 +38,7 @@ interface Cfg {
 @Component({
   selector: 'app-configurations',
   templateUrl: './configurations.component.html',
-  styleUrls: ['./configurations.component.scss']
+  styleUrls: ['../../../../../../app/app.component.scss', './configurations.component.scss']
 })
 
 export class ConfigurationsComponent implements OnInit {
@@ -46,26 +49,41 @@ export class ConfigurationsComponent implements OnInit {
   loadDate: string;
 
   url: string[];
-  hostName: string;
-  repositoryName: string;
-  newRepositoryname: string;
-  repositoryList: Array<string>;
+  // hostName: string;
+  // repositoryName: string;
+  // newRepositoryname: string;
+
 
   eclassUrl: string;
   fileUrl;
 
+  // forms
+  namespaceForm = this.fb.group({
+    prefix: [undefined, [Validators.required, Validators.pattern('^[a-z|A-Z|0-9]+[^:]?:{1}$')]],
+    namespace: [undefined, [Validators.required, Validators.pattern('(\w*(http:\/\/)\w*)|(\w*(urn:)\w*)')]],
+  })
+  graph = this.fb.control('', Validators.required);
+  newGraph = this.fb.control('', [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]);
+  repositoryForm = this.fb.group({
+    hostName: [undefined, [Validators.required, Validators.pattern('(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}')]],
+    repositoryName: [undefined, [Validators.required, Validators.pattern('[-a-zA-Z0-9_+]+')]],
+  })
+  newRepository = this.fb.control('', [Validators.required, Validators.pattern('(^((?!http).)*$)')]);
+
   // namespace config variables
   PREFIXES: any;
-  userPrefix: string;
-  userNamespace: string;
   userKey: number;
   activeNamespace: any;
+
+  // repository config
+  repositoryList: Array<string>;
+  activeRepository: string;
+  activeHostname: string;
 
   // graph config
   graphList;
   currentGraph: string;
-  newGraph: string;
- 
+
   // stats
   NoOfNamespaces: number = this.prefixService.getPrefixes().length;
   NoOfNamedGraphs: number = this.prefixService.getGraphs().length;
@@ -84,12 +102,14 @@ export class ConfigurationsComponent implements OnInit {
     private Dashboard_Service: DashboardService,
     private DataLoaderService: DataLoaderService,
     private WadlModelService: WadlModelService,
-    private Iso22400_2ModelService: Iso22400_2ModelService
+    private Iso22400_2ModelService: Iso22400_2ModelService,
+    private fb: FormBuilder,
+    private messageService: MessagesService,
 
 
   ) {
 
-    
+
   }
 
   ngOnInit() {
@@ -102,17 +122,23 @@ export class ConfigurationsComponent implements OnInit {
     //   console.log(data);
     // });;
     this.getListOfRepos();
-    this.hostName = this.query.getHost();
-    this.repositoryName = this.query.getRepository();
+    this.activeHostname = this.query.getHost();
+    this.activeRepository = this.query.getRepository();
     this.getCurrentGraphConfig();
-    
+
   }
 
 
   setGraphDBConfig(hostName: string, repositoryName: string) {
-    this.query.setHost(hostName);
-    this.query.setRepository(repositoryName);
-    this.refreshServices();
+    if (this.repositoryForm.valid) {
+      this.query.setHost(hostName);
+      this.query.setRepository(repositoryName);
+      this.refreshServices();
+      this.activeHostname = this.query.getHost();
+      this.activeRepository = this.query.getRepository();
+    } else if (this.repositoryForm.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+    }
   }
 
   submitBackendConfig(eclassUrl: string) {
@@ -159,31 +185,52 @@ export class ConfigurationsComponent implements OnInit {
   // }
 
   prefixTableClick(tableRow) {
-    this.userPrefix = tableRow.prefix;
-    this.userNamespace = tableRow.namespace;
+    this.namespaceForm.controls['prefix'].setValue(tableRow.prefix);
+    this.namespaceForm.controls['namespace'].setValue(tableRow.namespace);
     for (let i = 0; i < this.PREFIXES.length; i++) {
       if (tableRow.namespace == this.PREFIXES[i].namespace) { this.userKey = i }
     }
   }
   addNamespace() {
-    this.prefixService.addNamespace(this.userPrefix, this.userNamespace);
-    this.PREFIXES = this.prefixService.getPrefixes();
-    this.NoOfNamespaces = this.PREFIXES.length
-  }
+    if (this.namespaceForm.valid) {
+      this.prefixService.addNamespace(this.namespaceForm.controls['prefix'].value, this.namespaceForm.controls['namespace'].value);
+      this.PREFIXES = this.prefixService.getPrefixes();
+      this.NoOfNamespaces = this.PREFIXES.length;
+      this.messageService.addMessage('success', 'Added namespace', `The namespace ${this.namespaceForm.controls['namespace'].value} has been added.`)
 
+    } else if (this.namespaceForm.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+    }
+  }
   editNamespace() {
-    this.prefixService.editNamespace(this.userKey, this.userPrefix, this.userNamespace);
-    this.PREFIXES = this.prefixService.getPrefixes();
-  }
+    if (this.namespaceForm.valid) {
+      this.prefixService.editNamespace(this.userKey, this.namespaceForm.controls['prefix'].value, this.namespaceForm.controls['namespace'].value);
+      this.PREFIXES = this.prefixService.getPrefixes();
+      this.messageService.addMessage('success', 'Edited namespace', `The namespace ${this.namespaceForm.controls['namespace'].value} has been edited.`)
 
+    } else if (this.namespaceForm.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+    }
+  }
   deleteNamespace() {
-    this.prefixService.deleteNamespace(this.userKey);
-    this.PREFIXES = this.prefixService.getPrefixes();
-    this.NoOfNamespaces = this.PREFIXES.length
+    if (this.namespaceForm.valid) {
+      this.prefixService.deleteNamespace(this.userKey);
+      this.PREFIXES = this.prefixService.getPrefixes();
+      this.NoOfNamespaces = this.PREFIXES.length;
+      this.messageService.addMessage('success', 'Deleted namespace', `The namespace ${this.namespaceForm.controls['namespace'].value} has been deleted.`)
+
+    } else if (this.namespaceForm.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+    }
   }
   setActiveNamespace() {
-    this.prefixService.setActiveNamespace(this.userKey);
-    this.getActiveNamespace();
+    if (this.namespaceForm.valid) {
+      this.prefixService.setActiveNamespace(this.userKey);
+      this.getActiveNamespace();
+    } else if (this.namespaceForm.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+    }
+
   }
   getActiveNamespace() {
     this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()];
@@ -191,7 +238,7 @@ export class ConfigurationsComponent implements OnInit {
 
   loadTBoxes() {
 
-    var ObservableSequence =     concat(
+    var ObservableSequence = concat(
       this.backEnd.loadTBoxes(this.query.getRepository(), "VDI3682"),
       this.backEnd.loadTBoxes(this.query.getRepository(), "WADL"),
       this.backEnd.loadTBoxes(this.query.getRepository(), "ISA88"),
@@ -215,13 +262,13 @@ export class ConfigurationsComponent implements OnInit {
 
   refreshServices() {
     console.info("Refreshing data ...")
-      this.VDI3862_Service.initializeVDI3682();
-      this.VDI2206_Service.initializeVDI2206();
-      this.ISA_Service.initializeISA88();
-      this.DINEIN61360_Service.initializeDINEN61360();
-      this.Dashboard_Service.initializeDashboard();
-      this.WadlModelService.initializeWADL();
-      this.Iso22400_2ModelService.initializeISO22400_2();
+    this.VDI3862_Service.initializeVDI3682();
+    this.VDI2206_Service.initializeVDI2206();
+    this.ISA_Service.initializeISA88();
+    this.DINEIN61360_Service.initializeDINEN61360();
+    this.Dashboard_Service.initializeDashboard();
+    this.WadlModelService.initializeWADL();
+    this.Iso22400_2ModelService.initializeISO22400_2();
   }
 
   getListOfRepos() {
@@ -230,38 +277,43 @@ export class ConfigurationsComponent implements OnInit {
     })
   }
 
-  createNewRepo(NewRepositoryName: string){
-    this.backEnd.createRepo(NewRepositoryName).pipe(take(1)).subscribe((data: any) => {
-      this.getListOfRepos();
-    })
+  createNewRepo(NewRepositoryName: string) {
+    if (this.newRepository.valid) {
+      this.backEnd.createRepo(NewRepositoryName).pipe(take(1)).subscribe((data: any) => {
+        this.getListOfRepos();
+      })
+    } else if (this.newRepository.invalid) {
+      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+    }
+
   }
 
-  getCurrentGraphConfig(){
+  getCurrentGraphConfig() {
     this.graphList = this.prefixService.getGraphs();
     this.currentGraph = this.graphList[this.prefixService.getActiveGraph()];
     this.NoOfNamedGraphs = this.graphList.length;
   }
 
-  createNamedGraph(newGraphName: string){
+  createNamedGraph(newGraphName: string) {
     let newGraph = newGraphName;
-    if(newGraphName.search("http://") != -1){
+    if (newGraphName.search("http://") != -1) {
       this.prefixService.addGraph(newGraph);
     } else {
       newGraph = "http://" + newGraph
       this.prefixService.addGraph(newGraph);
-    }  
+    }
     this.getCurrentGraphConfig();
   }
-  setActiveGraph(graph: string){
+  setActiveGraph(graph: string) {
     for (let i = 0; i < this.graphList.length; i++) {
-      if(this.graphList[i].search(graph) != -1){
+      if (this.graphList[i].search(graph) != -1) {
         this.prefixService.setActiveGraph(i);
         this.getCurrentGraphConfig();
       }
     }
   }
 
-  downloadGraph(graph: string){
+  downloadGraph(graph: string) {
     this.query.getTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       const blob = new Blob([data], { type: 'text' });
       // Dateiname
@@ -271,17 +323,17 @@ export class ConfigurationsComponent implements OnInit {
     })
   }
 
-  deleteTriplesOfNamedGraph(graph){
+  deleteTriplesOfNamedGraph(graph) {
     this.query.deleteTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
     })
   }
 
-  deleteNamedGraph(graph){
+  deleteNamedGraph(graph) {
     this.query.deleteNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
       for (let i = 0; i < this.graphList.length; i++) {
-        if(this.graphList[i].search(graph) != -1){
+        if (this.graphList[i].search(graph) != -1) {
           this.prefixService.deleteGraph(i);
           this.getCurrentGraphConfig();
         }
