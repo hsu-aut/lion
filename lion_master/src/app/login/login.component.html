@@ -14,9 +14,9 @@
                         <input type="password" class="form-control input-underline input-lg" id="" placeholder="{{ 'Password' | translate }}">
                     </div> -->
                 </div>
-                <a class="btn rounded-btn" [routerLink]="['/home']">What is this tool about?</a>
+                <a class="btn rounded-btn" [routerLink]="['/home']" (click)="onLoggedin()">What is this tool about?</a>
                 &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/modelling/model']">Start modelling RDF!</a>
+                <a class="btn rounded-btn" [routerLink]="['/modelling/model']" (click)="onLoggedin()">Start modelling RDF!</a>
                 <!-- <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a> -->
             </form>
         </div>
