@@ -326,6 +326,7 @@ export class ConfigurationsComponent implements OnInit {
   deleteTriplesOfNamedGraph(graph) {
     this.query.deleteTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
+      this.refreshServices();
     })
   }
 
