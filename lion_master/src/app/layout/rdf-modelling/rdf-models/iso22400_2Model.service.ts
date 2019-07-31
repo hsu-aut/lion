@@ -3,6 +3,7 @@ import { PrefixesService } from './services/prefixes.service';
 import { SparqlQueriesService } from './services/sparql-queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
+import { MessagesService } from '../../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -22,11 +23,14 @@ export class Iso22400_2ModelService {
   private LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = [];
   private LIST_OF_CLASS_CONSTRAINT_ENUM = [];
   private TABLE_ALL_ENTITY_INFO = [];
+  private TABLE_ELEMENTS = [];
+  private TABLE_KPI = [];
 
   constructor(
     private query: SparqlQueriesService,
     private downloadService: DownloadService,
     private nameService: PrefixesService,
+    private messageService: MessagesService,
     private loadingScreenService: DataLoaderService
   ) {
 
@@ -62,6 +66,14 @@ export class Iso22400_2ModelService {
     this.loadTABLE_ALL_ENTITY_INFO().pipe(take(1)).subscribe((data: any) => {
       this.loadingScreenService.stopLoading();
       this.TABLE_ALL_ENTITY_INFO = data;
+    });
+    this.loadTABLE_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.TABLE_ELEMENTS = data;
+    });
+    this.loadTABLE_KPI().pipe(take(1)).subscribe((data: any) => {
+      this.loadingScreenService.stopLoading();
+      this.TABLE_KPI = data;
     });
   }
 
@@ -106,123 +118,86 @@ export class Iso22400_2ModelService {
     ConstrainingDataProperty = this.nameService.parseToIRI(ConstrainingDataProperty);
     return this.query.selectList(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
   }
+  public loadTABLE_ELEMENTS(){
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.isoData.SELECT_TABLE_ELEMENTS);
+  }
+  public loadTABLE_KPI(){
+    this.loadingScreenService.startLoading();
+    return this.query.selectTable(this.isoData.SELECT_TABLE_KPI);
+  }
 
-  
+
   // getters
-  public getTABLE_ALL_ENTITY_INFO() {
-    return this.TABLE_ALL_ENTITY_INFO;
-  }
-  public getLIST_OF_KPI_GROUPS() {
-    return this.LIST_OF_KPI_GROUPS;
-  }
-  public getLIST_OF_KPIs() {
-    return this.LIST_OF_KPIs;
-  }
-  public getLIST_OF_ORGANIZATIONAL_ELEMENTS() {
-    return this.LIST_OF_ORGANIZATIONAL_ELEMENTS;
-  }
-  public getLIST_OF_NON_ORGANIZATIONAL_ELEMENTS() {
-    return this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS;
-  }
-  public getLIST_OF_ELEMENT_GROUPS() {
-    return this.LIST_OF_ELEMENT_GROUPS;
-  }
-  public getLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES() {
-    return this.LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES;
-  }
+  public getTABLE_ALL_ENTITY_INFO() {return this.TABLE_ALL_ENTITY_INFO;}
+  public getLIST_OF_KPI_GROUPS() {return this.LIST_OF_KPI_GROUPS;}
+  public getLIST_OF_KPIs() {return this.LIST_OF_KPIs;}
+  public getLIST_OF_ORGANIZATIONAL_ELEMENTS() {return this.LIST_OF_ORGANIZATIONAL_ELEMENTS;}
+  public getLIST_OF_NON_ORGANIZATIONAL_ELEMENTS() {return this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS;}
+  public getLIST_OF_ELEMENT_GROUPS() {return this.LIST_OF_ELEMENT_GROUPS;}
+  public getLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES() {return this.LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES;}
+  public getTABLE_ELEMENTS(){return this.TABLE_ELEMENTS;}
+  public getTABLE_KPI(){return this.TABLE_KPI;}
 
   // setters
-  public setTABLE_ALL_ENTITY_INFO(table) {
-    this.TABLE_ALL_ENTITY_INFO = table;
-  }
-  public setLIST_OF_KPIs(list) {
-    this.LIST_OF_KPIs = list;
-  }
-  public setLIST_OF_ORGANIZATIONAL_ELEMENTS(list) {
-    this.LIST_OF_ORGANIZATIONAL_ELEMENTS = list;
-  }
-  public setLIST_OF_NON_ORGANIZATIONAL_ELEMENTS(list) {
-    this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = list;
-  }
+  public setTABLE_ALL_ENTITY_INFO(table) {this.TABLE_ALL_ENTITY_INFO = table;}
+  public setLIST_OF_KPIs(list) {this.LIST_OF_KPIs = list;}
+  public setLIST_OF_ORGANIZATIONAL_ELEMENTS(list) {this.LIST_OF_ORGANIZATIONAL_ELEMENTS = list;}
+  public setLIST_OF_NON_ORGANIZATIONAL_ELEMENTS(list) {this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = list;}
+  public setTABLE_ELEMENTS(table) {this.TABLE_ELEMENTS = table;}
+  public setTABLE_KPI(table) {this.TABLE_KPI = table;}
 
   // builders
-  public createElement(variables: elementVariables, execute: boolean) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
+  public createElement(variables: elementVariables, action: string) {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-
-    if (variables.elementIRI.search("http://") != -1) {
-      variables.elementIRI = variables.elementIRI;
-    } else if (variables.elementIRI.search(":") != -1) {
-      variables.elementIRI = this.nameService.parseToIRI(variables.elementIRI);
-    } else {
-      variables.elementIRI = activeNamespace + variables.elementIRI;
-    }
-    if (variables.entityIRI.search("http://") != -1) {
-      variables.entityIRI = variables.entityIRI;
-    } else if (variables.entityIRI.search(":") != -1) {
-      variables.entityIRI = this.nameService.parseToIRI(variables.entityIRI);
-    } else {
-      variables.entityIRI = activeNamespace + variables.entityIRI;
-    }
-    variables.elementClass = this.nameService.parseToIRI(variables.elementClass);
-    variables.entityClass = this.nameService.parseToIRI(variables.entityClass);
-    if (execute) {
-      return this.query.insert(this.isoInsert.createElement(variables, activeGraph));
-    } else {
-      var blobObserver = new Observable((observer) => {
-        let insertString = this.isoInsert.createElement(variables, activeGraph);
-        const blob = new Blob([insertString], { type: 'text/plain' });
-        const name = 'insert.txt';
-        this.downloadService.download(blob, name);
-        observer.next();
-        observer.complete();
-      });
-      return blobObserver;
+    switch (action) {
+      case "add": {
+        return this.query.insert(this.isoInsert.createElement(variables, activeGraph));
+      }
+      case "delete": {
+        this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')
+        break;
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.isoInsert.createElement(variables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.downloadService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
     }
 
   }
-  public createKPI(KPIVariables: KPIVariables, execute: boolean) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
-
+  public createKPI(KPIVariables: KPIVariables, action: string) {
     var GRAPHS = this.nameService.getGraphs();
     var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-
-    if (KPIVariables.KPI_IRI.search("http://") != -1) {
-      KPIVariables.KPI_IRI = KPIVariables.KPI_IRI;
-    } else if (KPIVariables.KPI_IRI.search(":") != -1) {
-      KPIVariables.KPI_IRI = this.nameService.parseToIRI(KPIVariables.KPI_IRI);
-    } else {
-      KPIVariables.KPI_IRI = activeNamespace + KPIVariables.KPI_IRI;
+    switch (action) {
+      case "add": {
+        return this.query.insert(this.isoInsert.createKPI(KPIVariables, activeGraph));
+      }
+      case "delete": {
+        this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')
+        break;
+      }
+      case "build": {
+        var blobObserver = new Observable((observer) => {
+          let insertString = this.isoInsert.createKPI(KPIVariables, activeGraph);
+          const blob = new Blob([insertString], { type: 'text/plain' });
+          const name = 'insert.txt';
+          this.downloadService.download(blob, name);
+          observer.next();
+          observer.complete();
+        });
+        return blobObserver;
+      }
     }
-    if (KPIVariables.entityIRI.search("http://") != -1) {
-      KPIVariables.entityIRI = KPIVariables.entityIRI;
-    } else if (KPIVariables.entityIRI.search(":") != -1) {
-      KPIVariables.entityIRI = this.nameService.parseToIRI(KPIVariables.entityIRI);
-    } else {
-      KPIVariables.entityIRI = activeNamespace + KPIVariables.entityIRI;
-    }
-    KPIVariables.KPI_Class = this.nameService.parseToIRI(KPIVariables.KPI_Class);
-    KPIVariables.entityClass = this.nameService.parseToIRI(KPIVariables.entityClass);
-    if (execute) {
-      return this.query.insert(this.isoInsert.createKPI(KPIVariables, activeGraph));
-    } else {
-      var blobObserver = new Observable((observer) => {
-        let insertString = this.isoInsert.createKPI(KPIVariables, activeGraph);
-        const blob = new Blob([insertString], { type: 'text/plain' });
-        const name = 'insert.txt';
-        this.downloadService.download(blob, name);
-        observer.next();
-        observer.complete();
-      });
-      return blobObserver;
-    }
-
   }
 }
 
@@ -268,6 +243,7 @@ export class ISO22400_2DATA {
   SELECT ?ISO_Elements
   WHERE { 
    ?ISO_Elements sesame:directSubClassOf ISO:Elements.
+   FILTER (?ISO_Elements != ISO:OrganizationalTerms)
   }`
 
   public SELECT_LIST_OF_KPI_GROUPS = `
@@ -305,6 +281,38 @@ export class ISO22400_2DATA {
     FILTER (?EntityType != ISO:OperationCluster)
   }
   `
+  public SELECT_TABLE_ELEMENTS = `
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  SELECT DISTINCT ?Entity ?Element ?Period ?Value ?UnitOfMeasure ?Duration
+  WHERE {
+  ?Entity ISO:hasElement ?Element;
+          a owl:NamedIndividual.
+  ?Element ISO:forPeriod ?Period.
+  OPTIONAL{	
+      ?Element ISO:Value ?Value;
+                 ISO:UnitOfMeasure ?UnitOfMeasure.}
+  OPTIONAL{   
+      ?Element ISO:timeSpan ?Duration.}
+  }
+  `
+  public SELECT_TABLE_KPI = `
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+  SELECT DISTINCT ?Entity ?KPI ?Period ?Value ?UnitOfMeasure
+  WHERE {
+  ?Entity ISO:hasKeyPerformanceIndicator ?KPI;
+          a owl:NamedIndividual.
+  ?KPI ISO:forPeriod ?Period.
+
+  ?KPI ISO:Value ?Value;
+          ISO:UnitOfMeasure ?UnitOfMeasure.
+  }
+  `
 
   public SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI: string) {
 
@@ -324,7 +332,7 @@ export class ISO22400_2DATA {
     return selectString
   }
 
-  public SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string){
+  public SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string) {
     let selectString = `
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -370,11 +378,15 @@ export class ISO22400_2INSERT {
       nonTimeElement: `?newElement  ISO:Value "${value}"^^xsd:string;
                                     ISO:UnitOfMeasure "${UnitOfMeasure}"^^xsd:string.`,
       timeElement: `?newElement ISO:timeSpan "${duration}"^^xsd:duration.`,
-      forPeriod: `?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp`,
 
     }
 
     // add a check for empties and if one is found delete the string
+    for (const i in optionals) {
+
+      const element = optionals[i];
+      if (element.search(`null`) != -1) { optionals[i] = "" }
+    }
     for (const i in optionals) {
 
       const element = optionals[i];
@@ -396,12 +408,11 @@ export class ISO22400_2INSERT {
             a owl:NamedIndividual.
     ?newElement rdf:type ?elementClass;
             a owl:NamedIndividual.
-            
+    ?newElement ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.       
     
     #        optional, depending on whether it is a time element or not
     ${optionals.nonTimeElement}      
     ${optionals.timeElement} 
-    ${optionals.forPeriod} 
 
         }
     } WHERE {
@@ -428,11 +439,14 @@ export class ISO22400_2INSERT {
     var optionals = {
       nonTimeElement: `?newKPI  ISO:Value "${value}"^^xsd:string;
                                     ISO:UnitOfMeasure "${UnitOfMeasure}"^^xsd:string.`,
-      forPeriod: `?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp`,
-
     }
 
     // add a check for empties and if one is found delete the string
+    for (const i in optionals) {
+
+      const element = optionals[i];
+      if (element.search(`null`) != -1) { optionals[i] = "" }
+    }
     for (const i in optionals) {
 
       const element = optionals[i];
@@ -455,11 +469,11 @@ export class ISO22400_2INSERT {
     ?newKPI rdf:type ?KPI_Class;
             a owl:NamedIndividual;
             ISO:Timing "${KPI_Timing}"^^xsd:string.
-            
+    ?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.        
     
     #        optional, depending on whether it is a time element or not
     ${optionals.nonTimeElement}       
-    ${optionals.forPeriod}
+
         }
     } WHERE {
         BIND(IRI(STR("${entityIRI}")) AS ?entity).      

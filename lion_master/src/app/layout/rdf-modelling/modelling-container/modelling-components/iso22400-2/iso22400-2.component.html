@@ -58,16 +58,16 @@
         <!-- parameter tab -->
         <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
           <!-- content to create new simple element -->
-          <div class="form-row">
+          <div class="form-row" [formGroup]="simpleElementForm">
             <div class="form-group col-sm">
-              <label> New element to create </label>
-              <input [(ngModel)]="newElementName" class="form-control" name="newElementName" type="text"
-                placeholder="[xsd:string]">
+              <label> Described entity </label>
+              <input formControlName="entity" class="form-control" name="entity" type="text"
+                placeholder="e.g. myWorkplace">
             </div>
             <div class="form-group col-sm">
               <label> Group of new element </label>
-              <select [(ngModel)]="selectedElementGroup" name="selectedElementGroup" class="form-control"
-                (click)="loadClassesElement(selectedElementGroup)">
+              <select formControlName="elementGroup" name="elementGroup" class="form-control"
+                (click)="loadClassesElement(simpleElementForm.controls['elementGroup'].value)">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of elementGroups'>
                   {{x}}
@@ -76,8 +76,8 @@
             </div>
             <div class="form-group col-sm">
               <label> The Class of the new element </label>
-              <select [(ngModel)]="selectedElementClass" name="selectedElementClass" class="form-control"
-                (click)="setValueVisibility(selectedElementClass)">
+              <select formControlName="elementClass" name="elementClass" class="form-control"
+                (click)="setValueVisibility(simpleElementForm.controls['elementClass'].value)">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of allElementClassesPerGroup'>
                   {{x}}
@@ -85,15 +85,10 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <label> Described physical entity </label>
-              <input [(ngModel)]="describedEntityName" class="form-control" name="object" type="text"
-                placeholder="[xsd:string]">
-            </div>
+          <div class="form-row" [formGroup]="simpleElementForm">
             <div class="form-group col-sm">
               <label> Class of entity </label>
-              <select [(ngModel)]="selectedEntityClass" name="selectedEntityClass" class="form-control">
+              <select formControlName="entityClass" name="entityClass" class="form-control">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of organizationalElementClasses'>
                   {{x}}
@@ -102,50 +97,60 @@
             </div>
             <div class="form-group col-sm">
               <label> The relevant period of the element </label>
-              <input [(ngModel)]="newPeriod" class="form-control" name="object" type="text"
+              <input formControlName="elementPeriod" class="form-control" name="elementPeriod" type="text"
                 placeholder="[YYYY-MM-DDThh:mm:ss]">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <label> The value of the element </label>
-              <input [(ngModel)]="newSimpleValue" class="form-control" name="object" type="text"
-                placeholder="[xsd:string]" [readonly]="anyValueReadOnly === false">
-            </div>
-            <div class="form-group col-sm">
-              <label> The value´s unit of measure </label>
-              <input [(ngModel)]="newUnitOfMeasure" class="form-control" name="object" type="text"
-                placeholder="[xsd:string]" [readonly]="anyValueReadOnly === false">
             </div>
             <div class="form-group col-sm">
               <label> The relevant duration </label>
-              <input [(ngModel)]="newDuration" class="form-control" name="object" type="text"
-                placeholder="[xsd:duration]" [readonly]="timeValueReadOnly === false">
+              <input formControlName="duration" class="form-control" name="duration" type="text"
+                placeholder="[xsd:duration]" [readonly]="timeValueReadOnly === false"
+                [required]="timeValueReadOnly === true">
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row" [formGroup]="simpleElementForm">
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'element')">Download SPARQL
-                INSERT</button>
-
+              <label> The value of the element </label>
+              <input formControlName="value" class="form-control" name="value" type="text" placeholder="[xsd:string]"
+                [readonly]="anyValueReadOnly === false" [required]="anyValueReadOnly === true">
             </div>
             <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(true, 'element')">Add</button>
+              <label> The value´s unit of measure </label>
+              <input formControlName="unitOfMeasure" class="form-control" name="unitOfMeasure" type="text"
+                placeholder="[xsd:string]" [readonly]="anyValueReadOnly === false"
+                [required]="anyValueReadOnly === true">
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'element', simpleElementForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createTripel('delete', 'element', simpleElementForm)">Delete
+                      request</a>
+                    <a class="dropdown-item" (click)="createTripel('build', 'element', simpleElementForm)">Download
+                      SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
           <!-- kpi tab -->
-          <div class="form-row">
+          <div class="form-row" [formGroup]="KPIForm">
             <div class="form-group col-sm">
-              <label> New element to create </label>
-              <input [(ngModel)]="newKPIName" class="form-control" name="newElementName" type="text"
-                placeholder="[xsd:string]">
+              <label> Described entity </label>
+              <input formControlName="entity" class="form-control" name="entity" type="text"
+                placeholder="e.g. myWorkplace">
             </div>
             <div class="form-group col-sm">
               <label> Group of new KPI </label>
-              <select [(ngModel)]="selectedKPIGroup" name="selectedKPIGroup" class="form-control"
-                (click)="loadClassesKPI(selectedKPIGroup)">
+              <select formControlName="kpiGroup" name="kpiGroup" class="form-control"
+                (click)="loadClassesKPI(KPIForm.controls['kpiGroup'].value)">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of KPIGroups'>
                   {{x}}
@@ -153,9 +158,9 @@
               </select>
             </div>
             <div class="form-group col-sm">
-              <label> The Class of the new element </label>
-              <select [(ngModel)]="selectedKPIClass" name="selectedKPIClass" class="form-control"
-                (click)="loadTimingConstraint(selectedKPIClass)">
+              <label> The Class of the new KPI </label>
+              <select formControlName="kpiClass" name="kpiClass" class="form-control"
+                (click)="loadTimingConstraint(KPIForm.controls['kpiClass'].value)">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of allKPIClassesPerGroup'>
                   {{x}}
@@ -163,15 +168,10 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <label> Described physical entity </label>
-              <input [(ngModel)]="describedEntityName" class="form-control" name="object" type="text"
-                placeholder="[xsd:string]">
-            </div>
+          <div class="form-row" [formGroup]="KPIForm">
             <div class="form-group col-sm">
               <label> Class of entity </label>
-              <select [(ngModel)]="selectedEntityClass" name="selectedEntityClass" class="form-control">
+              <select formControlName="entityClass" name="entityClass" class="form-control">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of organizationalElementClasses'>
                   {{x}}
@@ -180,42 +180,48 @@
             </div>
             <div class="form-group col-sm">
               <label> The relevant period of the element </label>
-              <input [(ngModel)]="newPeriod" class="form-control" name="object" type="text"
+              <input formControlName="kpiPeriod" class="form-control" name="kpiPeriod" type="text"
                 placeholder="[YYYY-MM-DDThh:mm:ss]">
             </div>
-          </div>
-          <div class="form-row">
             <div class="form-group col-sm">
               <label> Timing of the KPI </label>
-              <select [(ngModel)]="selectedTiming" name="selectedTiming" class="form-control">
+              <select formControlName="timing" name="timing" class="form-control">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of possibleTiming'>
                   {{x}}
                 </option>
               </select>
             </div>
+          </div>
+          <div class="form-row" [formGroup]="KPIForm">
             <div class="form-group col-sm">
               <label> The value of the element </label>
-              <input [(ngModel)]="newSimpleValue" class="form-control" name="object" type="text"
-                placeholder="[xsd:string]">
+              <input formControlName="value" class="form-control" name="value" type="text" placeholder="[xsd:string]">
             </div>
             <div class="form-group col-sm">
               <label> The value´s unit of measure </label>
-              <input [(ngModel)]="newUnitOfMeasure" class="form-control" name="object" type="text"
+              <input formControlName="unitOfMeasure" class="form-control" name="unitOfMeasure" type="text"
                 placeholder="[xsd:string]">
             </div>
-
-          </div>
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(false, 'KPI')">Download SPARQL
-                INSERT</button>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="createTripel('add', 'KPI', KPIForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createTripel('delete', 'KPI', KPIForm)">Delete
+                      request</a>
+                    <a class="dropdown-item" (click)="createTripel('build', 'KPI', KPIForm)">Download
+                      SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="createTripel(true, 'KPI')">Add</button>
-            </div>
           </div>
-
         </div>
         <div class="px-sm-2 py-sm-2">
           <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -229,6 +235,16 @@
                 aria-controls="isoEntity" aria-selected="false"> ISO entities
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" id="isoElement-tab" data-toggle="tab" href="#isoElement" role="tab"
+                aria-controls="isoElement" aria-selected="false"> ISO elements
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="isoKPI-tab" data-toggle="tab" href="#isoKPI" role="tab"
+                aria-controls="isoKPI" aria-selected="false"> ISO KPIs
+              </a>
+            </li>
           </ul>
           <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="vdiEntity" role="tabpanel" aria-labelledby="vdiEntity-tab">
@@ -237,6 +253,14 @@
             </div>
             <div class="tab-pane " id="isoEntity" role="tabpanel" aria-labelledby="isoEntity-tab">
               <app-table [currentTable]="allIsoEntityInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
+            </div>
+            <div class="tab-pane " id="isoElement" role="tabpanel" aria-labelledby="isoElement-tab">
+              <app-table [currentTable]="allIsoElementInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+                (tableClickedCell)="tableClick($event)"></app-table>
+            </div>
+            <div class="tab-pane " id="isoKPI" role="tabpanel" aria-labelledby="isoKPI-tab">
+              <app-table [currentTable]="allIsoKPIInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
                 (tableClickedCell)="tableClick($event)"></app-table>
             </div>
           </div>
