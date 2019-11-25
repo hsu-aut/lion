@@ -4,7 +4,6 @@ import { Validators } from '@angular/forms';
 
 import { concat } from "rxjs";
 import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
-import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 import { DataDescription } from '../../../utils/formats';
@@ -46,8 +45,6 @@ export class ConfigurationsComponent implements OnInit {
   // repositoryName: string;
   // newRepositoryname: string;
 
-
-  eclassUrl: string;
   fileUrl;
 
   // forms
@@ -86,7 +83,6 @@ export class ConfigurationsComponent implements OnInit {
   constructor(
     private query: SparqlQueriesService,
     private backEnd: BackEndRequestsService,
-    private eclass: EclassSearchService,
     private dlService: DownloadService,
     private prefixService: PrefixesService,
     private ISA_Service: Isa88ModelService,
@@ -110,11 +106,6 @@ export class ConfigurationsComponent implements OnInit {
     //load namespaces initially
     this.PREFIXES = this.prefixService.getPrefixes();
     this.getActiveNamespace();
-    this.eclassUrl = this.eclass.getEclassUrl();
-    // this.eclass.getTBox().pipe(take(1)).subscribe((data: any) => {
-    //   // log + assign data and stop loader
-    //   console.log(data);
-    // });;
     this.getListOfRepos();
     this.activeHostname = this.query.getHost();
     this.activeRepository = this.query.getRepository();
@@ -133,10 +124,6 @@ export class ConfigurationsComponent implements OnInit {
     } else if (this.repositoryForm.invalid) {
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
-  }
-
-  submitBackendConfig(eclassUrl: string) {
-    this.eclass.setEclassUrl(eclassUrl);
   }
 
 

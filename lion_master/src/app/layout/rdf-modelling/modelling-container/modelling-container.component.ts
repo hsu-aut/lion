@@ -8,7 +8,6 @@ import { Isa88ModelService } from '../rdf-models/isa88Model.service';
 import { WadlModelService } from '../rdf-models/wadlModel.service';
 import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
 import { DashboardService } from './modelling-components/dashboard/dashboard.service';
-import { EclassSearchService } from '../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../rdf-models/services/backEndRequests.service';
 
 
@@ -29,7 +28,6 @@ export class ModellingContainerComponent implements OnInit {
 
 
   constructor(
-    private eclass: EclassSearchService,
     private query: SparqlQueriesService,
     private backEnd: BackEndRequestsService,
     private prefixService: PrefixesService,
