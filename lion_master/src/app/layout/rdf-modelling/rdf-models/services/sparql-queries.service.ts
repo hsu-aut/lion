@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { PrefixesService } from './prefixes.service';
 import { Tables } from '../../utils/tables';
@@ -9,7 +9,6 @@ import { DataLoaderService } from "../../../../shared/services/dataLoader.servic
 import { DownloadService } from '../../rdf-models/services/download.service';
 import { MessagesService } from "../../../../shared/services/messages.service";
 import { take } from 'rxjs/operators';
-import { error } from 'util';
 
 
 @Injectable({
@@ -30,7 +29,7 @@ export class SparqlQueriesService {
   ) {
 
     // default url
-    this.host = 'http://localhost:7200';
+    this.host = 'lion_BE';
     this.repository = 'testdb';
     this.setNamedGraphs();
   }
@@ -48,39 +47,57 @@ export class SparqlQueriesService {
   setRepository(repositoryName: string) {
     this.repository = repositoryName;
   }
-  getURL() {
+
+  // getURL() {
+  //   var url: string;
+  //   return url = 'http://localhost:7200/repositories/' + this.repository;
+  // }
+
+  getQueryURL() {
     var url: string;
-    return url = this.host + '/repositories/' + this.repository;
+    return url = this.host + '/queries';
+  }
+
+  getUpdateURL() {
+    var url: string;
+    return url = this.host + '/queries/statements';
+  }
+
+  getGraphURL() {
+    var url: string;
+    return url = this.host + '/graphs';
+  }
+
+  getRepositoryURL() {
+    var url: string;
+    return url = this.host + '/repositories';
   }
 
   select(body) {
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/sparql-query'
-      })
-    };
-    var re = this.http.post(this.getURL(), body, httpOptions);
+
+    let headers = new HttpHeaders().set('Accept', 'text/plain')
+    let params = new HttpParams().set('repositoryName', this.repository);
+
+    var re = this.http.post(this.getQueryURL(), body, { headers, params });
     return re;
 
   }
-  selectTable(Query) {
+
+  selectTable(SPARQL_Query: string) {
     var currentTable: Array<Object>;
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/sparql-query'
-      })
-    };
+
+    let headers = new HttpHeaders().set('Accept', 'text/plain')
+    let params = new HttpParams().set('repositoryName', this.repository);
 
     var tableObservable = new Observable((observer) => {
-      this.http.post(this.getURL(), Query, httpOptions).subscribe((data: any) => {
-
+      this.http.post(this.getQueryURL(), SPARQL_Query, { headers, params }).subscribe((data: any) => {
         this.namespaceService.parseToPrefix(data);
         currentTable = this.TableUtil.buildTable(data)
         observer.next(currentTable)
         observer.complete()
       },
         error => {
-          this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status}`);
+          this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status}`);
           this.loadingScreenService.stopLoading();
         });
     })
@@ -90,21 +107,19 @@ export class SparqlQueriesService {
 
   selectList(Query, varPosition) {
     var currentList: Array<String>;
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/sparql-query'
-      })
-    };
+
+    let headers = new HttpHeaders().set('Accept', 'text/plain')
+    let params = new HttpParams().set('repositoryName', this.repository);
 
     var tableObservable = new Observable((observer) => {
-      this.http.post(this.getURL(), Query, httpOptions).subscribe((data: any) => {
+      this.http.post(this.getQueryURL(), Query, { headers, params }).subscribe((data: any) => {
         this.namespaceService.parseToPrefix(data);
         currentList = this.TableUtil.buildList(data, varPosition)
         observer.next(currentList)
         observer.complete()
       },
         error => {
-          this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status} code`);
+          this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
           this.loadingScreenService.stopLoading();
         });
     })
@@ -112,29 +127,29 @@ export class SparqlQueriesService {
     return tableObservable;
   }
 
+
   insert(body) {
     this.loadingScreenService.startLoading();
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/sparql-update'
-      })
-    };
-    var urlPOST = this.getURL() + "/statements";
+
+    let headers = new HttpHeaders().set('Content-Type', 'text/plain').set('Accept', 'text/plain')
+    let params = new HttpParams().set('repositoryName', this.repository);
+
+    var urlPOST = this.getUpdateURL();
     var GRAPHS = this.namespaceService.getGraphs();
     var graph = GRAPHS[this.namespaceService.getActiveGraph()];
+
     var insertObservable = new Observable((observer) => {
-      this.http.post(urlPOST, body, httpOptions).pipe(take(1)).subscribe((data: any) => {
+      this.http.post(urlPOST, body, { headers, params }).pipe(take(1)).subscribe((data: any) => {
         this.messageService.addMessage('success', 'Added!', `Added triples to the graph "${graph}"`);
         observer.next()
         observer.complete()
       },
         error => {
-          this.messageService.addMessage('error', 'Ups!', `Seams like the GraphDB responded with a ${error.status} code`);
+          this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
           this.loadingScreenService.stopLoading();
         });
     })
-    
-    // var re = this.http.post(urlPOST, body, httpOptions);
+
     return insertObservable;
   }
 
@@ -171,15 +186,9 @@ export class SparqlQueriesService {
 
   getListOfRepositories() {
     var currentList: Array<String> = [];
-    var url = this.host + "/repositories";
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/sparql-results+json, */*;q=0.5'
-      })
-    };
 
     var listObservable = new Observable((observer) => {
-      this.http.get(url, httpOptions).subscribe((data: any) => {
+      this.http.get(this.getRepositoryURL()).subscribe((data: any) => {
 
         for (let i = 0; i < data.results.bindings.length; i++) {
 
@@ -204,7 +213,6 @@ export class SparqlQueriesService {
     WHERE {
     GRAPH ?g { ?s ?p ?o }
     }`;
-
     this.namespaceService.GRAPHS.splice(0)
     this.selectList(selectString, 0).subscribe((data: any) => {
       for (let i = 0; i < data.length; i++) {
@@ -216,16 +224,13 @@ export class SparqlQueriesService {
 
   getTriplesOfNamedGraph(graph: string, format: FormatDescription) {
 
-    
+    let headers = new HttpHeaders().set('Accept', format.MIME_type)
+    let params = new HttpParams().set('graph', encodeURIComponent(graph)).set('repositoryName', this.repository);
 
-    var namedGraphURL_encoded = encodeURIComponent(graph);
-    var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Accept': format.MIME_type
-      })
-    };
-    this.http.get(url, httpOptions).pipe(take(1)).subscribe((data: string) => {
+    this.http.get(this.getGraphURL(), { headers, params }).pipe(take(1)).subscribe((data: string) => {
+      if (format.fileEnding == '.json') {
+        data = JSON.stringify(data)
+      }
       // data = JSON.stringify(data)
       // console.log(data)
       const blob = new Blob([data], { type: 'text' });
@@ -234,49 +239,38 @@ export class SparqlQueriesService {
       // Downloadservice
       this.dlService.download(blob, name);
     },
-    (error) => {
-      // as the Angular http client tries to parse the return as json, the error text has to be accessed. Using a returnType confuses the GraphDB...
-      const blob = new Blob([error.error.text], { type: 'text' });
-      // Dateiname
-      const name = graph + format.fileEnding;
-      // Downloadservice
-      this.dlService.download(blob, name);
-    })
+      (error) => {
+        // as the Angular http client tries to parse the return as json, the error text has to be accessed. Using a returnType confuses the GraphDB...
+        const blob = new Blob([error.error.text], { type: 'text' });
+        // Dateiname
+        const name = graph + format.fileEnding;
+        // Downloadservice
+        this.dlService.download(blob, name);
+      })
   }
+
 
 
   deleteTriplesOfNamedGraph(graph: string) {
-    var body = "";
-    var namedGraphURL_encoded = encodeURIComponent(graph);
-    console.log(namedGraphURL_encoded)
-    var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-turtle',
-        'Accept': 'application/x-turtle'
-      })
-    };
+    // that is actually a put, accept should fit to type contained in the body that will be accepted by the db
+    let headers = new HttpHeaders().set('Accept', 'text/turtle').set('Content-Type', 'text/plain')
+    let params = new HttpParams().set('graph', encodeURIComponent(graph)).set('repositoryName', this.repository);
 
-    var re = this.http.put(url, body, httpOptions);
+    // an empty body will clear the graph, a non empty body will insert triples that are in the body whatch for the mime type
+    var body = "";
+
+    var re = this.http.put(this.getGraphURL(), body, { headers, params });
     return re;
   }
+
 
   deleteNamedGraph(graph: string) {
 
-    var namedGraphURL_encoded = encodeURIComponent(graph);
-    console.log(namedGraphURL_encoded)
-    var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/x-turtle',
-        'Accept': 'application/x-turtle'
-      })
-    };
+    let params = new HttpParams().set('graph', encodeURIComponent(graph)).set('repositoryName', this.repository);
 
-    var re = this.http.delete(url, httpOptions);
+    var re = this.http.delete(this.getGraphURL(), {params});
     return re;
   }
 }
-
 
 
