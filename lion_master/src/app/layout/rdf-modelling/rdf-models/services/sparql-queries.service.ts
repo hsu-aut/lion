@@ -4,9 +4,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { PrefixesService } from './prefixes.service';
 import { Tables } from '../../utils/tables';
+import { FormatDescription } from '../../utils/formats';
 import { DataLoaderService } from "../../../../shared/services/dataLoader.service";
+import { DownloadService } from '../../rdf-models/services/download.service';
 import { MessagesService } from "../../../../shared/services/messages.service";
 import { take } from 'rxjs/operators';
+import { error } from 'util';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +25,8 @@ export class SparqlQueriesService {
     private http: HttpClient,
     private namespaceService: PrefixesService,
     private loadingScreenService: DataLoaderService,
-    private messageService: MessagesService
+    private messageService: MessagesService,
+    private dlService: DownloadService
   ) {
 
     // default url
@@ -209,23 +214,36 @@ export class SparqlQueriesService {
     });
   }
 
-  getTriplesOfNamedGraph(graph: string) {
+  getTriplesOfNamedGraph(graph: string, format: FormatDescription) {
+
+    
 
     var namedGraphURL_encoded = encodeURIComponent(graph);
-    console.log(namedGraphURL_encoded)
     var url = this.getURL() + `/rdf-graphs/service?graph=${namedGraphURL_encoded}`;
     var httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/x-turtle',
-        'Accept': 'application/x-turtle',
-
+        'Accept': format.MIME_type
       })
     };
-    var options = { httpOptions, responseType: 'text' as 'text' }
-
-    var re = this.http.get(url, options);
-    return re;
+    this.http.get(url, httpOptions).pipe(take(1)).subscribe((data: string) => {
+      // data = JSON.stringify(data)
+      // console.log(data)
+      const blob = new Blob([data], { type: 'text' });
+      // Dateiname
+      const name = graph + format.fileEnding;
+      // Downloadservice
+      this.dlService.download(blob, name);
+    },
+    (error) => {
+      // as the Angular http client tries to parse the return as json, the error text has to be accessed. Using a returnType confuses the GraphDB...
+      const blob = new Blob([error.error.text], { type: 'text' });
+      // Dateiname
+      const name = graph + format.fileEnding;
+      // Downloadservice
+      this.dlService.download(blob, name);
+    })
   }
+
 
   deleteTriplesOfNamedGraph(graph: string) {
     var body = "";
