@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 var url = require('url');
 
-var repo = require('../public/HTTP_Client_Requests/GDB_Requests')
-var gdbConfig = require('../public/GraphDB_Repository_Config/GDBconfigurator')
+var GDB_TBOX = require('../GRAPH_DB_REQUESTS/tboxOperations.requests')
+var GDB_REPO = require('../GRAPH_DB_REQUESTS/repositoryOperations.requests')
+var gdbConfig = require('../GRAPH_DB_REQUESTS/GDBconfigurator')
 
 const curl = new (require('curl-request'))();
 
@@ -73,7 +74,7 @@ router.get('/clear', function (req, res, next) {
     var q = url.parse(req.url, true).query;
     var repositoryName = q.repositoryName;
 
-    repo.clearRepository(repositoryName).then(function (response) {
+    GDB_REPO.clearRepository(repositoryName).then(function (response) {
 
         if (response.status == 204) {
             res.status(200);
@@ -100,7 +101,7 @@ router.get('/buildTBox', function (req, res, next) {
     var pattern = q.pattern;
     var repositoryName = q.repositoryName;
 
-    repo.insertTBOX(pattern, repositoryName).then(function (response) {
+    GDB_TBOX.insertTBOX(pattern, repositoryName).then(function (response) {
 
         if (response == 204) {
             res.status(200);
