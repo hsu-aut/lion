@@ -8,6 +8,28 @@ var gdbConfig = require('../GRAPH_DB_REQUESTS/GDBconfigurator')
 
 const curl = new (require('curl-request'))();
 
+/* GET LIST OF REPOSITORIES */
+router.get('/', function (req, res, next) {
+
+    GDB_REPO.GET_REPOSITORIES().then(function (response) {
+
+        if (response.status == 200) {
+            res.status(200);
+            res.end(response.data);
+        } else {
+            res.status(500);
+            res.end();
+        }
+
+    })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500);
+            res.end();
+        });
+
+});
+
 
 /* CREATE new repository */
 router.get('/create', function (req, res, next) {
@@ -49,7 +71,7 @@ router.get('/', function (req, res, next) {
     var repositoryName = q.repositoryName;
     var withTBox = q.withTBox;
 
-    repo.getAllTriples(repositoryName).then(function (response) {
+    GDB_TBOX.getAllTriples(repositoryName).then(function (response) {
 
         if (response.status == 200) {
             res.status(200);
@@ -74,13 +96,13 @@ router.get('/clear', function (req, res, next) {
     var q = url.parse(req.url, true).query;
     var repositoryName = q.repositoryName;
 
-    GDB_REPO.clearRepository(repositoryName).then(function (response) {
+    GDB_REPO.CLEAR_REPOSITORY(repositoryName).then(function (response) {
 
         if (response.status == 204) {
             res.status(200);
             res.end(response.data);
         } else {
-            res.status(500);
+            res.status(response.status).send({ error: response.data })
             res.end();
         }
 
