@@ -7,6 +7,8 @@ import { SparqlQueriesService } from '../../../rdf-models/services/sparql-querie
 import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
 import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
+import { DataDescription } from '../../../utils/formats';
+import { FormatDescription } from '../../../utils/formats';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { MessagesService } from '../../../../../shared/services/messages.service';
@@ -24,17 +26,6 @@ import { finalize } from 'rxjs/operators';
 import { take } from 'rxjs/operators';
 
 
-interface Cfg {
-  saveDate: string;
-  graphDB: {
-    url: string
-  };
-
-  backend: {
-    eClass: string
-  };
-}
-
 @Component({
   selector: 'app-configurations',
   templateUrl: './configurations.component.html',
@@ -47,6 +38,8 @@ export class ConfigurationsComponent implements OnInit {
 
   savingDate: string;
   loadDate: string;
+  dataDescription = new DataDescription();
+  dataFormats = this.dataDescription.ContentTypes;
 
   url: string[];
   // hostName: string;
@@ -63,6 +56,7 @@ export class ConfigurationsComponent implements OnInit {
     namespace: [undefined, [Validators.required, Validators.pattern('(\w*(http:\/\/)\w*)|(\w*(urn:)\w*)')]],
   })
   graph = this.fb.control('', Validators.required);
+  dataFormat = this.fb.control('', Validators.required);
   newGraph = this.fb.control('', [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]);
   repositoryForm = this.fb.group({
     hostName: [undefined, [Validators.required, Validators.pattern('(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}')]],
@@ -313,14 +307,29 @@ export class ConfigurationsComponent implements OnInit {
     }
   }
 
-  downloadGraph(graph: string) {
-    this.query.getTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
-      const blob = new Blob([data], { type: 'text' });
-      // Dateiname
-      const name = graph + '.ttl';
-      // Downloadservice
-      this.dlService.download(blob, name);
-    })
+  downloadGraph(graph: string, dataFormatName: string) {
+
+    let dataFormat: FormatDescription;
+
+    for (const i in this.dataFormats) {
+      // console.log(this.dataFormats[i].formatName)
+      if(this.dataFormats[i].formatName == dataFormatName){
+        dataFormat = this.dataFormats[i]
+      }
+
+    }
+
+    this.query.getTriplesOfNamedGraph(graph, dataFormat)
+
+    // .pipe(take(1)).subscribe((data: string) => {
+    //   data = JSON.stringify(data)
+    //   console.log(data)
+    //   const blob = new Blob([data], { type: 'text' });
+    //   // Dateiname
+    //   const name = graph + '.ttl';
+    //   // Downloadservice
+    //   this.dlService.download(blob, name);
+    // })
   }
 
   deleteTriplesOfNamedGraph(graph) {
