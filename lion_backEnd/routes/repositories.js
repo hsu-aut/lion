@@ -2,10 +2,33 @@ var express = require('express');
 var router = express.Router();
 var url = require('url');
 
-var repo = require('../public/HTTP_Client_Requests/GDB_Requests')
-var gdbConfig = require('../public/GraphDB_Repository_Config/GDBconfigurator')
+var GDB_TBOX = require('../GRAPH_DB_REQUESTS/tboxOperations.requests')
+var GDB_REPO = require('../GRAPH_DB_REQUESTS/repositoryOperations.requests')
+var gdbConfig = require('../GRAPH_DB_REQUESTS/GDBconfigurator')
 
 const curl = new (require('curl-request'))();
+
+/* GET LIST OF REPOSITORIES */
+router.get('/', function (req, res, next) {
+
+    GDB_REPO.GET_REPOSITORIES().then(function (response) {
+
+        if (response.status == 200) {
+            res.status(200);
+            res.end(response.data);
+        } else {
+            res.status(500);
+            res.end();
+        }
+
+    })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500);
+            res.end();
+        });
+
+});
 
 
 /* CREATE new repository */
@@ -48,7 +71,7 @@ router.get('/', function (req, res, next) {
     var repositoryName = q.repositoryName;
     var withTBox = q.withTBox;
 
-    repo.getAllTriples(repositoryName).then(function (response) {
+    GDB_TBOX.getAllTriples(repositoryName).then(function (response) {
 
         if (response.status == 200) {
             res.status(200);
@@ -73,13 +96,13 @@ router.get('/clear', function (req, res, next) {
     var q = url.parse(req.url, true).query;
     var repositoryName = q.repositoryName;
 
-    repo.clearRepository(repositoryName).then(function (response) {
+    GDB_REPO.CLEAR_REPOSITORY(repositoryName).then(function (response) {
 
         if (response.status == 204) {
             res.status(200);
             res.end(response.data);
         } else {
-            res.status(500);
+            res.status(response.status).send({ error: response.data })
             res.end();
         }
 
@@ -100,7 +123,7 @@ router.get('/buildTBox', function (req, res, next) {
     var pattern = q.pattern;
     var repositoryName = q.repositoryName;
 
-    repo.insertTBOX(pattern, repositoryName).then(function (response) {
+    GDB_TBOX.insertTBOX(pattern, repositoryName).then(function (response) {
 
         if (response == 204) {
             res.status(200);

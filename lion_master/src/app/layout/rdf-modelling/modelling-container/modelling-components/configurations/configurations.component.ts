@@ -140,27 +140,27 @@ export class ConfigurationsComponent implements OnInit {
   }
 
 
-  saveConfiguration() {
-    // Inhalt
-    const savingTempDate = new Date().toLocaleString();
-    this.savingDate = 'Downloaded Configurations. Date: ' + savingTempDate;
-    const configs = {
-      saveDate: savingTempDate,
-      graphDB: {
-        url: this.query.getURL()
-      },
-      backend: {
-        eClass: this.eclass.getEclassUrl()
-      }
-    };
-    const data = JSON.stringify(configs, null, '  ');
-    // Blob
-    const blob = new Blob([data], { type: 'application/json' });
-    // Dateiname
-    const name = 'lionConfigurations.json';
-    // Downloadservice
-    this.dlService.download(blob, name);
-  }
+  // saveConfiguration() {
+  //   // Inhalt
+  //   const savingTempDate = new Date().toLocaleString();
+  //   this.savingDate = 'Downloaded Configurations. Date: ' + savingTempDate;
+  //   const configs = {
+  //     saveDate: savingTempDate,
+  //     graphDB: {
+  //       url: this.query.getHost()
+  //     },
+  //     backend: {
+  //       eClass: this.eclass.getEclassUrl()
+  //     }
+  //   };
+  //   const data = JSON.stringify(configs, null, '  ');
+  //   // Blob
+  //   const blob = new Blob([data], { type: 'application/json' });
+  //   // Dateiname
+  //   const name = 'lionConfigurations.json';
+  //   // Downloadservice
+  //   this.dlService.download(blob, name);
+  // }
 
 
   // loadSelectedFile(event) {

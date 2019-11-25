@@ -5,16 +5,16 @@ import { Injectable } from '@angular/core';
 })
 export class DownloadService {
 
-constructor() { }
-download(blob, name){
+  constructor() { }
+  download(blob, name) {
 
-  let a = window.document.createElement("a");
-  a.href = window.URL.createObjectURL(blob);
-  a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
+    let a = window.document.createElement("a");
+    a.href = window.URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 
 
 }
