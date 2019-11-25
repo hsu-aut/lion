@@ -1,41 +1,5 @@
 const client = require('axios');
 
-function getTox(pattern) {
-  var url;
-  switch (pattern) {
-    case "VDI3682": {
-      url = TBOX_URLs.VDI3682;
-      break;
-    }
-    case "VDI2206": {
-      url = TBOX_URLs.VDI2206;
-      break;
-    }
-    case "DINEN61360": {
-      url = TBOX_URLs.DINEN61360;
-      break;
-    }
-    case "ISA88": {
-      url = TBOX_URLs.ISA88;
-      break;
-    }
-    case "WADL": {
-      url = TBOX_URLs.WADL;
-      break;
-    }
-    case "ISO22400_2": {
-      url = TBOX_URLs.ISO22400_2;
-      break;
-    }
-    default: {
-      // no default statements
-      break;
-    }
-  }
-
-  return client.get(url);
-
-}
 
 exports.insertTBOX = function (pattern, repositoryName) {
   var promise = new Promise(function (resolve) {
@@ -131,37 +95,10 @@ exports.getAllTriples_W_O_TBox = function (repositoryName) {
         return error
       });
 
-
   });
   return promise
 
 }
-
-exports.clearRepository = function (repositoryName) {
-
-
-  var promise = new Promise(function (resolve) {
-
-    var config = {
-      method: 'DELETE',
-      baseURL: 'http://localhost:7200/',
-      url: `/repositories/${repositoryName}/statements`
-    }
-
-    client(config).then(function (response) {
-      console.log("Got a response from GraphDB " + response.status);
-      resolve(response);
-    })
-      .catch(function (error) {
-        reject(error);
-        console.log(error);
-      });
-
-  });
-  return promise
-
-}
-
 
 function deleteTBox(repositoryName){
   var pattern = "VDI3682";
@@ -201,6 +138,41 @@ function deleteTBox(repositoryName){
   });
   return promise
 }
+
+function getTox(pattern) {
+    var url;
+    switch (pattern) {
+      case "VDI3682": {
+        url = TBOX_URLs.VDI3682;
+        break;
+      }
+      case "VDI2206": {
+        url = TBOX_URLs.VDI2206;
+        break;
+      }
+      case "DINEN61360": {
+        url = TBOX_URLs.DINEN61360;
+        break;
+      }
+      case "ISA88": {
+        url = TBOX_URLs.ISA88;
+        break;
+      }
+      case "WADL": {
+        url = TBOX_URLs.WADL;
+        break;
+      }
+      case "ISO22400_2": {
+        url = TBOX_URLs.ISO22400_2;
+        break;
+      }
+      default: {
+        // no default statements
+        break;
+      }
+    }
+    return client.get(url);
+  }
 
 var TBOX_URLs = {
   VDI3682: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/VDI%203682/VDI3682.owl",
