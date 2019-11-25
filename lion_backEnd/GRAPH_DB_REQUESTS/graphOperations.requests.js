@@ -13,7 +13,7 @@ exports.GET_ALL_TRIPLES = function (graph, repositoryName, format) {
           },
           responseType: 'text',
           baseURL: 'http://localhost:7200/',
-          url: `/repositories/${repositoryName}/rdf-graphs/service?graph=${encodeURIComponent(graph)}`
+          url: `/repositories/${repositoryName}/rdf-graphs/service?graph=${graph}`
         }
         // http call
         client(config).then(function (response) {
@@ -60,7 +60,7 @@ exports.SET_GRAPH = function (graph, repositoryName, format, triples) {
           responseType: 'text',
           data: triples,
           baseURL: 'http://localhost:7200/',
-          url: `/repositories/${repositoryName}/rdf-graphs/service?graph=${encodeURIComponent(graph)}`
+          url: `/repositories/${repositoryName}/rdf-graphs/service?graph=${graph}`
         }
         // http call
         client(config).then(function (response) {
@@ -104,7 +104,7 @@ exports.DELETE_GRAPH = function (graph, repositoryName) {
           method: 'DELETE',
           responseType: 'text',
           baseURL: 'http://localhost:7200/',
-          url: `/repositories/${repositoryName}/rdf-graphs/service?graph=${encodeURIComponent(graph)}`
+          url: `/repositories/${repositoryName}/rdf-graphs/service?graph=${graph}`
         }
         // http call
         client(config).then(function (response) {
