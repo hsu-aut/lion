@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { MessagesService } from '../../../shared/services/messages.service';
@@ -31,7 +32,8 @@ export class Iso22400_2ModelService {
     private downloadService: DownloadService,
     private nameService: PrefixesService,
     private messageService: MessagesService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private graphs: GraphOperationsService
   ) {
 
     this.initializeISO22400_2();
@@ -149,8 +151,8 @@ export class Iso22400_2ModelService {
 
   // builders
   public createElement(variables: elementVariables, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
@@ -175,8 +177,8 @@ export class Iso22400_2ModelService {
 
   }
   public createKPI(KPIVariables: KPIVariables, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {

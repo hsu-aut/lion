@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { PrefixesService } from './services/prefixes.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
@@ -18,7 +19,8 @@ export class Isa88ModelService {
         constructor(
                 private query: QueriesService,
                 private nameService: PrefixesService,
-                private loadingScreenService: DataLoaderService
+                private loadingScreenService: DataLoaderService,
+                private graphs: GraphOperationsService
 
         ) {
 
@@ -49,8 +51,8 @@ export class Isa88ModelService {
                 var PREFIXES = this.nameService.getPrefixes();
                 var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                var GRAPHS = this.nameService.getGraphs();
-                var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+                var GRAPHS = this.graphs.getGraphs();
+                var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
                 return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(variables, namespace, activeGraph));
         }
@@ -58,8 +60,8 @@ export class Isa88ModelService {
                 var PREFIXES = this.nameService.getPrefixes();
                 var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                var GRAPHS = this.nameService.getGraphs();
-                var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+                var GRAPHS = this.graphs.getGraphs();
+                var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
                 return this.isa88Insert.buildISA88(variables, namespace, activeGraph);
         }

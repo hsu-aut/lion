@@ -8,7 +8,6 @@ import { Iso22400_2ModelService } from '../../../../rdf-modelling/rdf-models/iso
 import { Vdi2206ModelService } from '../../../../rdf-modelling/rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../../../../rdf-modelling/rdf-models/vdi3682Model.service';
 
-import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -167,8 +166,6 @@ export class WadlComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private query: SparqlQueriesService,
-    private dlService: DownloadService,
     private nameService: PrefixesService,
     private wadlService: WadlModelService,
     private vdi3682Service: Vdi3682ModelService,

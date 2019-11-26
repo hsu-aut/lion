@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { Observable } from 'rxjs';
@@ -30,7 +31,8 @@ export class WadlModelService {
     private query: QueriesService,
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private graphs: GraphOperationsService
   ) {
     this.initializeWADL();
   }
@@ -137,8 +139,8 @@ export class WadlModelService {
   public getLIST_OF_RESPONSE_CODES() { return this.LIST_OF_RESPONSE_CODES }
 
   public modifyBaseResource(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
     switch (action) {
       case "add": {
         console.log("i was executed")
@@ -164,8 +166,8 @@ export class WadlModelService {
   }
 
   public modifyService(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
@@ -190,8 +192,8 @@ export class WadlModelService {
     }
   }
   public modifyRequest(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
@@ -214,8 +216,8 @@ export class WadlModelService {
     }
   }
   public modifyResponse(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {

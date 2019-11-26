@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
-
 import { concat } from "rxjs";
-import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
-import { BackEndRequestsService } from '../../../rdf-models/services/backEndRequests.service';
-import { DownloadService } from '../../../rdf-models/services/download.service';
-import { DataDescription } from '../../../utils/formats';
-import { FormatDescription } from '../../../utils/formats';
+
+/* backend services */
+import { ConfigurationService } from '../../../rdf-models/services/backEnd/configuration.service'
+import { GraphOperationsService } from '../../../rdf-models/services/backEnd/graphOperations.service';
+import { RepositoryOperationsService } from '../../../rdf-models/services/backEnd/repositoryOperations.service';
+
+
+import { DataDescription , FormatDescription } from '../../../utils/formats';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { MessagesService } from '../../../../../shared/services/messages.service';
 
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
@@ -77,26 +78,25 @@ export class ConfigurationsComponent implements OnInit {
 
   // stats
   NoOfNamespaces: number = this.prefixService.getPrefixes().length;
-  NoOfNamedGraphs: number = this.prefixService.getGraphs().length;
+  NoOfNamedGraphs: number = this.graphOperation.getGraphs().length;
 
 
   constructor(
-    private query: SparqlQueriesService,
-    private backEnd: BackEndRequestsService,
-    private dlService: DownloadService,
+    private graphOperation: GraphOperationsService,
+    private repositoryOperation: RepositoryOperationsService,
+    private config: ConfigurationService,
+
     private prefixService: PrefixesService,
     private ISA_Service: Isa88ModelService,
     private DINEIN61360_Service: Dinen61360Service,
     private VDI2206_Service: Vdi2206ModelService,
     private VDI3862_Service: Vdi3682ModelService,
     private Dashboard_Service: DashboardService,
-    private DataLoaderService: DataLoaderService,
     private WadlModelService: WadlModelService,
     private Iso22400_2ModelService: Iso22400_2ModelService,
     private fb: FormBuilder,
     private messageService: MessagesService,
-
-
+    
   ) {
 
 
@@ -107,8 +107,8 @@ export class ConfigurationsComponent implements OnInit {
     this.PREFIXES = this.prefixService.getPrefixes();
     this.getActiveNamespace();
     this.getListOfRepos();
-    this.activeHostname = this.query.getHost();
-    this.activeRepository = this.query.getRepository();
+    this.activeHostname = this.config.getHost();
+    this.activeRepository = this.config.getRepository();
     this.getCurrentGraphConfig();
 
   }
@@ -116,11 +116,11 @@ export class ConfigurationsComponent implements OnInit {
 
   setGraphDBConfig(hostName: string, repositoryName: string) {
     if (this.repositoryForm.valid) {
-      this.query.setHost(hostName);
-      this.query.setRepository(repositoryName);
+      this.config.setHost(hostName);
+      this.config.setRepository(repositoryName);
       this.refreshServices();
-      this.activeHostname = this.query.getHost();
-      this.activeRepository = this.query.getRepository();
+      this.activeHostname = this.config.getHost();
+      this.activeRepository = this.config.getRepository();
     } else if (this.repositoryForm.invalid) {
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
@@ -220,12 +220,12 @@ export class ConfigurationsComponent implements OnInit {
   loadTBoxes() {
 
     var ObservableSequence = concat(
-      this.backEnd.loadTBoxes(this.query.getRepository(), "VDI3682"),
-      this.backEnd.loadTBoxes(this.query.getRepository(), "WADL"),
-      this.backEnd.loadTBoxes(this.query.getRepository(), "ISA88"),
-      this.backEnd.loadTBoxes(this.query.getRepository(), "DINEN61360"),
-      this.backEnd.loadTBoxes(this.query.getRepository(), "VDI2206"),
-      this.backEnd.loadTBoxes(this.query.getRepository(), "ISO22400_2"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISA88"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
 
     ).pipe(
       finalize(() => this.refreshServices()) // Execute when the observable completes
@@ -236,7 +236,7 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   clearRepository() {
-    this.backEnd.clearRepo(this.query.getRepository()).pipe(take(1)).subscribe((data: any) => {
+    this.repositoryOperation.clearRepository(this.config.getRepository()).pipe(take(1)).subscribe((data: any) => {
       console.info("Repository cleared ...")
     })
   }
@@ -253,14 +253,14 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   getListOfRepos() {
-    this.query.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
+    this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
       this.repositoryList = data
     })
   }
 
   createNewRepo(NewRepositoryName: string) {
     if (this.newRepository.valid) {
-      this.backEnd.createRepo(NewRepositoryName).pipe(take(1)).subscribe((data: any) => {
+      this.repositoryOperation.createRepository(NewRepositoryName).pipe(take(1)).subscribe((data: any) => {
         this.getListOfRepos();
       })
     } else if (this.newRepository.invalid) {
@@ -270,25 +270,25 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   getCurrentGraphConfig() {
-    this.graphList = this.prefixService.getGraphs();
-    this.currentGraph = this.graphList[this.prefixService.getActiveGraph()];
+    this.graphList = this.graphOperation.getGraphs();
+    this.currentGraph = this.graphList[this.graphOperation.getActiveGraph()];
     this.NoOfNamedGraphs = this.graphList.length;
   }
 
   createNamedGraph(newGraphName: string) {
     let newGraph = newGraphName;
     if (newGraphName.search("http://") != -1) {
-      this.prefixService.addGraph(newGraph);
+      this.graphOperation.addGraph(newGraph);
     } else {
       newGraph = "http://" + newGraph
-      this.prefixService.addGraph(newGraph);
+      this.graphOperation.addGraph(newGraph);
     }
     this.getCurrentGraphConfig();
   }
   setActiveGraph(graph: string) {
     for (let i = 0; i < this.graphList.length; i++) {
       if (this.graphList[i].search(graph) != -1) {
-        this.prefixService.setActiveGraph(i);
+        this.graphOperation.setActiveGraph(i);
         this.getCurrentGraphConfig();
       }
     }
@@ -306,7 +306,7 @@ export class ConfigurationsComponent implements OnInit {
 
     }
 
-    this.query.getTriplesOfNamedGraph(graph, dataFormat)
+    this.graphOperation.getTriplesOfNamedGraph(graph, dataFormat)
 
     // .pipe(take(1)).subscribe((data: string) => {
     //   data = JSON.stringify(data)
@@ -320,18 +320,18 @@ export class ConfigurationsComponent implements OnInit {
   }
 
   deleteTriplesOfNamedGraph(graph) {
-    this.query.deleteTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
+    this.graphOperation.deleteTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
       this.refreshServices();
     })
   }
 
   deleteNamedGraph(graph) {
-    this.query.deleteNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
+    this.graphOperation.deleteNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
       console.log(data);
       for (let i = 0; i < this.graphList.length; i++) {
         if (this.graphList[i].search(graph) != -1) {
-          this.prefixService.deleteGraph(i);
+          this.graphOperation.deleteGraph(i);
           this.getCurrentGraphConfig();
         }
       }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+
 import { PrefixesService } from './services/prefixes.service';
 import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { take } from 'rxjs/operators';
@@ -26,6 +28,7 @@ export class Dinen61360Service {
 
   constructor(
     private query: QueriesService,
+    private graphs: GraphOperationsService,
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService,
     private dlService: DownloadService
@@ -131,8 +134,8 @@ export class Dinen61360Service {
   public getLIST_LOGIC_INTERPRETATIONS() { return this.LIST_LOGIC_INTERPRETATIONS }
 
   public modifyInstance(action: string, variables: DINEN61360Variables) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
@@ -156,8 +159,8 @@ export class Dinen61360Service {
     }
   }
   public modifyType(action: string, variables: DINEN61360Variables) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
@@ -185,8 +188,8 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
   }
@@ -194,8 +197,8 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     return this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
   }
@@ -203,8 +206,8 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
   }
@@ -212,8 +215,8 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     return this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
   }

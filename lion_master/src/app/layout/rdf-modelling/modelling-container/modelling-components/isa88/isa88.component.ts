@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Isa88ModelService, ISA88Insert, ISA88Variables } from '../../../rdf-models/isa88Model.service';
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
-import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
-import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -20,9 +18,7 @@ import { take } from 'rxjs/operators';
 export class Isa88Component implements OnInit {
 
   constructor(
-    private query: SparqlQueriesService, 
     private dlService: DownloadService,
-    private namespaceParser: PrefixesService,
     private modelService: Isa88ModelService,
     private vdi3682ModelService: Vdi3682ModelService, 
     private loadingScreenService: DataLoaderService

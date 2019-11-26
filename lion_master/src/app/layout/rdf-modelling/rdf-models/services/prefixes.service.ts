@@ -12,23 +12,43 @@ export class PrefixesService {
 
   prefixes = new Namespace;
   PREFIXES = this.prefixes.PREFIXES;
-  GRAPHS = this.prefixes.GRAPHS;
-  activeGraph = this.prefixes.activeGraph;
+  // GRAPHS = this.prefixes.GRAPHS;
+  // activeGraph = this.prefixes.activeGraph;
   activeNamespace = this.prefixes.activeNamespace;
 
   getPrefixes() {
     return this.PREFIXES;
   }
 
-  getGraphs() {
-    return this.GRAPHS;
-  }
+  // getGraphs() {
+  //   return this.GRAPHS;
+  // }
 
-  addGraph(namespace: string) {
+  // addGraph(namespace: string) {
 
-    let name = namespace;
-    this.GRAPHS.push(name);
-  }
+  //   let name = namespace;
+  //   this.GRAPHS.push(name);
+  // }
+
+  // editGraph(key, userNamespace) {
+  //   this.GRAPHS[key] = userNamespace;
+  // }
+
+  // deleteGraph(key) {
+  //   this.GRAPHS.splice(key, 1);
+  // }
+
+  // getActiveGraph() {
+  //   return this.activeGraph;
+  // }
+
+  // setActiveGraph(key) {
+  //   let max = this.GRAPHS.length;
+
+  //   if (key <= max) {
+  //     this.activeGraph = key;
+  //   }
+  // }
 
   addNamespace(PREFIX, NAMESPACE) {
     let pre = PREFIX;
@@ -42,25 +62,19 @@ export class PrefixesService {
     this.PREFIXES[key].namespace = userNamespace;
   }
 
-  editGraph(key, userNamespace) {
-    this.GRAPHS[key] = userNamespace;
-  }
+
 
   deleteNamespace(key) {
     this.PREFIXES.splice(key, 1);
   }
 
-  deleteGraph(key) {
-    this.GRAPHS.splice(key, 1);
-  }
+
 
   getActiveNamespace() {
     return this.activeNamespace;
   }
 
-  getActiveGraph() {
-    return this.activeGraph;
-  }
+
 
   setActiveNamespace(key) {
     let max = this.PREFIXES.length;
@@ -70,13 +84,7 @@ export class PrefixesService {
     }
   }
 
-  setActiveGraph(key) {
-    let max = this.GRAPHS.length;
 
-    if (key <= max) {
-      this.activeGraph = key;
-    }
-  }
 
 
   getPrefixString() {

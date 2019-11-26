@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PrefixesService } from './services/prefixes.service';
 import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { MessagesService } from '../../../shared/services/messages.service';
@@ -26,7 +27,8 @@ export class Vdi3682ModelService {
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService,
     private messageService: MessagesService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private graphs: GraphOperationsService
   ) {
 
     this.initializeVDI3682();
@@ -131,8 +133,8 @@ export class Vdi3682ModelService {
 
   public modifyTripel(variables: tripel, action: string){
     
-      var GRAPHS = this.nameService.getGraphs();
-      var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+      var GRAPHS = this.graphs.getGraphs();
+      var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
   
       switch (action) {
         case "add": {

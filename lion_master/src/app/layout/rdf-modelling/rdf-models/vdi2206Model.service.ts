@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
 import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
@@ -26,7 +27,8 @@ export class Vdi2206ModelService {
 constructor(
   private query: QueriesService,
   private nameService: PrefixesService,
-  private loadingScreenService: DataLoaderService
+  private loadingScreenService: DataLoaderService,
+  private graphs: GraphOperationsService
 ) { 
 
   this.initializeVDI2206();
@@ -201,8 +203,8 @@ public insertTripel(graph: tripel) {
   var PREFIXES = this.nameService.getPrefixes();
   var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-  var GRAPHS = this.nameService.getGraphs();
-  var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+  var GRAPHS = this.graphs.getGraphs();
+  var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
   if(graph.subject.search("http://") != -1){
     graph.subject = graph.subject;
@@ -221,8 +223,8 @@ public buildTripel(graph: tripel) {
   var PREFIXES = this.nameService.getPrefixes();
   var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-  var GRAPHS = this.nameService.getGraphs();
-  var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+  var GRAPHS = this.graphs.getGraphs();
+  var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
   if(graph.subject.search("http://") != -1){
     graph.subject = graph.subject;

@@ -1,6 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { PrefixesService } from '../rdf-models/services/prefixes.service';
-import { SparqlQueriesService } from '../rdf-models/services/sparql-queries.service';
+
+// initialize backend services
+import { GraphOperationsService } from '../rdf-models/services/backEnd/graphOperations.service';
+import { QueriesService } from '../rdf-models/services/backEnd/queries.service';
+import { RepositoryOperationsService } from '../rdf-models/services/backEnd/repositoryOperations.service';
+import { ConfigurationService } from '../rdf-models/services/backEnd/configuration.service'
+
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
@@ -8,7 +14,7 @@ import { Isa88ModelService } from '../rdf-models/isa88Model.service';
 import { WadlModelService } from '../rdf-models/wadlModel.service';
 import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
 import { DashboardService } from './modelling-components/dashboard/dashboard.service';
-import { BackEndRequestsService } from '../rdf-models/services/backEndRequests.service';
+
 
 
 @Component({
@@ -28,8 +34,12 @@ export class ModellingContainerComponent implements OnInit {
 
 
   constructor(
-    private query: SparqlQueriesService,
-    private backEnd: BackEndRequestsService,
+    private query: QueriesService,
+    private graphOperation: GraphOperationsService,
+    private repositoryOperation: RepositoryOperationsService,
+    private config: ConfigurationService,
+
+
     private prefixService: PrefixesService,
     private ISA_Service: Isa88ModelService,
     private DINEIN61360_Service: Dinen61360Service,
@@ -43,40 +53,40 @@ export class ModellingContainerComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getListOfRepos();
-    this.host = this.query.getHost();
-    this.repository = this.query.getRepository();
+    // this.getListOfRepos();
+    // this.host = this.config.getHost();
+    // this.repository = this.config.getRepository();
 
   }
 
-  setGraphDBConfig(hostName: string, repositoryName: string) {
-    this.query.setHost(hostName);
-    this.query.setRepository(repositoryName);
-    this.refreshServices();
-  }
+  // setGraphDBConfig(hostName: string, repositoryName: string) {
+  //   this.config.setHost(hostName);
+  //   this.config.setRepository(repositoryName);
+  //   this.refreshServices();
+  // }
 
-  refreshServices() {
-    console.info("Refreshing data ...")
-    this.VDI3862_Service.initializeVDI3682();
-    this.VDI2206_Service.initializeVDI2206();
-    this.ISA_Service.initializeISA88();
-    this.DINEIN61360_Service.initializeDINEN61360();
-    this.Dashboard_Service.initializeDashboard();
-    this.wadl_service.initializeWADL();
-    this.iso22400Service.initializeISO22400_2();
-  }
+  // refreshServices() {
+  //   console.info("Refreshing data ...")
+  //   this.VDI3862_Service.initializeVDI3682();
+  //   this.VDI2206_Service.initializeVDI2206();
+  //   this.ISA_Service.initializeISA88();
+  //   this.DINEIN61360_Service.initializeDINEN61360();
+  //   this.Dashboard_Service.initializeDashboard();
+  //   this.wadl_service.initializeWADL();
+  //   this.iso22400Service.initializeISO22400_2();
+  // }
 
-  getListOfRepos() {
-    this.query.getListOfRepositories().subscribe((data: any) => {
-      this.repositoryList = data
-    })
-  }
+  // getListOfRepos() {
+  //   this.repositoryOperation.getListOfRepositories().subscribe((data: any) => {
+  //     this.repositoryList = data
+  //   })
+  // }
 
-  createNewRepo(NewRepositoryName: string){
-    this.backEnd.createRepo(NewRepositoryName).subscribe((data: any) => {
-      this.getListOfRepos();
-    })
-  }
+  // createNewRepo(NewRepositoryName: string){
+  //   this.repositoryOperation.createRepository(NewRepositoryName).subscribe((data: any) => {
+  //     this.getListOfRepos();
+  //   })
+  // }
 
 
 
