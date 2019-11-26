@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { Observable } from 'rxjs';
@@ -27,7 +27,7 @@ export class WadlModelService {
   public LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE: Array<string> = [];
 
   constructor(
-    private query: SparqlQueriesService,
+    private query: QueriesService,
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService,
     private downloadService: DownloadService
@@ -70,55 +70,55 @@ export class WadlModelService {
   // loader
   public loadTABLE_BASE_RESOURCES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_BASE_RESOURCES);
+    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_BASE_RESOURCES);
   }
   public loadTABLE_SERVICES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_SERVICES);
+    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_SERVICES);
   }
   public loadLIST_BASE_RESOURCES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_TABLE_BASE_RESOURCES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_TABLE_BASE_RESOURCES, 0);
   }
   public loadLIST_SERVICES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_TABLE_SERVICES, 1);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_TABLE_SERVICES, 1);
   }
   public loadLIST_OF_METHODS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_LIST_OF_METHODS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_METHODS, 0);
   }
   public loadLIST_OF_PARAMETER_TYPES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_LIST_OF_PARAMETER_TYPES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_PARAMETER_TYPES, 0);
   }
   public loadLIST_OF_RESPONSE_CODES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_LIST_OF_RESPONSE_CODES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_RESPONSE_CODES, 0);
   }
   public loadLIST_OF_SERVICES_BY_BASE(BASE_IRI) {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI), 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI), 0);
   }
   public loadTABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI) {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI));
+    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI));
   }
   public loadTABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI) {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI));
+    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI));
   }
   public loadTABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
+    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
   }
   public loadLIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity) {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
   }
   public loadLIST_INDIVIDUALS_BY_CLASS(classIRI) {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.wadlData.SELECT_LIST_INDIVIDUALS_BY_CLASS(classIRI), 0);
+    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_INDIVIDUALS_BY_CLASS(classIRI), 0);
   }
   // setter 
   public setTABLE_BASE_RESOURCES(table) { this.TABLE_BASE_RESOURCES = table; }
@@ -143,10 +143,10 @@ export class WadlModelService {
       case "add": {
         console.log("i was executed")
         console.log(this.wadlInsert.createBaseResource(variables, activeGraph))
-        return this.query.insert(this.wadlInsert.createBaseResource(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.createBaseResource(variables, activeGraph));
       }
       case "delete": {
-        return this.query.insert(this.wadlInsert.deleteBaseResource(variables));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteBaseResource(variables));
       }
       case "build": {
         var blobObserver = new Observable((observer) => {
@@ -171,10 +171,10 @@ export class WadlModelService {
       case "add": {
         console.log("i was executed")
         console.log(this.wadlInsert.createService(variables, activeGraph))
-        return this.query.insert(this.wadlInsert.createService(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.createService(variables, activeGraph));
       }
       case "delete": {
-        return this.query.insert(this.wadlInsert.deleteService(variables));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteService(variables));
       }
       case "build": {
         var blobObserver = new Observable((observer) => {
@@ -195,10 +195,10 @@ export class WadlModelService {
 
     switch (action) {
       case "add": {
-        return this.query.insert(this.wadlInsert.createRequest(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.createRequest(variables, activeGraph));
       }
       case "delete": {
-        return this.query.insert(this.wadlInsert.deleteRequest(variables));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteRequest(variables));
       }
       case "build": {
         var blobObserver = new Observable((observer) => {
@@ -219,10 +219,10 @@ export class WadlModelService {
 
     switch (action) {
       case "add": {
-        return this.query.insert(this.wadlInsert.createResponse(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.createResponse(variables, activeGraph));
       }
       case "delete": {
-        return this.query.insert(this.wadlInsert.deleteResponse(variables));
+        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteResponse(variables));
       }
       case "build": {
         var blobObserver = new Observable((observer) => {
@@ -238,10 +238,10 @@ export class WadlModelService {
     }
   }
   public deleteOption(variables: WADLVARIABLES) {
-    return this.query.insert(this.wadlInsert.deleteOption(variables));
+    return this.query.SPARQL_UPDATE(this.wadlInsert.deleteOption(variables));
   }
   public deleteParameter(variables: WADLVARIABLES) {
-    return this.query.insert(this.wadlInsert.deleteParameter(variables));
+    return this.query.SPARQL_UPDATE(this.wadlInsert.deleteParameter(variables));
   }
 }
 

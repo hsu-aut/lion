@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
 import { PrefixesService } from './services/prefixes.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export class Isa88ModelService {
         isa88Insert = new ISA88Insert();
 
         constructor(
-                private query: SparqlQueriesService,
+                private query: QueriesService,
                 private nameService: PrefixesService,
                 private loadingScreenService: DataLoaderService
 
@@ -35,7 +35,7 @@ export class Isa88ModelService {
         // isa 88 data
         public loadISA88BehaviorInfo() {
                 this.loadingScreenService.startLoading();
-                return this.query.selectTable(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
+                return this.query.SPARQL_SELECT_TABLE(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
         }
 
         public setISA88BehaviorInfo(table) {
@@ -52,7 +52,7 @@ export class Isa88ModelService {
                 var GRAPHS = this.nameService.getGraphs();
                 var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
 
-                return this.query.insert(this.isa88Insert.buildISA88(variables, namespace, activeGraph));
+                return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(variables, namespace, activeGraph));
         }
         public buildStateMachine(variables: ISA88Variables) {
                 var PREFIXES = this.nameService.getPrefixes();

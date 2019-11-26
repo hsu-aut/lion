@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
@@ -24,7 +24,7 @@ export class Vdi2206ModelService {
   private TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM = [];
 
 constructor(
-  private query: SparqlQueriesService,
+  private query: QueriesService,
   private nameService: PrefixesService,
   private loadingScreenService: DataLoaderService
 ) { 
@@ -78,60 +78,60 @@ public initializeVDI2206(){
 
 public loadLIST_OF_SYSTEMS(){
   this.loadingScreenService.startLoading();
-  return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_SYSTEMS, 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.SPARQL_SELECT_ALL_SYSTEMS, 0);
 }
 public loadLIST_OF_MODULES(){
   this.loadingScreenService.startLoading();
-  return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_MODULES, 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.SPARQL_SELECT_ALL_MODULES, 0);
 }
 public loadLIST_OF_COMPONENTS(){
   this.loadingScreenService.startLoading();
-  return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_COMPONENTS, 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.SPARQL_SELECT_ALL_COMPONENTS, 0);
 }
 public loadLIST_OF_CLASSES(){
   this.loadingScreenService.startLoading();
-  return this.query.selectList(this.vdi2206Data.SPARQL_SELECT_ALL_CLASSES, 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.SPARQL_SELECT_ALL_CLASSES, 0);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS(){
   this.loadingScreenService.startLoading();
-  return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS);
+  return this.query.SPARQL_SELECT_TABLE(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD(){
   this.loadingScreenService.startLoading();
-  return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD);
+  return this.query.SPARQL_SELECT_TABLE(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM(){
   this.loadingScreenService.startLoading();
-  return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM);
+  return this.query.SPARQL_SELECT_TABLE(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS(){
   this.loadingScreenService.startLoading();
-  return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS);
+  return this.query.SPARQL_SELECT_TABLE(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD(){
   this.loadingScreenService.startLoading();
-  return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD);
+  return this.query.SPARQL_SELECT_TABLE(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD);
 }
 public loadTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM(){
   this.loadingScreenService.startLoading();
-  return this.query.selectTable(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM);
+  return this.query.SPARQL_SELECT_TABLE(this.vdi2206Data.SPARQL_SELECT_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM);
 }
 
 public loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass){ 
   owlClass = this.nameService.parseToIRI(owlClass);
-  return this.query.selectList(this.vdi2206Data.selectPredicateByDomain(owlClass), 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectPredicateByDomain(owlClass), 0);
 }
 public loadLIST_OF_CLASSES_BY_RANGE(predicate){ 
   predicate = this.nameService.parseToIRI(predicate);
-  return this.query.selectList(this.vdi2206Data.selectClassByRange(predicate), 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectClassByRange(predicate), 0);
 }
 public loadLIST_OF_CLASS_MEMBERSHIP(individual){ 
   individual = this.nameService.parseToIRI(individual);
-  return this.query.selectList(this.vdi2206Data.selectClass(individual), 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectClass(individual), 0);
 }
 public loadLIST_OF_INDIVIDUALS_BY_CLASS(Class){ 
   Class = this.nameService.parseToIRI(Class);
-  return this.query.selectList(this.vdi2206Data.selectIndividualByClass(Class), 0);
+  return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectIndividualByClass(Class), 0);
 }
 
 public setLIST_OF_SYSTEMS(list){
@@ -214,7 +214,7 @@ public insertTripel(graph: tripel) {
   graph.predicate = this.nameService.parseToIRI(graph.predicate);
   graph.object = this.nameService.parseToIRI(graph.object);
 
-  return this.query.insert(this.vdi2206Insert.createEntity(graph, activeGraph));
+  return this.query.SPARQL_UPDATE(this.vdi2206Insert.createEntity(graph, activeGraph));
 }
 
 public buildTripel(graph: tripel) {

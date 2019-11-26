@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
+import { QueriesService } from '../../../rdf-models/services/backEnd/queries.service';
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../../../rdf-models/dinen61360Model.service';
@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private namespaceService: PrefixesService,
-    private query: SparqlQueriesService,
+    private query: QueriesService,
     private vdi3682Service: Vdi3682ModelService,
     private vdi2206Service: Vdi2206ModelService,
     private dinen61360Service: Dinen61360Service,
