@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class ConfigurationService {
 
-  host: string;
-  repository: string;
+  private host: string;
+  private repository: string;
 
   constructor() {
     // default url
