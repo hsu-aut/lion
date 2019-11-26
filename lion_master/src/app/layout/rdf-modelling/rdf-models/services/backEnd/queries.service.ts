@@ -7,7 +7,7 @@ import { PrefixesService } from '../prefixes.service';
 import { Tables } from '../../../utils/tables';
 import { DataLoaderService } from "../../../../../shared/services/dataLoader.service";
 import { MessagesService } from "../../../../../shared/services/messages.service";
-import { ConfigurationService } from './configuration.service'
+import { ConfigurationService } from './configuration.service';
 
 
 
@@ -100,12 +100,12 @@ export class QueriesService {
     let params = new HttpParams().set('repositoryName', this.config.getRepository());
 
     var urlPOST = this.getUpdateURL();
-    var GRAPHS = this.namespaceService.getGraphs();
-    var graph = GRAPHS[this.namespaceService.getActiveGraph()];
+    // var GRAPHS = this.graphs.getGraphs();
+    // var graph = GRAPHS[this.graphs.getActiveGraph()];
 
     var insertObservable = new Observable((observer) => {
       this.http.post(urlPOST, body, { headers, params }).pipe(take(1)).subscribe((data: any) => {
-        this.messageService.addMessage('success', 'Added!', `Added triples to the graph "${graph}"`);
+        this.messageService.addMessage('success', 'Added!', `Added triples to the active graph`);
         observer.next()
         observer.complete()
       },
