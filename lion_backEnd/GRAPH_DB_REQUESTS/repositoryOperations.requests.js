@@ -1,4 +1,5 @@
 const client = require('axios');
+var log = require('./GDB_LOG')
 
 
 /* method to get a list of repositories via HTTP GET from the GRaphDB */
@@ -17,7 +18,7 @@ exports.GET_REPOSITORIES = function () {
     }
 
     client(config).then(function (response) {
-      console.log("Got a response from GraphDB");
+      log.GDB_LOG_SUCCESS(response)
       let GDB = {
           status: response.status,
           data: JSON.stringify(response.data)
@@ -25,13 +26,11 @@ exports.GET_REPOSITORIES = function () {
       resolve(GDB);
     })
       .catch(function (error) {
-        console.log("Got an error from GraphDB");
+        log.GDB_LOG_ERROR(error)
         let GDB = {
             status: error.response.status,
             data: error.response.data
         }
-        console.log(error);
-        console.log(GDB)
         resolve(GDB);
       });
 
@@ -53,7 +52,7 @@ exports.CLEAR_REPOSITORY = function (repositoryName) {
       }
   
       client(config).then(function (response) {
-        console.log("Got a response from GraphDB");
+        log.GDB_LOG_SUCCESS(response)
         let GDB = {
             status: response.status,
             data: JSON.stringify(response.data)
@@ -61,13 +60,11 @@ exports.CLEAR_REPOSITORY = function (repositoryName) {
         resolve(GDB);
       })
         .catch(function (error) {
-          console.log("Got an error from GraphDB");
+          log.GDB_LOG_ERROR(error)
           let GDB = {
               status: error.response.status,
               data: error.response.data
           }
-          console.log(error);
-          console.log(GDB)
           resolve(GDB);
         });
   
