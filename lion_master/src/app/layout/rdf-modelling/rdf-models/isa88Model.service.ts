@@ -4,9 +4,6 @@ import { GraphOperationsService } from './services/backEnd/graphOperations.servi
 import { PrefixesService } from './services/prefixes.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
-import { Namespace } from '../utils/prefixes'
-
-var nameService = new Namespace;
 
 @Injectable({
         providedIn: 'root'
@@ -54,7 +51,10 @@ export class Isa88ModelService {
                 var GRAPHS = this.graphs.getGraphs();
                 var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-                return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(variables, namespace, activeGraph));
+                var SystemName = this.nameService.parseToName(variables.SystemName);
+                var SystemIRI = this.nameService.parseToIRI(variables.SystemName);
+
+                return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI));
         }
         public buildStateMachine(variables: ISA88Variables) {
                 var PREFIXES = this.nameService.getPrefixes();
@@ -63,7 +63,10 @@ export class Isa88ModelService {
                 var GRAPHS = this.graphs.getGraphs();
                 var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-                return this.isa88Insert.buildISA88(variables, namespace, activeGraph);
+                var SystemName = this.nameService.parseToName(variables.SystemName);
+                var SystemIRI = this.nameService.parseToIRI(variables.SystemName);
+
+                return this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI);
         }
 
 }
@@ -102,11 +105,7 @@ export class ISA88Variables {
 
 export class ISA88Insert {
 
-        public buildISA88(variables: ISA88Variables, activeNameSpace: string, activeGraph: string): string {
-                var namespace = activeNameSpace;
-                var SystemName = nameService.parseToName(variables.SystemName);
-                var SystemIRI = nameService.parseToIRI(variables.SystemName);
-                var mode = variables.mode;
+        public buildISA88(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI): string {
 
                 var insertStringProduction = `      
 # Necessary W3C ontologies
@@ -340,7 +339,7 @@ INSERT {
       BIND(STR("${SystemIRI}") AS ?SysBehaviorOrPOUIRI).
       # ----------------------------------------------------------------- #
       # Defines the general namespace for all individuals
-      BIND(STR("${namespace}") AS ?NameSpace).
+      BIND(STR("${activeNameSpace}") AS ?NameSpace).
       # ----------------------------------------------------------------- #
       # states
       BIND(IRI(CONCAT(?NameSpace,?SystemType,"_Aborting")) AS ?Aborting).
@@ -572,7 +571,7 @@ INSERT {
       BIND(STR("${SystemIRI}") AS ?SysBehaviorOrPOUIRI).
       # ----------------------------------------------------------------- #
       # Defines the general namespace for all individuals
-      BIND(STR("${namespace}") AS ?NameSpace).
+      BIND(STR("${activeNameSpace}") AS ?NameSpace).
       # ----------------------------------------------------------------- #
       # states
       BIND(IRI(CONCAT(?NameSpace,?SystemType,"_Aborting")) AS ?Aborting).
