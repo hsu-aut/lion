@@ -1,4 +1,5 @@
 const client = require('axios');
+var log = require('./GDB_LOG')
 
 
 /* method to perform a SPARQL SELECT via HTTP POST to the GRaphDB */
@@ -18,7 +19,7 @@ exports.SAPRQL_SELECT = function (query, repositoryName) {
         }
         // http call
         client(config).then(function (response) {
-          console.log("Got a response from GraphDB");
+          log.GDB_LOG_SUCCESS(response)
           let GDB = {
               status: response.status,
               data: JSON.stringify(response.data)
@@ -27,13 +28,11 @@ exports.SAPRQL_SELECT = function (query, repositoryName) {
         })
         // error handling for graphdb errors
           .catch(function (error) {
-            console.log("Got an error from GraphDB");
+            log.GDB_LOG_ERROR(error)
             let GDB = {
               status: error.response.status,
               data: error.response.data
             }
-            console.log(error);
-            console.log(GDB)
             resolve(GDB);
           });
   
@@ -66,7 +65,7 @@ exports.SAPRQL_UPDATE = function (query, repositoryName) {
       }
       // http call
       client(config).then(function (response) {
-        console.log("Got a response from GraphDB");
+        log.GDB_LOG_SUCCESS(response)
         let GDB = {
             status: response.status,
             data: JSON.stringify(response.data)
@@ -75,13 +74,11 @@ exports.SAPRQL_UPDATE = function (query, repositoryName) {
       })
       // error handling for graphdb errors
         .catch(function (error) {
-          console.log("Got an error from GraphDB");
+          log.GDB_LOG_ERROR(error)
           let GDB = {
             status: error.response.status,
             data: error.response.data
           }
-          console.log(error);
-          console.log(GDB)
           resolve(GDB);
         });
 

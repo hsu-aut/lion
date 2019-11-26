@@ -1,4 +1,5 @@
 const client = require('axios');
+var log = require('./GDB_LOG')
 
 
 exports.insertTBOX = function (pattern, repositoryName) {
@@ -18,19 +19,19 @@ exports.insertTBOX = function (pattern, repositoryName) {
       }
 
       client(config).then(function (response) {
-        console.log("Got a response from GraphDB ");
+        log.GDB_LOG_SUCCESS(response)
         console.log(response.status);
         resolve(response.status);
       })
         .catch(function (error) {
-          reject(error);
-          console.log(error);
+          log.GDB_LOG_ERROR(error)
+          resolve(error);
         });
 
     })
       .catch(function (error) {
         console.log(error);
-        return error
+        resolve(error);
       });
 
 
@@ -54,12 +55,12 @@ exports.getAllTriples = function (repositoryName) {
     }
 
     client(config).then(function (response) {
-      console.log("Got a response from GraphDB " + response.status);
+      log.GDB_LOG_SUCCESS(response)
       resolve(response);
     })
       .catch(function (error) {
-        reject(error);
-        console.log(error);
+        log.GDB_LOG_ERROR(error)
+        resolve(response);
       });
 
   });
@@ -81,18 +82,18 @@ exports.getAllTriples_W_O_TBox = function (repositoryName) {
       }
   
       client(config).then(function (response) {
-        console.log("Got a response from GraphDB " + response.status);
+        log.GDB_LOG_SUCCESS(response)
         resolve(response);
       })
         .catch(function (error) {
-          reject(error);
-          console.log(error);
+          log.GDB_LOG_ERROR(error)
+          resolve(error);
         });
 
     })
       .catch(function (error) {
         console.log(error);
-        return error
+        resolve(error);
       });
 
   });
@@ -118,14 +119,12 @@ function deleteTBox(repositoryName){
       }
 
       client(config).then(function (response) {
-        console.log("Got a response from GraphDB ");
-        console.log(response);
-
-        
+        log.GDB_LOG_SUCCESS(response)     
         resolve(response);
       })
         .catch(function (error) {
-          console.log(error);
+          log.GDB_LOG_ERROR(error)
+          resolve(error);
         });
 
     })

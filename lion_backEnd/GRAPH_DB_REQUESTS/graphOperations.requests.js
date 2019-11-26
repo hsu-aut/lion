@@ -1,4 +1,5 @@
 const client = require('axios');
+var log = require('./GDB_LOG')
 
 
 /* method to perform a graph operation via HTTP GET to the GRaphDB */
@@ -17,7 +18,7 @@ exports.GET_ALL_TRIPLES = function (graph, repositoryName, format) {
         }
         // http call
         client(config).then(function (response) {
-          console.log("Got a response from GraphDB");
+          log.GDB_LOG_SUCCESS(response)
           let GDB = {
               status: response.status,
               data: JSON.stringify(response.data)
@@ -26,13 +27,11 @@ exports.GET_ALL_TRIPLES = function (graph, repositoryName, format) {
         })
         // error handling for graphdb errors
           .catch(function (error) {
-            console.log("Got an error from GraphDB");
+            log.GDB_LOG_ERROR(error)
             let GDB = {
                 status: error.response.status,
                 data: error.response.data
             }
-            console.log(error);
-            console.log(GDB)
             resolve(GDB);
           });
   
@@ -64,7 +63,7 @@ exports.SET_GRAPH = function (graph, repositoryName, format, triples) {
         }
         // http call
         client(config).then(function (response) {
-          console.log("Got a response from GraphDB");
+          log.GDB_LOG_SUCCESS(response)
           let GDB = {
               status: response.status,
               data: JSON.stringify(response.data)
@@ -73,14 +72,11 @@ exports.SET_GRAPH = function (graph, repositoryName, format, triples) {
         })
         // error handling for graphdb errors
           .catch(function (error) {
-            console.log("Got an error from GraphDB");
-            console.log(error);
+            log.GDB_LOG_ERROR(error)
             let GDB = {
                 status: error.response.status,
                 data: error.response.data
             }
-            console.log(error);
-            console.log(GDB)
             resolve(GDB);
           });
   
@@ -108,7 +104,7 @@ exports.DELETE_GRAPH = function (graph, repositoryName) {
         }
         // http call
         client(config).then(function (response) {
-          console.log("Got a response from GraphDB");
+          log.GDB_LOG_SUCCESS(response)
           let GDB = {
               status: response.status,
               data: JSON.stringify(response.data)
@@ -117,14 +113,11 @@ exports.DELETE_GRAPH = function (graph, repositoryName) {
         })
         // error handling for graphdb errors
           .catch(function (error) {
-            console.log("Got an error from GraphDB");
-            console.log(error);
+            log.GDB_LOG_ERROR(error)
             let GDB = {
                 status: error.response.status,
                 data: error.response.data
             }
-            console.log(error);
-            console.log(GDB)
             resolve(GDB);
           });
   
