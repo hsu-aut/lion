@@ -44,4 +44,4 @@ testem.log
 Thumbs.db
 
 # report files of repository creation
-.ttl
+*.ttl
