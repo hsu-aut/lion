@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { PrefixesService } from './services/prefixes.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
-import { Namespace } from '../utils/prefixes'
-
-var nameService = new Namespace;
 
 @Injectable({
         providedIn: 'root'
@@ -16,9 +14,10 @@ export class Isa88ModelService {
         isa88Insert = new ISA88Insert();
 
         constructor(
-                private query: SparqlQueriesService,
+                private query: QueriesService,
                 private nameService: PrefixesService,
-                private loadingScreenService: DataLoaderService
+                private loadingScreenService: DataLoaderService,
+                private graphs: GraphOperationsService
 
         ) {
 
@@ -35,7 +34,7 @@ export class Isa88ModelService {
         // isa 88 data
         public loadISA88BehaviorInfo() {
                 this.loadingScreenService.startLoading();
-                return this.query.selectTable(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
+                return this.query.SPARQL_SELECT_TABLE(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
         }
 
         public setISA88BehaviorInfo(table) {
@@ -49,19 +48,25 @@ export class Isa88ModelService {
                 var PREFIXES = this.nameService.getPrefixes();
                 var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                var GRAPHS = this.nameService.getGraphs();
-                var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+                var GRAPHS = this.graphs.getGraphs();
+                var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-                return this.query.insert(this.isa88Insert.buildISA88(variables, namespace, activeGraph));
+                var SystemName = this.nameService.parseToName(variables.SystemName);
+                var SystemIRI = this.nameService.parseToIRI(variables.SystemName);
+
+                return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI));
         }
         public buildStateMachine(variables: ISA88Variables) {
                 var PREFIXES = this.nameService.getPrefixes();
                 var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                var GRAPHS = this.nameService.getGraphs();
-                var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+                var GRAPHS = this.graphs.getGraphs();
+                var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-                return this.isa88Insert.buildISA88(variables, namespace, activeGraph);
+                var SystemName = this.nameService.parseToName(variables.SystemName);
+                var SystemIRI = this.nameService.parseToIRI(variables.SystemName);
+
+                return this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI);
         }
 
 }
@@ -100,11 +105,7 @@ export class ISA88Variables {
 
 export class ISA88Insert {
 
-        public buildISA88(variables: ISA88Variables, activeNameSpace: string, activeGraph: string): string {
-                var namespace = activeNameSpace;
-                var SystemName = nameService.parseToName(variables.SystemName);
-                var SystemIRI = nameService.parseToIRI(variables.SystemName);
-                var mode = variables.mode;
+        public buildISA88(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI): string {
 
                 var insertStringProduction = `      
 # Necessary W3C ontologies
@@ -338,7 +339,7 @@ INSERT {
       BIND(STR("${SystemIRI}") AS ?SysBehaviorOrPOUIRI).
       # ----------------------------------------------------------------- #
       # Defines the general namespace for all individuals
-      BIND(STR("${namespace}") AS ?NameSpace).
+      BIND(STR("${activeNameSpace}") AS ?NameSpace).
       # ----------------------------------------------------------------- #
       # states
       BIND(IRI(CONCAT(?NameSpace,?SystemType,"_Aborting")) AS ?Aborting).
@@ -570,7 +571,7 @@ INSERT {
       BIND(STR("${SystemIRI}") AS ?SysBehaviorOrPOUIRI).
       # ----------------------------------------------------------------- #
       # Defines the general namespace for all individuals
-      BIND(STR("${namespace}") AS ?NameSpace).
+      BIND(STR("${activeNameSpace}") AS ?NameSpace).
       # ----------------------------------------------------------------- #
       # states
       BIND(IRI(CONCAT(?NameSpace,?SystemType,"_Aborting")) AS ?Aborting).

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PrefixesService } from './services/prefixes.service';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { MessagesService } from '../../../shared/services/messages.service';
@@ -27,11 +28,12 @@ export class Iso22400_2ModelService {
   private TABLE_KPI = [];
 
   constructor(
-    private query: SparqlQueriesService,
+    private query: QueriesService,
     private downloadService: DownloadService,
     private nameService: PrefixesService,
     private messageService: MessagesService,
-    private loadingScreenService: DataLoaderService
+    private loadingScreenService: DataLoaderService,
+    private graphs: GraphOperationsService
   ) {
 
     this.initializeISO22400_2();
@@ -80,51 +82,51 @@ export class Iso22400_2ModelService {
   // loaders
   public loadLIST_OF_KPI_GROUPS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_KPI_GROUPS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_KPI_GROUPS, 0);
   }
   public loadTABLE_ALL_ENTITY_INFO() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.isoData.SELECT_TABLE_ALL_ENTITY_INFO);
+    return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_ALL_ENTITY_INFO);
   }
   public loadLIST_OF_KPIs() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_KPIs, 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_KPIs, 0);
   }
   public loadLIST_OF_ORGANIZATIONAL_ELEMENTS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS, 0);
   }
   public loadLIST_OF_NON_ORGANIZATIONAL_ELEMENTS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS, 0);
   }
   public loadLIST_OF_ELEMENT_GROUPS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_ELEMENT_GROUPS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ELEMENT_GROUPS, 0);
   }
   public loadLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES, 0);
   }
 
   public loadLIST_OF_ELEMENTS_BY_GROUP(groupNameIRI: string) {
     this.loadingScreenService.startLoading();
     groupNameIRI = this.nameService.parseToIRI(groupNameIRI);
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI), 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI), 0);
   }
   public loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string) {
     this.loadingScreenService.startLoading();
     KPI_Class = this.nameService.parseToIRI(KPI_Class);
     ConstrainingDataProperty = this.nameService.parseToIRI(ConstrainingDataProperty);
-    return this.query.selectList(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
+    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
   }
   public loadTABLE_ELEMENTS(){
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.isoData.SELECT_TABLE_ELEMENTS);
+    return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_ELEMENTS);
   }
   public loadTABLE_KPI(){
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.isoData.SELECT_TABLE_KPI);
+    return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_KPI);
   }
 
 
@@ -149,12 +151,12 @@ export class Iso22400_2ModelService {
 
   // builders
   public createElement(variables: elementVariables, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
-        return this.query.insert(this.isoInsert.createElement(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.isoInsert.createElement(variables, activeGraph));
       }
       case "delete": {
         this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')
@@ -175,12 +177,12 @@ export class Iso22400_2ModelService {
 
   }
   public createKPI(KPIVariables: KPIVariables, action: string) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
-        return this.query.insert(this.isoInsert.createKPI(KPIVariables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.isoInsert.createKPI(KPIVariables, activeGraph));
       }
       case "delete": {
         this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')

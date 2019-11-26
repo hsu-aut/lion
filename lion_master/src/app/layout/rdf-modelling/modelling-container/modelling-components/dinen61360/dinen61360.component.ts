@@ -9,7 +9,7 @@ import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
 import { Iso22400_2ModelService } from '../../../rdf-models/iso22400_2Model.service';
 
-import { EclassSearchService } from '../../../rdf-models/services/eclass-search.service';
+import { EclassService } from '../../../rdf-models/services/backEnd/eclass.service';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
@@ -140,7 +140,7 @@ export class Dinen61360Component implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private eclass: EclassSearchService,
+    private eclass: EclassService,
     private nameService: PrefixesService,
     private dinen61360Service: Dinen61360Service,
     private vdi3682Service: Vdi3682ModelService,

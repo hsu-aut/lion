@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Namespace } from '../../utils/prefixes';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -10,24 +7,14 @@ export class PrefixesService {
 
   constructor() { }
 
-  prefixes = new Namespace;
-  PREFIXES = this.prefixes.PREFIXES;
-  GRAPHS = this.prefixes.GRAPHS;
-  activeGraph = this.prefixes.activeGraph;
-  activeNamespace = this.prefixes.activeNamespace;
+  DefaultNamespaces = new DefaultNamespaces;
+  PREFIXES = this.DefaultNamespaces.PREFIXES;
+  // GRAPHS = this.prefixes.GRAPHS;
+  // activeGraph = this.prefixes.activeGraph;
+  activeNamespace = this.DefaultNamespaces.activeNamespace;
 
   getPrefixes() {
     return this.PREFIXES;
-  }
-
-  getGraphs() {
-    return this.GRAPHS;
-  }
-
-  addGraph(namespace: string) {
-
-    let name = namespace;
-    this.GRAPHS.push(name);
   }
 
   addNamespace(PREFIX, NAMESPACE) {
@@ -42,24 +29,12 @@ export class PrefixesService {
     this.PREFIXES[key].namespace = userNamespace;
   }
 
-  editGraph(key, userNamespace) {
-    this.GRAPHS[key] = userNamespace;
-  }
-
   deleteNamespace(key) {
     this.PREFIXES.splice(key, 1);
   }
 
-  deleteGraph(key) {
-    this.GRAPHS.splice(key, 1);
-  }
-
   getActiveNamespace() {
     return this.activeNamespace;
-  }
-
-  getActiveGraph() {
-    return this.activeGraph;
   }
 
   setActiveNamespace(key) {
@@ -69,15 +44,6 @@ export class PrefixesService {
       this.activeNamespace = key;
     }
   }
-
-  setActiveGraph(key) {
-    let max = this.GRAPHS.length;
-
-    if (key <= max) {
-      this.activeGraph = key;
-    }
-  }
-
 
   getPrefixString() {
     var PREFIXES = this.getPrefixes();
@@ -190,6 +156,29 @@ export class PrefixesService {
     return returnObject;
   }
 
+}
 
+interface Prefix {
+  prefix: string;
+  namespace: string;
+}
+
+export class DefaultNamespaces {
+
+  public PREFIXES: Array<Prefix> = [
+
+      { prefix: "VDI3682:", namespace: "http://www.hsu-ifa.de/ontologies/VDI3682#" },
+      { prefix: "VDI2206:", namespace: "http://www.hsu-ifa.de/ontologies/VDI2206#" },
+      { prefix: "DE6:", namespace: "http://www.hsu-ifa.de/ontologies/DINEN61360#" },
+      { prefix: "ISA88:", namespace: "http://www.hsu-ifa.de/ontologies/ISA-TR88#" },
+      { prefix: "wadl:", namespace: "http://www.hsu-ifa.de/ontologies/WADL#"},
+      { prefix: "iso:", namespace: "http://www.hsu-ifa.de/ontologies/ISO22400-2#"},
+      { prefix: "rdf:", namespace: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
+      { prefix: "rdfs:", namespace: "http://www.w3.org/2000/01/rdf-schema#" },
+      { prefix: "owl:", namespace: "http://www.w3.org/2002/07/owl#" },
+      { prefix: "lf:", namespace: "http://lionFacts#" }
+  ] 
+
+  public activeNamespace: number = this.PREFIXES.length - 1;
 
 }

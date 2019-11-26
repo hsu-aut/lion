@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+
 import { PrefixesService } from './services/prefixes.service';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { take } from 'rxjs/operators';
@@ -25,7 +27,8 @@ export class Dinen61360Service {
   dinen61360insert = new DINEN61360Insert();
 
   constructor(
-    private query: SparqlQueriesService,
+    private query: QueriesService,
+    private graphs: GraphOperationsService,
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService,
     private dlService: DownloadService
@@ -72,35 +75,35 @@ export class Dinen61360Service {
 
   public loadTABLE_All_TYPES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.dinen61360data.SELECT_TABLE_ALL_TYPE_INFO);
+    return this.query.SPARQL_SELECT_TABLE(this.dinen61360data.SELECT_TABLE_ALL_TYPE_INFO);
   }
   public loadLIST_All_DE() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDE, 0);
+    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDE, 0);
   }
   public loadLIST_All_DEI() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDEI, 0);
+    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDEI, 0);
   }
   public loadLIST_All_DET() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.dinen61360data.SPARQL_SELECT_allDET, 0);
+    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDET, 0);
   }
   public loadLIST_DATA_TYPES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.dinen61360data.SELECT_LIST_DATA_TYPES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_DATA_TYPES, 0);
   }
   public loadLIST_LOGIC_INTERPRETATIONS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.dinen61360data.SELECT_LIST_LOGIC_INTERPRETATIONS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_LOGIC_INTERPRETATIONS, 0);
   }
   public loadLIST_EXPRESSION_GOALS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.dinen61360data.SELECT_LIST_EXPRESSION_GOALS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_EXPRESSION_GOALS, 0);
   }
   public loadTABLE_ALL_INSTANCE_INFO() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.dinen61360data.SELECT_TABLE_ALL_INSTANCE_INFO);
+    return this.query.SPARQL_SELECT_TABLE(this.dinen61360data.SELECT_TABLE_ALL_INSTANCE_INFO);
   }
 
 
@@ -131,12 +134,12 @@ export class Dinen61360Service {
   public getLIST_LOGIC_INTERPRETATIONS() { return this.LIST_LOGIC_INTERPRETATIONS }
 
   public modifyInstance(action: string, variables: DINEN61360Variables) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
-        return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
       }
       case "delete": {
         console.log("not implemented yet")
@@ -156,12 +159,12 @@ export class Dinen61360Service {
     }
   }
   public modifyType(action: string, variables: DINEN61360Variables) {
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     switch (action) {
       case "add": {
-        return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
+        return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
       }
       case "delete": {
         console.log("not implemented yet")
@@ -185,17 +188,17 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    return this.query.insert(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
+    return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
   }
   public buildDET(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     return this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
   }
@@ -203,17 +206,17 @@ export class Dinen61360Service {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    return this.query.insert(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
+    return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
   }
   public buildDEI(variables: DINEN61360Variables) {
     var PREFIXES = this.nameService.getPrefixes();
     var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.nameService.getGraphs();
-    var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+    var GRAPHS = this.graphs.getGraphs();
+    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
     return this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
   }

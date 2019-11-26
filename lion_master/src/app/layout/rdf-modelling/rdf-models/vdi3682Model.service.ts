@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PrefixesService } from './services/prefixes.service';
-import { SparqlQueriesService } from './services/sparql-queries.service';
+import { QueriesService } from './services/backEnd/queries.service';
+import { GraphOperationsService } from './services/backEnd/graphOperations.service';
 import { DownloadService } from '../rdf-models/services/download.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { MessagesService } from '../../../shared/services/messages.service';
@@ -22,11 +23,12 @@ export class Vdi3682ModelService {
   private LIST_OF_ALL_CLASSES = [];
 
   constructor(
-    private query: SparqlQueriesService,
+    private query: QueriesService,
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService,
     private messageService: MessagesService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private graphs: GraphOperationsService
   ) {
 
     this.initializeVDI3682();
@@ -74,43 +76,43 @@ export class Vdi3682ModelService {
 
   public loadLIST_OF_PROCESSES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_PROCESSES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_PROCESSES, 0);
   }
   public loadLIST_OF_TECHNICAL_RESOURCES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_TECHNICAL_RESOURCES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_TECHNICAL_RESOURCES, 0);
   }
   public loadLIST_OF_INPUTS_AND_OUTPUTS() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_INPUTS_AND_OUTPUTS, 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_INPUTS_AND_OUTPUTS, 0);
   }
   public loadALL_PROCESS_INFO_TABLE() {
     this.loadingScreenService.startLoading();
-    return this.query.selectTable(this.vdi3682data.SELECT_TABLE_OF_PROCESS_INFO);
+    return this.query.SPARQL_SELECT_TABLE(this.vdi3682data.SELECT_TABLE_OF_PROCESS_INFO);
   }
   public loadLIST_OF_ALL_CLASSES() {
     this.loadingScreenService.startLoading();
-    return this.query.selectList(this.vdi3682data.SELECT_LIST_OF_ALL_CLASSES, 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_ALL_CLASSES, 0);
   }
   public loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass) {
     this.loadingScreenService.startLoading();
     owlClass = this.nameService.parseToIRI(owlClass);
-    return this.query.selectList(this.vdi3682data.selectPredicateByDomain(owlClass), 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectPredicateByDomain(owlClass), 0);
   }
   public loadLIST_OF_CLASSES_BY_RANGE(predicate) {
     this.loadingScreenService.startLoading();
     predicate = this.nameService.parseToIRI(predicate);
-    return this.query.selectList(this.vdi3682data.selectClassByRange(predicate), 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectClassByRange(predicate), 0);
   }
   public loadLIST_OF_CLASS_MEMBERSHIP(individual) {
     this.loadingScreenService.startLoading();
     individual = this.nameService.parseToIRI(individual);
-    return this.query.selectList(this.vdi3682data.selectClass(individual), 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectClass(individual), 0);
   }
   public loadLIST_OF_INDIVIDUALS_BY_CLASS(Class) {
     this.loadingScreenService.startLoading();
     Class = this.nameService.parseToIRI(Class);
-    return this.query.selectList(this.vdi3682data.selectIndividualByClass(Class), 0);
+    return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectIndividualByClass(Class), 0);
   }
 
   public getLIST_OF_PROCESSES() {
@@ -131,12 +133,12 @@ export class Vdi3682ModelService {
 
   public modifyTripel(variables: tripel, action: string){
     
-      var GRAPHS = this.nameService.getGraphs();
-      var activeGraph = GRAPHS[this.nameService.getActiveGraph()];
+      var GRAPHS = this.graphs.getGraphs();
+      var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
   
       switch (action) {
         case "add": {
-          return this.query.insert(this.vdi3682insert.createEntity(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.vdi3682insert.createEntity(variables, activeGraph));
         }
         case "delete": {
           this.messageService.addMessage('warning','Sorry!','This feature has not been implemented yet')
@@ -172,7 +174,7 @@ export class Vdi3682ModelService {
   //   }
   //   graph.predicate = this.nameService.parseToIRI(graph.predicate);
   //   graph.object = this.nameService.parseToIRI(graph.object);
-  //   return this.query.insert(this.vdi3682insert.createEntity(graph, activeGraph));
+  //   return this.query.SPARQL_UPDATE(this.vdi3682insert.createEntity(graph, activeGraph));
   // }
 
   // public buildTripel(graph: tripel) {

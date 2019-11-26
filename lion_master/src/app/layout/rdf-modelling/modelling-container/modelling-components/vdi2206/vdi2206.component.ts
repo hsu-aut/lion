@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SparqlQueriesService} from '../../../rdf-models/services/sparql-queries.service';
 import { Vdi2206ModelService, VDI2206INSERT, VDI2206VARIABLES } from '../../../rdf-models/vdi2206Model.service';
 import { DownloadService } from '../../../rdf-models/services/download.service';
 
@@ -55,7 +54,6 @@ export class Vdi2206Component implements OnInit {
   StructureOptions: string;
 
   constructor(
-    private query: SparqlQueriesService, 
     private dlService: DownloadService,
     private vdi2206Service: Vdi2206ModelService,
     private loadingScreenService: DataLoaderService

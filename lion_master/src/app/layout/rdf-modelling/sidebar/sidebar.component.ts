@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
-import { PrefixesService } from '../rdf-models/services/prefixes.service';
+import { GraphOperationsService } from '../rdf-models/services/backEnd/graphOperations.service';
 
 @Component({
     selector: 'app-sidebar-modelling',
@@ -25,7 +25,8 @@ export class SidebarComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         public router: Router,
-        private namespaces: PrefixesService) {
+        private graphs: GraphOperationsService
+        ) {
         this.router.events.subscribe(val => {
             if (
                 val instanceof NavigationEnd &&
@@ -88,14 +89,14 @@ export class SidebarComponent implements OnInit {
 
 
     getCurrentGraphConfig() {
-        this.graphList = this.namespaces.getGraphs();
-        this.currentGraph = this.graphList[this.namespaces.getActiveGraph()];
+        this.graphList = this.graphs.getGraphs();
+        this.currentGraph = this.graphList[this.graphs.getActiveGraph()];
     }
 
     setActiveGraph(graph: string) {
         for (let i = 0; i < this.graphList.length; i++) {
             if (this.graphList[i].search(graph) != -1) {
-                this.namespaces.setActiveGraph(i);
+                this.graphs.setActiveGraph(i);
                 this.getCurrentGraphConfig();
             }
         }

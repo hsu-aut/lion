@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { SparqlQueriesService } from '../../../rdf-models/services/sparql-queries.service';
+import { QueriesService } from '../../../rdf-models/services/backEnd/queries.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ export class DashboardService {
   chartPrefixes: Array<number> = [0, 1, 2, 3, 4, 5]
 
   constructor(
-    private query: SparqlQueriesService,
+    private query: QueriesService,
     private nameService: PrefixesService,
     private loadingScreenService: DataLoaderService
   ) {
