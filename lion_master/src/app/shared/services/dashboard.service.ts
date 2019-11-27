@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PrefixesService } from '../../../../../shared/services/prefixes.service';
-import { QueriesService } from '../../../../../shared/services/backEnd/queries.service';
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { PrefixesService } from './prefixes.service';
+import { QueriesService } from './backEnd/queries.service';
+import { DataLoaderService } from './dataLoader.service';
 import { take } from 'rxjs/operators';
 
 @Injectable({
