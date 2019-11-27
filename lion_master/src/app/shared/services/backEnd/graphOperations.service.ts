@@ -7,6 +7,8 @@ import { ConfigurationService } from './configuration.service';
 import { FormatDescription } from '../../../layout/rdf-modelling/utils/formats';
 import { QueriesService } from './queries.service';
 import { DownloadService } from './download.service';
+import { MessagesService } from "../messages.service";
+
 /* This service is relevant for graph related interactions with the backend, e.g. get all triples, set all triples or delete a graph */
 
 @Injectable({
@@ -25,7 +27,8 @@ export class GraphOperationsService {
     private http: HttpClient,
     private config: ConfigurationService,
     private query: QueriesService,
-    private dlService: DownloadService
+    private dlService: DownloadService,
+    private messageService: MessagesService
   ) {
     // initially set all named graphs from graphdb
     this.setNamedGraphs();
@@ -43,6 +46,7 @@ export class GraphOperationsService {
 
     let name = identifier;
     this.GRAPHS.push(name);
+    this.messageService.addMessage('success', 'Alright', `The named graph ` + name + ' has been added.');
   }
 
   public editGraph(key, identifier) {
@@ -63,6 +67,7 @@ export class GraphOperationsService {
     if (key <= max) {
       this.activeGraph = key;
     }
+    this.messageService.addMessage('success', 'Alright', `The new named graph is ` + this.GRAPHS[this.activeGraph]);
   }
 
   /* GRAPH OPERATIONS */
