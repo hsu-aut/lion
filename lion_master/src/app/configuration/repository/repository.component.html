@@ -38,7 +38,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>REPOS</td>
+                  <td>{{repoCount}}</td>
                   <td>TBOXES</td>
                   <td>TBOXTRIPLES</td>
                 </tr>
@@ -75,19 +75,20 @@
           <div class="form-row">
             <div class="form-group col-sm">
               <label> The current repository is: </label>
-              <input class="form-control" type="text" placeholder="REPOSITORYNAME" readonly>
+              <input class="form-control" type="text" [placeholder]="activeRepository" readonly>
             </div>
             <div class="form-group col-sm">
               <label> Existing repositories </label>
               <div class="input-group mb-3">
-                <select name="newGraph" class="form-control">
+                <select [formControl]="repositoryOption" name="activeRepository" class="form-control">
                   <option value=null selected hidden></option>
                   <option *ngFor='let x of repositoryList'>
                     {{x}}
                   </option>
                 </select>
                 <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2">Set to Selection</button>
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="setRepository(repositoryOption.value)">Set to Selection</button>
                 </div>
               </div>
             </div>
@@ -97,9 +98,9 @@
 
 
         <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
-
-          CONTENT TO SET TBOXES
-
+          <p class="text-sm-left"> Currently, there is only the option to load all TBoxes (VDI 3682, VDI 2206, DIN EN
+            61360, ISO 22400-2, ISA 88) to the active repository.</p>
+          <button type="button" class="btn btn-secondary btn-lg" (click)="loadTBoxes()">Load all TBoxes</button>
         </div>
 
 
@@ -111,10 +112,11 @@
           <div class="form-row">
             <div class="form-group col-sm">
               <div class="input-group mb-3">
-                <input type="text" class="form-control" aria-label="Text input with dropdown button"
-                  placeholder="name of repository to create">
+                <input [formControl]="repositoryCreate" type="text" class="form-control"
+                  aria-label="Text input with dropdown button" placeholder="name of repository to create">
                 <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2">Create</button>
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="createRepository(repositoryCreate.value)">Create</button>
                 </div>
               </div>
             </div>
@@ -123,10 +125,11 @@
           <div class="form-row">
             <div class="form-group col-sm">
               <div class="input-group mb-3">
-                <input type="text" class="form-control" aria-label="Text input with dropdown button"
-                  placeholder="name of repository to clear">
+                <input [formControl]="repositoryClear" type="text" class="form-control"
+                  aria-label="Text input with dropdown button" placeholder="name of repository to clear">
                 <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2">Clear</button>
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="clearRepository(repositoryClear.value)">Clear</button>
                 </div>
               </div>
             </div>
@@ -135,10 +138,11 @@
           <div class="form-row">
             <div class="form-group col-sm">
               <div class="input-group mb-3">
-                <input type="text" class="form-control" aria-label="Text input with dropdown button"
-                  placeholder="name of repository to delete">
+                <input [formControl]="repositoryDelete" type="text" class="form-control"
+                  aria-label="Text input with dropdown button" placeholder="name of repository to delete">
                 <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2">Delete</button>
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="deleteRepository(repositoryDelete.value)">Delete</button>
                 </div>
               </div>
             </div>
