@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { Tables } from '../../rdf-modelling/utils/tables';
+import { Tables } from '../../../modelling/utils/tables';
 import { IfStmt } from '@angular/compiler';
 
 
