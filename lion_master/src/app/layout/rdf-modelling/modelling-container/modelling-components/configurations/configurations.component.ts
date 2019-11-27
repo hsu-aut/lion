@@ -9,7 +9,7 @@ import { GraphOperationsService } from '../../../../../shared/services/backEnd/g
 import { RepositoryOperationsService } from '../../../../../shared/services/backEnd/repositoryOperations.service';
 
 
-import { DataDescription , FormatDescription } from '../../../utils/formats';
+import { DataDescription, FormatDescription } from '../../../utils/formats';
 import { PrefixesService } from '../../../../../shared/services/prefixes.service';
 import { MessagesService } from '../../../../../shared/services/messages.service';
 
@@ -96,7 +96,7 @@ export class ConfigurationsComponent implements OnInit {
     private Iso22400_2ModelService: Iso22400_2ModelService,
     private fb: FormBuilder,
     private messageService: MessagesService,
-    
+
   ) {
 
 
@@ -113,7 +113,7 @@ export class ConfigurationsComponent implements OnInit {
 
   }
 
-
+// got it
   setGraphDBConfig(hostName: string, repositoryName: string) {
     if (this.repositoryForm.valid) {
       this.config.setHost(hostName);
@@ -164,7 +164,7 @@ export class ConfigurationsComponent implements OnInit {
 
   //   }
   // }
-
+  // got it
   prefixTableClick(tableRow) {
     this.namespaceForm.controls['prefix'].setValue(tableRow.prefix);
     this.namespaceForm.controls['namespace'].setValue(tableRow.namespace);
@@ -172,6 +172,7 @@ export class ConfigurationsComponent implements OnInit {
       if (tableRow.namespace == this.PREFIXES[i].namespace) { this.userKey = i }
     }
   }
+  // got it
   addNamespace() {
     if (this.namespaceForm.valid) {
       this.prefixService.addNamespace(this.namespaceForm.controls['prefix'].value, this.namespaceForm.controls['namespace'].value);
@@ -183,6 +184,7 @@ export class ConfigurationsComponent implements OnInit {
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
   }
+  // got it
   editNamespace() {
     if (this.namespaceForm.valid) {
       this.prefixService.editNamespace(this.userKey, this.namespaceForm.controls['prefix'].value, this.namespaceForm.controls['namespace'].value);
@@ -193,6 +195,7 @@ export class ConfigurationsComponent implements OnInit {
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
   }
+  // got it
   deleteNamespace() {
     if (this.namespaceForm.valid) {
       this.prefixService.deleteNamespace(this.userKey);
@@ -204,6 +207,7 @@ export class ConfigurationsComponent implements OnInit {
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
   }
+  // got it
   setActiveNamespace() {
     if (this.namespaceForm.valid) {
       this.prefixService.setActiveNamespace(this.userKey);
@@ -213,10 +217,11 @@ export class ConfigurationsComponent implements OnInit {
     }
 
   }
+  // got it
   getActiveNamespace() {
     this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()];
   }
-
+// got it
   loadTBoxes() {
 
     var ObservableSequence = concat(
@@ -235,12 +240,14 @@ export class ConfigurationsComponent implements OnInit {
 
   }
 
+  // got it
   clearRepository() {
     this.repositoryOperation.clearRepository(this.config.getRepository()).pipe(take(1)).subscribe((data: any) => {
       console.info("Repository cleared ...")
     })
   }
 
+  // got it
   refreshServices() {
     console.info("Refreshing data ...")
     this.VDI3862_Service.initializeVDI3682();
@@ -252,12 +259,14 @@ export class ConfigurationsComponent implements OnInit {
     this.Iso22400_2ModelService.initializeISO22400_2();
   }
 
+  // got it
   getListOfRepos() {
     this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
       this.repositoryList = data
     })
   }
 
+  // got it
   createNewRepo(NewRepositoryName: string) {
     if (this.newRepository.valid) {
       this.repositoryOperation.createRepository(NewRepositoryName).pipe(take(1)).subscribe((data: any) => {
@@ -266,7 +275,6 @@ export class ConfigurationsComponent implements OnInit {
     } else if (this.newRepository.invalid) {
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
-
   }
 
   getCurrentGraphConfig() {
@@ -300,7 +308,7 @@ export class ConfigurationsComponent implements OnInit {
 
     for (const i in this.dataFormats) {
       // console.log(this.dataFormats[i].formatName)
-      if(this.dataFormats[i].formatName == dataFormatName){
+      if (this.dataFormats[i].formatName == dataFormatName) {
         dataFormat = this.dataFormats[i]
       }
 
