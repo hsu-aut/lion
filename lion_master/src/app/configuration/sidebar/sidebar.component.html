@@ -1,0 +1,19 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+  <div class="list-group">
+    <a [routerLink]="['repository']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fas fa-database"></i>&nbsp;
+      <span> Repositories </span>
+    </a>
+    <a [routerLink]="['namespaces']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fas fa-puzzle-piece"></i>&nbsp;
+      <span> Namespaces </span>
+    </a>
+    <a [routerLink]="['graphs']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fas fa-paragraph"></i>&nbsp;
+      <span> Named graphs </span>
+    </a>
+  </div>
+  <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+      <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+  </div>
+</nav>

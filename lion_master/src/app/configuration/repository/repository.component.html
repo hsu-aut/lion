@@ -1,0 +1,188 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header">Tool Configuration</h4>
+  <div class="card-body">
+    <h5 class="card-title"> Graph Database Configuration </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">In order to build the ABox of your project, the LiOnS tool uses a GraphDB. Using LiOnS you
+          can manage your repositories as well as the relevant TBoxes within those repositories. This enables you to
+          effecitevely manage you projects.
+          <li>
+            Set Repositories: In case you already have created a repository, you can set it here is the current
+            repository.
+          </li>
+          <li>
+            Define relevant TBoxes: You can set the relevant TBoxes for your modelling project. This will impact the
+            size and modelling abilities of your ABox.
+          </li>
+          <li>
+            Managing repositories: You can create or delete repositories in order to manage you modelling projects.
+          </li>
+        </p>
+
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            Configuration Statistics
+          </div>
+          <div class="card-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">No# Repositories</th>
+                  <th scope="col">No# TBoxes</th>
+                  <th scope="col">No# TBox Triples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>REPOS</td>
+                  <td>TBOXES</td>
+                  <td>TBOXTRIPLES</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="SetRepo-tab" data-toggle="tab" href="#SetRepo" role="tab"
+            aria-controls="SetRepo" aria-selected="true"> Set Repository </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="TBoxes-tab" data-toggle="tab" href="#TBoxes" role="tab"
+            aria-controls="TBoxes" aria-selected="false"> Set TBoxes </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="graphDatabase-tab" data-toggle="tab" href="#graphDatabase" role="tab"
+            aria-controls="graphDatabase" aria-selected="false"> Create or Delete Repository </a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="SetRepo" role="tabpanel" aria-labelledby="SetRepo-tab">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Prefix of the active namespace is: "{{activeNamespace.prefix}}" </label>
+            </div>
+            <div class="form-group col-sm">
+              <label> Active namespace is: "{{activeNamespace.namespace}}" </label>
+            </div>
+          </div>
+          <div class="form-row" [formGroup]="namespaceForm">
+            <div class="form-group col-sm">
+              <label> Prefix to modify/add/delete: </label>
+              <input formControlName="prefix" name="prefix" type="text" placeholder="[Prefix]" class="form-control">
+            </div>
+            <div class="form-group col-sm">
+              <label> Namesapce to modify/add/delete: </label>
+              <input formControlName="namespace" name="namespace" type="text" placeholder="[Namesapce]"
+                class="form-control">
+            </div>
+            <!-- <div class="form-group col-sm-1 align-self-end">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                  <button type="button" class="btn btn-secondary" (click)="addNamespace()">Add</button>
+                  <div class="btn-group" role="group">
+                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="addButton">
+                      <a class="dropdown-item" (click)="editNamespace()">Edit</a>
+                      <a class="dropdown-item" (click)="deleteNamespace()">Delete</a>
+                      <a class="dropdown-item" (click)="setActiveNamespace()">Set as active</a>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+          </div>
+          <!-- <app-table [currentTable]="PREFIXES" [tableTitle]="'Namespaces and their prefixes'"
+              [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
+              (tableClickedRow)="prefixTableClick($event)"></app-table> -->
+        </div>
+        <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> Active Graph IRI is: </label>
+              <p>{{currentGraph}}</p>
+            </div>
+            <div class="form-group col-sm">
+              <label> Existing Graph IRIs </label>
+              <select [formControl]="graph" name="newGraph" class="form-control">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of graphList'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-3 align-self-end">
+              <div class="btn-group dropup" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary" (click)="setActiveGraph(graph.value)">Change to
+                  selection</button>
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                  <a class="dropdown-item" data-toggle="modal" data-target="#CREATE_GRAPH_IRI_MODAL">Create graph</a>
+                  <a class="dropdown-item" data-toggle="modal" data-target="#DOWNLOAD_GRAPH">Download triples from
+                    graph</a>
+                  <a class="dropdown-item" data-toggle="modal" data-target="#DELETE_TRIPLES_OF_GRAPH">Delete triples
+                    from graph as active</a>
+                  <a class="dropdown-item" data-toggle="modal" data-target="#DELETE_GRAPH">Delete named graph</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane py-4" id="graphDatabase" role="tabpanel" aria-labelledby="graphDatabase-tab">
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <label> The active graph database host is: "{{activeHostname}}" </label>
+            </div>
+            <div class="form-group col-sm">
+              <label> The active repository is: "{{activeRepository}}" </label>
+            </div>
+          </div>
+          <div class="form-row" [formGroup]="repositoryForm">
+            <div class="form-group col-sm">
+              <label> Hostname </label>
+              <input class="form-control" formControlName="hostName" name="url" type="text" placeholder="hostName">
+            </div>
+            <div class="form-group col-sm">
+              <label> Repository name </label>
+              <select formControlName="repositoryName" name="repositoryName" class="form-control">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of repositoryList'>
+                  {{x}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group col-sm-3 align-self-end">
+              <div class="btn-group dropup" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="setGraphDBConfig(repositoryForm.controls['hostName'].value,repositoryForm.controls['repositoryName'].value)">Change
+                  Configuration</button>
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                  <a class="dropdown-item" data-toggle="modal" data-target="#RELOAD_MODAL">Reload data from
+                    repository</a>
+                  <a class="dropdown-item" data-toggle="modal" data-target="#TBOX_MODAL">Load TBoxes</a>
+                  <a class="dropdown-item" data-toggle="modal" data-target="#CreateModal">Create new
+                    repository</a>
+                  <a class="dropdown-item" data-toggle="modal" data-target="#clearModal">Clear repository</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

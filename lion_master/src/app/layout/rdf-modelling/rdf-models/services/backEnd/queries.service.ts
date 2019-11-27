@@ -28,11 +28,11 @@ export class QueriesService {
     private config: ConfigurationService
   ) {  }
 
-  getQueryURL() {
+  private getQueryURL() {
     return this.config.getHost() + '/queries';
   }
 
-  getUpdateURL() {
+  private getUpdateURL() {
     return this.config.getHost() + '/queries/statements';
   }
 

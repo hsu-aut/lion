@@ -1,0 +1,19 @@
+<nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
+  <div class="list-group">
+    <a [routerLink]="['repository']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fas fa-tachometer-alt"></i>&nbsp;
+      <span> Dashboard </span>
+    </a>
+    <a [routerLink]="['namespaces']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fas fa-box-open"></i>&nbsp;
+      <span> Explore ABox </span>
+    </a>
+    <a [routerLink]="['query']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <i class="fas fa-edit"></i>&nbsp;
+      <span> Query editor </span>
+    </a>
+  </div>
+  <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
+      <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+  </div>
+</nav>
