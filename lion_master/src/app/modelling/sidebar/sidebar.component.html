@@ -53,17 +53,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>You can set the active graph below. The active graph is the graph where your next inserted triples
+                <p>The active graph is "{{currentGraph}}". You can set the active graph below. The active graph is the
+                    graph where your next inserted triples
                     are located.</p>
                 <div class="form-row">
                     <div class="form-group col-sm">
-                        <label> Active Graph IRI </label>
-                        <input class="form-control"  name="url" type="text"
-                            placeholder="hostName" readonly>
-                    </div>
-                    <div class="form-group col-sm">
                         <label> Existing Graph IRIs </label>
-                        <select  name="newGraph" class="form-control">
+                        <select name="newGraph" class="form-control">
                             <option value=null selected hidden></option>
                             <option *ngFor='let x of graphList'>
                                 {{x}}

@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
-// import { GraphOperationsService } from '../rdf-models/services/backEnd/graphOperations.service';
+import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
 
 @Component({
     selector: 'app-sidebar',
@@ -25,8 +25,8 @@ export class SidebarComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         public router: Router,
-        // private graphs: GraphOperationsService
-        ) {
+        private graphs: GraphOperationsService
+    ) {
         this.router.events.subscribe(val => {
             if (
                 val instanceof NavigationEnd &&
@@ -43,7 +43,7 @@ export class SidebarComponent implements OnInit {
         this.collapsed = false;
         this.showMenu = '';
         this.pushRightClass = 'push-right';
-        // this.getCurrentGraphConfig();
+        this.getCurrentGraphConfig();
     }
 
 
@@ -85,6 +85,20 @@ export class SidebarComponent implements OnInit {
 
     onLoggedout() {
         localStorage.removeItem('isLoggedin');
+    }
+
+    getCurrentGraphConfig() {
+        this.graphList = this.graphs.getGraphs();
+        this.currentGraph = this.graphList[this.graphs.getActiveGraph()];
+    }
+
+    setActiveGraph(graph: string) {
+        for (let i = 0; i < this.graphList.length; i++) {
+            if (this.graphList[i].search(graph) != -1) {
+                this.graphs.setActiveGraph(i);
+                this.getCurrentGraphConfig();
+            }
+        }
     }
 
 }
