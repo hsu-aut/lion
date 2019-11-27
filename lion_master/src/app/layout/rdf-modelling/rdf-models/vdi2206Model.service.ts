@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PrefixesService } from './services/prefixes.service';
-import { QueriesService } from './services/backEnd/queries.service';
-import { GraphOperationsService } from './services/backEnd/graphOperations.service';
+import { PrefixesService } from '../../../shared/services/prefixes.service';
+import { QueriesService } from '../../../shared/services/backEnd/queries.service';
+import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
 import { DataLoaderService } from '../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 

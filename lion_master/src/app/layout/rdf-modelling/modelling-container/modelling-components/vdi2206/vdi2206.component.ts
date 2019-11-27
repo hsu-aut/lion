@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Vdi2206ModelService, VDI2206INSERT, VDI2206VARIABLES } from '../../../rdf-models/vdi2206Model.service';
-import { DownloadService } from '../../../rdf-models/services/download.service';
+import { DownloadService } from '../../../../../shared/services/backEnd/download.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';

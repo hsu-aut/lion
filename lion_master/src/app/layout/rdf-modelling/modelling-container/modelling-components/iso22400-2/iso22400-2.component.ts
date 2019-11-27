@@ -6,7 +6,7 @@ import { Validators } from '@angular/forms';
 import { Iso22400_2ModelService, ISO22400_2VARIABLES } from '../../../../rdf-modelling/rdf-models/iso22400_2Model.service';
 import { Vdi2206ModelService } from '../../../../rdf-modelling/rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../../../../rdf-modelling/rdf-models/vdi3682Model.service';
-import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
+import { PrefixesService } from '../../../../../shared/services/prefixes.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { MessagesService } from '../../../../../shared/services/messages.service';
 import { Tables } from '../../../utils/tables';

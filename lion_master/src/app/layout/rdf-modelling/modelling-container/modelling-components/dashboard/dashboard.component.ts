@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { QueriesService } from '../../../rdf-models/services/backEnd/queries.service';
+import { PrefixesService } from '../../../../../shared/services/prefixes.service';
+import { QueriesService } from '../../../../../shared/services/backEnd/queries.service';
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../../rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../../../rdf-models/dinen61360Model.service';

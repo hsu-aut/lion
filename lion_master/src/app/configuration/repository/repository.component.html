@@ -56,133 +56,96 @@
             aria-controls="SetRepo" aria-selected="true"> Set Repository </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="TBoxes-tab" data-toggle="tab" href="#TBoxes" role="tab"
-            aria-controls="TBoxes" aria-selected="false"> Set TBoxes </a>
+          <a class="nav-link" id="TBoxes-tab" data-toggle="tab" href="#TBoxes" role="tab" aria-controls="TBoxes"
+            aria-selected="false"> Set TBoxes </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="graphDatabase-tab" data-toggle="tab" href="#graphDatabase" role="tab"
-            aria-controls="graphDatabase" aria-selected="false"> Create or Delete Repository </a>
+          <a class="nav-link" id="createDelete-tab" data-toggle="tab" href="#createDelete" role="tab"
+            aria-controls="createDelete" aria-selected="false"> Manage Repositories </a>
         </li>
       </ul>
+      <!-- tab content -->
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active py-4" id="SetRepo" role="tabpanel" aria-labelledby="SetRepo-tab">
+          <p class="text-sm-left"> You can set a new repository here. This will trigger an execution of all queries
+            relevant to LiOnS and may
+            take a while, depending on the size of you ABox.</p>
+
+
           <div class="form-row">
             <div class="form-group col-sm">
-              <label> Prefix of the active namespace is: "{{activeNamespace.prefix}}" </label>
+              <label> The current repository is: </label>
+              <input class="form-control" type="text" placeholder="REPOSITORYNAME" readonly>
             </div>
             <div class="form-group col-sm">
-              <label> Active namespace is: "{{activeNamespace.namespace}}" </label>
-            </div>
-          </div>
-          <div class="form-row" [formGroup]="namespaceForm">
-            <div class="form-group col-sm">
-              <label> Prefix to modify/add/delete: </label>
-              <input formControlName="prefix" name="prefix" type="text" placeholder="[Prefix]" class="form-control">
-            </div>
-            <div class="form-group col-sm">
-              <label> Namesapce to modify/add/delete: </label>
-              <input formControlName="namespace" name="namespace" type="text" placeholder="[Namesapce]"
-                class="form-control">
-            </div>
-            <!-- <div class="form-group col-sm-1 align-self-end">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                  <button type="button" class="btn btn-secondary" (click)="addNamespace()">Add</button>
-                  <div class="btn-group" role="group">
-                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                      aria-haspopup="true" aria-expanded="false">
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="addButton">
-                      <a class="dropdown-item" (click)="editNamespace()">Edit</a>
-                      <a class="dropdown-item" (click)="deleteNamespace()">Delete</a>
-                      <a class="dropdown-item" (click)="setActiveNamespace()">Set as active</a>
-                    </div>
-                  </div>
+              <label> Existing repositories </label>
+              <div class="input-group mb-3">
+                <select name="newGraph" class="form-control">
+                  <option value=null selected hidden></option>
+                  <option *ngFor='let x of repositoryList'>
+                    {{x}}
+                  </option>
+                </select>
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2">Set to Selection</button>
                 </div>
-              </div> -->
+              </div>
+            </div>
           </div>
-          <!-- <app-table [currentTable]="PREFIXES" [tableTitle]="'Namespaces and their prefixes'"
-              [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
-              (tableClickedRow)="prefixTableClick($event)"></app-table> -->
         </div>
+
+
+
         <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <label> Active Graph IRI is: </label>
-              <p>{{currentGraph}}</p>
-            </div>
-            <div class="form-group col-sm">
-              <label> Existing Graph IRIs </label>
-              <select [formControl]="graph" name="newGraph" class="form-control">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of graphList'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm-3 align-self-end">
-              <div class="btn-group dropup" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary" (click)="setActiveGraph(graph.value)">Change to
-                  selection</button>
-                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                </button>
-                <div class="dropdown-menu" aria-labelledby="addButton">
-                  <a class="dropdown-item" data-toggle="modal" data-target="#CREATE_GRAPH_IRI_MODAL">Create graph</a>
-                  <a class="dropdown-item" data-toggle="modal" data-target="#DOWNLOAD_GRAPH">Download triples from
-                    graph</a>
-                  <a class="dropdown-item" data-toggle="modal" data-target="#DELETE_TRIPLES_OF_GRAPH">Delete triples
-                    from graph as active</a>
-                  <a class="dropdown-item" data-toggle="modal" data-target="#DELETE_GRAPH">Delete named graph</a>
-                </div>
-              </div>
-            </div>
-          </div>
+
+          CONTENT TO SET TBOXES
+
         </div>
-        <div class="tab-pane py-4" id="graphDatabase" role="tabpanel" aria-labelledby="graphDatabase-tab">
+
+
+        <div class="tab-pane py-4" id="createDelete" role="tabpanel" aria-labelledby="createDelete-tab">
+          <p class="text-sm-left"> You can create or delete repositories here. Please be aware that deleted repositories
+            or data
+            cannot be restored.</p>
+
           <div class="form-row">
             <div class="form-group col-sm">
-              <label> The active graph database host is: "{{activeHostname}}" </label>
-            </div>
-            <div class="form-group col-sm">
-              <label> The active repository is: "{{activeRepository}}" </label>
-            </div>
-          </div>
-          <div class="form-row" [formGroup]="repositoryForm">
-            <div class="form-group col-sm">
-              <label> Hostname </label>
-              <input class="form-control" formControlName="hostName" name="url" type="text" placeholder="hostName">
-            </div>
-            <div class="form-group col-sm">
-              <label> Repository name </label>
-              <select formControlName="repositoryName" name="repositoryName" class="form-control">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of repositoryList'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm-3 align-self-end">
-              <div class="btn-group dropup" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary"
-                  (click)="setGraphDBConfig(repositoryForm.controls['hostName'].value,repositoryForm.controls['repositoryName'].value)">Change
-                  Configuration</button>
-                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
-                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                </button>
-                <div class="dropdown-menu" aria-labelledby="addButton">
-                  <a class="dropdown-item" data-toggle="modal" data-target="#RELOAD_MODAL">Reload data from
-                    repository</a>
-                  <a class="dropdown-item" data-toggle="modal" data-target="#TBOX_MODAL">Load TBoxes</a>
-                  <a class="dropdown-item" data-toggle="modal" data-target="#CreateModal">Create new
-                    repository</a>
-                  <a class="dropdown-item" data-toggle="modal" data-target="#clearModal">Clear repository</a>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" aria-label="Text input with dropdown button"
+                  placeholder="name of repository to create">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2">Create</button>
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" aria-label="Text input with dropdown button"
+                  placeholder="name of repository to clear">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" aria-label="Text input with dropdown button"
+                  placeholder="name of repository to delete">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
-</div>

@@ -4,13 +4,13 @@ import { Validators } from '@angular/forms';
 import { concat } from "rxjs";
 
 /* backend services */
-import { ConfigurationService } from '../../../rdf-models/services/backEnd/configuration.service'
-import { GraphOperationsService } from '../../../rdf-models/services/backEnd/graphOperations.service';
-import { RepositoryOperationsService } from '../../../rdf-models/services/backEnd/repositoryOperations.service';
+import { ConfigurationService } from '../../../../../shared/services/backEnd/configuration.service'
+import { GraphOperationsService } from '../../../../../shared/services/backEnd/graphOperations.service';
+import { RepositoryOperationsService } from '../../../../../shared/services/backEnd/repositoryOperations.service';
 
 
 import { DataDescription , FormatDescription } from '../../../utils/formats';
-import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
+import { PrefixesService } from '../../../../../shared/services/prefixes.service';
 import { MessagesService } from '../../../../../shared/services/messages.service';
 
 import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';

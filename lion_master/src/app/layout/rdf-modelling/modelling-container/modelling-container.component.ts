@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { PrefixesService } from '../rdf-models/services/prefixes.service';
+import { PrefixesService } from '../../../shared/services/prefixes.service';
 
 // initialize backend services
-import { GraphOperationsService } from '../rdf-models/services/backEnd/graphOperations.service';
-import { QueriesService } from '../rdf-models/services/backEnd/queries.service';
-import { RepositoryOperationsService } from '../rdf-models/services/backEnd/repositoryOperations.service';
-import { ConfigurationService } from '../rdf-models/services/backEnd/configuration.service'
+import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
+import { QueriesService } from '../../../shared/services/backEnd/queries.service';
+import { RepositoryOperationsService } from '../../../shared/services/backEnd/repositoryOperations.service';
+import { ConfigurationService } from '../../../shared/services/backEnd/configuration.service'
 
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';

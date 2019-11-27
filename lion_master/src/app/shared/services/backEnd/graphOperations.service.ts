@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 
-import { Tables } from '../../../utils/tables';
+import { Tables } from '../../../layout/rdf-modelling/utils/tables';
 import { ConfigurationService } from './configuration.service';
-import { FormatDescription } from '../../../utils/formats';
+import { FormatDescription } from '../../../layout/rdf-modelling/utils/formats';
 import { QueriesService } from './queries.service';
-import { DownloadService } from '../../../rdf-models/services/download.service';
+import { DownloadService } from './download.service';
 /* This service is relevant for graph related interactions with the backend, e.g. get all triples, set all triples or delete a graph */
 
 @Injectable({

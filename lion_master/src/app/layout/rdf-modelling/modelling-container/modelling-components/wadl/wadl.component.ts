@@ -8,8 +8,8 @@ import { Iso22400_2ModelService } from '../../../../rdf-modelling/rdf-models/iso
 import { Vdi2206ModelService } from '../../../../rdf-modelling/rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../../../../rdf-modelling/rdf-models/vdi3682Model.service';
 
-import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { DownloadService } from '../../../rdf-models/services/download.service';
+import { PrefixesService } from '../../../../../shared/services/prefixes.service';
+import { DownloadService } from '../../../../../shared/services/backEnd/download.service';
 
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { MessagesService } from '../../../../../shared/services/messages.service';

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ConfigurationService } from './configuration.service'
-import { DataLoaderService } from "../../../../../shared/services/dataLoader.service";
+import { DataLoaderService } from "../dataLoader.service";
 
 
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PrefixesService } from '../../../rdf-models/services/prefixes.service';
-import { QueriesService } from '../../../rdf-models/services/backEnd/queries.service';
+import { PrefixesService } from '../../../../../shared/services/prefixes.service';
+import { QueriesService } from '../../../../../shared/services/backEnd/queries.service';
 import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
