@@ -158,7 +158,7 @@ export class PrefixesService {
 
 }
 
-interface Prefix {
+export interface Prefix {
   prefix: string;
   namespace: string;
 }
