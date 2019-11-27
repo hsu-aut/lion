@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
-import { DataDescription, FormatDescription } from '../../layout/rdf-modelling/utils/formats';
+import { DataDescription, FormatDescription } from '../../modelling/utils/formats';
 import { MessagesService } from '../../shared/services/messages.service';
 
 import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';

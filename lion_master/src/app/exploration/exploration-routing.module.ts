@@ -3,16 +3,19 @@ import { Routes, RouterModule } from '@angular/router';
 import { ExplorationComponent } from './exploration.component';
 
 
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { QueryEditorComponent } from './query-editor/query-editor.component';
+import { AboxExplorerComponent } from './abox-explorer/abox-explorer.component';
 
 const routes: Routes = [
     {
         path: '',
         component: ExplorationComponent,
         children: [
-            // { path: '', redirectTo: 'about', pathMatch: 'prefix' },
-            // { path: 'about', component: AboutComponent },
+            { path: '', redirectTo: 'dashboard', pathMatch: 'prefix' },
+            { path: 'dashboard', component: DashboardComponent },
             { path: 'query', component: QueryEditorComponent },
+            { path: 'aboxx', component: AboxExplorerComponent },
         ]
     }
 ];

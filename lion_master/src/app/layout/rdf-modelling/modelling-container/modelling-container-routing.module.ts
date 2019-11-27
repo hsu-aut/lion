@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ModellingContainerComponent } from './modelling-container.component';
 
 // rdf model components
-import { DashboardComponent } from './modelling-components/dashboard/dashboard.component';
+// import { DashboardComponent } from '../../../exploration/dashboard/dashboard.component';
 // import { VDI3682Component } from './modelling-components/vdi3682/vdi3682.component';
 // import { Dinen61360Component } from './modelling-components/dinen61360/dinen61360.component';
 // import { Vdi2206Component } from './modelling-components/vdi2206/vdi2206.component';
@@ -15,7 +15,7 @@ import { ConfigurationsComponent } from './modelling-components/configurations/c
 
 const routes: Routes = [
     { path: '', component: ModellingContainerComponent },
-    { path: 'dashboard', component: DashboardComponent },
+    // { path: 'dashboard', component: DashboardComponent },
     // { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
     // { path: 'vdi3682', component: VDI3682Component },
     // { path: 'dinen61360', component: Dinen61360Component },

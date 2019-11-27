@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 
-import { Tables } from '../../../layout/rdf-modelling/utils/tables';
+import { Tables } from '../../../modelling/utils/tables';
 import { ConfigurationService } from './configuration.service';
-import { FormatDescription } from '../../../layout/rdf-modelling/utils/formats';
+import { FormatDescription } from '../../../modelling/utils/formats';
 import { QueriesService } from './queries.service';
 import { DownloadService } from './download.service';
 import { MessagesService } from "../messages.service";

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Isa88ModelService, ISA88Insert, ISA88Variables } from '../../layout/rdf-modelling/rdf-models/isa88Model.service';
-import { Vdi3682ModelService } from '../../layout/rdf-modelling/rdf-models/vdi3682Model.service';
-import { Tables } from '../../layout/rdf-modelling/utils/tables';
+import { Isa88ModelService, ISA88Insert, ISA88Variables } from '../rdf-models/isa88Model.service';
+import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
+import { Tables } from '../utils/tables';
 import { DownloadService } from '../../shared/services/backEnd/download.service';
 
 import { DataLoaderService } from '../../shared/services/dataLoader.service';

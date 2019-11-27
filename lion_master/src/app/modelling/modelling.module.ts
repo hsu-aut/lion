@@ -19,7 +19,7 @@ import { Isa88Component } from './isa88/isa88.component';
 import { Iso22400_2Component } from './iso22400-2/iso22400-2.component';
 
 // util components
-import { TableModule } from '../layout/tables/table/table.module';
+import { TableModule } from '../shared/modules/table/table.module';
  
 
 @NgModule({

@@ -19,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 
 // util components
-import { TableComponent } from '../../tables/table/table.component';
+import { TableComponent } from '../../../shared/modules/table/table.component';
 import { ChartsModule as Ng2Charts } from 'ng2-charts';
 
 @NgModule({

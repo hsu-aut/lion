@@ -3,17 +3,17 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { WadlModelService, WADLVARIABLES } from '../../layout/rdf-modelling/rdf-models/wadlModel.service';
-import { Iso22400_2ModelService } from '../../layout/rdf-modelling/rdf-models/iso22400_2Model.service';
-import { Vdi2206ModelService } from '../../layout/rdf-modelling/rdf-models/vdi2206Model.service';
-import { Vdi3682ModelService } from '../../layout/rdf-modelling/rdf-models/vdi3682Model.service';
+import { WadlModelService, WADLVARIABLES } from '../rdf-models/wadlModel.service';
+import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
+import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
+import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 
 import { PrefixesService } from '../../shared/services/prefixes.service';
 import { DownloadService } from '../../shared/services/backEnd/download.service';
 
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
-import { Tables } from '../../layout/rdf-modelling/utils/tables';
+import { Tables } from '../utils/tables';
 import { take } from 'rxjs/operators';
 
 

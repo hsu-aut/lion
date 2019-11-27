@@ -9,7 +9,13 @@ import { ExplorationRoutingModule } from './exploration-routing.module';
 
 // imported children
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { QueryEditorComponent } from './query-editor/query-editor.component';
+import { AboxExplorerComponent } from './abox-explorer/abox-explorer.component';
+
+// util modules
+import { TableModule } from '../shared/modules/table/table.module';
+import { ChartsModule as Ng2Charts } from 'ng2-charts';
 
 @NgModule({
   imports: [
@@ -18,13 +24,17 @@ import { QueryEditorComponent } from './query-editor/query-editor.component';
     NgbCarouselModule,
     NgbAlertModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TableModule,
+    Ng2Charts
 
   ],
   declarations: [
     ExplorationComponent,
     SidebarComponent,
-    QueryEditorComponent
+    QueryEditorComponent,
+    DashboardComponent,
+    AboxExplorerComponent
   ]
 })
 export class ExplorationModule { }

@@ -16,7 +16,7 @@ import { NamespacesComponent } from './namespaces/namespaces.component';
 import { GraphsComponent } from './graphs/graphs.component';
 
 // util modules
-import { TableModule } from '../layout/tables/table/table.module';
+import { TableModule } from '../shared/modules/table/table.module';
 
 @NgModule({
   imports: [
