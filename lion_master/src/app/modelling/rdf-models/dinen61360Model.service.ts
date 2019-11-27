@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { PrefixesService } from '../../../shared/services/prefixes.service';
-import { QueriesService } from '../../../shared/services/backEnd/queries.service';
-import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
-import { DataLoaderService } from '../../../shared/services/dataLoader.service';
-import { DownloadService } from '../../../shared/services/backEnd/download.service';
+import { PrefixesService } from '../../shared/services/prefixes.service';
+import { QueriesService } from '../../shared/services/backEnd/queries.service';
+import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
+import { DataLoaderService } from '../../shared/services/dataLoader.service';
+import { DownloadService } from '../../shared/services/backEnd/download.service';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
