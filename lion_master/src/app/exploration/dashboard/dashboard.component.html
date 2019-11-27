@@ -1,38 +1,51 @@
-<div class="row">
-  <div class="col col-sm-6">
-    <div class="card mb-3" style="height: 100%">
-      <div class="card-header">
-        Facts on the current RDF Model
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header">ABox Exploration</h4>
+  <div class="card-body">
+    <h5 class="card-title"> Modelling Dashbaord </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">Explanatory text on the modelled ABox </p>
       </div>
-      <div class="card-body">
-        <p>Active Namespace: "{{activeNamespace}}"</p>
-        <p>Total number of triples: {{numberOfTriples}}</p>
-      </div>
-    </div>
-  </div>
-  <div class="col col-sm-6">
-    <div class="card mb-3" style="height: 100%">
-      <div class="card-header">
-        <div class="row">
-          <div class="col">Designed RDF Triples per assigned Class</div>
-          <div class="col-1 align-self-end mx-2"><button type="button" class="btn btn-outline-success" (click)="refreshData()"><i
-                class="fas fa-sync"></i></button></div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Facts on the current repository</h5>
+            <p class="card-text">Active namespace: "{{activeNamespace}}"</p>
+            <p class="card-text">Active graph: "{{numberOfTriples}}"</p>
+            <p class="card-text">Total number of triples in namespace: {{numberOfTriples}}</p>
+          </div>
         </div>
-
-
-      </div>
-      <div class="card-body">
-        <!-- todo implmenet click event to trigger tables -->
-        <canvas baseChart height="180px" [data]="doughnutChartData" [labels]="doughnutChartLabels"
-          [colors]="doughnutChartColors" [chartType]="doughnutChartType" (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)">
-        </canvas>
       </div>
     </div>
+    <div class="row">
+      <div class="col">
+        <div class="card mb-3" style="height: 100%">
+          <div class="card-header">
+            <div class="row">
+              <div class="col">Designed RDF Triples per assigned Class</div>
+              <div class="col-1 align-self-end mx-2"><button type="button" class="btn btn-outline-success"
+                  (click)="refreshData()"><i class="fas fa-sync"></i></button></div>
+            </div>
+
+
+          </div>
+          <div class="card-body">
+            <!-- todo implmenet click event to trigger tables -->
+            <canvas baseChart height="180px" [data]="doughnutChartData" [labels]="doughnutChartLabels"
+              [colors]="doughnutChartColors" [chartType]="doughnutChartType" (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div class="px-sm-2 py-sm-2">
+<!--  -->
+<!-- <div class="px-sm-2 py-sm-2">
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" id="3682-tab" data-toggle="tab" href="#3682" role="tab" aria-controls="3682"
@@ -78,4 +91,4 @@
     </div>
   </div>
 
-</div>
+</div> -->
