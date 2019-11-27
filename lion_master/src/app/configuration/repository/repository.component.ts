@@ -34,6 +34,7 @@ export class RepositoryComponent implements OnInit {
   repositoryList: Array<string>;
   activeRepository: string;
 
+  // forms
   repositoryOption = this.fb.control('', Validators.required);
   repositoryCreate = this.fb.control('', Validators.required);
   repositoryClear = this.fb.control('', Validators.required);
@@ -57,7 +58,6 @@ export class RepositoryComponent implements OnInit {
 
   ) {
     this.activeRepository = this.config.getRepository();
-
   }
 
   ngOnInit() {
@@ -126,7 +126,6 @@ export class RepositoryComponent implements OnInit {
   }
 
   loadTBoxes() {
-
     var ObservableSequence = concat(
       this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
       this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
@@ -140,7 +139,6 @@ export class RepositoryComponent implements OnInit {
     )
 
     ObservableSequence.subscribe((data: any) => console.log(data));
-
   }
 
 
