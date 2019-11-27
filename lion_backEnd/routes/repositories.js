@@ -115,6 +115,31 @@ router.get('/clear', function (req, res, next) {
 
 });
 
+/* DELETE all RDF triples  */
+router.delete('/', function (req, res, next) {
+
+    var q = url.parse(req.url, true).query;
+    var repositoryName = q.repositoryName;
+
+    GDB_REPO.DELETE_REPOSITORY(repositoryName).then(function (response) {
+
+        if (response.status == 204) {
+            res.status(200);
+            res.end(response.data);
+        } else {
+            res.status(response.status).send({ error: response.data })
+            res.end();
+        }
+
+    })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500);
+            res.end();
+        });
+
+});
+
 /* INSERT TBOX to repository  */
 router.get('/buildTBox', function (req, res, next) {
 
