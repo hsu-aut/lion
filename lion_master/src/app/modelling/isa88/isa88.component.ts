@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Isa88ModelService, ISA88Insert, ISA88Variables } from '../../../rdf-models/isa88Model.service';
-import { Vdi3682ModelService } from '../../../rdf-models/vdi3682Model.service';
-import { Tables } from '../../../utils/tables';
-import { DownloadService } from '../../../../../shared/services/backEnd/download.service';
+import { Isa88ModelService, ISA88Insert, ISA88Variables } from '../../layout/rdf-modelling/rdf-models/isa88Model.service';
+import { Vdi3682ModelService } from '../../layout/rdf-modelling/rdf-models/vdi3682Model.service';
+import { Tables } from '../../layout/rdf-modelling/utils/tables';
+import { DownloadService } from '../../shared/services/backEnd/download.service';
 
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
 
@@ -13,7 +13,7 @@ import { take } from 'rxjs/operators';
 @Component({
   selector: 'app-isa88',
   templateUrl: './isa88.component.html',
-  styleUrls: ['./isa88.component.scss']
+  styleUrls: ['../../app.component.scss','./isa88.component.scss']
 })
 export class Isa88Component implements OnInit {
 

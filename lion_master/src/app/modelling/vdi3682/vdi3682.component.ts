@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Vdi3682ModelService, VDI3682DATA, VDI3682VARIABLES, VDI3682INSERT } from '../../../rdf-models/vdi3682Model.service';
-import { PrefixesService } from '../../../../../shared/services/prefixes.service';
+import { Vdi3682ModelService, VDI3682DATA, VDI3682VARIABLES, VDI3682INSERT } from '../../layout/rdf-modelling/rdf-models/vdi3682Model.service';
+import { PrefixesService } from '../../shared/services/prefixes.service';
 
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
-import { MessagesService } from '../../../../../shared/services/messages.service';
+import { DataLoaderService } from '../../shared/services/dataLoader.service';
+import { MessagesService } from '../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vdi3682',
   templateUrl: './vdi3682.component.html',
-  styleUrls: ['../../../../../../app/app.component.scss', './vdi3682.component.scss'],
+  styleUrls: ['../../app.component.scss', './vdi3682.component.scss'],
 })
 export class VDI3682Component implements OnInit {
   // util variables

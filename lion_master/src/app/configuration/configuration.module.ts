@@ -15,8 +15,8 @@ import { RepositoryComponent } from './repository/repository.component';
 import { NamespacesComponent } from './namespaces/namespaces.component';
 import { GraphsComponent } from './graphs/graphs.component';
 
-// util components
-import { TableComponent } from '../layout/tables/table/table.component';
+// util modules
+import { TableModule } from '../layout/tables/table/table.module';
 
 @NgModule({
   imports: [
@@ -25,15 +25,15 @@ import { TableComponent } from '../layout/tables/table/table.component';
     NgbCarouselModule,
     NgbAlertModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TableModule
   ],
   declarations: [
     ConfigurationComponent,
     SidebarComponent,
     RepositoryComponent,
     NamespacesComponent,
-    GraphsComponent,
-    TableComponent
+    GraphsComponent
   ]
 })
 export class ConfigurationModule { }

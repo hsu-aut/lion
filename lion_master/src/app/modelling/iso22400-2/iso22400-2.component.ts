@@ -3,19 +3,19 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Iso22400_2ModelService, ISO22400_2VARIABLES } from '../../../../rdf-modelling/rdf-models/iso22400_2Model.service';
-import { Vdi2206ModelService } from '../../../../rdf-modelling/rdf-models/vdi2206Model.service';
-import { Vdi3682ModelService } from '../../../../rdf-modelling/rdf-models/vdi3682Model.service';
-import { PrefixesService } from '../../../../../shared/services/prefixes.service';
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
-import { MessagesService } from '../../../../../shared/services/messages.service';
-import { Tables } from '../../../utils/tables';
+import { Iso22400_2ModelService, ISO22400_2VARIABLES } from '../../layout/rdf-modelling/rdf-models/iso22400_2Model.service';
+import { Vdi2206ModelService } from '../../layout/rdf-modelling/rdf-models/vdi2206Model.service';
+import { Vdi3682ModelService } from '../../layout/rdf-modelling/rdf-models/vdi3682Model.service';
+import { PrefixesService } from '../../shared/services/prefixes.service';
+import { DataLoaderService } from '../../shared/services/dataLoader.service';
+import { MessagesService } from '../../shared/services/messages.service';
+import { Tables } from '../../layout/rdf-modelling/utils/tables';
 import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-iso22400-2',
   templateUrl: './iso22400-2.component.html',
-  styleUrls: ['../../../../../../app/app.component.scss', './iso22400-2.component.scss']
+  styleUrls: ['../../app.component.scss', './iso22400-2.component.scss']
 })
 export class Iso22400_2Component implements OnInit {
   // util variables

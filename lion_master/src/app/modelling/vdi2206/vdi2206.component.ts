@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Vdi2206ModelService, VDI2206INSERT, VDI2206VARIABLES } from '../../../rdf-models/vdi2206Model.service';
-import { DownloadService } from '../../../../../shared/services/backEnd/download.service';
+import { Vdi2206ModelService, VDI2206INSERT, VDI2206VARIABLES } from '../../layout/rdf-modelling/rdf-models/vdi2206Model.service';
+import { DownloadService } from '../../shared/services/backEnd/download.service';
 
-import { DataLoaderService } from '../../../../../shared/services/dataLoader.service';
+import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-vdi2206',
   templateUrl: './vdi2206.component.html',
-  styleUrls: ['./vdi2206.component.scss']
+  styleUrls: ['../../app.component.scss','./vdi2206.component.scss']
 })
 export class Vdi2206Component implements OnInit {
 
