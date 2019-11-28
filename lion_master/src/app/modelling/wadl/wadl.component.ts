@@ -9,6 +9,7 @@ import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 
 import { PrefixesService } from '../../shared/services/prefixes.service';
+import { cValFns } from '../utils/validators';
 import { DownloadService } from '../../shared/services/backEnd/download.service';
 
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
@@ -28,6 +29,7 @@ export class WadlComponent implements OnInit {
   keys = Object.keys;
   tableUtil = new Tables();
   _OntologicalDataType: string;
+  customVal = new cValFns();
 
   // model data
   modelVariables = new WADLVARIABLES();
@@ -38,13 +40,13 @@ export class WadlComponent implements OnInit {
 
   // forms
   baseResourceForm = this.fb.group({
-    resourceBasePath: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]],
+    resourceBasePath: [undefined, [Validators.required, this.customVal.noProtocol, this.customVal.isDomain]],
     serviceProvider: [undefined]
   })
 
   serviceForm = this.fb.group({
     resourceBasePath: [undefined, Validators.required],
-    servicePath: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]]
+    servicePath: [undefined, [Validators.required, this.customVal.noProtocol, Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]]
   })
 
   requestForm = this.fb.group({
@@ -55,18 +57,18 @@ export class WadlComponent implements OnInit {
     requestFormParameterArray: this.fb.array([
       this.fb.control('')
     ]),
-    parameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
-    dataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    parameterKey: [undefined, this.customVal.noSpecialCharacters],
+    dataType: [undefined, this.customVal.noSpecialCharacters],
     ontologicalDataType: [undefined],
-    optionValue: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    optionValue: [undefined, this.customVal.noSpecialCharacters],
     requestFormRepresentationArray: this.fb.array([
       this.fb.control('')
     ]),
-    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&()=?`´*+~_<>|@+^°;]*$)')],
-    bodyParameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
-    bodyDataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyMediaType: [undefined, this.customVal.noSpecialCharacters],
+    bodyParameterKey: [undefined, this.customVal.noSpecialCharacters],
+    bodyDataType: [undefined, this.customVal.noSpecialCharacters],
     ontologicalBodyDataType: [undefined],
-    bodyOptionValue: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyOptionValue: [undefined, this.customVal.noSpecialCharacters],
   })
 
   responseForm = this.fb.group({
@@ -77,11 +79,11 @@ export class WadlComponent implements OnInit {
     responseFormRepresentationArray: this.fb.array([
       this.fb.control('')
     ]),
-    bodyMediaType: [undefined, Validators.pattern('(^[^!"§$%&()=?`´*+~_<>|@+^°;]*$)')],
-    bodyParameterKey: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
-    bodyDataType: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyMediaType: [undefined, this.customVal.noSpecialCharacters],
+    bodyParameterKey: [undefined, this.customVal.noSpecialCharacters],
+    bodyDataType: [undefined, this.customVal.noSpecialCharacters],
     ontologicalBodyDataType: [undefined],
-    bodyOptionValue: [undefined, Validators.pattern('(^[^!"§$%&/()=?`´*+~_<>|@+^°;]*$)')],
+    bodyOptionValue: [undefined, this.customVal.noSpecialCharacters],
   })
 
   ontologicalDataType = this.fb.group({

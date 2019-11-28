@@ -4,6 +4,7 @@ import { Validators } from '@angular/forms';
 
 import { Vdi3682ModelService, VDI3682DATA, VDI3682VARIABLES, VDI3682INSERT } from '../rdf-models/vdi3682Model.service';
 import { PrefixesService } from '../../shared/services/prefixes.service';
+import { cValFns } from '../utils/validators';
 
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
@@ -19,6 +20,7 @@ export class VDI3682Component implements OnInit {
   keys = Object.keys;
   tableTitle: string;
   tableSubTitle: string;
+  customVal = new cValFns();
 
   // stats 
   NoOfProcesses: number;
@@ -39,7 +41,7 @@ export class VDI3682Component implements OnInit {
 
   // forms
   newIndividualForm = this.fb.group({
-    name: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('(^((?!://).)*$)')]],
+    name: [undefined, [Validators.required, this.customVal.noProtocol, this.customVal.noSpecialCharacters, this.customVal.noIdentifier]],
     predicate: ['rdf:type'],
     type: [undefined, Validators.required],
   })
