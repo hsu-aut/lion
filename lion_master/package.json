@@ -1,16 +1,16 @@
 {
-  "name": "SB-Admin-BS4-Angular-7",
-  "version": "7.0.0",
-  "license": "Apache",
+  "name": "LiOnS",
+  "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --prod",
-    "gitbuild": "ng build --prod --base-href /start-angular/SB-Admin-BS4-Angular-7/master/dist/",
     "test": "ng test",
     "test-ci": "TEST_CI=true ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "start-dev": "ng serve --proxy-config proxy.conf.json --open"
   },
   "private": true,
   "dependencies": {

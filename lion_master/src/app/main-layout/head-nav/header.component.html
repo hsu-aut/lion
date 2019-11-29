@@ -5,17 +5,26 @@
 
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item d-none d-xl-block">
-                    <a class="nav-link btn header-button" [routerLink]="['modelling']" [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-plane-departure"></i>
+                    <a class="nav-link btn header-button" [routerLink]="['modelling']"
+                        [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-plane-departure"></i>
                         Modelling
                     </a>
                 </li>
                 <li class="nav-item d-none d-xl-block">
-                    <a class="nav-link btn header-button" [routerLink]="['exploration']" [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-search"></i>
+                    <a class="nav-link btn header-button" [routerLink]="['mapping']"
+                        [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-map"></i>
+                        Mapping
+                    </a>
+                </li>
+                <li class="nav-item d-none d-xl-block">
+                    <a class="nav-link btn header-button" [routerLink]="['exploration']"
+                        [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-search"></i>
                         Exploration
                     </a>
                 </li>
                 <li class="nav-item d-none d-xl-block">
-                    <a class="nav-link btn header-button" [routerLink]="['configuration']" [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-cog"></i>
+                    <a class="nav-link btn header-button" [routerLink]="['configuration']"
+                        [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-cog"></i>
                         Configuration
                     </a>
                 </li>
@@ -23,8 +32,10 @@
                     <a class="nav-link dropdown-toggle header-button" data-toggle="dropdown" role="button"
                         aria-haspopup="true" aria-expanded="false"><i class="fas fa-home"></i></a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" [routerLink]="['lionStory/about']" [routerLinkActive]="['router-link-active']">About LiOnS</a>
-                        <a class="dropdown-item" [routerLink]="['lionStory/modellingGuide']" [routerLinkActive]="['router-link-active']">Tutorial</a>
+                        <a class="dropdown-item" [routerLink]="['lionStory/about']"
+                            [routerLinkActive]="['router-link-active']">About LiOnS</a>
+                        <a class="dropdown-item" [routerLink]="['lionStory/modellingGuide']"
+                            [routerLinkActive]="['router-link-active']">Tutorial</a>
                     </div>
                 </li>
             </ul>

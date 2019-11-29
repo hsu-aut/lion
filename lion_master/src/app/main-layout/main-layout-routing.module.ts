@@ -15,6 +15,7 @@ const routes: Routes = [
             { path: 'configuration', loadChildren: '../configuration/configuration.module#ConfigurationModule' },
             { path: 'modelling', loadChildren: '../modelling/modelling.module#ModellingModule' },
             { path: 'exploration', loadChildren: '../exploration/exploration.module#ExplorationModule' },
+            { path: 'mapping', loadChildren: '../mapping/mapping.module#MappingModule' },
         ]
     }
 ];
