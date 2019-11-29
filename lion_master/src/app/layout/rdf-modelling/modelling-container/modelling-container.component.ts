@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { PrefixesService } from '../rdf-models/services/prefixes.service';
+import { PrefixesService } from '../../../shared/services/prefixes.service';
 
 // initialize backend services
-import { GraphOperationsService } from '../rdf-models/services/backEnd/graphOperations.service';
-import { QueriesService } from '../rdf-models/services/backEnd/queries.service';
-import { RepositoryOperationsService } from '../rdf-models/services/backEnd/repositoryOperations.service';
-import { ConfigurationService } from '../rdf-models/services/backEnd/configuration.service'
+import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
+import { QueriesService } from '../../../shared/services/backEnd/queries.service';
+import { RepositoryOperationsService } from '../../../shared/services/backEnd/repositoryOperations.service';
+import { ConfigurationService } from '../../../shared/services/backEnd/configuration.service'
 
-import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
-import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
-import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
-import { Isa88ModelService } from '../rdf-models/isa88Model.service';
-import { WadlModelService } from '../rdf-models/wadlModel.service';
-import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
-import { DashboardService } from './modelling-components/dashboard/dashboard.service';
+import { Vdi3682ModelService } from '../../../modelling/rdf-models/vdi3682Model.service';
+import { Vdi2206ModelService } from '../../../modelling/rdf-models/vdi2206Model.service';
+import { Dinen61360Service } from '../../../modelling/rdf-models/dinen61360Model.service';
+import { Isa88ModelService } from '../../../modelling/rdf-models/isa88Model.service';
+import { WadlModelService } from '../../../modelling/rdf-models/wadlModel.service';
+import { Iso22400_2ModelService } from '../../../modelling/rdf-models/iso22400_2Model.service';
+import { DashboardService } from '../../../shared/services/dashboard.service';
 
 
 

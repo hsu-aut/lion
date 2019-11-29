@@ -1,0 +1,37 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header">ABox Exploration</h4>
+  <div class="card-body">
+    <h5 class="card-title"> Query Editor </h5>
+
+    <div class="row">
+      <div class="col">
+        <!-- <p class="card-text">In order to build the ABox of your project, the LiOnS tool uses a GraphDB. Using LiOnS you
+            can manage your repositories as well as the relevant TBoxes within those repositories. This enables you to
+            effecitevely manage you projects. </p> -->
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">Edit your query below</label>
+          <textarea [(ngModel)]="userQuery" class="form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-end">
+      <div class="col-2">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-secondary" (click)="executeQuery(userQuery)">Execute</button>
+          <!-- <button type="button" class="btn btn-secondary">Download</button> -->
+        </div>
+      </div>
+    </div>
+
+    <app-table [currentTable]="queryResult" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+    (tableClickedCell)="tableClick($event)"></app-table>
+
+  </div>
+</div>

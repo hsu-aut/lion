@@ -1,0 +1,94 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header">ABox Exploration</h4>
+  <div class="card-body">
+    <h5 class="card-title"> Modelling Dashbaord </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">Explanatory text on the modelled ABox </p>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Facts on the current repository</h5>
+            <p class="card-text">Active namespace: "{{activeNamespace}}"</p>
+            <p class="card-text">Active graph: "{{numberOfTriples}}"</p>
+            <p class="card-text">Total number of triples in namespace: {{numberOfTriples}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="card mb-3" style="height: 100%">
+          <div class="card-header">
+            <div class="row">
+              <div class="col">Designed RDF Triples per assigned Class</div>
+              <div class="col-1 align-self-end mx-2"><button type="button" class="btn btn-outline-success"
+                  (click)="refreshData()"><i class="fas fa-sync"></i></button></div>
+            </div>
+
+
+          </div>
+          <div class="card-body">
+            <!-- todo implmenet click event to trigger tables -->
+            <canvas baseChart height="180px" [data]="doughnutChartData" [labels]="doughnutChartLabels"
+              [colors]="doughnutChartColors" [chartType]="doughnutChartType" (chartHover)="chartHovered($event)"
+              (chartClick)="chartClicked($event)">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--  -->
+<!-- <div class="px-sm-2 py-sm-2">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="3682-tab" data-toggle="tab" href="#3682" role="tab" aria-controls="3682"
+        aria-selected="true" (click)="setTableOption('VDI3682_BUTTON')"> VDI 3682 </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="2206-tab" data-toggle="tab" href="#2206" role="tab" aria-controls="2206"
+        aria-selected="false" (click)="setTableOption('VDI2206_BUTTON')"> VDI 2206 </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="isa88-tab" data-toggle="tab" href="#isa88" role="tab" aria-controls="isa88"
+        aria-selected="false" (click)="setTableOption('ISA88_BUTTON')"> ISA 88 </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="61360-tab" data-toggle="tab" href="#61360" role="tab" aria-controls="61360"
+        aria-selected="false" (click)="setTableOption('DINEN61360_BUTTON')"> DIN EN 61360 </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="wadl-tab" data-toggle="tab" href="#wadl" role="tab" aria-controls="wadl"
+        aria-selected="false" (click)="setTableOption('WADL_BUTTON')"> WADL </a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="3682" role="tabpanel" aria-labelledby="3682-tab">
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
+    </div>
+    <div class="tab-pane " id="2206" role="tabpanel" aria-labelledby="2206-tab">
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
+    </div>
+    <div class="tab-pane " id="isa88" role="tabpanel" aria-labelledby="isa88-tab">
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
+    </div>
+    <div class="tab-pane " id="61360" role="tabpanel" aria-labelledby="61360-tab">
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
+    </div>
+    <div class="tab-pane " id="wadl" role="tabpanel" aria-labelledby="wadl-tab">
+      <app-table [currentTable]="currentTable" [filter]="filterOption" [tableTitle]="tableTitle"
+        [tableExplanation]="tableSubTitle" (tableClickedCell)="tableClick($event)"></app-table>
+    </div>
+  </div>
+
+</div> -->

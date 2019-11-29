@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
-import { GraphOperationsService } from '../rdf-models/services/backEnd/graphOperations.service';
+import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
 
 @Component({
     selector: 'app-sidebar-modelling',

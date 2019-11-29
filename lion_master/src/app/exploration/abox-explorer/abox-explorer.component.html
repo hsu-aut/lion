@@ -1,0 +1,129 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <h4 class="card-header">ABox Exploration</h4>
+    <div class="card-body">
+      <h5 class="card-title"> ABox Explorer </h5>
+  
+      <div class="row">
+        <div class="col-xl-8">
+          <!-- <p class="card-text">In order to build the ABox of your project, the LiOnS tool uses a GraphDB. Using LiOnS you
+            can manage your repositories as well as the relevant TBoxes within those repositories. This enables you to
+            effecitevely manage you projects. </p> -->
+
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Important notice</h5>
+              <!-- <p class="card-text">Please be aware, that clearing or removed any repoistory will lead to a loss of data.
+              </p>
+              <p class="card-text"><small class="text-muted">Current number of repositories: {{repoCount}}</small></p> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- tabs -->
+      <!-- <div class="px-sm-2 py-sm-2">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="SetRepo-tab" data-toggle="tab" href="#SetRepo" role="tab"
+              aria-controls="SetRepo" aria-selected="true"> Set Repository </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="TBoxes-tab" data-toggle="tab" href="#TBoxes" role="tab" aria-controls="TBoxes"
+              aria-selected="false"> Set TBoxes </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="createDelete-tab" data-toggle="tab" href="#createDelete" role="tab"
+              aria-controls="createDelete" aria-selected="false"> Manage Repositories </a>
+          </li>
+        </ul> -->
+        <!-- tab content -->
+        <!-- <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active py-4" id="SetRepo" role="tabpanel" aria-labelledby="SetRepo-tab">
+            <p class="text-sm-left"> You can set a new repository here. This will trigger an execution of all queries
+              relevant to LiOnS and may
+              take a while, depending on the size of you ABox.</p>
+  
+  
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <label> The current repository is: </label>
+                <input class="form-control" type="text" [placeholder]="activeRepository" readonly>
+              </div>
+              <div class="form-group col-sm">
+                <label> Existing repositories </label>
+                <div class="input-group mb-3">
+                  <select [formControl]="repositoryOption" name="activeRepository" class="form-control">
+                    <option value=null selected hidden></option>
+                    <option *ngFor='let x of repositoryList'>
+                      {{x}}
+                    </option>
+                  </select>
+                  <div class="input-group-append">
+                    <button class="btn btn-secondary" type="button" id="button-addon2"
+                      (click)="setRepository(repositoryOption.value)">Set to Selection</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+  
+  
+          <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
+            <p class="text-sm-left"> Currently, there is only the option to load all TBoxes (VDI 3682, VDI 2206, DIN EN
+              61360, ISO 22400-2, ISA 88) to the active repository.</p>
+            <button type="button" class="btn btn-secondary btn-lg" (click)="loadTBoxes()">Load all TBoxes</button>
+          </div>
+  
+  
+          <div class="tab-pane py-4" id="createDelete" role="tabpanel" aria-labelledby="createDelete-tab">
+            <p class="text-sm-left"> You can create or delete repositories here. Please be aware that deleted repositories
+              or data
+              cannot be restored.</p>
+  
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <div class="input-group mb-3">
+                  <input [formControl]="repositoryCreate" type="text" class="form-control"
+                    aria-label="Text input with dropdown button" placeholder="name of repository to create">
+                  <div class="input-group-append">
+                    <button class="btn btn-secondary" type="button" id="button-addon2"
+                      (click)="createRepository(repositoryCreate.value)">Create</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <div class="input-group mb-3">
+                  <input [formControl]="repositoryClear" type="text" class="form-control"
+                    aria-label="Text input with dropdown button" placeholder="name of repository to clear">
+                  <div class="input-group-append">
+                    <button class="btn btn-secondary" type="button" id="button-addon2"
+                      (click)="clearRepository(repositoryClear.value)">Clear</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+            <div class="form-row">
+              <div class="form-group col-sm">
+                <div class="input-group mb-3">
+                  <input [formControl]="repositoryDelete" type="text" class="form-control"
+                    aria-label="Text input with dropdown button" placeholder="name of repository to delete">
+                  <div class="input-group-append">
+                    <button class="btn btn-secondary" type="button" id="button-addon2"
+                      (click)="deleteRepository(repositoryDelete.value)">Delete</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+          </div>
+        </div>
+  
+      </div> -->
+    </div>
+  </div>
