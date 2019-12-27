@@ -63,16 +63,16 @@ The IP `127.0.0.1` is equivalent to `localhost`. If you would like to change thi
 
 ### Start LiOnS
 
-To start LiOnS you will have to start the back end first:
+To start LiOnS you will have to start the back end first. Open a terminal in the root folder and use the following commands:
 ```
-cd lion_backEnd/bin
-node lion_BE
+cd lion_backEnd
+nodemon start
 ``` 
 If you have not installed a MySQL server with a configuration known to the back end, you will receive an error message. That does only affect the ecl@ss property search.
 To start the front end, run the following commands in another terminal: 
 ```
 cd lion_master
-ng serve --proxy-config proxy.conf.json --open
+npm run start-dev
 ``` 
 
 
