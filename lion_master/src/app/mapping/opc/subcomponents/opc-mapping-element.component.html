@@ -1,0 +1,17 @@
+<ul *ngIf="_opcObject" [ngStyle]="{'margin-left.px': marginLeft}">
+    <li class="mt-1">
+        <input type="checkbox" class="mr-2" id="{{this.randId}}" [(ngModel)]="checked" (change)="selectElement()">
+        <label class="form-check-label" for="{{this.randId}}">
+            <p class="m-0" *ngFor="let key of simpleProperties">
+                {{key}} : {{_opcObject[key]}}
+            </p>
+            <ng-container class="m-0" *ngFor="let key of arrayProperties">
+                {{key}} :
+                <ng-container *ngFor="let childArrayElement of _opcObject[key]">
+                    <opc-mapping-element *ngIf="childArrayElement" [opcObject]="childArrayElement">
+                    </opc-mapping-element>
+                </ng-container>
+            </ng-container>
+        </label>
+    </li>
+</ul>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { OpcMappingService } from './opc-mapping.service';
 
 @Component({
   selector: 'app-opc',
@@ -7,9 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OpcComponent implements OnInit {
 
-  constructor() { }
+    opcModelString: string;
+    opcModel;
+
+  constructor(private opcService: OpcMappingService) { }
 
   ngOnInit() {
+  }
+
+  createTree() {
+      if (this.opcModelString.length > 0) {
+        this.opcModel = JSON.parse(this.opcModelString);
+        console.log(this.opcModel);
+      }
+  }
+
+  getSelection() {
+      this.opcService.getSelection();
   }
 
 }

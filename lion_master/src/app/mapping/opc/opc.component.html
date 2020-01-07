@@ -1,9 +1,22 @@
-<div class="container align-middle mt-5">
-    <div class="row justify-content-center no-gutters">
-      <div class="col d-flex justify-content-center"><img style="width: 30%;"src="../../assets/images/WIP-logo.png"></div>
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <div class="card-header">
+        <h5>OPC UA Mapping</h5>
     </div>
-  
-    <div class="row justify-content-center no-gutters py-5">
-      <div class="col-4" style="text-align: center;"><h2>This component is currently under development!</h2></div>
+    <div class="card-body">
+        <p>You can use this component, to crawl the data model of an OPC UA server and map this data model into your ontology</p>
+        <h6>Enter your OPC UA Datamodel (JSON)</h6>
+        <div class="row">
+            <div class="col-sm">
+                <textarea class="form-control" rows="6" [(ngModel)]="opcModelString"></textarea>
+            </div>
+        </div>
+        <button class="btn btn-primary mt-3" (click)="createTree()">Create tree</button>
+        <h4 class="mt-4 mb-2">Mapping Tree</h4>
+        <div *ngIf="opcModel" id="mappingContainer">
+            <opc-mapping-element [opcObject]="opcModel"></opc-mapping-element>
+        </div>
     </div>
-  </div>
+
+    <button class="btn btn-success" (click)="getSelection()">Get Selection</button>
+</div>
+

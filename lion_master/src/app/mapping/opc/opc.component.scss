@@ -1,0 +1,15 @@
+li {
+    display: flex;
+    align-items: flex-start;
+}
+
+input {
+    margin-top: 25px;
+}
+
+#mappingContainer {
+    height:500px;
+    border:1px solid #ced4da;
+    border-radius: 0.25rem;
+    overflow: scroll;
+}
