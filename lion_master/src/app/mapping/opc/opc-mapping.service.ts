@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { OpcNode } from './subcomponents/opc-mapping-element.component';
 
 @Injectable({
   providedIn: 'root'
@@ -7,11 +8,13 @@ export class OpcMappingService {
 
 constructor() {}
 
-    nodesToMap = [];
+    nodesToMap = new Array<OpcNode>();
 
-
-    // Adds one OPC UA node to the list of nodes to map into the ontology
-    addOpcNode(node: {}) {
+    /**
+     * Adds one OPC UA node to the list of nodes to map into the ontology
+     * @param node The node to add
+     */
+    addOpcNode(node: OpcNode) {
         this.nodesToMap.push(node);
     }
 
@@ -21,9 +24,10 @@ constructor() {}
      * @param id Id of the node to delete (This ID gets randomly generated)
      */
     removeOpcNode(id: string) {
-        this.nodesToMap = this.nodesToMap.filter(elem => {
-            elem.id != id;
-        })
+        // Filter the list to get all elements that do not have the given ID
+        this.nodesToMap = this.nodesToMap.filter(elem =>
+            elem.id != id
+        )
     }
 
 
@@ -32,6 +36,11 @@ constructor() {}
      */
     getSelection() {
         console.log(this.nodesToMap);
+
+        let queryString = "";
+        // this.nodesToMap.forEach(node => {
+
+        // });
     }
 
 }

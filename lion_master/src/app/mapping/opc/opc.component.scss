@@ -3,7 +3,7 @@ li {
     align-items: flex-start;
 }
 
-input {
+.node-input {
     margin-top: 25px;
 }
 
@@ -12,4 +12,19 @@ input {
     border:1px solid #ced4da;
     border-radius: 0.25rem;
     overflow: scroll;
+}
+
+.node-container {
+    display: flex;
+}
+
+.childKeys {
+    position: relative;
+    left: 4.15em;
+}
+
+.childToggler {
+    margin-top: 15px;
+    font-size: 1.5em;
+    margin-right: 25px;
 }

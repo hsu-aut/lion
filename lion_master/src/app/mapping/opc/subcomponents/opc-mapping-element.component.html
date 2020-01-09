@@ -1,17 +1,24 @@
-<ul *ngIf="_opcObject" [ngStyle]="{'margin-left.px': marginLeft}">
+<ul [ngStyle]="{'margin-left.px': marginLeft}">
     <li class="mt-1">
-        <input type="checkbox" class="mr-2" id="{{this.randId}}" [(ngModel)]="checked" (change)="selectElement()">
-        <label class="form-check-label" for="{{this.randId}}">
-            <p class="m-0" *ngFor="let key of simpleProperties">
-                {{key}} : {{_opcObject[key]}}
-            </p>
-            <ng-container class="m-0" *ngFor="let key of arrayProperties">
-                {{key}} :
-                <ng-container *ngFor="let childArrayElement of _opcObject[key]">
-                    <opc-mapping-element *ngIf="childArrayElement" [opcObject]="childArrayElement">
-                    </opc-mapping-element>
-                </ng-container>
-            </ng-container>
+        <div (click)="toggleChildren()" class="childToggler"><i [ngClass]="showChildren ? 'fas fa-chevron-down': 'fas fa-chevron-up'"></i></div>
+        <input type="checkbox" class="mr-2 node-input" id="{{randId}}" [(ngModel)]="checked" (change)="selectNode()">
+        <label class="form-check-label" for="{{randId}}">
+            <div>
+                <p class="m-0" *ngFor="let key of simpleProperties">
+                    <b>{{key}}:</b> {{_opcNode[key]}}
+                </p>
+            </div>
         </label>
     </li>
+    <ng-container *ngIf="showChildren">
+        <ng-container class="m-0" *ngFor="let key of arrayProperties">
+            <p class="childKeys"><b>{{key}} :</b></p>
+            <ng-container *ngFor="let childArrayElement of _opcNode[key]">
+                <opc-mapping-element *ngIf="childArrayElement" [opcNode]="childArrayElement"
+                    [includeChildren]="includeChildren" [selected]="selectChildren">
+                </opc-mapping-element>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+
 </ul>
