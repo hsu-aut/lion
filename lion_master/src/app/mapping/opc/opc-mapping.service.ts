@@ -16,14 +16,16 @@ constructor() {}
      */
     addOpcNode(node: OpcNode) {
         // add node if not alreay part of nodesToMap
-        const index = this.nodesToMap.findIndex(elem =>
-            elem.mappingId == node.mappingId
-        )
-        if(index == -1) {
+        if(!this.isInNodesToMap(node)){
             this.nodesToMap.push(node);
         }
     }
 
+
+    /**
+     * Adds all children of a node to nodesToMap
+     * @param node
+     */
     addAllChildren(node: OpcNode) {
         const keys = Object.keys(node);
         keys.forEach(key => {
@@ -50,10 +52,14 @@ constructor() {}
     }
 
 
-    removeAllChildren(nodeData: {}) {
-        const keys = Object.keys(nodeData);
+    /**
+     * Removes all children of a node from nodesToMap
+     * @param node
+     */
+    removeAllChildren(node: {}) {
+        const keys = Object.keys(node);
         keys.forEach(key => {
-            const currentElement = nodeData[key]
+            const currentElement = node[key]
             if (Array.isArray(currentElement)) {
                 currentElement.forEach(elem => {
                     this.removeOpcNode(elem);
@@ -65,19 +71,56 @@ constructor() {}
 
 
     /**
-     * Outputs the current list of nodes that are going to be mapped into the ontology
+     * Creates the mapping string for the complete list of nodesToMap
      */
-    getSelection() {
+    createMapping() {
         console.log(this.nodesToMap);
-
+        // TODO: Currently setting only the simple type "Node"
+        // --> We have to differ between different types of nodes (e.g. Method, Variable, ...)
+        // --> Node types can be differentiated by checking the NodeClass. This is currently not in our model --> Fix parser
         let queryString = "";
         this.nodesToMap.forEach(node => {
             const keys = Object.keys(node);
+            // create an individual for this node:
+            queryString += `example:${node["browseName"]} rdf:type opc:node.\n`
+
             keys.forEach(key => {
-                queryString += `opc:${key} ${node[key]}\n`
+                if(Array.isArray(node[key])) {
+                    queryString += this.createObjectProperty(key, node);                        // add object properties
+                } else {
+                    queryString += `example:${node["browseName"]} opc:${key} "${node[key]}".\n`   // add data properties
+                }
             });
         });
         console.log(queryString);
+    }
+
+
+    createObjectProperty(key: string, node: OpcNode): string{
+        const array = node[key];
+        let queryString = '';
+        array.forEach(element => {
+            if(this.isInNodesToMap(element)){
+                queryString += `example:${node["browseName"]} opc:${key} example:${element["browseName"]}.\n`;
+            }
+        });
+        return queryString;
+    }
+
+
+    /**
+     * Checks whether or not a node is inside nodesToMap
+     * @param node
+     */
+    isInNodesToMap(node: OpcNode){
+        const index = this.nodesToMap.findIndex(nodeToMap =>
+            nodeToMap.mappingId === node.mappingId
+        )
+        if (index == -1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
