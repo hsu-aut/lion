@@ -1,21 +1,26 @@
-<ul>
-    <li class="mt-1" style="display: list-item;">
+<ul class="node-list">
+    <li class="mt-1">
         <div style="display: flex;">
-        <div (click)="toggleChildren()" class="childToggler"><i
-                [ngClass]="showChildren ? 'fas fa-minus-square': 'fas fa-plus-square'"></i></div>
-        <input type="checkbox" class="mr-2 node-input" id="{{randId}}" [(ngModel)]="checked" (change)="selectNode()">
-        <label class="form-check-label" for="{{randId}}">
-            <div>
-                <p class="m-0" *ngFor="let key of simpleProperties">
-                    <b>{{key}}:</b> {{_opcNode[key]}}
-                </p>
-            </div>
-        </label>
-    </div>
+            <input type="checkbox" class="mr-2 node-input" id="{{randId}}" [(ngModel)]="checked"
+                (change)="selectNode()">
+            <label class="form-check-label" for="{{randId}}">
+                <div>
+                    <p class="m-0" *ngFor="let key of simpleProperties">
+                        <b>{{key}}:</b> {{_opcNode[key]}}
+                    </p>
+                </div>
+            </label>
+        </div>
 
-        <ng-container *ngIf="showChildren">
-            <ng-container class="m-0" *ngFor="let key of arrayProperties">
-                <p class="childKeys"><b>{{key}} :</b></p>
+        <ng-container class="m-0" *ngFor="let key of arrayProperties">
+            <p class="childKeys">
+                <b>{{key}} :</b>
+                <span (click)="toggleChild(key)" class="childToggler" style="width:25px">
+                    <i [ngClass]="childShown(key) ? 'fas fa-minus-square': 'fas fa-plus-square'"></i>
+                </span>
+            </p>
+            <ng-container *ngIf="childShown(key)">
+
                 <ng-container *ngFor="let childArrayElement of _opcNode[key]">
                     <opc-mapping-element *ngIf="childArrayElement" [opcNode]="childArrayElement"
                         [includeChildren]="includeChildren" [selected]="selectChildren">

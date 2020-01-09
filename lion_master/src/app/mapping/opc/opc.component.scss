@@ -20,11 +20,20 @@ li {
 
 .childKeys {
     position: relative;
-    left: 4.15em;
+    left: 1.3em;
 }
 
 .childToggler {
     margin-top: 15px;
     font-size: 1.5em;
     margin-right: 25px;
+}
+
+.node-list {
+    list-style: none;
+    padding-left:30px;
+}
+
+.node-list li {
+    display: list-item;
 }

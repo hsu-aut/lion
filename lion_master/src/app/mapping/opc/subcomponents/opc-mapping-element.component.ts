@@ -18,19 +18,18 @@ export class OpcMappingElementComponent {
     @Input() includeChildren;
     deselectChild;
     children = [];
-    showChildren: Boolean = true;
+    shownChildren= [];
 
     constructor(private opcService: OpcMappingService) { }
 
     // Using a setter to get changes of the input property
     @Input() set opcNode(node) {
-        // if(node) {
-            this._opcNode = node;
-        // }
-        // split object keys into array and normal properties
+        // set node and do initial setup
+        this._opcNode = node;
 
         this.getObjectKeys();
         this.getAllChildren(this._opcNode);
+        this.shownChildren = this.getKeysOfDirectChildren(this._opcNode);
     }
 
     /**
@@ -102,6 +101,17 @@ export class OpcMappingElementComponent {
         return id;
     }
 
+    getKeysOfDirectChildren(node: {}): string[] {
+        const keysOfDirectChildren = [];
+        const keys = Object.keys(this._opcNode);
+        keys.forEach(key => {
+            if(Array.isArray(this._opcNode[key])) {
+                keysOfDirectChildren.push(key);
+            }
+        });
+        return keysOfDirectChildren;
+    }
+
     getAllChildren(node) {
         const keys = Object.keys(node);
         keys.forEach(key => {
@@ -115,8 +125,26 @@ export class OpcMappingElementComponent {
         });
     }
 
-    toggleChildren() {
-        this.showChildren = !this.showChildren;
+
+
+    toggleChild(key: string) {
+        const childIndex = this.shownChildren.indexOf(key);
+        if(childIndex == -1) {
+            this.shownChildren.push(key);
+        } else {
+            this.shownChildren.splice(childIndex, 1);
+            console.log(this.shownChildren);
+
+        }
+    }
+
+    childShown(key) {
+        const childIndex = this.shownChildren.indexOf(key);
+        if(childIndex == -1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 
