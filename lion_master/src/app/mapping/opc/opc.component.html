@@ -21,11 +21,11 @@
         </div>
 
 
-        <h4 class="mt-4 mb-2" *ngIf="countingDone">Mapping Tree ({{numberOfNodes}} Nodes)</h4>
+        <h4 class="mt-4 mb-2" *ngIf="numberOfNodes > 0">Mapping Tree ({{numberOfNodes}} Nodes)</h4>
         <div *ngIf="opcModel" id="mappingContainer">
             <opc-mapping-element [opcNode]="opcModel" [includeChildren]="includeChildNodes"></opc-mapping-element>
         </div>
     </div>
 
-    <button class="btn btn-success" (click)="getSelection()">Get Selection</button>
+    <button class="btn btn-success" (click)="createMapping()">Create Mapping</button>
 </div>

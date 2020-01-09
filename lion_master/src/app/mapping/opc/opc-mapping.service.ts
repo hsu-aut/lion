@@ -77,7 +77,8 @@ constructor() {}
         console.log(this.nodesToMap);
         // TODO: Currently setting only the simple type "Node"
         // --> We have to differ between different types of nodes (e.g. Method, Variable, ...)
-        // --> Node types can be differentiated by checking the NodeClass. This is currently not in our model --> Fix parser
+        // --> Node types can be differentiated by checking the NodeClass. Currently only the nodeClass od the root node is in the parsed model.
+        // --> Seems to be a problem with the parser
         let queryString = "";
         this.nodesToMap.forEach(node => {
             const keys = Object.keys(node);

@@ -13,22 +13,35 @@ export class OpcComponent {
     opcModelString: string;
     opcModel;
     includeChildNodes: Boolean = true;
-    numberOfNodes: number = 1;  //starting at 1 because we always have one root node
+    numberOfNodes: number;
     countingDone = false;
 
     constructor(private opcService: OpcMappingService) { }
 
 
+    /**
+     * Parses the string into JSON, counts the number of nodes and adds a mapping ID
+     */
     createTree() {
-        if (this.opcModelString.length > 0) {
-        this.opcModel = JSON.parse(this.opcModelString);
-        this.opcModel["mappingId"] = this.createRandomId();
-        this.countNodes(this.opcModel, 0);
-        this.countingDone = true;
+        if(this.opcModelString) {
+            this.opcModel = JSON.parse(this.opcModelString);
+            this.opcModel["mappingId"] = this.createRandomId();
+            this.numberOfNodes = 1;   //starting at 1 because we always have one root node
+            this.countNodes(this.opcModel, 0);
+        } else {
+            this.opcModel = "";
+            this.numberOfNodes = 0;
         }
+
+
     }
 
 
+    /**
+     * Recursively counts all the nodes
+     * @param opcModel
+     * @param count
+     */
     countNodes(opcModel, count:number) {
         const keys = Object.keys(opcModel);
         keys.forEach(key => {
@@ -43,8 +56,9 @@ export class OpcComponent {
         });
     }
 
-    getSelection() {
-        this.opcService.getSelection();
+
+    createMapping() {
+        this.opcService.createMapping();
     }
 
 
