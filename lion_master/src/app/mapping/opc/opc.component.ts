@@ -12,7 +12,7 @@ export class OpcComponent {
     node: OpcNode;
     opcModelString: string;
     opcModel;
-    includeChildNodes: Boolean = false;
+    includeChildNodes: Boolean = true;
     numberOfNodes: number = 1;  //starting at 1 because we always have one root node
     countingDone = false;
 
