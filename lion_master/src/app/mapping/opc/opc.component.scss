@@ -1,3 +1,20 @@
+.settingsContainer {
+    vertical-align: middle;
+}
+
+.settingsContainer div {
+    display: inline;
+}
+
+.settingsContainer label {
+    vertical-align: middle;
+    margin: 0;
+}
+
+.settingsContainer input {
+    vertical-align: middle;
+}
+
 .node-list {
     list-style: none;
     padding-left:30px;
