@@ -22,6 +22,7 @@ export class OpcComponent {
   createTree() {
       if (this.opcModelString.length > 0) {
         this.opcModel = JSON.parse(this.opcModelString);
+        this.opcModel["mappingId"] = this.createRandomId();
         this.countNodes(this.opcModel, 0);
         this.countingDone = true;
       }
@@ -35,6 +36,7 @@ export class OpcComponent {
         if (Array.isArray(currentElement)) {
             this.numberOfNodes += currentElement.length;
             currentElement.forEach(elem => {
+                elem["mappingId"] = this.createRandomId();
                 this.countNodes(elem, currentElement.length);
             });
         }
@@ -45,4 +47,14 @@ export class OpcComponent {
       this.opcService.getSelection();
   }
 
+  /**
+     * Creates a simple random id by concatenating 2 digits of random numbers
+     */
+    createRandomId(): string {
+        let id = "";
+        for (let i = 0; i <= 6; i++) {
+            id += Math.random().toString().substring(2,4);
+        }
+        return id;
+    }
 }

@@ -15,7 +15,26 @@ constructor() {}
      * @param node The node to add
      */
     addOpcNode(node: OpcNode) {
-        this.nodesToMap.push(node);
+        // add node if not alreay part of nodesToMap
+        const index = this.nodesToMap.findIndex(elem =>
+            elem.mappingId == node.mappingId
+        )
+        if(index == -1) {
+            this.nodesToMap.push(node);
+        }
+    }
+
+    addAllChildren(node: OpcNode) {
+        const keys = Object.keys(node);
+        keys.forEach(key => {
+            const currentElement = node[key]
+            if (Array.isArray(currentElement)) {
+                currentElement.forEach(elem => {
+                    this.addOpcNode(elem);
+                    this.addAllChildren(elem);
+                });
+            }
+        });
     }
 
 
@@ -23,11 +42,29 @@ constructor() {}
      * Removes one OPC UA node from the list of nodes to map into the ontology
      * @param id Id of the node to delete (This ID gets randomly generated)
      */
-    removeOpcNode(id: string) {
+    removeOpcNode(node: OpcNode) {
+        console.log(`removing: ${node.mappingId}`);
+
         // Filter the list to get all elements that do not have the given ID
         this.nodesToMap = this.nodesToMap.filter(elem =>
-            elem.id != id
+            elem.mappingId != node.mappingId
         )
+    }
+
+
+    removeAllChildren(nodeData: {}) {
+        const keys = Object.keys(nodeData);
+        keys.forEach(key => {
+            const currentElement = nodeData[key]
+            if (Array.isArray(currentElement)) {
+                currentElement.forEach(elem => {
+                    console.log(elem);
+
+                    this.removeOpcNode(elem);
+                    this.removeAllChildren(elem);
+                });
+            }
+        });
     }
 
 

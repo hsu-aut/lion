@@ -10,11 +10,10 @@ import { find } from 'rxjs/operators';
 })
 export class OpcMappingElementComponent {
 
-    _opcNode: {};                             // @Input, gets set via setter
+    _opcNode: OpcNode;                             // @Input, gets set via setter
     arrayProperties = new Array<string>();      // Array of properties that hold an array
     simpleProperties = new Array<string>();     // Array of properties that hold simple values
     checked: Boolean;                            // True if node selected for mapping
-    randId: string;
     selectChildren;
     @Input() includeChildren;
     deselectChild;
@@ -25,11 +24,9 @@ export class OpcMappingElementComponent {
 
     // Using a setter to get changes of the input property
     @Input() set opcNode(node) {
-        if(node) {
+        // if(node) {
             this._opcNode = node;
-            this.randId = this.createRandomId();
-
-        }
+        // }
         // split object keys into array and normal properties
 
         this.getObjectKeys();
@@ -41,18 +38,18 @@ export class OpcMappingElementComponent {
      */
     @Input() set selected(sel) {
         this.checked = sel;
-        // this.selectChildren = this.checked && this.includeChildren;
-        if(sel) {
-            this.opcService.addOpcNode({"id": this.randId, "data": this._opcNode});
-            if(this.includeChildren) {
-                this.selectChildren = true;
-            }
-        } else {
-            this.opcService.removeOpcNode(this.randId);
-            if(this.includeChildren) {
-                this.selectChildren = false;
-            }
-        }
+        this.selectChildren = this.checked && this.includeChildren;
+        // if(sel) {
+        //     this.opcService.addOpcNode(this._opcNode);
+        //     if(this.includeChildren) {
+        //         this.opcService.addAllChildren(this._opcNode);
+        //     }
+        // } else {
+        //     this.opcService.removeOpcNode(this._opcNode);
+        //     if(this.includeChildren) {
+        //         this.opcService.removeAllChildren(this._opcNode)
+        //     }
+        // }
     }
 
 
@@ -78,14 +75,14 @@ export class OpcMappingElementComponent {
      */
     selectNode() {
         if(this.checked) {
-            this.opcService.addOpcNode({"id": this.randId, "data": this._opcNode});
-            this.deselectChild = false;
-        } else {
-            this.opcService.removeOpcNode(this.randId);
-
-            // remove all children
+            this.opcService.addOpcNode(this._opcNode);
             if(this.includeChildren) {
-                this.deselectChild = true;
+                this.opcService.addAllChildren(this._opcNode);
+            }
+        } else {
+            this.opcService.removeOpcNode(this._opcNode);
+            if(this.includeChildren) {
+                this.opcService.removeAllChildren(this._opcNode)
             }
         }
 
@@ -120,8 +117,6 @@ export class OpcMappingElementComponent {
 
     toggleChildren() {
         this.showChildren = !this.showChildren;
-        console.log(`showChildren: ${this.showChildren}`);
-
     }
 
 
@@ -131,6 +126,5 @@ export class OpcMappingElementComponent {
 
 
 export interface OpcNode {
-    id: string;
-    data: {};
+    mappingId: string;
 }
