@@ -43,8 +43,6 @@ constructor() {}
      * @param id Id of the node to delete (This ID gets randomly generated)
      */
     removeOpcNode(node: OpcNode) {
-        console.log(`removing: ${node.mappingId}`);
-
         // Filter the list to get all elements that do not have the given ID
         this.nodesToMap = this.nodesToMap.filter(elem =>
             elem.mappingId != node.mappingId
@@ -58,8 +56,6 @@ constructor() {}
             const currentElement = nodeData[key]
             if (Array.isArray(currentElement)) {
                 currentElement.forEach(elem => {
-                    console.log(elem);
-
                     this.removeOpcNode(elem);
                     this.removeAllChildren(elem);
                 });
@@ -75,9 +71,13 @@ constructor() {}
         console.log(this.nodesToMap);
 
         let queryString = "";
-        // this.nodesToMap.forEach(node => {
-
-        // });
+        this.nodesToMap.forEach(node => {
+            const keys = Object.keys(node);
+            keys.forEach(key => {
+                queryString += `opc:${key} ${node[key]}\n`
+            });
+        });
+        console.log(queryString);
     }
 
 }
