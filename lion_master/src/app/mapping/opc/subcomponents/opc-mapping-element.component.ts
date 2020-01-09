@@ -10,67 +10,78 @@ import { find } from 'rxjs/operators';
 })
 export class OpcMappingElementComponent {
 
-    _opcNode: OpcNode;                             // @Input, gets set via setter
-    arrayProperties = new Array<string>();      // Array of properties that hold an array
-    simpleProperties = new Array<string>();     // Array of properties that hold simple values
-    checked: Boolean;                            // True if node selected for mapping
-    selectChildren;
-    @Input() includeChildren;
-    deselectChild;
-    children = [];
-    shownChildren= [];
+    _opcNode: OpcNode;                          // @Input, gets set via setter
+    arrayKeys = new Array<string>();      // Array of properties that hold an array
+    propertyKeys = new Array<string>();     // Array of properties that hold simple values
+    checked: Boolean;                           // True if node selected for mapping
+    selectChildren: Boolean;                    // Used to select a child node
+    @Input() includeChildren;                   // Determines whether or not children are
+    children = [];                              // List of all child node objects
+    shownDirectChildren = [];                   // Keys of the direct children that are currently displayed
+
 
     constructor(private opcService: OpcMappingService) { }
 
-    // Using a setter to get changes of the input property
-    @Input() set opcNode(node) {
-        // set node and do initial setup
-        this._opcNode = node;
-
-        this.getObjectKeys();
-        this.getAllChildren(this._opcNode);
-        this.shownChildren = this.getKeysOfDirectChildren(this._opcNode);
-    }
 
     /**
-     * @selected allows for selecting a node from a parent node. This is used for selecting all children if includeChildren = true
+     * Setter for the opc node (gets passed in from parent element) -> used with a setter to track changes
+     */
+    @Input() set opcNode(node) {
+        this._opcNode = node;
+
+        // do some setting up
+        this.arrayKeys = this.getArrayKeys(this._opcNode);
+        this.propertyKeys = this.getPropertyKeys(this._opcNode);
+        this.getAllChildren(this._opcNode);
+        this.shownDirectChildren = new Array(...this.arrayKeys)
+    }
+
+
+    /**
+     * Sets this node as selected. This input makes it possible to set child elements from a parent element.
+     * (Necessary if children shall be selected with their parent)
      */
     @Input() set selected(sel) {
         this.checked = sel;
         this.selectChildren = this.checked && this.includeChildren;
-        // if(sel) {
-        //     this.opcService.addOpcNode(this._opcNode);
-        //     if(this.includeChildren) {
-        //         this.opcService.addAllChildren(this._opcNode);
-        //     }
-        // } else {
-        //     this.opcService.removeOpcNode(this._opcNode);
-        //     if(this.includeChildren) {
-        //         this.opcService.removeAllChildren(this._opcNode)
-        //     }
-        // }
     }
 
 
-
     /**
-     * Split all keys of _opcObject into keys of array properties and keys of simple properties (JSON primitives)
+     * Gets all keys of a node that contain properties (= JSON primitives like strings or numbers)
+     * @param node Node to check
      */
-    getObjectKeys() {
-        const objectKeys = Object.keys(this._opcNode);
+    getPropertyKeys(node: {}): string[] {
+        const objectKeys = Object.keys(node);
+        const propertyKeys = [];
         objectKeys.forEach(key => {
-            const currentElement = this._opcNode[key];
-            if(Array.isArray(currentElement)) {
-                this.arrayProperties.push(key);
-            }
-            else if(typeof(currentElement) !== 'object') {
-                this.simpleProperties.push(key);
+            const currentElement = node[key];
+            if(typeof(currentElement) !== 'object' && !Array.isArray(currentElement)) {
+                propertyKeys.push(key);
             }
         });
+        return propertyKeys;
     }
 
+
     /**
-     * Select a node for mapping
+     * Gets all keys of a node that contain arrays
+     * @param node Node to check
+     */
+    getArrayKeys(node: {}): string[] {
+        const arrayKeys = [];
+        const keys = Object.keys(node);
+        keys.forEach(key => {
+            if(Array.isArray(node[key])) {
+                arrayKeys.push(key);
+            }
+        });
+        return arrayKeys;
+    }
+
+
+    /**
+     * Select a node for mapping. Get called on every change of the checkbox
      */
     selectNode() {
         if(this.checked) {
@@ -85,74 +96,76 @@ export class OpcMappingElementComponent {
             }
         }
 
-        // select children
+        // select / deselect children
         this.selectChildren = this.checked && this.includeChildren;
     }
 
-
     /**
-     * Creates a simple random id by concatenating 2 digits of random numbers
+     * Returns the keys of all direct children (i.e. all keys of this object that hold an array)
+     * @param node OPC node to get direct children keys from
      */
-    createRandomId(): string {
-        let id = "";
-        for (let i = 0; i <= 6; i++) {
-            id += Math.random().toString().substring(2,4);
-        }
-        return id;
-    }
-
     getKeysOfDirectChildren(node: {}): string[] {
         const keysOfDirectChildren = [];
-        const keys = Object.keys(this._opcNode);
+        const keys = Object.keys(node);
         keys.forEach(key => {
-            if(Array.isArray(this._opcNode[key])) {
+            if(Array.isArray(node[key])) {
                 keysOfDirectChildren.push(key);
             }
         });
         return keysOfDirectChildren;
     }
 
+
+    /**
+     * Returns all children (node objects) of this node by traversion the whole tree recursively
+     * @param node OPC node to get all children from
+     */
     getAllChildren(node) {
-        const keys = Object.keys(node);
-        keys.forEach(key => {
+        const childKeys = this.getArrayKeys(node)
+        childKeys.forEach(key => {
             const currentProperty = node[key]
-            if(Array.isArray(currentProperty)) {
-                currentProperty.forEach(child => {
-                    this.children.push(child)
-                    this.getAllChildren(child)
-                });
-            }
+            currentProperty.forEach(child => {
+                this.children.push(child)
+                this.getAllChildren(child)
+            });
         });
     }
 
-
-
+    /**
+     * Toggles the visibility of child nodes of a certain type (e.g. "organizes")
+     * @param key Key of the child
+     */
     toggleChild(key: string) {
-        const childIndex = this.shownChildren.indexOf(key);
+        const childIndex = this.shownDirectChildren.indexOf(key);
         if(childIndex == -1) {
-            this.shownChildren.push(key);
+            this.shownDirectChildren.push(key);
         } else {
-            this.shownChildren.splice(childIndex, 1);
-            console.log(this.shownChildren);
+            this.shownDirectChildren.splice(childIndex, 1);
+            console.log(this.shownDirectChildren);
 
         }
     }
 
+
+    /**
+     * Checks whether or not a child shall be displayed
+     * @param key Key of the child to check for (e.g. "organizes")
+     */
     childShown(key) {
-        const childIndex = this.shownChildren.indexOf(key);
+        const childIndex = this.shownDirectChildren.indexOf(key);
         if(childIndex == -1) {
             return false;
         } else {
             return true;
         }
     }
-
-
 }
 
 
-
-
+/**
+ * Simple interface of a node. We dont know which properties are present,
+ * but for this mapping component to work, there has to be a mappingId
+ */
 export interface OpcNode {
     mappingId: string;
 }

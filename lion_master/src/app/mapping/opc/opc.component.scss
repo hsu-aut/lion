@@ -1,10 +1,18 @@
-li {
-    display: flex;
-    align-items: flex-start;
+.node-list {
+    list-style: none;
+    padding-left:30px;
 }
 
-.node-input {
+.node-list li {
+    display: list-item;
+}
+
+.node-list li input {
     margin-top: 25px;
+}
+
+.node-list li label {
+    margin-left: 15px;
 }
 
 #mappingContainer {
@@ -20,20 +28,7 @@ li {
 
 .childKeys {
     position: relative;
-    left: 1.3em;
+    left: 2.25em;
+    margin-bottom: 0px;
 }
 
-.childToggler {
-    margin-top: 15px;
-    font-size: 1.5em;
-    margin-right: 25px;
-}
-
-.node-list {
-    list-style: none;
-    padding-left:30px;
-}
-
-.node-list li {
-    display: list-item;
-}
