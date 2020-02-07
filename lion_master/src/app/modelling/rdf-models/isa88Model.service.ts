@@ -5,6 +5,8 @@ import { PrefixesService } from '../../shared/services/prefixes.service';
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { take } from 'rxjs/operators';
 
+
+
 @Injectable({
         providedIn: 'root'
 })
@@ -13,6 +15,7 @@ export class Isa88ModelService {
         isa88Data = new ISA88Data();
         isa88Insert = new ISA88Insert();
 
+
         constructor(
                 private query: QueriesService,
                 private nameService: PrefixesService,
@@ -20,9 +23,7 @@ export class Isa88ModelService {
                 private graphs: GraphOperationsService
 
         ) {
-
                 this.initializeISA88();
-
         }
 
         public initializeISA88() {

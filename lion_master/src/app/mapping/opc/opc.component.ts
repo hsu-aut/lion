@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { EntitiesService, Literial, NamedNode } from '../../shared/services/entities.service'
 @Component({
   selector: 'app-opc',
   templateUrl: './opc.component.html',
@@ -7,9 +7,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OpcComponent implements OnInit {
 
-  constructor() { }
+  some:Literial;
+  
+  
+  constructor( 
+    private entities: EntitiesService
+   ) { }
 
   ngOnInit() {
+    console.log(this.some)
+    this.anyFunc(this.entities.createNamedNode("asdasd"))
+  }
+
+  anyFunc(asd: NamedNode){
+    console.log(asd.userinfo)
   }
 
 }
