@@ -12,6 +12,7 @@
     "curl-request": "^1.1.1",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "formidable": "^1.2.1",
     "html-to-json": "^0.6.0",
     "http-errors": "~1.6.2",
     "moment": "^2.24.0",
