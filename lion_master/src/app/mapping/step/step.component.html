@@ -1,0 +1,70 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header"> Engineering Artefact to RDF Mappings </h4>
+  <div class="card-body">
+    <h5 class="card-title"> Mechanical CAD DATA Mapping - STEP </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">In order to build the ABox of your project, you may want to use a mechanical Engineering
+          artefact such as a .stp file. LiOnS provides the ability to import a .stp file and extract the relevant
+          physical assemblies and components out of it. These assemblies and components will be use to generate a VDI
+          2206 compliant system structure.
+        </p>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Important notice</h5>
+            <p class="card-text">Please be aware, that the terms of the assemblies and components in the STEP file will
+              be used to generate identifiers.
+            </p>
+            <!-- <p class="card-text"><small class="text-muted">Current number of repositories: {{repoCount}}</small></p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload"
+            aria-selected="true"> Upload </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="Mapping-tab" data-toggle="tab" href="#Mapping" role="tab" aria-controls="Mapping"
+            aria-selected="false"> Mapping </a>
+        </li>
+      </ul>
+      <!-- tab content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+          <p class="text-sm-left"> You can upload a .stp file here. This file will be sent to the backend, where it is
+            processed. </p>
+
+          <div class="form-row">
+            <div class="form-group col-sm">
+              <div class="input-group mb-3">
+                <div class="custom-file">
+                  <label class="custom-file-label" for="customFile">{{fileName}}</label>
+                  <input type="file" class="custom-file-input" id="customFile" (change)="upload($event.target.files)">
+                </div>
+              </div>
+              <div class="progress" style="height: 1px;">
+                <div class="progress-bar" role="progressbar" [style.width]="percentDone + '%'" aria-valuemin="0"
+                  aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="tab-pane py-4" id="Mapping" role="tabpanel" aria-labelledby="Mapping-tab">
+          <p class="text-sm-left"> here comes some mapping stuff</p>
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
