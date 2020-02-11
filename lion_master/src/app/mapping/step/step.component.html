@@ -42,23 +42,11 @@
           <p class="text-sm-left"> You can upload a .stp file here. This file will be sent to the backend, where it is
             processed. </p>
 
-          <div class="form-row">
-            <div class="form-group col-sm">
-              <div class="input-group mb-3">
-                <div class="custom-file">
-                  <label class="custom-file-label" for="customFile">{{fileName}}</label>
-                  <input type="file" class="custom-file-input" id="customFile" (change)="upload($event.target.files)">
-                </div>
-              </div>
-              <div class="progress" style="height: 1px;">
-                <div class="progress-bar" role="progressbar" [style.width]="percentDone + '%'" aria-valuemin="0"
-                  aria-valuemax="100"></div>
-              </div>
-            </div>
-          </div>
+          <app-upload [url]="stepURL"></app-upload>
+
         </div>
 
-        
+
         <div class="tab-pane py-4" id="Mapping" role="tabpanel" aria-labelledby="Mapping-tab">
           <p class="text-sm-left"> here comes some mapping stuff</p>
 

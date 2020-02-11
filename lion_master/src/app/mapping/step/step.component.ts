@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-step',
   templateUrl: './step.component.html',
   styleUrls: ['./step.component.scss']
 })
 export class StepComponent implements OnInit {
+
+  private stepURL = "/step"
 
   constructor() { }
 
@@ -26,8 +29,8 @@ export class StepComponent implements OnInit {
   uploadAndProgress(files: File[]) {
     console.log(files)
     var formData = new FormData();
-    // Array.from(files).forEach(f => formData.append('file', f))
-    // console.log(formData)
+    Array.from(files).forEach(f => formData.append('file', f))
+    console.log(formData)
     // this.http.post('https://file.io', formData, { reportProgress: true, observe: 'events' })
     //   .subscribe(event => {
     //     if (event.type === HttpEventType.UploadProgress) {
