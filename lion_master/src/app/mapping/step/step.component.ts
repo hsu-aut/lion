@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { StepServiceService } from './step-service.service';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -8,36 +10,47 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StepComponent implements OnInit {
 
-  private stepURL = "/step"
+  private stepURL = "/step";
+  private assemblyStructure = {  }
+  private uploadedFiles = ["asdasdsad"]
+  private fileType = [".stp"]
 
-  constructor() { }
+  constructor(
+    private step: StepServiceService
+  ) { }
 
   ngOnInit() {
+    this.getListofFiles();
+  }
+
+  getListofFiles() {
+    this.step.getListOfFiles().pipe(take(1)).subscribe((data: any) => {
+      this.uploadedFiles = data;
+    });
+  }
+
+  mapToRDF(file: string) {
+
+  }
+
+  mapModifiedToRDF(file: string) {
+
+  }
+
+  deleteFile(file: string) {
+    this.step.deleteFile(file).pipe(take(1)).subscribe((data: any) => {
+      console.log(data);
+      this.getListofFiles()
+    });
+
+  }
+
+  loadJson(file){
+    this.step.getJson(file).pipe(take(1)).subscribe((data: any) => {
+      this.assemblyStructure = data;
+    });
   }
 
 
-  percentDone: number = 20;
-  uploadSuccess: boolean;
-  fileName: string = "Choose file"
 
-  upload(files: File[]) {
-    this.fileName = files[0].name;
-    this.uploadAndProgress(files);
-  }
-
-
-  uploadAndProgress(files: File[]) {
-    console.log(files)
-    var formData = new FormData();
-    Array.from(files).forEach(f => formData.append('file', f))
-    console.log(formData)
-    // this.http.post('https://file.io', formData, { reportProgress: true, observe: 'events' })
-    //   .subscribe(event => {
-    //     if (event.type === HttpEventType.UploadProgress) {
-    //       this.percentDone = Math.round(100 * event.loaded / event.total);
-    //     } else if (event instanceof HttpResponse) {
-    //       this.uploadSuccess = true;
-    //     }
-    //   });
-  }
 }
