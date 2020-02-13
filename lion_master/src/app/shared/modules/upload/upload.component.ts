@@ -19,6 +19,7 @@ export class UploadComponent implements OnInit {
   uploadSuccessful = false
 
   @Input() url: string;
+  @Input() fileFormats: string[];
 
   public files: Set<File> = new Set()
 
@@ -36,14 +37,13 @@ export class UploadComponent implements OnInit {
    */
   addFiles(files) {
     for (let key in files) {
-      if (!isNaN(parseInt(key))) {
+      if (!isNaN(parseInt(key)) && this.checkFileFormat(files[key].name)) {
         this.files.add(files[key]);
         this.lastFileName = files[key].name;
       }
     }
-    // console.log(this.files)
-    
   }
+
 
   /**
    * The upload function is called by the template and triggers the upload service.
@@ -72,13 +72,13 @@ export class UploadComponent implements OnInit {
     let allProgressObservables = [];
     for (let key in this.progressObserver) {
       allProgressObservables.push(this.progressObserver[key].progress);
-        this.progress.forEach(element => {
-          if (element.id == key) {
-            this.progressObserver[key].progress.subscribe(data => {
-              element.percentDone = data;
-            })
-          }
-        });
+      this.progress.forEach(element => {
+        if (element.id == key) {
+          this.progressObserver[key].progress.subscribe(data => {
+            element.percentDone = data;
+          })
+        }
+      });
     }
 
     // Adjust the state variables
@@ -98,6 +98,22 @@ export class UploadComponent implements OnInit {
       // ... and the component is no longer uploading
       this.uploading = false;
     });
+  }
+
+
+  /**
+   *
+   * Check for a given filename, if the file ending indicates an allowed file format 
+   * @param {string} fileName
+   * @returns True if allowed, false otherwise
+   * @memberof UploadComponent
+   */
+  checkFileFormat(fileName: string) {
+    let included: Boolean = false;
+    this.fileFormats.forEach(element => {
+      if (fileName.includes(element)) { included = true }
+    });
+    return included
   }
 
 }
