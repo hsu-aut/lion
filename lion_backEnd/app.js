@@ -10,7 +10,7 @@ var queries = require('./routes/queries');
 var graphs = require('./routes/graphs');
 var eclassSearch = require('./routes/eclass-search');
 var REPOS = require('./routes/repositories');
-var step = require('./routes/step-parser');
+var step = require('./routes/step');
 
 var app = express();
 
