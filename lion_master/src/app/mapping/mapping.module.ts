@@ -9,6 +9,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { OpcComponent } from './opc/opc.component';
 import { R2rmlComponent } from './r2rml/r2rml.component';
 import { StepComponent } from './step/step.component';
+import { FpbComponent } from './fpb/fpb.component';
 
 // util modules
 import { UploadModule } from '../shared/modules/upload/upload.module';
@@ -24,7 +25,8 @@ import { UploadModule } from '../shared/modules/upload/upload.module';
     SidebarComponent,
     OpcComponent,
     R2rmlComponent,
-    StepComponent
+    StepComponent,
+    FpbComponent
   ]
 })
 export class MappingModule { }
