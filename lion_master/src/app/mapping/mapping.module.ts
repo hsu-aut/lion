@@ -8,17 +8,23 @@ import { MappingRoutingModule } from './mapping-routing.module';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { OpcComponent } from './opc/opc.component';
 import { R2rmlComponent } from './r2rml/r2rml.component';
+import { StepComponent } from './step/step.component';
+
+// util modules
+import { UploadModule } from '../shared/modules/upload/upload.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    MappingRoutingModule
+    MappingRoutingModule,
+    UploadModule
   ],
   declarations: [
     MappingComponent,
     SidebarComponent,
     OpcComponent,
-    R2rmlComponent
+    R2rmlComponent,
+    StepComponent
   ]
 })
 export class MappingModule { }

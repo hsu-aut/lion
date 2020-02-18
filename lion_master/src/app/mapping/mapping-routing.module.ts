@@ -4,6 +4,7 @@ import { MappingComponent } from './mapping.component';
 
 import { OpcComponent } from './opc/opc.component';
 import { R2rmlComponent } from './r2rml/r2rml.component';
+import { StepComponent } from './step/step.component';
 
 const routes: Routes = [
     {
@@ -13,6 +14,7 @@ const routes: Routes = [
             { path: '', redirectTo: 'opc', pathMatch: 'prefix' },
             { path: 'opc', component: OpcComponent },
             { path: 'r2rml', component: R2rmlComponent },
+            { path: 'step', component: StepComponent },
         ]
     }
 ];

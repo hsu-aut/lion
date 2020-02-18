@@ -1,0 +1,97 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header"> Engineering Artefact to RDF Mappings </h4>
+  <div class="card-body">
+    <h5 class="card-title"> Mechanical CAD DATA Mapping - STEP </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">In order to build the ABox of your project, you may want to use a mechanical Engineering
+          artefact such as a .stp file. LiOnS provides the ability to import a .stp file and extract the relevant
+          physical assemblies and components out of it. These assemblies and components will be use to generate a VDI
+          2206 compliant system structure.
+        </p>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Important notice</h5>
+            <p class="card-text">Please be aware, that the terms of the assemblies and components in the STEP file will
+              be used to generate identifiers.
+            </p>
+            <!-- <p class="card-text"><small class="text-muted">Current number of repositories: {{repoCount}}</small></p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload"
+            aria-selected="true"> Upload </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="Mapping-tab" data-toggle="tab" href="#Mapping" role="tab" aria-controls="Mapping"
+            aria-selected="false" (click)="getListofFiles()"> Mapping </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="ManualConfig-tab" data-toggle="tab" href="#ManualConfig" role="tab"
+            aria-controls="ManualConfig" aria-selected="false"> ManualConfiguration </a>
+        </li>
+      </ul>
+      <!-- tab content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+          <p class="text-sm-left"> You can upload a .stp file here. This file will be sent to the backend, where it is
+            processed. </p>
+
+          <app-upload [url]="stepURL" [fileFormats]="fileType"></app-upload>
+
+        </div>
+
+
+        <div class="tab-pane py-4" id="Mapping" role="tabpanel" aria-labelledby="Mapping-tab">
+          <p class="text-sm-left"> In case .stp files were uploaded, you can map them to the graph database or delete
+            them from the server.</p>
+
+          <div *ngIf="uploadedFiles; then filesBlock"></div>
+          <ng-template #filesBlock>
+            <div class="row mt-1" *ngFor="let file of uploadedFiles">
+              <div class="input-group">
+                <input type="text" class="form-control" [placeholder]="file" aria-label="fileName"
+                  aria-describedby="basic-addon2" readonly>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" (click)="mapToRDF(file)">Map to RDF</button>
+                  <button class="btn btn-outline-secondary" type="button" (click)="deleteFile(file)">Delete</button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="tab-pane py-4" id="ManualConfig" role="tabpanel" aria-labelledby="ManualConfig-tab">
+          <p class="text-sm-left"> In case .stp files were uploaded, you can manually edit the resulting .json document
+            of the assembly structure.</p>
+          <div *ngIf="uploadedFiles; then filesBlock2"></div>
+          <ng-template #filesBlock2>
+            <div class="row mt-1" *ngFor="let file of uploadedFiles">
+              <div class="input-group">
+                <input type="text" class="form-control" [placeholder]="file" aria-label="fileName"
+                  aria-describedby="basic-addon2" readonly>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" (click)="mapModifiedToRDF(file)">Map modified to RDF</button>
+                  <button class="btn btn-outline-secondary" type="button" (click)="loadJson(file)">Modify</button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <div class="row mt-3"><textarea name="assemblyStructure" id="assemblyStructure" class="col"
+              rows="20">{{ assemblyStructure | json }}</textarea>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>

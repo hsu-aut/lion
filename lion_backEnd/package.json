@@ -5,6 +5,10 @@
   "scripts": {
     "start": "node ./bin/lion_BE"
   },
+  "nodemonConfig": {
+    "ignore": ["./temp"],
+    "delay": "1000"
+  },
   "dependencies": {
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
@@ -12,12 +16,15 @@
     "curl-request": "^1.1.1",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "formidable": "^1.2.1",
     "html-to-json": "^0.6.0",
     "http-errors": "~1.6.2",
     "moment": "^2.24.0",
     "morgan": "~1.9.0",
     "mysql": "^2.16.0",
     "pug": "2.0.0-beta11",
+    "step-to-json": "^1.0.12",
+    "uuid": "^3.4.0",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
