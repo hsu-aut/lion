@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
-import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
 import { RepositoryOperationsService } from '../../shared/services/backEnd/repositoryOperations.service';
 import { MessagesService } from '../../shared/services/messages.service';
 
@@ -19,7 +18,6 @@ export class StepServiceService {
   constructor(
     private config: ConfigurationService,
     private http: HttpClient,
-    private graphs: GraphOperationsService,
     private repos: RepositoryOperationsService,
     private messageService: MessagesService
   ) { }
@@ -52,15 +50,10 @@ export class StepServiceService {
     var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'none',
-      })
+      }),
+      params: new HttpParams().set('fileName',fileName)
     };
-    var request: string;
-
-    if (fileName) {
-      request = this.config.getHost() + this.stepRoute + `?fileName=${fileName}`;
-    } else {
-      request = this.config.getHost() + this.stepRoute;
-    }
+    var request: string =  this.config.getHost() + this.stepRoute
 
     return this.http.delete(request, httpOptions);
   }
@@ -80,7 +73,6 @@ export class StepServiceService {
 
     let body = {
       fileName: fileName,
-      activeGraph: this.graphs.getGraphs()[this.graphs.getActiveGraph()],
       repositoryName: this.repos.getRepository()
     }
     
@@ -114,11 +106,12 @@ export class StepServiceService {
     var httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'none',
-      })
+      }),
+      params: new HttpParams().set('fileName',fileName)
     };
     var request: string;
 
-    request = this.config.getHost() + this.stepRoute + '/json' + `?fileName=${fileName}`;
+    request = this.config.getHost() + this.stepRoute + '/json';
 
     return this.http.get(request, httpOptions);
   }
