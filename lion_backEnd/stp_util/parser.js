@@ -81,7 +81,7 @@ function buildRDF(stepFileName) {
             return assemblyRDF;
         }
     } catch (error) {
-        console.error(err)
+        console.error(error)
     }
 
 }
