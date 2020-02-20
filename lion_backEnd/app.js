@@ -10,7 +10,8 @@ var queries = require('./routes/queries');
 var graphs = require('./routes/graphs');
 var eclassSearch = require('./routes/eclass-search');
 var REPOS = require('./routes/repositories');
-var step = require('./routes/step');
+var stepMapping = require('./routes/step');
+var fpbMapping = require('./routes/fpb');
 
 var app = express();
 
@@ -30,7 +31,8 @@ app.use('/lion_BE/eclassSearch', eclassSearch);
 app.use('/lion_BE/repositories', REPOS);
 app.use('/lion_BE/graphs', graphs);
 app.use('/lion_BE/queries', queries);
-app.use('/lion_BE/step', step);
+app.use('/lion_BE/step', stepMapping);
+app.use('/lion_BE/fpb', fpbMapping);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
