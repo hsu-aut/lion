@@ -1,0 +1,97 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header"> Engineering Artefact to RDF Mappings </h4>
+  <div class="card-body">
+    <h5 class="card-title"> Formalized Process Description - FPD </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">In order to build the ABox of your project, you may want to use an artefact that describes
+          the processes of a production system. The Formalized Process Description can be used to model the relevant
+          process of your production system. LiOnS provides the ability to import .json files created with FPBjs (see:
+          "fpbjs.net"). This file will be used to create a VDI 3682 compliant process model in the ABox.
+        </p>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Important notice</h5>
+            <p class="card-text">Please be aware, that the identifiers and names used in the FPBjs file will be used to
+              create the ABox.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="upload-tab" data-toggle="tab" href="#upload" role="tab" aria-controls="upload"
+            aria-selected="true"> Upload </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="Mapping-tab" data-toggle="tab" href="#Mapping" role="tab" aria-controls="Mapping"
+            aria-selected="false" (click)="getListofFiles()"> Mapping </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" id="ManualConfig-tab" data-toggle="tab" href="#ManualConfig" role="tab"
+            aria-controls="ManualConfig" aria-selected="false"> ManualConfiguration </a>
+        </li> -->
+      </ul>
+      <!-- tab content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+          <p class="text-sm-left"> You can upload a .json file here. This file will be sent to the backend, where it is
+            processed. </p>
+            
+          <app-upload [url]="fpbURL" [fileFormats]="fileType"></app-upload>
+
+        </div>
+
+
+        <div class="tab-pane py-4" id="Mapping" role="tabpanel" aria-labelledby="Mapping-tab">
+          <p class="text-sm-left"> In case .json files were uploaded, you can map them to the graph database or delete
+            them from the server.</p>
+
+          <div *ngIf="uploadedFiles; then filesBlock"></div>
+          <ng-template #filesBlock>
+            <div class="row mt-1" *ngFor="let file of uploadedFiles">
+              <div class="input-group">
+                <input type="text" class="form-control" [placeholder]="file" aria-label="fileName"
+                  aria-describedby="basic-addon2" readonly>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" (click)="mapToRDF(file)">Map to RDF</button>
+                  <button class="btn btn-outline-secondary" type="button" (click)="deleteFile(file)">Delete</button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+
+        <!-- <div class="tab-pane py-4" id="ManualConfig" role="tabpanel" aria-labelledby="ManualConfig-tab">
+          <p class="text-sm-left"> In case .json files were uploaded, you can manually edit the resulting .json document
+            of the assembly structure.</p>
+          <div *ngIf="uploadedFiles; then filesBlock2"></div>
+          <ng-template #filesBlock2>
+            <div class="row mt-1" *ngFor="let file of uploadedFiles">
+              <div class="input-group">
+                <input type="text" class="form-control" [placeholder]="file" aria-label="fileName"
+                  aria-describedby="basic-addon2" readonly>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" (click)="mapModifiedToRDF(file)">Map modified
+                    to RDF</button>
+                  <button class="btn btn-outline-secondary" type="button" (click)="loadJson(file)">Modify</button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <div class="row mt-3"><textarea name="fpbJSON" id="fpbJSON" class="col"
+              rows="20">{{ fpbJSON | json }}</textarea>
+          </div>
+        </div> -->
+
+
+      </div>
+    </div>
+  </div>

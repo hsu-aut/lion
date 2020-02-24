@@ -1,12 +1,16 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
   <div class="list-group">
+    <a [routerLink]="['fpb']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+      <i class="fas fa-anchor"></i>&nbsp;
+      <span> FPD </span>
+    </a>
+    <a [routerLink]="['step']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+      <i class="fas fa-sitemap"></i>&nbsp;
+      <span> STEP </span>
+    </a>
     <a [routerLink]="['opc']" [routerLinkActive]="['router-link-active']" class="list-group-item">
       <i class="fas fa-tachometer-alt"></i>&nbsp;
       <span> OPC UA </span>
-    </a>
-    <a [routerLink]="['step']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-      <i class="fab fa-pagelines"></i>&nbsp;
-      <span> STEP </span>
     </a>
     <a [routerLink]="['r2rml']" [routerLinkActive]="['router-link-active']" class="list-group-item">
       <i class="fas fa-box-open"></i>&nbsp;

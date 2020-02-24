@@ -10,7 +10,7 @@ import { take } from 'rxjs/operators';
 })
 export class StepComponent implements OnInit {
 
-  private stepURL = "/step";
+  private stepURL = this.step.stepRoute;
   private assemblyStructure = {  }
   private uploadedFiles = ["asdasdsad"]
   private fileType = [".stp"]
