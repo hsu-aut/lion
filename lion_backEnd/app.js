@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var queries = require('./routes/queries');
 var graphs = require('./routes/graphs');
 var eclassSearch = require('./routes/eclass-search');
+const opcUaRouter = require('./routes/opc-ua');
 var REPOS = require('./routes/repositories');
 
 var app = express();
@@ -29,6 +30,7 @@ app.use('/lion_BE/eclassSearch', eclassSearch);
 app.use('/lion_BE/repositories', REPOS);
 app.use('/lion_BE/graphs', graphs);
 app.use('/lion_BE/queries', queries);
+app.use('/lion_BE/opc-ua', opcUaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
