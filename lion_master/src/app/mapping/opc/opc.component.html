@@ -1,30 +1,106 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-    <div class="card-header">
-        <h5>OPC UA Mapping</h5>
-    </div>
+    <div class="card-header">OPC UA Mappings</div>
     <div class="card-body">
-        <p>You can use this component, to crawl the data model of an OPC UA server and map this data model into your
-            ontology</p>
-        <h6>Enter your OPC UA Datamodel (JSON)</h6>
-        <div class="row">
+        <h5 class="card-title">Map OPC UA Information models</h5>
+
+        <div class="row" style="height: 200px;">
+
+            <div class="col">
+                <p class="card-text">You can use this component, to crawl the data model of an OPC UA server and map
+                    this data model into your ontology
+                    <button type="button" class="badge badge-pill badge-light" data-toggle="modal"
+                        data-target="#MCS_HELPER">?</button>
+                </p>
+
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Template Statistics
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No# Nodes</th>
+                                    <th scope="col">No# Variables</th>
+                                    <th scope="col">No# Objects</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{noOfNodes}}</td>
+                                    <td>{{noOfVariables}}</td>
+                                    <td>{{noOfObjects}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <h5>Server information</h5>
+        <div class="form-row">
+            <div class="col-sm-4">
+                <div class="form-check">
+                    <label for="includeChildNodes">Endpoint:</label>
+                    <input type="text" class="form-control" id="endpoint">
+                </div>
+                <div class="form-check">
+                    <label for="securityPolicy">Security Policy:</label>
+                    <select id="securityPolicy" class="form-control">
+                        <option value="asd"></option>
+                    </select>
+                </div>
+                <div class="form-check">
+                    <label for="messageSecurityMode">Message Security Mode:</label>
+                    <select id="messageSecurityMode" class="form-control">
+                        <option value="qwe"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-check">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" class="form-control">
+                </div>
+                <div class="form-check">
+                    <label for="password">Password:</label>
+                    <input type="text" id="password" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="form-row mt-3 ml-3">
             <div class="col-sm">
+                <button class="btn btn-primary">Crawl Server</button>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col sm">
+                <h6>Enter your OPC UA Datamodel (JSON)</h6>
                 <textarea class="form-control" rows="6" [(ngModel)]="opcModelString"></textarea>
+
+                <div class="mt-3 settingsContainer">
+                    <button class="btn btn-primary" (click)="createTree()">Create tree</button>
+                    <div class="form-check">
+                        <input type="checkbox" [(ngModel)]="includeChildNodes" id="includeChildNodes">
+                        <label for="includeChildNodes">Include Child Nodes</label>
+                    </div>
+                </div>
+
+
+                <h4 class="mt-4 mb-2" *ngIf="numberOfNodes > 0">Mapping Tree ({{numberOfNodes}} Nodes)</h4>
+                <div *ngIf="opcModel" id="mappingContainer">
+                    <opc-mapping-element [opcNode]="opcModel" [includeChildren]="includeChildNodes">
+                    </opc-mapping-element>
+                </div>
             </div>
         </div>
 
-        <div class="mt-3 settingsContainer">
-            <button class="btn btn-primary" (click)="createTree()">Create tree</button>
-            <div class="form-check">
-                <input type="checkbox" [(ngModel)]="includeChildNodes" id="includeChildNodes">
-                <label for="includeChildNodes">Include Child Nodes</label>
-            </div>
-        </div>
 
-
-        <h4 class="mt-4 mb-2" *ngIf="numberOfNodes > 0">Mapping Tree ({{numberOfNodes}} Nodes)</h4>
-        <div *ngIf="opcModel" id="mappingContainer">
-            <opc-mapping-element [opcNode]="opcModel" [includeChildren]="includeChildNodes"></opc-mapping-element>
-        </div>
     </div>
 
     <button class="btn btn-success" (click)="createMapping()">Create Mapping</button>
