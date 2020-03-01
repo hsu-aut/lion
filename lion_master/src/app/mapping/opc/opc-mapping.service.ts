@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 import { OpcNode } from './subcomponents/opc-mapping-element.component';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpcMappingService {
 
-constructor() {}
+constructor(private httpClient: HttpClient) {}
 
     nodesToMap = new Array<OpcNode>();
+    opcRoute = '/lion_BE/opc-ua'
+
+
+    crawlServer(serverInfo: ServerInfo): Observable<any> {
+        return this.httpClient.post(`${this.opcRoute}/crawl-server`, serverInfo);
+    }
 
     /**
      * Adds one OPC UA node to the list of nodes to map into the ontology
@@ -47,7 +55,7 @@ constructor() {}
     removeOpcNode(node: OpcNode) {
         // Filter the list to get all elements that do not have the given ID
         this.nodesToMap = this.nodesToMap.filter(elem =>
-            elem.mappingId != node.mappingId
+            elem.nodeId != node.nodeId
         )
     }
 
@@ -73,40 +81,34 @@ constructor() {}
     /**
      * Creates the mapping string for the complete list of nodesToMap
      */
-    createMapping() {
-        console.log(this.nodesToMap);
-        // TODO: Currently setting only the simple type "Node"
-        // --> We have to differ between different types of nodes (e.g. Method, Variable, ...)
-        // --> Node types can be differentiated by checking the NodeClass. Currently only the nodeClass od the root node is in the parsed model.
-        // --> Seems to be a problem with the parser
-        let queryString = "";
-        this.nodesToMap.forEach(node => {
-            const keys = Object.keys(node);
-            // create an individual for this node:
-            queryString += `example:${node["browseName"]} rdf:type opc:node.\n`
+    createMapping(): Observable<string> {
+        // console.log(this.nodesToMap);
+        // // TODO: Currently setting only the simple type "Node"
+        // // --> We have to differ between different types of nodes (e.g. Method, Variable, ...)
+        // // --> Node types can be differentiated by checking the NodeClass. Currently only the nodeClass od the root node is in the parsed model.
+        // // --> Seems to be a problem with the parser
+        // let queryString = "";
+        // this.nodesToMap.forEach(node => {
+        //     const keys = Object.keys(node);
+        //     // create an individual for this node:
+        //     queryString += `example:${node["browseName"]} rdf:type opc:node.\n`
 
-            keys.forEach(key => {
-                if(Array.isArray(node[key])) {
-                    queryString += this.createObjectProperty(key, node);                        // add object properties
-                } else {
-                    queryString += `example:${node["browseName"]} opc:${key} "${node[key]}".\n`   // add data properties
-                }
-            });
-        });
-        console.log(queryString);
+        //     keys.forEach(key => {
+        //         if(Array.isArray(node[key])) {
+        //             queryString += this.createObjectProperty(key, node);                        // add object properties
+        //         } else {
+        //             queryString += `example:${node["browseName"]} opc:${key} "${node[key]}".\n`   // add data properties
+        //         }
+        //     });
+        // });
+        // console.log(queryString);
+        console.log("creating mappings");
+
+        return this.httpClient.post(`${this.opcRoute}/mappings`, this.nodesToMap) as Observable<string>;
     }
 
 
-    createObjectProperty(key: string, node: OpcNode): string{
-        const array = node[key];
-        let queryString = '';
-        array.forEach(element => {
-            if(this.isInNodesToMap(element)){
-                queryString += `example:${node["browseName"]} opc:${key} example:${element["browseName"]}.\n`;
-            }
-        });
-        return queryString;
-    }
+
 
 
     /**
@@ -115,7 +117,7 @@ constructor() {}
      */
     isInNodesToMap(node: OpcNode){
         const index = this.nodesToMap.findIndex(nodeToMap =>
-            nodeToMap.mappingId === node.mappingId
+            nodeToMap.nodeId === node.nodeId
         )
         if (index == -1) {
             return false;
@@ -124,4 +126,13 @@ constructor() {}
         }
     }
 
+}
+
+
+export interface ServerInfo {
+    endpointUrl: string,
+    securityPolicy: string,
+    messageSecurityMode: string,
+    username: string,
+    password: string,
 }
