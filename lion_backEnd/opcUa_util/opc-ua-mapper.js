@@ -40,7 +40,9 @@ module.exports = class OpcUaMappingCreator {
                 if (Array.isArray(node[key])) {
                     queryString += this.createObjectProperty(individualIri, key, node); // add object properties
                 } else {
-                    queryString += `${individualIri} ${this.opcPrefix}:${key} '${this.fixLiterals(node[key])}'.\n`; // add data properties
+                    if (key !== 'uuid') {
+                        queryString += `${individualIri} ${this.opcPrefix}:${key} '${this.fixLiterals(node[key])}'.\n`; // add data properties
+                    }
                 }
             });
         });
@@ -53,7 +55,7 @@ module.exports = class OpcUaMappingCreator {
         const referencedElements = node[property];      // Elements that are connected to node via a reference (which is key)
         let queryString = '';
         referencedElements.forEach(element => {
-            queryString += `${individualIri} ${this.opcPrefix}:${property} <urn:uuid:${this.getNodeIriByBrowseName(element.browseName)}>.\n`;
+            queryString += `${individualIri} ${this.opcPrefix}:${property} <urn:uuid:${this.getNodeIriByNodeId(element.nodeId)}>.\n`;
         });
         return queryString;
     }
@@ -96,7 +98,10 @@ module.exports = class OpcUaMappingCreator {
         }
     }
 
-
+    /**
+     * Creates a description for the server and the nodeset 
+     * @param {string} nodeSetId ID of the nodeset to create. Has to be passed because it's needed when creating the individual nodes
+     */
     createServerAndNodeSetDescription(nodeSetId) {
         const serverId = `<urn:uuid:${uuid()}>`;
         let queryString = `${serverId} rdf:type ${this.opcPrefix}:UAServer;
@@ -117,10 +122,10 @@ module.exports = class OpcUaMappingCreator {
     /**
      * IRIs for nodes have to have a UUID to make them unique. When mapping one server, is unique by its browseName.
      * After preprocessing the nodes 
-     * @param {string} browseName BrowseName to look for
+     * @param {string} nodeId BrowseName to look for
      */
-    getNodeIriByBrowseName(browseName) {
-        const node = this.nodesToMap.find(node => node.browseName === browseName);
+    getNodeIriByNodeId(nodeId) {
+        const node = this.nodesToMap.find(node => node.nodeId === nodeId);
         return node.uuid;
     }
 };
