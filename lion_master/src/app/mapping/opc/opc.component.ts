@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OpcMappingService } from './opc-mapping.service';
 import { OpcNode } from './subcomponents/opc-mapping-element.component';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-opc',
@@ -23,9 +23,9 @@ export class OpcComponent {
     messageSecurityModes = ['None', 'Sign', 'SignAndEncrypt']
 
     serverInfoForm = this.fb.group({
-        endpointUrl: this.fb.control(''),
-        securityPolicy: this.fb.control(''),
-        messageSecurityMode: this.fb.control(''),
+        endpointUrl: this.fb.control('', Validators.pattern(/\w.+:(\/?\/?)[^\s]+:[0-9]{2,6}((\/)[\w-]*)*/)),
+        securityPolicy: this.fb.control('', Validators.required),
+        messageSecurityMode: this.fb.control('', Validators.required),
         username: this.fb.control(''),
         password: this.fb.control(''),
     })
@@ -34,6 +34,7 @@ export class OpcComponent {
 
 
     crawlServer() {
+        console.log("crawluing");
         this.opcService.crawlServer(this.serverInfoForm.value).subscribe(nodeset => {
             this.opcModelString = JSON.stringify(nodeset);
         })
