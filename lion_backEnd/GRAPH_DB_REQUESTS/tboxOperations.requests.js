@@ -4,7 +4,7 @@ var log = require('./GDB_LOG')
 
 exports.insertTBOX = function (pattern, repositoryName) {
   var promise = new Promise(function (resolve) {
-    getTox(pattern).then(function (response) {
+    getTBox(pattern).then(function (response) {
 
       var config = {
         method: 'POST',
@@ -104,7 +104,7 @@ exports.getAllTriples_W_O_TBox = function (repositoryName) {
 function deleteTBox(repositoryName){
   var pattern = "VDI3682";
   var promise = new Promise(function (resolve) {
-    getTox(pattern).then(function (response) {
+    getTBox(pattern).then(function (response) {
 
       var config = {
         method: 'DELETE',
@@ -138,7 +138,7 @@ function deleteTBox(repositoryName){
   return promise
 }
 
-function getTox(pattern) {
+function getTBox(pattern) {
     var url;
     switch (pattern) {
       case "VDI3682": {
@@ -165,6 +165,10 @@ function getTox(pattern) {
         url = TBOX_URLs.ISO22400_2;
         break;
       }
+      case "OPCUA": {
+        url = TBOX_URLs.OPCUA;
+        break;
+      }
       default: {
         // no default statements
         break;
@@ -179,5 +183,6 @@ var TBOX_URLs = {
   ISA88: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/ISA%2088/ISA88.owl",
   DINEN61360: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/DIN%20EN%2061360/DINEN61360.owl",
   WADL: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/WADL/WADL.owl",
-  ISO22400_2: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/ISO%2022400-2/ISO22400-2.owl"
+  ISO22400_2: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/ISO%2022400-2/ISO22400-2.owl",
+  OPCUA: "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/master/OPC%20UA/OpcUa.owl"
 };
