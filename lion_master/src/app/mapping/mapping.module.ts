@@ -15,12 +15,14 @@ import { FpbStepComponent } from './connectors/fpb-step/fpb-step.component';
 // util modules
 import { UploadModule } from '../shared/modules/upload/upload.module';
 import { OpcVDI2206ConnectorComponent } from './connectors/opc-vdi2206/opc-vdi2206-connector.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
     MappingRoutingModule,
-    UploadModule
+    UploadModule,
+    ReactiveFormsModule
   ],
   declarations: [
     MappingComponent,
