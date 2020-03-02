@@ -42,39 +42,39 @@
 
 
         <h5>Server information</h5>
-        <div class="form-row">
+        <div class="form-row" [formGroup]="serverInfoForm">
             <div class="col-sm-4">
                 <div class="form-check">
                     <label for="includeChildNodes">Endpoint:</label>
-                    <input type="text" class="form-control" id="endpoint">
+                    <input type="text" class="form-control" id="endpoint" formControlName="endpointUrl">
                 </div>
                 <div class="form-check">
                     <label for="securityPolicy">Security Policy:</label>
-                    <select id="securityPolicy" class="form-control">
-                        <option value="asd"></option>
+                    <select id="securityPolicy" class="form-control" formControlName="securityPolicy">
+                        <option *ngFor="let secPol of securityPolicies" value="{{secPol}}">{{secPol}}</option>
                     </select>
                 </div>
                 <div class="form-check">
                     <label for="messageSecurityMode">Message Security Mode:</label>
-                    <select id="messageSecurityMode" class="form-control">
-                        <option value="qwe"></option>
+                    <select id="messageSecurityMode" class="form-control" formControlName="messageSecurityMode">
+                        <option *ngFor="let msgSecMode of messageSecurityModes" value="{{msgSecMode}}">{{msgSecMode}}</option>
                     </select>
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="form-check">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" class="form-control">
+                    <input type="text" id="username" class="form-control" formControlName="username">
                 </div>
                 <div class="form-check">
                     <label for="password">Password:</label>
-                    <input type="text" id="password" class="form-control">
+                    <input type="text" id="password" class="form-control" formControlName="password">
                 </div>
             </div>
         </div>
         <div class="form-row mt-3 ml-3">
             <div class="col-sm">
-                <button class="btn btn-primary">Crawl Server</button>
+                <button class="btn btn-primary" (click)="crawlServer()">Crawl Server</button>
             </div>
         </div>
 

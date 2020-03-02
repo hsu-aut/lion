@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { OpcMappingService } from './opc-mapping.service';
 import { OpcNode } from './subcomponents/opc-mapping-element.component';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
-  selector: 'app-opc',
-  templateUrl: './opc.component.html',
-  styleUrls: ['./opc.component.scss']
+    selector: 'app-opc',
+    templateUrl: './opc.component.html',
+    styleUrls: ['./opc.component.scss']
 })
 export class OpcComponent {
 
@@ -16,24 +17,40 @@ export class OpcComponent {
     numberOfNodes: number;
     countingDone = false;
 
-    constructor(private opcService: OpcMappingService) { }
+    // TODO: SecurityPolicies and MessageSecurityMode should be loaded from Ontology or directly from node opc ua
+    securityPolicies = ['None', 'Basic128', 'Basic192', 'Basic192Rsa15', 'Basic256Rsa15', 'Basic256Sha256', 'Aes128_Sha256_RsaOaep',
+        'PubSub_Aes128_CTR', 'PubSub_Aes256_CTR', 'Basic128Rsa15', 'Basic256'];
+    messageSecurityModes = ['None', 'Sign', 'SignAndEncrypt']
 
+    serverInfoForm = this.fb.group({
+        endpointUrl: this.fb.control(''),
+        securityPolicy: this.fb.control(''),
+        messageSecurityMode: this.fb.control(''),
+        username: this.fb.control(''),
+        password: this.fb.control(''),
+    })
+
+    constructor(private opcService: OpcMappingService, private fb: FormBuilder) { }
+
+
+    crawlServer() {
+        this.opcService.crawlServer(this.serverInfoForm.value).subscribe(nodeset => {
+            this.opcModelString = JSON.stringify(nodeset);
+        })
+    }
 
     /**
      * Parses the string into JSON, counts the number of nodes and adds a mapping ID
      */
     createTree() {
-        if(this.opcModelString) {
+        if (this.opcModelString) {
             this.opcModel = JSON.parse(this.opcModelString);
-            this.opcModel["mappingId"] = this.createRandomId();
             this.numberOfNodes = 1;   //starting at 1 because we always have one root node
             this.countNodes(this.opcModel, 0);
         } else {
-            this.opcModel = "";
+            this.opcModel = '';
             this.numberOfNodes = 0;
         }
-
-
     }
 
 
@@ -42,14 +59,13 @@ export class OpcComponent {
      * @param opcModel
      * @param count
      */
-    countNodes(opcModel, count:number) {
+    countNodes(opcModel, count: number) {
         const keys = Object.keys(opcModel);
         keys.forEach(key => {
             const currentElement = opcModel[key]
             if (Array.isArray(currentElement)) {
                 this.numberOfNodes += currentElement.length;
                 currentElement.forEach(elem => {
-                    elem["mappingId"] = this.createRandomId();
                     this.countNodes(elem, currentElement.length);
                 });
             }
@@ -58,18 +74,10 @@ export class OpcComponent {
 
 
     createMapping() {
-        this.opcService.createMapping();
-    }
+        const serverInfo = this.serverInfoForm.value;
+        this.opcService.createMapping(serverInfo).subscribe(data => {
+            console.log(data);
 
-
-    /**
-     * Creates a simple random id by concatenating 2 digits of random numbers
-     */
-    createRandomId(): string {
-        let id = "";
-        for (let i = 0; i <= 6; i++) {
-            id += Math.random().toString().substring(2,4);
-        }
-        return id;
+        });
     }
 }
