@@ -10,11 +10,12 @@ export class OpcService {
 
     loadAllOpcUaServers() {
         const query = `PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        SELECT ?systems WHERE {
-            ?s a OpcUa:UAServer.
+        SELECT ?serverIri ?serverLabel WHERE {
+            ?serverIri a OpcUa:UAServer;
+            rdf:label ?serverLabel.
         }`;
 
-        return this.queryService.SPARQL_SELECT_LIST(query, 0);
+        return this.queryService.SPARQL_SELECT_TABLE(query);
     }
 
 
