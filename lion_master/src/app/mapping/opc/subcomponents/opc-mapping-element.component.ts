@@ -163,9 +163,10 @@ export class OpcMappingElementComponent {
 
 
 /**
- * Simple interface of a node. We dont know which properties are present,
- * but for this mapping component to work, there has to be a mappingId
+ * Simple interface of a node. These properties should be present...
  */
 export interface OpcNode {
-    mappingId: string;
+    browseName: string,
+    nodeId: string,
+    typeDefinition: string,
 }

@@ -1,9 +1,9 @@
 <ul class="node-list">
     <li class="mt-1">
         <div style="display: flex;">
-            <input type="checkbox" class="mr-2 node-input" id="{{_opcNode.mappingId}}" [(ngModel)]="checked"
+            <input type="checkbox" class="mr-2 node-input" id="{{_opcNode.nodeId}}" [(ngModel)]="checked"
                 (change)="selectNode()">
-            <label class="form-check-label" for="{{_opcNode.mappingId}}">
+            <label class="form-check-label" for="{{_opcNode.nodeId}}">
                 <div>
                     <p class="m-0" *ngFor="let key of propertyKeys">
                         <b>{{key}}:</b> {{_opcNode[key]}}
