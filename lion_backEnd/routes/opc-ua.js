@@ -4,6 +4,7 @@ const OpcUaClientCreator = require('../opcUa_util/opc-ua-client');
 const opcUaClient = require("node-opcua").OPCUAClient;
 const NodeCrawler = require("node-opcua").NodeCrawler;
 const OpcUaMappingCreator = require("../opcUa_util/opc-ua-mapper");
+const sparqlUpdate = require('../GRAPH_DB_REQUESTS/sparqlQueries.requests').SAPRQL_UPDATE;
 
 
 // crawl a server
@@ -26,12 +27,16 @@ router.post('/crawl-server', function (req, res) {
 });
 
 router.post('/mappings', function(req, res) {
-    const opcUAJson = req.body;
+    const dataToMap = req.body;
     
-    const opcUaMapper = new OpcUaMappingCreator(opcUAJson);
+    const opcUaMapper = new OpcUaMappingCreator(dataToMap);
     const mapping = opcUaMapper.createMapping();
-    
-    res.status(200).json(mapping);
+
+    sparqlUpdate(mapping, 'testdb').then(queryRes => {
+        res.status(200).json(queryRes);
+    }).catch(err => {
+        res.status(500).json(err);
+    })
 });
 
 module.exports = router;
