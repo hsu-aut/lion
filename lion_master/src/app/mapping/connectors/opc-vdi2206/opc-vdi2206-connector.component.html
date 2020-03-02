@@ -1,3 +1,23 @@
-<p>
-  opc-step-connector works!
-</p>
+<form action="submit" (ngSubmit)="createConnection()" [formGroup]="opcVdiConnectionForm">
+    <div class="form-row">
+        <div class="form-group col-sm">
+            <label>The System to connect to an OPC UA Server</label>
+            <select formControlName="selectedSystem" name="selectedSystem" class="form-control">
+                <option *ngFor='let system of systems' value="{{system}}">{{system}}</option>
+            </select>
+        </div>
+        <div class="form-group col-sm">
+            <label>Predicate of the connection</label>
+            <input formControlName="connectingObjectProperty" class="form-control" type="text" readonly>
+        </div>
+        <div class="form-group col-sm">
+            <label>The OPC UA Server</label>
+            <select formControlName="selectedOpcUaServer" class="form-control" name="opcUaServer" type="text"
+                placeholder="[OPC UA Server]">
+                <option *ngFor="let server of opcUaServers" value="{{server.serverIri}}">{{server.serverLabel}}
+                    ({{server.serverIri}})</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!opcVdiConnectionForm.valid">Create connection</button>
+</form>
