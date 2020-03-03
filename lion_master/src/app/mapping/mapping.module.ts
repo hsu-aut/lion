@@ -7,7 +7,6 @@ import { MappingRoutingModule } from './mapping-routing.module';
 // child components
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { OpcComponent } from './opc/opc.component';
-import { R2rmlComponent } from './r2rml/r2rml.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OpcMappingElementComponent } from './opc/subcomponents/opc-mapping-element.component';
@@ -19,6 +18,7 @@ import { FpbStepComponent } from './connectors/fpb-step/fpb-step.component';
 
 // util modules
 import { UploadModule } from '../shared/modules/upload/upload.module';
+import { TableModule } from '../shared/modules/table/table.module';
 
 
 @NgModule({
@@ -27,21 +27,20 @@ import { UploadModule } from '../shared/modules/upload/upload.module';
     MappingRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    UploadModule
+    UploadModule,
+    TableModule
   ],
   declarations: [
     MappingComponent,
     SidebarComponent,
     OpcComponent,
     OpcMappingElementComponent,
-    R2rmlComponent
-  ],
-  providers: [
-    OpcMappingService,
-    R2rmlComponent,
     StepComponent,
     FpbComponent,
     FpbStepComponent
+  ],
+  providers: [
+    OpcMappingService
   ]
 })
 export class MappingModule { }
