@@ -1,0 +1,22 @@
+<form action="submit" (ngSubmit)="createConnection()" [formGroup]="opc61360ConnectionForm">
+    <div class="form-row">
+        <div class="form-group col-sm">
+            <label>The DataElement to connect to an OPC UA Server</label>
+            <select formControlName="selectedDataElement" name="selectedDataElement" class="form-control">
+                <option *ngFor='let dE of dataElements' value="{{dE}}">{{dE}}</option>
+            </select>
+        </div>
+        <div class="form-group col-sm">
+            <label>Predicate of the connection</label>
+            <input formControlName="connectingObjectProperty" class="form-control" type="text" readonly>
+        </div>
+        <div class="form-group col-sm">
+            <label>The OPC UA Node</label>
+            <select formControlName="selectedOpcUaNode" class="form-control" name="opcUaNode" type="text">
+                <option *ngFor="let node of opcUaNodes" value="{{node.nodeIri}}">{{node.nodeLabel}}
+                    ({{node.nodeIri}})</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!opc61360ConnectionForm.valid">Create connection</button>
+</form>
