@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var queries = require('./routes/queries');
 var graphs = require('./routes/graphs');
 var eclassSearch = require('./routes/eclass-search');
+const opcUaRouter = require('./routes/opc-ua');
 var REPOS = require('./routes/repositories');
 var stepMapping = require('./routes/step');
 var fpbMapping = require('./routes/fpb');
@@ -20,7 +21,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json({limit:'2mb'}));
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.text());
 app.use(cookieParser());
@@ -31,6 +32,7 @@ app.use('/lion_BE/eclassSearch', eclassSearch);
 app.use('/lion_BE/repositories', REPOS);
 app.use('/lion_BE/graphs', graphs);
 app.use('/lion_BE/queries', queries);
+app.use('/lion_BE/opc-ua', opcUaRouter);
 app.use('/lion_BE/step', stepMapping);
 app.use('/lion_BE/fpb', fpbMapping);
 

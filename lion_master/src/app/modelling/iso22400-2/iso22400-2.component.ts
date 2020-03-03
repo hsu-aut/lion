@@ -51,7 +51,7 @@ export class Iso22400_2Component implements OnInit {
     kpiClass: [undefined, Validators.required],
     entity: [undefined, [Validators.required, Validators.pattern('([a-zA-Z0-9//:]){1,}')]],
     entityClass: [undefined, Validators.required],
-    kpiPeriod: [undefined, [Validators.required, Validators.pattern('[1-9][0-9]{3}-.+T[^.]+(Z|[+-].+)')]],
+    kpiPeriod: [undefined, Validators.required],
     value: [undefined, Validators.required],
     unitOfMeasure: [undefined, Validators.required],
     timing: [undefined, Validators.required],
@@ -107,6 +107,7 @@ export class Iso22400_2Component implements OnInit {
   }
 
   loadTimingConstraint(KPI_Class) {
+    console.log(KPI_Class)
     if (KPI_Class) {
       let ConstraingDataProperty = "http://www.hsu-ifa.de/ontologies/ISO22400-2#Timing"
       this.isoService.loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstraingDataProperty).pipe(take(1)).subscribe((data: any) => {

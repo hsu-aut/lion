@@ -32,7 +32,7 @@ export class GraphOperationsService {
   ) {
     // initially set all named graphs from graphdb
     this.setNamedGraphs();
-   }
+  }
 
   private getGraphURL() {
     return this.config.getHost() + '/graphs';
@@ -73,19 +73,19 @@ export class GraphOperationsService {
   /* GRAPH OPERATIONS */
 
   setNamedGraphs() {
-    let GRAPHS = this.getGraphs();
-    let activeGraph = GRAPHS[this.getActiveGraph()]
+    let defaultGraph = new DefaultGraph();
+    this.GRAPHS = defaultGraph.GRAPHS
     var selectString = `
       SELECT DISTINCT ?g 
       WHERE {
       GRAPH ?g { ?s ?p ?o }
       }`;
-    this.GRAPHS.splice(0)
     this.query.SPARQL_SELECT_LIST(selectString, 0).subscribe((data: any) => {
       for (let i = 0; i < data.length; i++) {
-        this.GRAPHS.push(data[i]);
+        if (data[i].startsWith('http')) {
+          this.GRAPHS.push(data[i]);
+        }
       }
-      if (this.GRAPHS.length == 0) { this.GRAPHS.push(activeGraph) }
     });
   }
 

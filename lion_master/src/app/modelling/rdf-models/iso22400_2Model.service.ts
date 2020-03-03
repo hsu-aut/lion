@@ -117,7 +117,9 @@ export class Iso22400_2ModelService {
   public loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string) {
     this.loadingScreenService.startLoading();
     KPI_Class = this.nameService.parseToIRI(KPI_Class);
+    console.log(KPI_Class)
     ConstrainingDataProperty = this.nameService.parseToIRI(ConstrainingDataProperty);
+    console.log(ConstrainingDataProperty)
     return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
   }
   public loadTABLE_ELEMENTS(){
@@ -344,12 +346,19 @@ export class ISO22400_2DATA {
         <${KPI_Class}> rdfs:subClassOf ?OnPropertyBlankNode.
         ?OnPropertyBlankNode owl:onProperty <${ConstrainingDataProperty}>.
         <${ConstrainingDataProperty}> a owl:DatatypeProperty.
-        ?OnPropertyBlankNode ?anyOwl ?someValuesFromBlankNode.
-        ?someValuesFromBlankNode owl:unionOf ?unionBlankNode.
-        ?unionBlankNode rdf:rest* ?restBlankNode.
-        ?restBlankNode rdf:first ?firstBlankNode.
-        ?firstBlankNode owl:oneOf ?oneOfBlankNode.
-        ?oneOfBlankNode rdf:first ?ConstraintEnum.
+        OPTIONAL {
+          ?OnPropertyBlankNode ?anyOwl ?someValuesFromBlankNode.
+          ?someValuesFromBlankNode owl:oneOf ?oneOfBlankNode.
+          ?oneOfBlankNode rdf:first ?ConstraintEnum.
+        }
+        OPTIONAL {
+          ?OnPropertyBlankNode ?anyOwl ?someValuesFromBlankNode.
+          ?someValuesFromBlankNode owl:unionOf ?unionBlankNode.
+          ?unionBlankNode rdf:rest* ?restBlankNode.
+          ?restBlankNode rdf:first ?firstBlankNode.
+          ?firstBlankNode owl:oneOf ?oneOfBlankNode.
+          ?oneOfBlankNode rdf:first ?ConstraintEnum.
+        }
     }`
     return selectString
   }
