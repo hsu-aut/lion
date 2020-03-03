@@ -19,4 +19,15 @@ export class OpcService {
     }
 
 
+    loadAllOpcUaNodes() {
+        const query = `PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+        SELECT ?nodeIri ?nodeLabel WHERE {
+            ?nodeIri a OpcUa:UANode;
+            rdf:label ?nodeLabel.
+        }`;
+
+        return this.queryService.SPARQL_SELECT_TABLE(query);
+    }
+
+
 }
