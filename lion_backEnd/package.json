@@ -6,7 +6,9 @@
     "start": "node ./bin/lion_BE"
   },
   "nodemonConfig": {
-    "ignore": ["./temp"],
+    "ignore": [
+      "./temp"
+    ],
     "delay": "1000"
   },
   "dependencies": {
