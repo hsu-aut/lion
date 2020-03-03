@@ -133,6 +133,7 @@ export class RepositoryComponent implements OnInit {
       this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
       this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
       this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
+      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "OPCUA"),
 
     ).pipe(
       finalize(() => this.refreshServices()) // Execute when the observable completes

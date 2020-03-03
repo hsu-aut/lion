@@ -1,0 +1,51 @@
+.settingsContainer {
+    vertical-align: middle;
+}
+
+.settingsContainer div {
+    display: inline;
+}
+
+.settingsContainer label {
+    vertical-align: middle;
+    margin: 0;
+}
+
+.settingsContainer input {
+    vertical-align: middle;
+}
+
+.node-list {
+    list-style: none;
+    padding-left:30px;
+}
+
+.node-list li {
+    display: list-item;
+}
+
+.node-list li input {
+    margin-top: 25px;
+}
+
+.node-list li label {
+    margin-left: 15px;
+}
+
+#mappingContainer {
+    height:500px;
+    border:1px solid #ced4da;
+    border-radius: 0.25rem;
+    overflow: scroll;
+}
+
+.node-container {
+    display: flex;
+}
+
+.childKeys {
+    position: relative;
+    left: 2.25em;
+    margin-bottom: 0px;
+}
+

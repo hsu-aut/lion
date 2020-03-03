@@ -23,9 +23,10 @@
     "morgan": "~1.9.0",
     "mysql": "^2.16.0",
     "pug": "2.0.0-beta11",
+    "xml2js": "^0.4.19",
+    "node-opcua": "2.5.0-alpha.6",
     "step-to-json": "^1.0.12",
-    "uuid": "^3.4.0",
-    "xml2js": "^0.4.19"
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.1"

@@ -1,0 +1,32 @@
+<ul class="node-list">
+    <li class="mt-1">
+        <div style="display: flex;">
+            <input type="checkbox" class="mr-2 node-input" id="{{_opcNode.nodeId}}" [(ngModel)]="checked"
+                (change)="selectNode()">
+            <label class="form-check-label" for="{{_opcNode.nodeId}}">
+                <div>
+                    <p class="m-0" *ngFor="let key of propertyKeys">
+                        <b>{{key}}:</b> {{_opcNode[key]}}
+                    </p>
+                </div>
+            </label>
+        </div>
+
+        <ng-container *ngFor="let key of arrayKeys">
+            <p class="childKeys">
+                <b>{{key}} :</b>
+                <span (click)="toggleChild(key)" class="ml-3">
+                    <i [ngClass]="childShown(key) ? 'fas fa-minus-square': 'fas fa-plus-square'"></i>
+                </span>
+            </p>
+            <ng-container *ngIf="childShown(key)">
+
+                <ng-container *ngFor="let childArrayElement of _opcNode[key]">
+                    <opc-mapping-element *ngIf="childArrayElement" [opcNode]="childArrayElement"
+                        [includeChildren]="includeChildren" [selected]="selectChildren">
+                    </opc-mapping-element>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </li>
+</ul>
