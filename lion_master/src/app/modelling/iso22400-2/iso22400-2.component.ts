@@ -39,10 +39,12 @@ export class Iso22400_2Component implements OnInit {
     elementClass: [undefined, Validators.required],
     entity: [undefined, [Validators.required, Validators.pattern('([a-zA-Z0-9//:]){1,}')]],
     entityClass: [undefined, Validators.required],
-    elementPeriod: [undefined, [Validators.required, Validators.pattern('[1-9][0-9]{3}-.+T[^.]+(Z|[+-].+)')]],
+    // elementPeriod: [undefined, [Validators.required, Validators.pattern('[1-9][0-9]{3}-.+T[^.]+(Z|[+-].+)')]],
+    elementPeriod: [undefined, Validators.required],
     value: [undefined],
     unitOfMeasure: [undefined],
-    duration: [undefined, Validators.pattern('^(-?)P(?=.)(([0-9]*)Y)?(([0-9]+)M)?(([0-9]*)D)?(T(?=[0-9])([0-9]+H)?(([0-9]+)M)?(([0-9]+(?:\.[0-9]+))S)?)?$')],
+    // duration: [undefined, Validators.pattern('^(-?)P(?=.)(([0-9]*)Y)?(([0-9]+)M)?(([0-9]*)D)?(T(?=[0-9])([0-9]+H)?(([0-9]+)M)?(([0-9]+(?:\.[0-9]+))S)?)?$')],
+    duration: [undefined],
   })
   KPIForm = this.fb.group({
     kpiGroup: [undefined, Validators.required],

@@ -1,15 +1,43 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
   <div class="list-group">
+    <a [routerLink]="['fpb']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+      <i class="fas fa-anchor"></i>&nbsp;
+      <span> FPD </span>
+    </a>
+    <a [routerLink]="['step']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+      <i class="fas fa-sitemap"></i>&nbsp;
+      <span> STEP </span>
+    </a>
     <a [routerLink]="['opc']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-        <i class="fas fa-tachometer-alt"></i>&nbsp;
+      <i class="fas fa-tachometer-alt"></i>&nbsp;
       <span> OPC UA </span>
     </a>
     <a [routerLink]="['r2rml']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-        <i class="fas fa-box-open"></i>&nbsp;
+      <i class="fas fa-box-open"></i>&nbsp;
       <span> R2RML </span>
     </a>
   </div>
+  <div class="nested-menu">
+    <a class="list-group-item" (click)="addExpandClass('pages')">
+      <i class="fas fa-link"></i>&nbsp;
+      <span>Connectors</span>
+    </a>
+    <li class="nested" [class.expand]="showMenu === 'pages'">
+      <ul class="submenu">
+        <li>
+          <a class="list-group-item" [routerLink]="['fpb-step']" [routerLinkActive]="['router-link-active']">
+            <span>FPD - STEP</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)">
+            <span>OPC UA ISO 61360</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </div>
   <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
-      <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+    <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
   </div>
 </nav>

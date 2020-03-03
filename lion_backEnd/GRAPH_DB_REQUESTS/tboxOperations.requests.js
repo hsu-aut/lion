@@ -1,5 +1,5 @@
 const client = require('axios');
-var log = require('./GDB_LOG')
+var log = require('./GDB_LOG');
 
 
 exports.insertTBOX = function (pattern, repositoryName) {

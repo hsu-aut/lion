@@ -22,6 +22,7 @@ export class OpcComponent {
         'PubSub_Aes128_CTR', 'PubSub_Aes256_CTR', 'Basic128Rsa15', 'Basic256'];
     messageSecurityModes = ['None', 'Sign', 'SignAndEncrypt']
 
+
     serverInfoForm = this.fb.group({
         endpointUrl: this.fb.control('', Validators.pattern(/\w.+:(\/?\/?)[^\s]+:[0-9]{2,6}((\/)[\w-]*)*/)),
         securityPolicy: this.fb.control('', Validators.required),

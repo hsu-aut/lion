@@ -11,6 +11,8 @@ var graphs = require('./routes/graphs');
 var eclassSearch = require('./routes/eclass-search');
 const opcUaRouter = require('./routes/opc-ua');
 var REPOS = require('./routes/repositories');
+var stepMapping = require('./routes/step');
+var fpbMapping = require('./routes/fpb');
 
 var app = express();
 
@@ -31,6 +33,8 @@ app.use('/lion_BE/repositories', REPOS);
 app.use('/lion_BE/graphs', graphs);
 app.use('/lion_BE/queries', queries);
 app.use('/lion_BE/opc-ua', opcUaRouter);
+app.use('/lion_BE/step', stepMapping);
+app.use('/lion_BE/fpb', fpbMapping);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
