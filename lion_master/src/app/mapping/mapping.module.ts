@@ -20,6 +20,7 @@ import { FpbStepComponent } from './connectors/fpb-step/fpb-step.component';
 import { UploadModule } from '../shared/modules/upload/upload.module';
 import { TableModule } from '../shared/modules/table/table.module';
 import { OpcVDI2206ConnectorComponent } from './connectors/opc-vdi2206/opc-vdi2206-connector.component';
+import { Opc61360ConnectorComponent } from './connectors/opc-61360/opc-61360-connector.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { OpcVDI2206ConnectorComponent } from './connectors/opc-vdi2206/opc-vdi22
     StepComponent,
     FpbComponent,
     FpbStepComponent,
-    OpcVDI2206ConnectorComponent
+    OpcVDI2206ConnectorComponent,
+    Opc61360ConnectorComponent,
   ],
   providers: [
     OpcMappingService
