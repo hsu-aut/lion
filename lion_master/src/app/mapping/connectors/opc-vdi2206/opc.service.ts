@@ -46,26 +46,26 @@ export class OpcService {
                 PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
                 INSERT DATA {
                     GRAPH <${activeGraph}> {
-                        ${this.prefixService.parseToIRI(instanceDescription)} DINEN61360:hasOntologicalValue <${opcVariable}>.
+                        <${this.prefixService.parseToIRI(instanceDescription)}> DINEN61360:hasOntologicalValue <${opcVariable}>.
                     }
             }`;
         return this.queryService.SPARQL_UPDATE(query);
     }
 
     loadVariableAnd61360Connections() {
-        const query = `PREFIX lf: <http://lionFacts#>
+        const query = `
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
         PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
-        SELECT ?instanceDescription ?instanceDescriptionLabel ?opcVariable ?opcVariableLabel{
-            ?instanceDescription rdf:type DINEN61360:InstanceDescription;
-                DINEN61360:hasOntologicalValue ?opcVariable;
-            OPTIONAL {
-                ?instanceDescription rdf:label ?instanceDescriptionLabel.
-            }
-            OPTIONAL {
-                ?opcVariable rdf:label ?opcVariableLabel;
-            }
-        }`;
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+        SELECT ?instanceDescription ?instanceDescriptionLabel ?opcVariable ?opcVariableLabel
+        WHERE {
+            ?instanceDescription rdf:type DINEN61360:Instance_Description;
+	        DINEN61360:hasOntologicalValue ?opcVariable;
+                OPTIONAL {?instanceDescription rdfs:label ?instanceDescriptionLabel;}
+                OPTIONAL {?opcVariable rdfs:label ?opcVariableLabel.}
+            }`;
         return this.queryService.SPARQL_SELECT_TABLE(query);
     }
 
