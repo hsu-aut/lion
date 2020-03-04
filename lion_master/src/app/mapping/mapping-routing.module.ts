@@ -14,7 +14,7 @@ const routes: Routes = [
         path: '',
         component: MappingComponent,
         children: [
-            { path: '', redirectTo: 'opc', pathMatch: 'prefix' },
+            { path: '', redirectTo: 'fpb', pathMatch: 'prefix' },
             { path: 'opc', component: OpcComponent },
             { path: 'step', component: StepComponent },
             { path: 'fpb', component: FpbComponent },
