@@ -34,21 +34,10 @@ export class Opc61360ConnectorComponent implements OnInit {
     })
 
 
-    opcUaNodes: [{}];
-    dataElements: [];
-    connectingObjectProperty = 'DINEN61360:hasOntologicalValue';
-    opc61360ConnectionForm = this.fb.group({
-        selectedDataElement: this.fb.control('', Validators.required),
-        connectingObjectProperty: this.fb.control({ value: this.connectingObjectProperty, disabled: true }, Validators.required),
-        selectedOpcUaNode: this.fb.control('', Validators.required)
-    })
-
-
     constructor(
         private opcService: OpcService,
         private dinEn61360Service: Dinen61360Service,
         private loadingScreenService: DataLoaderService,
-        private queryService: QueriesService,
         private messageService: MessagesService,
         private fb: FormBuilder) { }
 
@@ -64,19 +53,31 @@ export class Opc61360ConnectorComponent implements OnInit {
             this.opcUaTable = nodes;
         });
 
-        this.opcService.loadVariableAnd61360Connections().pipe(take(1)).subscribe((data: []) => {
-            this.overviewTable = data;
-        })
+        this.loadExistingConnections();
     }
 
+    /**
+     * Gets called whenever a user clicks on the instance description table
+     * @param row Row inside the table
+     */
     iDTableClick(row) {
         this.newIndividualForm.controls['subject'].setValue(row.instance);
     }
 
+
+    /**
+     * Gets called whenever a user clicks on the opcUa table
+     * @param row Row inside the table
+     */
     opcUaTableClick(row) {
         this.newIndividualForm.controls['object'].setValue(row.nodeIri);
     }
 
+
+    /**
+     * Modifies a tripel according to the selections the user made
+     * @param action //TODO: Currently not used...
+     */
     modifyTripel(action: string) {
         const form = this.newIndividualForm;
         if (form.valid) {
@@ -86,10 +87,23 @@ export class Opc61360ConnectorComponent implements OnInit {
 
             this.opcService.createOpcDin61360Connection(instanceDescription, opcNode).pipe(take(1)).subscribe(data => {
                 this.loadingScreenService.stopLoading();
+
+                // After adding, refresh existing connections
+                this.loadExistingConnections();
             })
 
         } else if (form.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
         }
+    }
+
+
+    /**
+     * Loads existing connections between DIN EN 61360 Instance Descriptions and OPC UA
+     */
+    loadExistingConnections() {
+        this.opcService.loadVariableAnd61360Connections().pipe(take(1)).subscribe((data: []) => {
+            this.overviewTable = data;
+        })
     }
 }

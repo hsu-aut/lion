@@ -15,41 +15,28 @@ import { MessagesService } from 'src/app/shared/services/messages.service';
 })
 export class OpcVDI2206ConnectorComponent implements OnInit {
 
-      // table var
-      systemModuleTable = [{}];
-      systemModuleTableSubTitle: string = "VDI 2206 Systems and Components";
-      filterOption: boolean = true;
+    // table var
+    systemModuleTable = [{}];
+    systemModuleTableSubTitle: string = "VDI 2206 Systems and Components";
+    filterOption: boolean = true;
 
-      opcUaServerTable = [];
-      opcUaServerSubtitle: string = "OPC UA Servers";
+    opcUaServerTable = [];
+    opcUaServerSubtitle: string = "OPC UA Servers";
 
-      overviewSubTitle: string = "Connected individuals";
-      overviewTable = [];
+    overviewSubTitle: string = "Connected individuals";
+    overviewTable = [];
 
-      // connection form
-      newIndividualForm = this.fb.group({
-          subject: [undefined, Validators.required],
-          predicate: ['OpcUa:hasOpcUaServer'],
-          object: [undefined, Validators.required],
-      })
-
-
-
-    // opcUaServers: [{}];
-    // systems: [];
-    // connectingObjectProperty = 'OpcUa:SystemHasOpcUaServer';
-    // opcVdiConnectionForm = this.fb.group({
-    //     selectedSystem: this.fb.control('', Validators.required),
-    //     connectingObjectProperty: this.fb.control({ value: this.connectingObjectProperty, disabled: true }, Validators.required),
-    //     selectedOpcUaServer: this.fb.control('', Validators.required)
-    // })
-
+    // connection form
+    newIndividualForm = this.fb.group({
+        subject: [undefined, Validators.required],
+        predicate: ['OpcUa:hasOpcUaServer'],
+        object: [undefined, Validators.required],
+    })
 
     constructor(
         private opcService: OpcService,
         private vdi2206Service: Vdi2206ModelService,
         private loadingScreenService: DataLoaderService,
-        private queryService: QueriesService,
         private messageService: MessagesService,
         private fb: FormBuilder) { }
 
@@ -64,7 +51,8 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
             const mappedModulesAndSystems = modulesAndSystems.map(systemOrModule => {
                 return {
                     'systemOrModule': systemOrModule
-            }});
+                }
+            });
             this.systemModuleTable = mappedModulesAndSystems;
             this.loadingScreenService.stopLoading();
         })
@@ -75,21 +63,32 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
             this.opcUaServerTable = servers;
         });
 
-        this.opcService.loadServerAndVdi2206Connections().pipe(take(1)).subscribe((data: []) => {
-            this.overviewTable = data;
-        })
+        this.loadExistingConnections();
     }
 
 
+    /**
+     * Gets called whenever a user clicks on the vdi 2206 system or module table
+     * @param row Row inside the table
+     */
     systemModuleTableClick(row) {
         this.newIndividualForm.controls['subject'].setValue(row.systemOrModule);
     }
 
+
+    /**
+     * Gets called whenever a user clicks on the opcUa server table
+     * @param row Row inside the table
+     */
     opcUaServerTableClick(row) {
         this.newIndividualForm.controls['object'].setValue(row.serverIri);
     }
 
 
+    /**
+     * Modifies a tripel according to the selections the user made
+     * @param action //TODO: Currently not used...
+     */
     modifyTripel(action: string) {
         const form = this.newIndividualForm;
         if (form.valid) {
@@ -107,21 +106,12 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
     }
 
     /**
-     * Creates a connection between a VDI 2206 System and an OPC UA Server
+     * Loads existing connections between VDI 2206 systems or modules and OPC UA servers
      */
-    createConnection() {
-        // const formValues = this.opcVdiConnectionForm.getRawValue();
-
-        // const query = `PREFIX lf: <http://lionFacts#>
-        //     PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        //     PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-        //     INSERT DATA {
-        //         ${formValues.selectedSystem} ${formValues.connectingObjectProperty} <${formValues.selectedOpcUaServer}>.
-        // }`
-
-        // this.queryService.SPARQL_UPDATE(query).pipe(take(1)).subscribe(res => {
-        //     this.loadingScreenService.stopLoading();
-        // });
+    loadExistingConnections() {
+        this.opcService.loadServerAndVdi2206Connections().pipe(take(1)).subscribe((data: []) => {
+            this.overviewTable = data;
+        })
     }
 
 }
