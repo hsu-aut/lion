@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueriesService } from 'src/app/shared/services/backEnd/queries.service';
 import { take } from 'rxjs/operators';
 import { PrefixesService } from 'src/app/shared/services/prefixes.service';
+import { GraphOperationsService } from 'src/app/shared/services/backEnd/graphOperations.service';
 
 @Injectable({
     providedIn: 'root'
@@ -9,6 +10,7 @@ import { PrefixesService } from 'src/app/shared/services/prefixes.service';
 export class OpcService {
 
     constructor(private queryService: QueriesService,
+        private graphService: GraphOperationsService,
         private prefixService: PrefixesService) { }
 
     loadAllOpcUaServers() {
@@ -34,12 +36,17 @@ export class OpcService {
 
 
     createOpcDin61360Connection(instanceDescription: string, opcVariable: string) {
+        const graphs = this.graphService.getGraphs();
+        const graphIndex = this.graphService.getActiveGraph();
+        const activeGraph = graphs[graphIndex];
         const query = `PREFIX lf: <http://lionFacts#>
                 PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
                 PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
                 INSERT DATA {
-                    DINEN61360:${instanceDescription} DINEN61360:hasOntologicalValue <${opcVariable}>.
-            }`
+                    GRAPH <${activeGraph}> {
+                        ${this.prefixService.parseToIRI(instanceDescription)} DINEN61360:hasOntologicalValue <${opcVariable}>.
+                    }
+            }`;
 
         return this.queryService.SPARQL_UPDATE(query);
     }
@@ -56,11 +63,16 @@ export class OpcService {
 
 
     createOpcVdi2206Connection(systemOrModule: string, opcUaServer: string) {
+        const graphs = this.graphService.getGraphs();
+        const graphIndex = this.graphService.getActiveGraph();
+        const activeGraph = graphs[graphIndex];
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
         PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
         INSERT DATA {
-            <${this.prefixService.addOrParseNamespace(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
+            GRAPH <${activeGraph}> {
+                <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
+            }
         }`
 
         console.log(query);
