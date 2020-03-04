@@ -6,6 +6,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { QueriesService } from 'src/app/shared/services/backEnd/queries.service';
 import { OpcService } from '../opc-vdi2206/opc.service';
 import { Dinen61360Service } from 'src/app/modelling/rdf-models/dinen61360Model.service';
+import { MessagesService } from 'src/app/shared/services/messages.service';
 
 @Component({
     selector: 'opc-61360-connector',
@@ -14,13 +15,22 @@ import { Dinen61360Service } from 'src/app/modelling/rdf-models/dinen61360Model.
 })
 export class Opc61360ConnectorComponent implements OnInit {
 
-    opcUaNodes: [{}];
-    dataElements: [];
-    connectingObjectProperty = 'DINEN61360:hasOntologicalValue';
-    opc61360ConnectionForm = this.fb.group({
-        selectedDataElement: this.fb.control('', Validators.required),
-        connectingObjectProperty: this.fb.control({ value: this.connectingObjectProperty, disabled: true }, Validators.required),
-        selectedOpcUaNode: this.fb.control('', Validators.required)
+    // table var
+    instanceDescriptionTable = [{}];
+    instanceDescriptionSubTitle: string = "DIN EN 61360 Instance Descriptions";
+    filterOption: boolean = true;
+
+    opcUaTable = [];
+    opcUaSubtitle: string = "OPC UA Variables";
+
+    overviewSubTitle: string = "Connected individuals";
+    overviewTable = [];
+
+    // connection form
+    newIndividualForm = this.fb.group({
+        subject: [undefined, Validators.required],
+        predicate: ['DINEN61360:hasOntologicalValue'],
+        object: [undefined, Validators.required],
     })
 
 
@@ -28,42 +38,72 @@ export class Opc61360ConnectorComponent implements OnInit {
         private opcService: OpcService,
         private dinEn61360Service: Dinen61360Service,
         private loadingScreenService: DataLoaderService,
-        private queryService: QueriesService,
+        private messageService: MessagesService,
         private fb: FormBuilder) { }
 
 
     ngOnInit() {
-        // Load all opc servers and dataElements
-        this.dinEn61360Service.loadLIST_All_DET().pipe(take(1)).subscribe((dataElements: []) => {
+        this.dinEn61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: []) => {
+            this.instanceDescriptionTable = data;
             this.loadingScreenService.stopLoading();
-            console.log("data elements");
-            console.log(dataElements);
+        })
 
-            this.dataElements = dataElements;
-        });
+        // TODO: Should only load UAVariables -> Are currently not automatically created because of bug in node opcua
         this.opcService.loadAllOpcUaNodes().pipe(take(1)).subscribe((nodes: [{}]) => {
-            this.opcUaNodes = nodes;
+            this.opcUaTable = nodes;
         });
+
+        this.loadExistingConnections();
+    }
+
+    /**
+     * Gets called whenever a user clicks on the instance description table
+     * @param row Row inside the table
+     */
+    iDTableClick(row) {
+        this.newIndividualForm.controls['subject'].setValue(row.instance);
     }
 
 
     /**
-     * Creates a connection between a DIN EN 61360 DataElement and an OPC UA Node
+     * Gets called whenever a user clicks on the opcUa table
+     * @param row Row inside the table
      */
-    createConnection() {
-        const formValues = this.opc61360ConnectionForm.getRawValue();
-
-        const query = `PREFIX lf: <http://lionFacts#>
-            PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-            PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-            INSERT DATA {
-                ${formValues.selectedSystem} ${formValues.connectingObjectProperty} <${formValues.selectedOpcUaServer}>.
-        }`
-        console.log(query);
-
-        this.queryService.SPARQL_UPDATE(query).pipe(take(1)).subscribe(res => {
-            this.loadingScreenService.stopLoading();
-        });
+    opcUaTableClick(row) {
+        this.newIndividualForm.controls['object'].setValue(row.nodeIri);
     }
 
+
+    /**
+     * Modifies a tripel according to the selections the user made
+     * @param action //TODO: Currently not used...
+     */
+    modifyTripel(action: string) {
+        const form = this.newIndividualForm;
+        if (form.valid) {
+
+            const instanceDescription = form.controls['subject'].value;
+            const opcNode = form.controls['object'].value;
+
+            this.opcService.createOpcDin61360Connection(instanceDescription, opcNode).pipe(take(1)).subscribe(data => {
+                this.loadingScreenService.stopLoading();
+
+                // After adding, refresh existing connections
+                this.loadExistingConnections();
+            })
+
+        } else if (form.invalid) {
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+        }
+    }
+
+
+    /**
+     * Loads existing connections between DIN EN 61360 Instance Descriptions and OPC UA
+     */
+    loadExistingConnections() {
+        this.opcService.loadVariableAnd61360Connections().pipe(take(1)).subscribe((data: []) => {
+            this.overviewTable = data;
+        })
+    }
 }

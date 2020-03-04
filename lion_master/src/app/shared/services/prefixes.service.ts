@@ -172,12 +172,13 @@ export class DefaultNamespaces {
       { prefix: "DE6:", namespace: "http://www.hsu-ifa.de/ontologies/DINEN61360#" },
       { prefix: "ISA88:", namespace: "http://www.hsu-ifa.de/ontologies/ISA-TR88#" },
       { prefix: "wadl:", namespace: "http://www.hsu-ifa.de/ontologies/WADL#"},
+      { prefix: "OpcUa:", namespace: "http://www.hsu-ifa.de/ontologies/OpcUa#"},
       { prefix: "iso:", namespace: "http://www.hsu-ifa.de/ontologies/ISO22400-2#"},
       { prefix: "rdf:", namespace: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
       { prefix: "rdfs:", namespace: "http://www.w3.org/2000/01/rdf-schema#" },
       { prefix: "owl:", namespace: "http://www.w3.org/2002/07/owl#" },
       { prefix: "lf:", namespace: "http://lionFacts#" }
-  ] 
+  ]
 
   public activeNamespace: number = this.PREFIXES.length - 1;
 
