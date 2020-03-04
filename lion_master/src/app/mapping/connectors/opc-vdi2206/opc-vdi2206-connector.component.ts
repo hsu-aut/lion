@@ -43,20 +43,10 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
 
     ngOnInit() {
         // Load all opc servers and systems
-        const $systems = this.vdi2206Service.loadLIST_OF_SYSTEMS();
-        const $modules = this.vdi2206Service.loadLIST_OF_MODULES();
-
-        combineLatest($systems, $modules).pipe(take(1)).subscribe(([systems, modules]) => {
-            const modulesAndSystems = systems.concat(modules);
-            const mappedModulesAndSystems = modulesAndSystems.map(systemOrModule => {
-                return {
-                    'systemOrModule': systemOrModule
-                }
-            });
-            this.systemModuleTable = mappedModulesAndSystems;
+        this.vdi2206Service.loadTABLE_OF_SYSTEMS_AND_MODULES().pipe(take(1)).subscribe(data => {
+            this.systemModuleTable = data;
             this.loadingScreenService.stopLoading();
         })
-
 
         this.opcService.loadAllOpcUaServers().pipe(take(1)).subscribe((servers: [{}]) => {
             this.loadingScreenService.stopLoading();
@@ -81,7 +71,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
      * @param row Row inside the table
      */
     opcUaServerTableClick(row) {
-        this.newIndividualForm.controls['object'].setValue(row.serverIri);
+        this.newIndividualForm.controls['object'].setValue(row.opcUaServer);
     }
 
 
@@ -98,6 +88,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
 
             this.opcService.createOpcVdi2206Connection(systemOrModule, opcUaServer).pipe(take(1)).subscribe(data => {
                 this.loadingScreenService.stopLoading();
+                this.loadExistingConnections();
             })
 
         } else if (form.invalid) {

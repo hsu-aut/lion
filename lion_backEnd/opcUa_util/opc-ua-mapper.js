@@ -33,7 +33,7 @@ module.exports = class OpcUaMappingCreator {
             // create an individual for this node:
             const individualIri = `<urn:uuid:${node.uuid}>`;
             queryString += `${individualIri} rdf:type ${this.opcPrefix}:${this.getNodeType(node.nodeClass)};
-            rdf:label '${node['browseName']}'.\n
+            rdfs:label '${node['browseName']}'.\n
             ${nodeSetId} ${this.opcPrefix}:containsNode ${individualIri}.`;
 
             keys.forEach(key => {
@@ -105,14 +105,14 @@ module.exports = class OpcUaMappingCreator {
     createServerAndNodeSetDescription(nodeSetId) {
         const serverId = `<urn:uuid:${uuid()}>`;
         let queryString = `${serverId} rdf:type ${this.opcPrefix}:UAServer;
-            rdf:label 'OPC-UA-Server_${this.serverInfo.endpointUrl}';
+            rdfs:label 'OPC-UA-Server_${this.serverInfo.endpointUrl}';
             ${this.opcPrefix}:hasMessageSecurityMode ${this.opcPrefix}:MessageSecurityMode_${this.serverInfo.messageSecurityMode};
             ${this.opcPrefix}:hasSecurityPolicy ${this.opcPrefix}:SecurityPolicy_${this.serverInfo.securityPolicy};
             ${this.opcPrefix}:requiresUserName '${this.serverInfo.username}';
             ${this.opcPrefix}:requiresPassword '${this.serverInfo.password}'.
             
         ${nodeSetId} rdf:type ${this.opcPrefix}:UANodeSet;
-            rdf:label 'OPC-UA-Server_${this.serverInfo.endpointUrl}_NodeSet'.
+            rdfs:label 'OPC-UA-Server_${this.serverInfo.endpointUrl}_NodeSet'.
         ${serverId} ${this.opcPrefix}:hasNodeSet ${nodeSetId}.`
         
         return queryString;
