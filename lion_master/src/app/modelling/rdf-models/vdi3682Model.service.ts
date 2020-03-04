@@ -231,17 +231,30 @@ SELECT ?IoPoE WHERE {
   VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
 }
 `
-
   public SELECT_TABLE_OF_PROCESS_INFO = `
-PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+  PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
-SELECT ?Process ?Input ?InputType ?Output ?OutputType ?TechnicalResource WHERE { 
-?Process a VDI3682:Process.
-  OPTIONAL {?Process VDI3682:hasInput ?Input. ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-  OPTIONAL {?Process VDI3682:hasOutput ?Output. ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-  OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process.}
-}
+  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE { 
+  ?Process a VDI3682:Process.
+  OPTIONAL { ?Process VDI3682:shortName ?pShortName}
+  
+  OPTIONAL {?Process VDI3682:hasInput ?Input. OPTIONAL {?Input VDI3682:shortName ?iShortName.} ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+  OPTIONAL {?Process VDI3682:hasOutput ?Output. OPTIONAL {?Output VDI3682:shortName ?oShortName.} ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+  OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process. OPTIONAL {?TechnicalResource VDI3682:shortName ?tShortName.}}
+  }
 `
+
+//   public SELECT_TABLE_OF_PROCESS_INFO = `
+// PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+
+// SELECT ?Process ?Input ?InputType ?Output ?OutputType ?TechnicalResource WHERE { 
+// ?Process a VDI3682:Process.
+//   OPTIONAL {?Process VDI3682:hasInput ?Input. ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+//   OPTIONAL {?Process VDI3682:hasOutput ?Output. ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+//   OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process.}
+// }
+// `
 
   public SELECT_LIST_OF_ALL_CLASSES = `
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
