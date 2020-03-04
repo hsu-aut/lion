@@ -34,6 +34,7 @@ export class Dinen61360Component implements OnInit {
   tableSubTitle: string;
   _currentStructureOption: string;
   StructureOptions: string = "System_BUTTON";
+  filterOption: boolean = true;
 
   // stats
   NoOfDE: number = 0;

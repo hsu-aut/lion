@@ -136,7 +136,8 @@
                             <app-table [currentTable]="allTypes"
                                 [tableTitle]="'Available Type Descriptions in Database'"
                                 [tableExplanation]="'Click on a row to fill the form above.'"
-                                (tableClickedRow)="typeTableClick('type', $event)">
+                                (tableClickedRow)="typeTableClick('type', $event)"
+                                [filter]="filterOption">
                             </app-table>
                         </div>
                         <div class="tab-pane " id="eclass" role="tabpanel" aria-labelledby="eclass-tab">
@@ -150,7 +151,7 @@
                                     placeholder="Preferred Name" aria-label="" aria-describedby="basic-addon1">
                             </div>
                             <div *ngIf="propertyList.length!==0">
-                                <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)">
+                                <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)" [filter]="filterOption">
                                 </app-table>
                             </div>
                         </div>
@@ -250,21 +251,21 @@
                             <app-table [currentTable]="allTypes"
                                 [tableTitle]="'Available type descriptions in database'"
                                 [tableExplanation]="'Click on a row to fill the form above.'"
-                                (tableClickedRow)="typeTableClick('instance', $event)">
+                                (tableClickedRow)="typeTableClick('instance', $event)" [filter]="filterOption">
                             </app-table>
                         </div>
                         <div class="tab-pane " id="exInstance" role="tabpanel" aria-labelledby="exInstance-tab">
                             <app-table [currentTable]="allInstances"
                                 [tableTitle]="'Available instance descriptions in database'"
                                 [tableExplanation]="'Click on a row to fill the form above.'"
-                                (tableClickedCell)="instanceTableClick($event)">
+                                (tableClickedCell)="instanceTableClick($event)" [filter]="filterOption">
                             </app-table>
                         </div>
                         <div class="tab-pane " id="VDI3682" role="tabpanel" aria-labelledby="VDI3682-tab">
                             <app-table [currentTable]="allProcessInfo"
                                 [tableTitle]="'Available process descriptions in database'"
                                 [tableExplanation]="'Click on a row to asign a data element to it.'"
-                                (tableClickedCell)="anyTableClick($event)">
+                                (tableClickedCell)="anyTableClick($event)" [filter]="filterOption">
                             </app-table>
                         </div>
                         <div class="tab-pane " id="VDI2206" role="tabpanel" aria-labelledby="VDI2206-tab">
@@ -292,19 +293,19 @@
                                         <app-table [currentTable]="allStructureInfoContainmentbySys"
                                             [tableTitle]="'Available structure descriptions in database'"
                                             [tableExplanation]="'Click on a row to asign a data element to it.'"
-                                            (tableClickedCell)="anyTableClick($event)"></app-table>
+                                            (tableClickedCell)="anyTableClick($event)" [filter]="filterOption"></app-table>
                                     </div>
                                     <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
                                         <app-table [currentTable]="allStructureInfoContainmentbyMod"
                                             [tableTitle]="'Available structure descriptions in database'"
                                             [tableExplanation]="'Click on a row to asign a data element to it.'"
-                                            (tableClickedCell)="anyTableClick($event)"></app-table>
+                                            (tableClickedCell)="anyTableClick($event)" [filter]="filterOption"></app-table>
                                     </div>
                                     <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
                                         <app-table [currentTable]="allStructureInfoContainmentbyCOM"
                                             [tableTitle]="'Available structure descriptions in database'"
                                             [tableExplanation]="'Click on a row to asign a data element to it.'"
-                                            (tableClickedCell)="anyTableClick($event)"></app-table>
+                                            (tableClickedCell)="anyTableClick($event)" [filter]="filterOption"></app-table>
                                     </div>
                                 </div>
                             </div>
