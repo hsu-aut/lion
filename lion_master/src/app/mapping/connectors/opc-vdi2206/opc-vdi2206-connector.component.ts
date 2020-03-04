@@ -98,6 +98,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
 
             this.opcService.createOpcVdi2206Connection(systemOrModule, opcUaServer).pipe(take(1)).subscribe(data => {
                 this.loadingScreenService.stopLoading();
+                this.loadExistingConnections();
             })
 
         } else if (form.invalid) {
