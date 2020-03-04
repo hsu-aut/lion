@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FpbService } from './fpb.service';
 import { take } from 'rxjs/operators';
 
+import { FpbStepService } from '../connectors/fpb-step/fpb-step.service';
+
 @Component({
   selector: 'app-fpb',
   templateUrl: './fpb.component.html',
@@ -15,7 +17,8 @@ export class FpbComponent implements OnInit {
   private fileType = [".json"]
 
   constructor(
-    private fpb: FpbService
+    private fpb: FpbService,
+    private connector: FpbStepService
   ) { }
 
   ngOnInit() {
@@ -31,6 +34,7 @@ export class FpbComponent implements OnInit {
   mapToRDF(file: string) {
     this.fpb.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
       console.log(data);
+      this.connector.initializeService();
     });
   }
 
