@@ -248,13 +248,13 @@ export class DINEN61360Data {
   public SELECT_TABLE_ALL_INSTANCE_INFO = `
   PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-  SELECT DISTINCT ?individual ?instance ?type ?expressionGoal ?logicInterpretation ?value WHERE { 
+  SELECT DISTINCT ?individual ?instance ?instanceLabel ?type ?expressionGoal ?logicInterpretation ?value WHERE { 
   
   ?individual DE6:has_Data_Element ?DE.
-  ?DE DE6:has_Instance_Description ?DEI.
-  ?DEI a DE6:Instance_Description;
+  ?DE DE6:has_Instance_Description ?instance.
+  ?instance a DE6:Instance_Description;
        DE6:Instance_Description_has_Type ?type;
-            rdfs:label ?instance;
+            rdfs:label ?instanceLabel;
             DE6:Expression_Goal ?expressionGoal;
             DE6:Logic_Interpretation ?logicInterpretation;
             DE6:Value ?value.
