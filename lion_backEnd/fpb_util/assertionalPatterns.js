@@ -50,7 +50,7 @@ function createFlowObject(flowObject) {
 
         flowObject.outgoingObjects.forEach(outgoingObject => {
             let outgoingObjectId = '<urn:' + outgoingObject + ">";
-            flowTriples = flowTriples + `${outgoingObjectId} VDI3682:isInputFor ${flowID}.\n`
+            flowTriples = flowTriples + `${flowID} VDI3682:isInputFor ${outgoingObjectId}.\n`
         });
     } else if (flowObject instanceof (fpb.TechnicalResource)) {
         flowObject.outgoingObjects.forEach(outgoingObject => {
