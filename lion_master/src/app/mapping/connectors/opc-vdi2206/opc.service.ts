@@ -15,9 +15,11 @@ export class OpcService {
 
     loadAllOpcUaServers() {
         const query = `PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        SELECT ?serverIri ?serverLabel WHERE {
-            ?serverIri a OpcUa:UAServer;
-            rdf:label ?serverLabel.
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        SELECT ?opcUaServer ?opcUaServerLabel WHERE {
+            ?opcUaServer a OpcUa:UAServer;
+            OPTIONAL {?opcUaServer rdfs:label ?opcUaServerLabel. }
+
         }`;
 
         return this.queryService.SPARQL_SELECT_TABLE(query);
@@ -28,7 +30,7 @@ export class OpcService {
         const query = `PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
         SELECT ?nodeIri ?nodeLabel WHERE {
             ?nodeIri a OpcUa:UANode;
-            rdf:label ?nodeLabel.
+            rdfs:label ?nodeLabel.
         }`;
 
         return this.queryService.SPARQL_SELECT_TABLE(query);
@@ -47,7 +49,6 @@ export class OpcService {
                         ${this.prefixService.parseToIRI(instanceDescription)} DINEN61360:hasOntologicalValue <${opcVariable}>.
                     }
             }`;
-
         return this.queryService.SPARQL_UPDATE(query);
     }
 
@@ -55,8 +56,15 @@ export class OpcService {
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
         PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
-        SELECT ?instanceDescription ?opcVariable {
-            ?instanceDescription DINEN61360:hasOntologicalValue ?opcVariable.
+        SELECT ?instanceDescription ?instanceDescriptionLabel ?opcVariable ?opcVariableLabel{
+            ?instanceDescription rdf:type DINEN61360:InstanceDescription;
+                DINEN61360:hasOntologicalValue ?opcVariable;
+            OPTIONAL {
+                ?instanceDescription rdf:label ?instanceDescriptionLabel.
+            }
+            OPTIONAL {
+                ?opcVariable rdf:label ?opcVariableLabel;
+            }
         }`;
         return this.queryService.SPARQL_SELECT_TABLE(query);
     }
@@ -74,9 +82,6 @@ export class OpcService {
                 <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
             }
         }`
-
-        console.log(query);
-
         return this.queryService.SPARQL_UPDATE(query);
     }
 
@@ -85,16 +90,18 @@ export class OpcService {
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
         PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-        SELECT ?system ?module ?opcUaServer {
+        SELECT ?systemOrModule ?systemOrModuleLabel ?opcUaServer ?opcUaServerLabel{
             {
-                ?system a VDI2206:System.
-                ?system OpcUa:hasOpcUaServer ?opcUaServer.
+                ?systemOrModule a VDI2206:System.
+                ?systemOrModule OpcUa:hasOpcUaServer ?opcUaServer.
             }
             UNION
             {
-                ?module a VDI2206:Module.
-                ?module OpcUa:hasOpcUaServer ?opcUaServer.
+                ?systemOrModule a VDI2206:Module.
+                ?systemOrModule OpcUa:hasOpcUaServer ?opcUaServer.
             }
+            OPTIONAL {?systemOrModule rdfs:label ?systemOrModuleLabel.}
+            OPTIONAL {?opcUaServer rdfs:label ?opcUaServerLabel.}
         }`;
         return this.queryService.SPARQL_SELECT_TABLE(query);
     }
