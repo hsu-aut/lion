@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { StepServiceService } from './step-service.service';
 import { take } from 'rxjs/operators';
 
+import { FpbStepService } from '../connectors/fpb-step/fpb-step.service';
+import { MessagesService } from '../../shared/services/messages.service';
 
 @Component({
   selector: 'app-step',
@@ -16,7 +18,9 @@ export class StepComponent implements OnInit {
   private fileType = [".stp"]
 
   constructor(
-    private step: StepServiceService
+    private step: StepServiceService,
+    private connector: FpbStepService,
+    private messageService: MessagesService
   ) { }
 
   ngOnInit() {
@@ -30,8 +34,10 @@ export class StepComponent implements OnInit {
   }
 
   mapToRDF(file: string) {
+    this.messageService.addMessage('warning', 'Alright!', `The Backend started processing the file, that may take a while...`);
     this.step.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
       console.log(data);
+      this.connector.initializeService();
     });
   }
 
