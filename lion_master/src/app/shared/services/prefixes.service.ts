@@ -60,7 +60,9 @@ export class PrefixesService {
     var PREFIXES = this.getPrefixes();
     var activeNamespace = PREFIXES[this.getActiveNamespace()].namespace;
 
-    if (individual.search("http://") != -1) {
+    if(individual.search("urn:") != -1){
+      individual = individual;
+    } else if (individual.search("http://") != -1) {
       individual = individual;
     } else if (individual.search(":") != -1) {
       let newindividual = this.parseToIRI(individual);
