@@ -44,11 +44,11 @@ export class DashboardComponent implements OnInit {
   activeNamespace: string;
 
   // Doughnut
-  private doughnutChartLabels: string[] = [];
-  private doughnutChartData: number[] = [];
-  private doughnutChartType: string;
-  private doughnutChartExists = false;
-  private doughnutChartColors = [
+  public doughnutChartLabels: string[] = [];
+  public doughnutChartData: number[] = [];
+  public doughnutChartType: string;
+  public doughnutChartExists = false;
+  public doughnutChartColors = [
     {
       backgroundColor: [
         'rgba(110, 114, 20, 1)',
@@ -62,11 +62,11 @@ export class DashboardComponent implements OnInit {
 
 
   // events
-  private chartClicked(e: any): void {
+  public chartClicked(e: any): void {
     // console.log(e);
   }
 
-  private chartHovered(e: any): void {
+  public chartHovered(e: any): void {
     // console.log(e);
   }
 
