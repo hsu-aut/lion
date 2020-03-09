@@ -11,10 +11,10 @@ import { FpbStepService } from '../connectors/fpb-step/fpb-step.service';
 })
 export class FpbComponent implements OnInit {
 
-  private fpbURL = this.fpb.fpbRoute;
-  private fpbJSON = {}
-  private uploadedFiles = ["Do you have a connection to the backend?"]
-  private fileType = [".json"]
+  public fpbURL = this.fpb.fpbRoute;
+  public fpbJSON = {}
+  public uploadedFiles = ["Do you have a connection to the backend?"]
+  public fileType = [".json"]
 
   constructor(
     private fpb: FpbService,
