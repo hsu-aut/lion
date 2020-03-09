@@ -258,7 +258,7 @@
                             <app-table [currentTable]="allInstances"
                                 [tableTitle]="'Available instance descriptions in database'"
                                 [tableExplanation]="'Click on a row to fill the form above.'"
-                                (tableClickedCell)="instanceTableClick($event)" [filter]="filterOption">
+                                [filter]="filterOption">
                             </app-table>
                         </div>
                         <div class="tab-pane " id="VDI3682" role="tabpanel" aria-labelledby="VDI3682-tab">
@@ -273,18 +273,15 @@
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab"
-                                            aria-controls="sys" aria-selected="true"
-                                            (click)="setStructureTable('System_BUTTON')"> System </a>
+                                            aria-controls="sys" aria-selected="true"> System </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab"
-                                            aria-controls="mod" aria-selected="false"
-                                            (click)="setStructureTable('Module_BUTTON')"> Module </a>
+                                            aria-controls="mod" aria-selected="false"> Module </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab"
-                                            aria-controls="com" aria-selected="false"
-                                            (click)="setStructureTable('Component_BUTTON')"> Component </a>
+                                            aria-controls="com" aria-selected="false"> Component </a>
                                     </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">

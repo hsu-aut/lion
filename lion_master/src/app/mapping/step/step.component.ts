@@ -12,10 +12,10 @@ import { MessagesService } from '../../shared/services/messages.service';
 })
 export class StepComponent implements OnInit {
 
-  private stepURL = this.step.stepRoute;
-  private assemblyStructure = {  }
-  private uploadedFiles = ["asdasdsad"]
-  private fileType = [".stp"]
+  public stepURL = this.step.stepRoute;
+  public assemblyStructure = {  }
+  public uploadedFiles = []
+  public fileType = [".stp"]
 
   constructor(
     private step: StepServiceService,

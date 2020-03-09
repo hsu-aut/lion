@@ -190,16 +190,13 @@
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
-          <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-            (tableClickedCell)="tableClick($event)"></app-table>
+          <app-table [currentTable]="currentTable" (tableClickedCell)="tableClick($event)"></app-table>
         </div>
         <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
-          <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-            (tableClickedCell)="tableClick($event)"></app-table>
+          <app-table [currentTable]="currentTable" (tableClickedCell)="tableClick($event)"></app-table>
         </div>
         <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
-          <app-table [currentTable]="currentTable" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-            (tableClickedCell)="tableClick($event)"></app-table>
+          <app-table [currentTable]="currentTable" (tableClickedCell)="tableClick($event)"></app-table>
         </div>
       </div>
     </div>

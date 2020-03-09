@@ -6,7 +6,8 @@
         <div class="row">
             <div class="col-xl-8">
                 <p class="card-text">By using the the mapping functionalities of LiOnS, one can create an ABox based on
-                    artefacts. If one wants to express relations between individuals that have been mapped from different
+                    artefacts. If one wants to express relations between individuals that have been mapped from
+                    different
                     artefacts, these relations have to be created manually.<br>
                     With this Module, you can connect a system or module of VDI 2206 and an OPC UA Server.
                     The connection specifies that the system or module contains an OPC UA Server.
@@ -91,12 +92,13 @@
                     <div class="row">
                         <div class="col">
                             <app-table [currentTable]="systemModuleTable" [filter]="filterOption"
-                                [tableTitle]="systemModuleTableTitle" [tableExplanation]="systemModuleTableSubtitle"
+                                [tableExplanation]="systemModuleTableSubTitle"
                                 (tableClickedRow)="systemModuleTableClick($event)"></app-table>
                         </div>
                         <div class="col">
-                            <app-table [currentTable]="opcUaServerTable" [filter]="filterOption" [tableTitle]="opcUaServerTableTitle"
-                                [tableExplanation]="opcUaServerTableSubtitle" (tableClickedRow)="opcUaServerTableClick($event)">
+                            <app-table [currentTable]="opcUaServerTable" [filter]="filterOption"
+                                [tableExplanation]="systemModuleTableSubTitle"
+                                (tableClickedRow)="opcUaServerTableClick($event)">
                             </app-table>
                         </div>
                     </div>
