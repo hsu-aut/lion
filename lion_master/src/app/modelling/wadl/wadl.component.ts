@@ -31,6 +31,12 @@ export class WadlComponent implements OnInit {
   _OntologicalDataType: string;
   customVal = new cValFns();
 
+  // checkboxes and radios
+  requestBodyRepresentationCheck;
+  responseBodyRepresentationCheck;
+  ontologicalDataTypeRadio;
+  requestBodyRepresentationRadio;
+
   // model data
   modelVariables = new WADLVARIABLES();
 
