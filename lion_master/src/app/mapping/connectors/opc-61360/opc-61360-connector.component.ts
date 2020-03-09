@@ -78,8 +78,8 @@ export class Opc61360ConnectorComponent implements OnInit {
      * Modifies a tripel according to the selections the user made
      * @param action //TODO: Currently not used...
      */
-    modifyTripel(action: string) {
-        const form = this.newIndividualForm;
+    modifyTripel(action: string, form) {
+        // const form = this.newIndividualForm;
         if (form.valid) {
 
             const instanceDescription = form.controls['subject'].value;
