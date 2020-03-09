@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser')
 
-var indexRouter = require('./routes/index');
+const frontendFolder = 'frontend'
 var queries = require('./routes/queries');
 var graphs = require('./routes/graphs');
 var eclassSearch = require('./routes/eclass-search');
@@ -27,7 +27,6 @@ app.use(bodyParser.text());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/lion_BE/eclassSearch', eclassSearch);
 app.use('/lion_BE/repositories', REPOS);
 app.use('/lion_BE/graphs', graphs);
@@ -35,6 +34,11 @@ app.use('/lion_BE/queries', queries);
 app.use('/lion_BE/opc-ua', opcUaRouter);
 app.use('/lion_BE/step', stepMapping);
 app.use('/lion_BE/fpb', fpbMapping);
+
+app.get('*.*', express.static(frontendFolder, {maxAge: "1y"}))
+app.all('/*', function (req, res) {
+  res.status(200).sendFile('/', {root: frontendFolder})
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -51,5 +55,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;
