@@ -90,7 +90,7 @@ export class OpcService {
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
         PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-        SELECT ?systemOrModule ?systemOrModuleLabel ?opcUaServer ?opcUaServerLabel{
+        SELECT DISTINCT ?systemOrModuleLabel ?opcUaServer ?opcUaServerLabel{
             {
                 ?systemOrModule a VDI2206:System.
                 ?systemOrModule OpcUa:hasOpcUaServer ?opcUaServer.
