@@ -3,6 +3,7 @@ import { FpbService } from './fpb.service';
 import { take } from 'rxjs/operators';
 
 import { FpbStepService } from '../connectors/fpb-step/fpb-step.service';
+import { MessagesService } from '../../shared/services/messages.service';
 
 @Component({
   selector: 'app-fpb',
@@ -18,7 +19,8 @@ export class FpbComponent implements OnInit {
 
   constructor(
     private fpb: FpbService,
-    private connector: FpbStepService
+    private connector: FpbStepService,
+    private messageService: MessagesService
   ) { }
 
   ngOnInit() {
@@ -32,6 +34,7 @@ export class FpbComponent implements OnInit {
   }
 
   mapToRDF(file: string) {
+    this.messageService.addMessage('warning', 'Alright!', `Backend is processing the file. This may take a while.`);
     this.fpb.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
       console.log(data);
       this.connector.initializeService();
