@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { OpcNode } from './subcomponents/opc-mapping-element.component';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpcMappingService {
 
-constructor(private httpClient: HttpClient) {}
+constructor(
+    private httpClient: HttpClient,
+    private config: ConfigurationService,
+    ) {}
 
     nodesToMap = new Array<OpcNode>();
     opcRoute = '/lion_BE/opc-ua'
@@ -84,9 +88,13 @@ constructor(private httpClient: HttpClient) {}
     createMapping(serverInfo: OpcUaServerInfo): Observable<string> {
         // Add server info to nodes that should be mapped
         const dataToMap = {
-            serverInfo: serverInfo,
-            nodesToMap: this.nodesToMap
+            repository: this.config.getRepository(),
+            opc: {
+                serverInfo: serverInfo,
+                nodesToMap: this.nodesToMap
+            }
         }
+        console.log(dataToMap.repository)
         return this.httpClient.post(`${this.opcRoute}/mappings`, dataToMap) as Observable<string>;
     }
 
