@@ -94,7 +94,7 @@ export class SidebarComponent implements OnInit {
 
     setActiveGraph(graph: string) {
         for (let i = 0; i < this.graphList.length; i++) {
-            if (this.graphList[i].search(graph) != -1) {
+            if (this.graphList[i].search(graph) !== -1) {
                 this.graphs.setActiveGraph(i);
                 this.getCurrentGraphConfig();
             }
