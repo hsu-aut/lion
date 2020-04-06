@@ -307,8 +307,9 @@ FILTER(STRSTARTS(STR(?type), "http://www.hsu-ifa.de/ontologies/VDI2206#"))
 PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT ?System ?consistsOfEntity ?EntityType WHERE {
-?System a VDI2206:System.
+SELECT ?System ?systemLabel ?consistsOfEntity ?EntityType WHERE {
+?System a VDI2206:System;
+    rdfs:label ?systemLabel.
   OPTIONAL {?System VDI2206:consistsOf ?consistsOfEntity. ?consistsOfEntity rdf:type ?EntityType. VALUES ?EntityType {VDI2206:System VDI2206:Module VDI2206:Component}}
 }
 `;

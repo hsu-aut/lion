@@ -86,7 +86,7 @@ export class Dinen61360Component implements OnInit {
     code: [undefined, [Validators.required, Validators.pattern('([A-Z]{3})([0-9]{3})')]],
     version: [undefined, [Validators.required, Validators.pattern('([0-9]{1,})')]],
     revision: [undefined, [Validators.required, Validators.pattern('([0-9]{1,})')]],
-    preferred_name: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z; ]{1,})')]],
+    preferred_name: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z; ;0-9]{1,})')]],
     short_name: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z]{1,})')]],
     definition: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z;  ]{1,})|([0-9]{1,})')]],
     dataType: [undefined, Validators.required],

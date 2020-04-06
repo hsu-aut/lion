@@ -6,8 +6,9 @@ import { Observable } from 'rxjs';
 
 import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
 import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
-import { RepositoryOperationsService } from '../../shared/services/backEnd/repositoryOperations.service';
 import { MessagesService } from '../../shared/services/messages.service';
+
+import { Vdi3682ModelService } from '../../modelling/rdf-models/vdi3682Model.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,8 @@ constructor(
   private config: ConfigurationService,
   private http: HttpClient,
   private graphs: GraphOperationsService,
-  private repos: RepositoryOperationsService,
-  private messageService: MessagesService
+  private messageService: MessagesService,
+  private vdi: Vdi3682ModelService
 ) { }
 
 
@@ -76,16 +77,17 @@ constructor(
     let body = {
       fileName: fileName,
       activeGraph: this.graphs.getGraphs()[this.graphs.getActiveGraph()],
-      repositoryName: this.repos.getRepository()
+      repositoryName: this.config.getRepository()
     }
     
     let headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json')
     
     var insertObservable = new Observable((observer) => {
       this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
-        this.messageService.addMessage('success', 'Alright!', `Backend is processing the file. This may take a while.`);
-        observer.next()
-        observer.complete()
+        this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
+        this.vdi.initializeVDI3682();
+        observer.next();
+        observer.complete();
       },
         error => {
           this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);

@@ -28,11 +28,12 @@ router.post('/crawl-server', function (req, res) {
 
 router.post('/mappings', function(req, res) {
     const dataToMap = req.body;
-    
-    const opcUaMapper = new OpcUaMappingCreator(dataToMap);
+    const repository = dataToMap.repository;
+
+    const opcUaMapper = new OpcUaMappingCreator(dataToMap.opc);
     const mapping = opcUaMapper.createMapping();
 
-    sparqlUpdate(mapping, 'testdb').then(queryRes => {
+    sparqlUpdate(mapping, repository).then(queryRes => {
         res.status(200).json(queryRes);
     }).catch(err => {
         res.status(500).json(err);

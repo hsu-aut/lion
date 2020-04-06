@@ -4,8 +4,9 @@ import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
-import { RepositoryOperationsService } from '../../shared/services/backEnd/repositoryOperations.service';
 import { MessagesService } from '../../shared/services/messages.service';
+
+import { Vdi2206ModelService } from '../../modelling/rdf-models/vdi2206Model.service';
 
 
 @Injectable({
@@ -18,8 +19,8 @@ export class StepServiceService {
   constructor(
     private config: ConfigurationService,
     private http: HttpClient,
-    private repos: RepositoryOperationsService,
-    private messageService: MessagesService
+    private messageService: MessagesService,
+    private vdi: Vdi2206ModelService
   ) { }
 
 
@@ -73,7 +74,7 @@ export class StepServiceService {
 
     let body = {
       fileName: fileName,
-      repositoryName: this.repos.getRepository()
+      repositoryName: this.config.getRepository()
     }
     
 
@@ -84,8 +85,9 @@ export class StepServiceService {
     var insertObservable = new Observable((observer) => {
       this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
         this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
-        observer.next()
-        observer.complete()
+        this.vdi.initializeVDI2206();
+        observer.next();
+        observer.complete();
       },
         error => {
           this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
