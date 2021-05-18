@@ -6,7 +6,10 @@ var GDB_TBOX = require('../GRAPH_DB_REQUESTS/tboxOperations.requests')
 var GDB_REPO = require('../GRAPH_DB_REQUESTS/repositoryOperations.requests')
 var gdbConfig = require('../GRAPH_DB_REQUESTS/GDBconfigurator')
 
-const curl = new (require('curl-request'))();
+// const curl = new (require('curl-request'))();
+const axios = new (require('axios'))();
+const FormData = require('form-data');
+const fs = require('fs');
 
 /* GET LIST OF REPOSITORIES */
 router.get('/', function (req, res, next) {
@@ -33,36 +36,76 @@ router.get('/', function (req, res, next) {
 
 /* CREATE new repository */
 router.get('/create', function (req, res, next) {
-
     var q = url.parse(req.url, true).query;
     var repositoryName = q.repositoryName;
 
+    const formData = new FormData([{
+                        name: 'config',
+                        contents: 'repo-config.ttl'
+                    }, {
+                        name: 'config',
+                        file: './GRAPHDB_NEW_REPO_CONFIG.ttl',
+                        type: 'rb'
+                    }]);
+    // formData.append('config', repo-config.ttl);
+    // formData.append('config', './GRAPHDB_NEW_REPO_CONFIG.ttl'
+    // formData.append('config',
+    //                 new Blob([file: './GRAPHDB_NEW_REPO_CONFIG.ttl',
+    //                                 type: 'rb']));
+
     gdbConfig.setRepository(repositoryName).then(function (response) {
-        curl
-            .setHeaders([
-                'Content-Type: multipart/form-data'
-            ])
-            .setMultipartBody([{
-                name: 'config',
-                contents: 'repo-config.ttl'
-            }, {
-                name: 'config',
-                file: './GRAPHDB_NEW_REPO_CONFIG.ttl',
-                type: 'rb'
-            }])
-            .post('http://localhost:7200/rest/repositories')
+        axios({
+            method: 'post',
+            url: 'http://localhost:7200/rest/repositories',
+            headers: {'Content-Type': 'multipart/form-data'},
+            data: formData
+            })
             .then(({ statusCode, body, headers }) => {
                 console.log(statusCode, body, headers)
                 res.status(statusCode).json(body)
                 res.end();
-            })
+                })
             .catch((e) => {
                 console.log(e);
                 res.status(500)
                 res.end();
             });
-    })
-});
+        })
+    });
+
+
+/* CREATE new repository */
+// router.get('/create', function (req, res, next) {
+
+//     var q = url.parse(req.url, true).query;
+//     var repositoryName = q.repositoryName;
+
+//     gdbConfig.setRepository(repositoryName).then(function (response) {
+//         curl
+//             .setHeaders([
+//                 'Content-Type: multipart/form-data'
+//             ])
+//             .setMultipartBody([{
+//                 name: 'config',
+//                 contents: 'repo-config.ttl'
+//             }, {
+//                 name: 'config',
+//                 file: './GRAPHDB_NEW_REPO_CONFIG.ttl',
+//                 type: 'rb'
+//             }])
+//             .post('http://localhost:7200/rest/repositories')
+//             .then(({ statusCode, body, headers }) => {
+//                 console.log(statusCode, body, headers)
+//                 res.status(statusCode).json(body)
+//                 res.end();
+//             })
+//             .catch((e) => {
+//                 console.log(e);
+//                 res.status(500)
+//                 res.end();
+//             });
+//     })
+// });
 
 /* GET all RDF triples  */
 router.get('/', function (req, res, next) {
