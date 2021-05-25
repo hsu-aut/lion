@@ -106,6 +106,7 @@ module.exports = class OpcUaMappingCreator {
         const serverId = `<urn:uuid:${uuid()}>`;
         let queryString = `${serverId} rdf:type ${this.opcPrefix}:UAServer;
             rdfs:label 'OPC-UA-Server_${this.serverInfo.endpointUrl}';
+            ${this.opcPrefix}:hasEndpointUrl '${this.serverInfo.endpointUrl}';
             ${this.opcPrefix}:hasMessageSecurityMode ${this.opcPrefix}:MessageSecurityMode_${this.serverInfo.messageSecurityMode};
             ${this.opcPrefix}:hasSecurityPolicy ${this.opcPrefix}:SecurityPolicy_${this.serverInfo.securityPolicy};
             ${this.opcPrefix}:requiresUserName '${this.serverInfo.username}';
