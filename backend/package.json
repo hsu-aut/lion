@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+	"lint": "eslint src --ext .ts",
     "start:dev": "tsc-watch --build tsconfig.build.json --onSuccess  \"node -r tsconfig-paths/register dist/main.js dist/main.js \""
   },
   "dependencies": {

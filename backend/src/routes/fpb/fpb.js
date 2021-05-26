@@ -5,7 +5,7 @@ var url = require('url');
 
 const IncomingForm = require('formidable').IncomingForm
 const GDB_GRAPH = require('../GRAPH_DB_REQUESTS/graphOperations.requests');
-const fpbUtil = require('../fpb_util/parser');
+const fpbUtil = require('../../fpb_util/parser');
 
 
 /* GET list of fpbjs files. */
