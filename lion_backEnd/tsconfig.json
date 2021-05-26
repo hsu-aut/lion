@@ -1,0 +1,21 @@
+{
+    "extends": "../tsconfig.base.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2017",
+        "rootDir": ".",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "paths": {
+            "@shared/*": [ "../shared/dist/*" ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+    "references": [
+        {"path": "../shared"}
+    ]
+}
