@@ -1,53 +1,82 @@
-import { Controller, Get, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import * as fs from "fs";
+import { FpbService } from './fpb.service';
 
 @Controller("/lion_BE/fpb")
 export class FpbController {
 
-  @Get()
-  getClassName() {
-	const a = 2
-  }
+	constructor(private fpbService: FpbService) {}
 
-  @Get(':id')
-  getSomething(@Param('id') id: string):  {
-	
-  }
 
-  @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-		var form = new IncomingForm()
-    form.maxFileSize = 350 * 1024 * 1024;
-    form.uploadDir = fpbUtil.uploadDir;
-    console.log(form.uploadDir)
+	/**
+	 * Get a list of all fpb-js files
+	 */
+	@Get()
+	getAllFiles(): Promise<string[]> {
+		try {
+			return this.fpbService.getAllFiles();	
+		} catch (error) {
+			console.error(`Error while trying to get all files of directory '${FpbService.getFpbTempDirectory()}'`, error);
+		}
+	}
 
-    form.on('file', (field, file) => {
-        fs.renameSync(file.path, fpbUtil.uploadDir + "/" + file.name)
-    })
-    form.on('end', () => {
-        res.status(200).json('Added file')
-    })
-    form.parse(req)  
+
+	/**
+	 * Upload a new fpb-js file
+	 * @param file A file which has been exported from fpb-js
+	 */
+	@Post()
+	@UseInterceptors(FileInterceptor('file'))
+	uploadFile(@UploadedFile() file: Express.Multer.File): Promise<void> {
+		console.log("added new file");
+		console.log(file);
+		return;
+	}
+
+	@Put("rdf")
+	insertFpbToGraphDb() {
+		const fileName = req.body.fileName;
+		const activeGraph = 'http://' + parseFileName(fileName);
+		const repositoryName = req.body.repositoryName;
+
+		const ttlFileContent = fpbUtil.buildRDF(fileName);
+
+		GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
+
+			if (response.status == 204) {
+				console.log('Updated GDB with ' + 204);
+				res.status(200).json('Done!');
+			} else {
+				console.log(response.data);
+			}
+
+		})
+			.catch(function (error) {
+				res.status(500).json('Ups something went wrong with the GDB!');
+				console.log(error);
+			});
+	}
+
+
+
+	/**
+	* Delete  all fpb-js files inside temp dir
+	* 
+	*/
+	@Delete()
+	deleteAllFiles(): Promise<void> {
+		try {
+			return this.fpbService.deleteAllFiles();	
+		} catch (error) {
+			console.error(`Error while trying to delete all files of directory '${FpbService.getFpbTempDirectory()}'`, error);
+		}
+		
+	}
+
 }
 
-  @Post()
-  createClassName_singular(@Body() className_singular: ClassName_singularDto) {
-	this.classNameService.createClassName_singular(className_singular);
-  }
-
-  @Put()
-  updateClassName_singular(@Body() className_singular: ClassName_singularDto) {
-	this.classNameService.updateClassName_singular(className_singular);
-  }
-
-  /**
-	* Delete className_singular
-	* @param id
-	*/
-  @Delete()
-  deleteClassName_singular(@Param('id') id: string) {
-	this.classNameService.deleteClassName_singular(id);
-  }
-
+export class FileUploadRequest {
+	
+	constructor(private fileName: string, private repositoryName: string) {}
 }

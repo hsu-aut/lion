@@ -10,7 +10,7 @@
     "test-ci": "TEST_CI=true ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "start-dev": "ng serve --proxy-config proxy.conf.json --open"
+    "start:dev": "ng serve --proxy-config proxy.conf.json --open"
   },
   "private": true,
   "dependencies": {

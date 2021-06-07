@@ -4,10 +4,10 @@ import { BackendService } from './app.service';
 import { FpbModule } from './routes/fpb/fpb.module';
 
 @Module({
-  imports: [
-	  FpbModule
-  ],
-  controllers: [BackendController],
-  providers: [BackendService],
+	imports: [
+		FpbModule
+	],
+	controllers: [BackendController],
+	providers: [BackendService],
 })
 export class BackendModule {}
