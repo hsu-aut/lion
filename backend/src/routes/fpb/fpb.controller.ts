@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from "fs";
 import { FpbService } from './fpb.service';
@@ -34,29 +34,29 @@ export class FpbController {
 		return;
 	}
 
-	@Put("rdf")
-	insertFpbToGraphDb() {
-		const fileName = req.body.fileName;
-		const activeGraph = 'http://' + parseFileName(fileName);
-		const repositoryName = req.body.repositoryName;
+	// @Put("rdf")
+	// insertFpbToGraphDb(@Body()) {
+	// 	const fileName = req.body.fileName;
+	// 	const activeGraph = 'http://' + parseFileName(fileName);
+	// 	const repositoryName = req.body.repositoryName;
 
-		const ttlFileContent = fpbUtil.buildRDF(fileName);
+	// 	const ttlFileContent = fpbUtil.buildRDF(fileName);
 
-		GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
+	// 	GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
 
-			if (response.status == 204) {
-				console.log('Updated GDB with ' + 204);
-				res.status(200).json('Done!');
-			} else {
-				console.log(response.data);
-			}
+	// 		if (response.status == 204) {
+	// 			console.log('Updated GDB with ' + 204);
+	// 			res.status(200).json('Done!');
+	// 		} else {
+	// 			console.log(response.data);
+	// 		}
 
-		})
-			.catch(function (error) {
-				res.status(500).json('Ups something went wrong with the GDB!');
-				console.log(error);
-			});
-	}
+	// 	})
+	// 		.catch(function (error) {
+	// 			res.status(500).json('Ups something went wrong with the GDB!');
+	// 			console.log(error);
+	// 		});
+	// }
 
 
 
