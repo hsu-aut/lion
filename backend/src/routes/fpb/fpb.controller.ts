@@ -17,7 +17,7 @@ export class FpbController {
 		try {
 			return this.fpbService.getAllFiles();	
 		} catch (error) {
-			console.error(`Error while trying to get all files of directory '${FpbService.getFpbTempDirectory()}'`, error);
+			console.error(`Error while trying to get all files of directory '${FpbService.getFpbUploadDirectory()}'`, error);
 		}
 	}
 
@@ -34,29 +34,30 @@ export class FpbController {
 		return;
 	}
 
-	// @Put("rdf")
-	// insertFpbToGraphDb(@Body()) {
-	// 	const fileName = req.body.fileName;
-	// 	const activeGraph = 'http://' + parseFileName(fileName);
-	// 	const repositoryName = req.body.repositoryName;
+	@Put("rdf")
+	async insertFpbToGraphDb(@Body() fileUploadRequest: FileUploadRequest): Promise<void> {
+		return this.fpbService.insertFpbFileIntoGraphDB(fileUploadRequest);
+		// const fileName = fileUploadRequest.fileName;
+		// const activeGraph = 'http://' + parseFileName(fileName);
+		// // const repositoryName = req.body.repositoryName;	// Now just inserted into the current repo
 
-	// 	const ttlFileContent = fpbUtil.buildRDF(fileName);
+		// const ttlFileContent = fpbUtil.buildRDF(fileName);
 
-	// 	GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
+		// GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
 
-	// 		if (response.status == 204) {
-	// 			console.log('Updated GDB with ' + 204);
-	// 			res.status(200).json('Done!');
-	// 		} else {
-	// 			console.log(response.data);
-	// 		}
+		// 	if (response.status == 204) {
+		// 		console.log('Updated GDB with ' + 204);
+		// 		res.status(200).json('Done!');
+		// 	} else {
+		// 		console.log(response.data);
+		// 	}
 
-	// 	})
-	// 		.catch(function (error) {
-	// 			res.status(500).json('Ups something went wrong with the GDB!');
-	// 			console.log(error);
-	// 		});
-	// }
+		// })
+		// 	.catch(function (error) {
+		// 		res.status(500).json('Ups something went wrong with the GDB!');
+		// 		console.log(error);
+		// 	});
+	}
 
 
 
@@ -69,7 +70,7 @@ export class FpbController {
 		try {
 			return this.fpbService.deleteAllFiles();	
 		} catch (error) {
-			console.error(`Error while trying to delete all files of directory '${FpbService.getFpbTempDirectory()}'`, error);
+			console.error(`Error while trying to delete all files of directory '${FpbService.getFpbUploadDirectory()}'`, error);
 		}
 		
 	}
@@ -78,5 +79,5 @@ export class FpbController {
 
 export class FileUploadRequest {
 	
-	constructor(private fileName: string, private repositoryName: string) {}
+	constructor(public fileName: string, public repositoryName: string) {}
 }
