@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Put, Query } from '@nestjs/common';
 import { GraphsService } from './graphs.service';
 
 
@@ -9,23 +9,29 @@ export class GraphsController {
      * Get triples of named graph 
     * */
     @Get()
-	getTriplesOfNamedGraph() : string {
-		return this.graphService.getTriplesOfNamedGraph();
+	getTriplesOfNamedGraph(@Query('graph') graph: string,
+        @Query('repositoryName') repositoryName: string ,
+        @Headers('accept') format: string): string {
+		return this.graphService.getTriplesOfNamedGraph(repositoryName, decodeURIComponent(graph), format);
 	}
 
     /**
      * Set triples of named graph
      */
     @Put()
-    setTriplesOfNamedGraph() : string {
-    	return this.graphService.setTriplesOfNamedGraph();
+    setTriplesOfNamedGraph(@Query('graph') graph: string,
+        @Query('repositoryName') repositoryName: string,
+        @Headers('accept') format: string,
+        @Body() triples: string): string {
+    	return this.graphService.setTriplesOfNamedGraph(repositoryName, decodeURIComponent(graph), format, triples);
     }
-    
+
     /**
      * Deletes named graph
      */
     @Delete()
-    deleteNamedGraph() : string {
-    	return this.graphService.deleteNamedGraph();
+    deleteNamedGraph(@Query('graph') graph: string,
+        @Query('repositoryName') repositoryName: string): string {
+    	return this.graphService.deleteNamedGraph(repositoryName, decodeURIComponent(graph));
     }
 }

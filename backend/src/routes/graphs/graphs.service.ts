@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { URL } from 'url';
+
+
 @Injectable()
 export class GraphsService {
 
-	getTriplesOfNamedGraph(): string {
-		return "hello World Get Triples of Named Graph";
+	getTriplesOfNamedGraph(repositoryName: string, graph: string, format: string): string {
+		console.log(repositoryName);
+		console.log(graph);
+		console.log(format);
+		return "";
 	}
-	setTriplesOfNamedGraph(): string {
-		return "hello World     setTriplesOfNamedGraph(): string";
+	setTriplesOfNamedGraph(repositoryName: string, graph: string, format: string, triples : string): string {
+		console.log(repositoryName);
+		console.log(graph);
+		console.log(format);
+		console.log(triples);
+		return "";
 	}
-	deleteNamedGraph(): string {
-		return "hello World deleteNamedGraph";
+	deleteNamedGraph(repositoryName: string, graph: string): string {
+		console.log(repositoryName);
+		console.log(graph);
+		return "";
 	}
 }
