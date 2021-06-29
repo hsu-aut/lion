@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 
 @Controller()
-export class BackendController {
+export class AppController {
 	constructor() {}
 
 }

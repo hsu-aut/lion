@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { BackendController } from './app.controller';
-import { BackendService } from './app.service';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { FpbModule } from './routes/fpb/fpb.module';
 import { StepModule } from './routes/step/step.module';
 
@@ -9,7 +9,7 @@ import { StepModule } from './routes/step/step.module';
 		// FpbModule,
 		StepModule
 	],
-	controllers: [BackendController],
-	providers: [BackendService],
+	controllers: [AppController],
+	providers: [AppService],
 })
-export class BackendModule {}
+export class AppModule {}
