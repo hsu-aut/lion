@@ -5,5 +5,6 @@ import { GraphDbRepositoryService } from './graphdb-repository.service';
 	imports: [],
 	controllers: [],
 	providers: [GraphDbRepositoryService],
+	exports: [GraphDbRepositoryService]
 })
 export class GraphDbRepositoryModule {}

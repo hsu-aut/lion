@@ -6,7 +6,7 @@ import { StepModule } from './routes/step/step.module';
 
 @Module({
 	imports: [
-		// FpbModule,
+		FpbModule,
 		StepModule
 	],
 	controllers: [AppController],
