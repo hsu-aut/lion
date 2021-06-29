@@ -1,29 +1,7 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 
-@Controller('/lion_BE/step')
+@Controller()
 export class StepController {
 	constructor() {}
 
-	/**
-	 * Post a STEP file and store it locally
-	 */
-	@Post()
-	uploadStepFile(): void {
-
-	}
-	
-
-	/**
-	 * Returns all files
-	 */
-	@Get()
-	getAllFiles() {
-		return {};
-	}
-
-
-	@Get('/json')
-	getJsonOfFiles() {
-
-	}
 }

@@ -2,19 +2,16 @@ import { FpbService } from './fpb.service';
 import { FpbController } from './fpb.controller';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { FpbMappingService } from './fpb-mapping.service';
 
 @Module({
 	imports: [
 		MulterModule.register({
-			dest: FpbService.getFpbUploadDirectory(),
+			dest: FpbService.getFpbTempDirectory(),
 		})
 	],
 	controllers: [
 		FpbController,],
 	providers: [
-		FpbService,
-		FpbMappingService
-	],
+		FpbService,],
 })
 export class FpbModule {}
