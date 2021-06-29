@@ -110,12 +110,14 @@ export class GraphsComponent implements OnInit {
   deleteTriplesOfNamedGraph(graph) {
     if (this.graphDeleteTriplesOption.valid) {
       this.graphOperation.deleteTriplesOfNamedGraph(graph).pipe(take(1)).subscribe((data: string) => {
-        // this.refreshServices();
+        console.log(data)
+        // this.refreshServices(); 
       })
     } else if (this.graphDeleteTriplesOption.invalid) {
+      console.log("else")
       this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
     }
-
+    console.log("after")
   }
 
   deleteNamedGraph(graph) {
