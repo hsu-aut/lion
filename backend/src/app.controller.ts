@@ -1,12 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
-import { BackendService } from './app.service';
+import { Controller } from '@nestjs/common';
 
 @Controller()
-export class BackendController {
-  constructor(private readonly backendService: BackendService) {}
+export class AppController {
+	constructor() {}
 
-  @Get()
-  getHello(): string {
-    return this.backendService.getHello();
-  }
 }
