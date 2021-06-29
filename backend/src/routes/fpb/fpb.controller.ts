@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from "fs";
-import { FpbService } from './fpb.service';
+import { FileUploadRequest, FpbService } from './fpb.service';
 
 @Controller("/lion_BE/fpb")
 export class FpbController {
@@ -75,9 +75,4 @@ export class FpbController {
 		
 	}
 
-}
-
-export class FileUploadRequest {
-	
-	constructor(public fileName: string, public repositoryName: string) {}
 }

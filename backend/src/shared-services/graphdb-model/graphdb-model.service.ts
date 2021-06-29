@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig } from 'axios';
-import { GraphDbRepositoryService } from '../graphdb-repository/graphdb-model/graphdb-repository.service';
+import { GraphDbRepositoryService } from '../graphdb-repository/graphdb-repository.service';
 
 @Injectable()
 export class GraphDbModelService {
