@@ -1,83 +1,83 @@
-var express = require('express');
-var router = express.Router();
-var fs = require('fs');
-var url = require('url');
+// var express = require('express');
+// var router = express.Router();
+// var fs = require('fs');
+// var url = require('url');
 
-const IncomingForm = require('formidable').IncomingForm;
-const GDB_GRAPH = require('../GRAPH_DB_REQUESTS/graphOperations.requests');
-const fpbUtil = require('../../fpb_util/parser');
-
-
-/* GET list of fpbjs files. */
-router.get('/', function (req, res, next) {
-	fs.readdir(fpbUtil.uploadDir, (err, files) => {
-		if (err) throw err;
-		res.status(200).json(files);
-	});
-});
+// const IncomingForm = require('formidable').IncomingForm;
+// const GDB_GRAPH = require('../GRAPH_DB_REQUESTS/graphOperations.requests');
+// const fpbUtil = require('../../fpb_util/parser');
 
 
-/* POST fpbjs file. */
-router.post('/', function (req, res, next) {
+// /* GET list of fpbjs files. */
+// router.get('/', function (req, res, next) {
+// 	fs.readdir(fpbUtil.uploadDir, (err, files) => {
+// 		if (err) throw err;
+// 		res.status(200).json(files);
+// 	});
+// });
 
-	var form = new IncomingForm();
-	form.maxFileSize = 350 * 1024 * 1024;
-	form.uploadDir = fpbUtil.uploadDir;
-	console.log(form.uploadDir);
 
-	form.on('file', (field, file) => {
-		fs.renameSync(file.path, fpbUtil.uploadDir + "/" + file.name);
-	});
-	form.on('end', () => {
-		res.status(200).json('Added file');
-	});
-	form.parse(req);
-});
+// /* POST fpbjs file. */
+// router.post('/', function (req, res, next) {
 
-/* DELETE fpbjs files. */
-router.delete('/', function (req, res, next) {
-	const q = url.parse(req.url, true).query;
+// 	var form = new IncomingForm();
+// 	form.maxFileSize = 350 * 1024 * 1024;
+// 	form.uploadDir = fpbUtil.uploadDir;
+// 	console.log(form.uploadDir);
 
-	const fileName = q.fileName;
+// 	form.on('file', (field, file) => {
+// 		fs.renameSync(file.path, fpbUtil.uploadDir + "/" + file.name);
+// 	});
+// 	form.on('end', () => {
+// 		res.status(200).json('Added file');
+// 	});
+// 	form.parse(req);
+// });
 
-	fpbUtil.deleteFiles(fileName);
+// /* DELETE fpbjs files. */
+// router.delete('/', function (req, res, next) {
+// 	const q = url.parse(req.url, true).query;
 
-	res.status(200).json('Relevant files deleted');
-});
+// 	const fileName = q.fileName;
 
-/* PUT fpbjs file to turtle and update GDB. */
-router.put('/rdf', function (req, res, next) {
+// 	fpbUtil.deleteFiles(fileName);
 
-	const fileName = req.body.fileName;
-	const activeGraph = 'http://' + parseFileName(fileName);
-	const repositoryName = req.body.repositoryName;
+// 	res.status(200).json('Relevant files deleted');
+// });
 
-	const ttlFileContent = fpbUtil.buildRDF(fileName);
+// /* PUT fpbjs file to turtle and update GDB. */
+// router.put('/rdf', function (req, res, next) {
 
-	GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
+// 	const fileName = req.body.fileName;
+// 	const activeGraph = 'http://' + parseFileName(fileName);
+// 	const repositoryName = req.body.repositoryName;
 
-		if (response.status == 204) {
-			console.log('Updated GDB with ' + 204);
-			res.status(200).json('Done!');
-		} else {
-			console.log(response.data);
-		}
+// 	const ttlFileContent = fpbUtil.buildRDF(fileName);
 
-	})
-		.catch(function (error) {
-			res.status(500).json('Ups something went wrong with the GDB!');
-			console.log(error);
-		});
+// 	GDB_GRAPH.ADD_TO_GRAPH(ttlFileContent, activeGraph, repositoryName).then(function (response) {
 
-});
+// 		if (response.status == 204) {
+// 			console.log('Updated GDB with ' + 204);
+// 			res.status(200).json('Done!');
+// 		} else {
+// 			console.log(response.data);
+// 		}
 
-module.exports = router;
+// 	})
+// 		.catch(function (error) {
+// 			res.status(500).json('Ups something went wrong with the GDB!');
+// 			console.log(error);
+// 		});
 
-// util functions
+// });
 
-function parseFileName(fileName) {
-	fileName = fileName.replace(/ /g, "_");
-	fileName = fileName.replace(/\\/g, "_");
+// module.exports = router;
 
-	return fileName;
-}
+// // util functions
+
+// function parseFileName(fileName) {
+// 	fileName = fileName.replace(/ /g, "_");
+// 	fileName = fileName.replace(/\\/g, "_");
+
+// 	return fileName;
+// }
