@@ -8,5 +8,6 @@
     // When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.
     "editor.detectIndentation": true,
     
-    "eslint.workingDirectories": ["frontend", "backend", "shared"]
+    "eslint.workingDirectories": ["frontend", "backend", "shared"],
+    "typescript.preferences.importModuleSpecifier": "relative"
 }
