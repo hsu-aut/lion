@@ -42,7 +42,12 @@ export class EclassSearchService {
   async getPropertiesByNamefromDb(propName: string): Promise<any> {
   	try {
   		// query string
-  	  const queryString = `SELECT * from customer WHERE name=\'${propName}\' LIMIT 50`;
+  	  const queryString =
+      `SELECT p.Identifier, p.VersionNumber, p.RevisionNumber, p.PreferredName, p.ShortName, p.Definition, p.DataType, uom.DINNotation 
+      FROM eclassproperty AS p
+      LEFT OUTER JOIN eclassunit AS uom ON p.IrdiUN = uom.IrdiUN
+      WHERE PreferredName LIKE '%${propName}%'`;
+
   		if (this.pool) {
   			// db.query returns [rows, fields] - read rows only
   			const [rows] = await this.pool.query(queryString);
