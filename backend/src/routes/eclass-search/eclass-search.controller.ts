@@ -17,9 +17,10 @@ export class EclassSearchController {
 
   @Get('list')
   getPropertiesList(@Query('prop') prop, @Query('via') via): Promise<any> {
-  	if (via == 'db') {
-  		// do if access via mysql db is requested
-  		try {
+  	if (via == 'db' || via == null) {
+  		// do if access via mysql db is requested 
+		// default, also chosse this option if no parameter 'via' was defined  
+		try {
   			return this.eclassSearchService.getPropertiesByNamefromDb(prop);
   		} catch (error) {
   			console.error(error + 'cannot get property from database');
