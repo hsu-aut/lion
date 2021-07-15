@@ -11,7 +11,6 @@ export class EclassSearchService {
   async connectDb(): Promise<void> {
   	try {
   		//read db config from json file
-      console.log(__dirname, __filename)
   		const dbConfig: ConnectionOptions = JSON.parse(readFileSync('./eclass-db-config.json', 'utf-8'));
   		//establish pool connection with db config
   		this.pool = createPool(dbConfig);
