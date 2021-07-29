@@ -5,10 +5,10 @@ import { RepositoriesService } from './repositories.service';
 @Module({
 	imports: [],
 	controllers: [
-			RepositoriesController
+		RepositoriesController
 	],
 	providers: [
-			RepositoriesService
+		RepositoriesService
 	],
 })
 export class RepositoriesModule {}
