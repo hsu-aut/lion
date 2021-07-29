@@ -4,7 +4,7 @@ import { Controller, Delete, Get, Post} from '@nestjs/common';
 export class RepositoriesController {
 constructor() {}
 
-ar express = require('express');
+var express = require('express');
 var router = express.Router();
 var url = require('url');
 
@@ -21,59 +21,44 @@ const fs = require('fs');
  * GET list of repositories 
  */
 
-@Get()
-getListOfRepositories():void, function (req, res, next) {
-    GDB_REPO.GET_REPOSITORIES().then(function (response) {
+// @Get()
+// getListOfRepositories(): void {
+//     GDB_REPO.GET_REPOSITORIES()
 
-        if (response.status == 200) {
-            res.status(200);
-            res.end(response.data);
-        } else {
-            res.status(500);
-            res.end();
-        }
-
-    })
-        .catch(function (error) {
-            console.log(error);
-            res.status(500);
-            res.end();
-        });
-
-}
+// }
 
 /**
  *CREATE new repository 
 */ 
 
-@Get()
-getNewRepository():void {
+// @Get()
+// getNewRepository():void {
 
-}
+// }
 
 /** 
  * GET all RDF triples
  */
 
-@Get()
-getAllRdfTriples():void {
+// @Get()
+// getAllRdfTriples():void {
 
-}
+// }
 
 /** 
  * DELETE all RDF triples  
  */
-@Delete()
-deleteAllRdfTriples():void {
+// @Delete()
+// deleteAllRdfTriples():void {
 
-}
+// }
 
 /** 
  * INSERT TBOX to repository  
  */
 
-@Get()
-insertTboxToRepository():void {
+// @Get()
+// insertTboxToRepository():void {
 
-}
-}
+// }
+// }
