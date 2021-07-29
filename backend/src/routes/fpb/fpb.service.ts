@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from "fs/promises";
-import { GraphDbModelService } from '../../shared-services/graphdb-model/graphdb-model.service';
+import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
 import { FpbMappingService } from './fpb-mapping.service';
 
 @Injectable()
