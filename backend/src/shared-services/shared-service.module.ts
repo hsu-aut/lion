@@ -1,6 +1,7 @@
 import { Global, HttpModule, Module } from '@nestjs/common';
+import { GraphOperationService } from './graph-operation.service';
 import { GraphDbModelService } from './graphdb-model.service';
-import { GraphDbRepositoryService } from './graphdb-repository.service';
+import { RepositoryService } from './repository.service';
 
 @Global()
 @Module({
@@ -10,11 +11,13 @@ import { GraphDbRepositoryService } from './graphdb-repository.service';
 	controllers: [],
 	providers: [
 		GraphDbModelService,
-		GraphDbRepositoryService
+		RepositoryService,
+		GraphOperationService
 	],
 	exports: [
 		GraphDbModelService,
-		GraphDbRepositoryService
+		RepositoryService,
+		GraphOperationService
 	]
 })
 export class SharedServiceModule {}

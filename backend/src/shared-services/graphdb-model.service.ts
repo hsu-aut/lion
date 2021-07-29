@@ -1,12 +1,12 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig } from 'axios';
-import { GraphDbRepositoryService } from './graphdb-repository.service';
+import { RepositoryService } from './repository.service';
 
 @Injectable()
 export class GraphDbModelService {
 
 	constructor(
-        private repoService: GraphDbRepositoryService,
+        private repoService: RepositoryService,
         private httpService: HttpService) {}
 
 	async addTurtleFileToGraph(ttlContent: string, graphName: string) {

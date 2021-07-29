@@ -1,7 +1,7 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { GraphDbRepositoryService } from './graphdb-repository.service';
 import { Observable } from 'rxjs';
+import { RepositoryService } from './repository.service';
 
 @Injectable()
 export class GraphOperationService {
@@ -9,7 +9,7 @@ export class GraphOperationService {
 
 	constructor(
         private http: HttpService,
-        private graphDbRepoService: GraphDbRepositoryService
+        private graphDbRepoService: RepositoryService
 	) { }
 
 	/**
