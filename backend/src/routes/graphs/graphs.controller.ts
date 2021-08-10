@@ -1,37 +1,37 @@
 import { Body, Controller, Delete, Get, Headers, Put, Query } from '@nestjs/common';
-import { GraphsService } from './graphs.service';
+import { AxiosResponse } from 'axios';
+import { Observable } from 'rxjs';
+import { GraphOperationService } from '../../shared-services/graph-operation.service';
 
 
 @Controller('/lion_BE/graphs')
 export class GraphsController {
-	constructor(private readonly graphService: GraphsService) { }
-    /**
-     * Get triples of named graph 
-    * */
-    @Get()
-	getTriplesOfNamedGraph(@Query('graph') graph: string,
-        @Query('repositoryName') repositoryName: string ,
-        @Headers('accept') format: string): string {
-		return this.graphService.getTriplesOfNamedGraph(repositoryName, decodeURIComponent(graph), format);
+	constructor(private readonly graphService: GraphOperationService) { }
+	/**
+	 * Get triples of named graph 
+	* */
+	@Get()
+	getTriplesOfNamedGraph(@Query('graph') graph: string, @Headers('accept') format: string): Observable<AxiosResponse<any>> {
+		return this.graphService.getAllTriples(decodeURIComponent(graph), format);
 	}
 
-    /**
-     * Set triples of named graph
-     */
-    @Put()
-    setTriplesOfNamedGraph(@Query('graph') graph: string,
-        @Query('repositoryName') repositoryName: string,
-        @Headers('accept') format: string,
-        @Body() triples: string): string {
-    	return this.graphService.setTriplesOfNamedGraph(repositoryName, decodeURIComponent(graph), format, triples);
-    }
+	/**
+	 * Set triples of named graph
+	 */
+	@Put()
+	setTriplesOfNamedGraph(@Query('graph') graph: string,
+		@Headers('accept') format: string,
+		@Body() triples: string): Observable<AxiosResponse<any>> {
+		return this.graphService.setTriplesToGraph(decodeURIComponent(graph), format, triples);
+	}
 
-    /**
-     * Deletes named graph
-     */
-    @Delete()
-    deleteNamedGraph(@Query('graph') graph: string,
-        @Query('repositoryName') repositoryName: string): string {
-    	return this.graphService.deleteNamedGraph(repositoryName, decodeURIComponent(graph));
-    }
+	/**
+	 * Deletes a named graph
+	 * @param graph Name of the graph to delete
+	 * @returns 
+	 */
+	@Delete()
+	deleteNamedGraph(@Query('graph') graph: string): Observable<AxiosResponse<void>> {
+		return this.graphService.deleteGraph(decodeURIComponent(graph));
+	}
 }
