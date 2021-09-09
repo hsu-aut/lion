@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { GraphOperationService } from '../../shared-services/graph-operation.service';
+import { SharedServiceModule } from '../../shared-services/shared-service.module';
+
 import { GraphsController } from './graphs.controller';
 
 @Module({
@@ -8,7 +9,7 @@ import { GraphsController } from './graphs.controller';
 		GraphsController
 	],
 	providers: [
-		GraphOperationService
+		SharedServiceModule
 	]
 })
 export class GraphsModule { }
