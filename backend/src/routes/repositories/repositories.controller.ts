@@ -1,64 +1,51 @@
-import { Controller, Delete, Get, Post} from '@nestjs/common';
+import { Controller, Delete, Get, Post, Query} from '@nestjs/common';
+import { query } from 'express';
+import { RepositoryService } from '../../shared-services/repository.service';
+import { TBoxService } from '../../shared-services/t-box.service';
 
 @Controller('/lion_BE/repositories') 
 export class RepositoriesController {
-constructor() {}
+	constructor(private repService:RepositoryService, private tboxService:TBoxService) {}
 
-var express = require('express');
-var router = express.Router();
-var url = require('url');
-
-var GDB_TBOX = require('../GRAPH_DB_REQUESTS/tboxOperations.requests')
-var GDB_REPO = require('../GRAPH_DB_REQUESTS/repositoryOperations.requests')
-var gdbConfig = require('../GRAPH_DB_REQUESTS/GDBconfigurator')
-
-// const curl = new (require('curl-request'))();
-const axios = new (require('axios'))();
-const FormData = require('form-data');
-const fs = require('fs');
-
-/**
- * GET list of repositories 
+	/**
+ * GET list of repositories
  */
+	@Get()
+	getListOfRepositories(): any {
+		return this.repService.getAllRepositories();
+	} 
 
-// @Get()
-// getListOfRepositories(): void {
-//     GDB_REPO.GET_REPOSITORIES()
-
-// }
-
-/**
- *CREATE new repository 
+	/**
+ *CREATE new repository TOBEDISCUSSED
 */ 
-
-// @Get()
-// getNewRepository():void {
-
-// }
-
-/** 
+	@Get('/create')
+	createNewRepository(@Query('repositoryName') repositoryName:string): any {
+		return this.repService.createRepository(repositoryName); // repService.createRepository muss noch angepasst werden 
+	}
+	/** 
  * GET all RDF triples
  */
 
-// @Get()
-// getAllRdfTriples():void {
+	@Get()
+	getAllRdfTriples() : any {
+		return this.tboxService.getAllTriples(); 
+	}
 
-// }
-
-/** 
- * DELETE all RDF triples  
+	/** 
+ * DELETE all RDF triples
  */
-// @Delete()
-// deleteAllRdfTriples():void {
+	@Delete('/clear')
+	deleteAllRdfTriples(@Query('repositoryName') repositoryName:string): any {
+		return this.repService.clearRepository(repositoryName);
+	}
 
-// }
-
-/** 
- * INSERT TBOX to repository  
+	/** 
+ * INSERT TBOX to repository  TOBEDISCUSSED
  */
 
-// @Get()
-// insertTboxToRepository():void {
+@Get('/buildTBox')
+	insertTboxToRepository(@Query('patternName') patternName: string): any {
+		return this.tboxService.insertTBox(patternName); //TOBEDISCUSSED
 
-// }
-// }
+	}
+}
