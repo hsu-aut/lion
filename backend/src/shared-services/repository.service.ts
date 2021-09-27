@@ -31,7 +31,7 @@ export class RepositoryService {
 
 
 	getCurrentRepository(): string {
-		return "test-repo";
+		return "testdb";
 	}
 
 	/**
