@@ -71,17 +71,17 @@
                         <div class="form-group col-sm-1 align-self-end">
                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 <button type="button" class="btn btn-secondary"
-                                    (click)="modifyTripel('add', newIndividualForm)">Add</button>
+                                    (click)="modifyTripel('add')">Add</button>
                                 <div class="btn-group" role="group">
                                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="addButton">
                                         <a class="dropdown-item"
-                                            (click)="modifyTripel('delete', newIndividualForm)">Delete
+                                            (click)="modifyTripel('delete')">Delete
                                             statement</a>
                                         <a class="dropdown-item"
-                                            (click)="modifyTripel('build', newIndividualForm)">Download SPARQL
+                                            (click)="modifyTripel('build')">Download SPARQL
                                             INSERT</a>
                                     </div>
                                 </div>
@@ -92,12 +92,12 @@
                     <div class="row">
                         <div class="col">
                             <app-table [currentTable]="processTable" [filter]="filterOption"
-                                [tableTitle]="processTableTitle" [tableExplanation]="processTableSubtitle"
+                                [tableTitle]="processTableSubTitle" [tableExplanation]="opcUaNodeSubtitle"
                                 (tableClickedRow)="processTableClick($event)"></app-table>
                         </div>
                         <div class="col">
                             <app-table [currentTable]="opcUaNodeTable" [filter]="filterOption"
-                                [tableTitle]="opcUaNodeTableTitle" [tableExplanation]="opcUaNodeTableSubtitle"
+                                [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
                                 (tableClickedRow)="opcUaNodeTableClick($event)">
                             </app-table>
                         </div>
