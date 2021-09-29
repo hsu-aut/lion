@@ -22,4 +22,4 @@ export const StringBody = createParamDecorator(async (_, context: ExecutionConte
 
 	return body;
 
-}); 
+});
