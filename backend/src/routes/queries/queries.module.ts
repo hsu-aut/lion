@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { QuerieController } from './queries.controller';
-import { QuerieService } from './queries.service';
-
+import {SharedServiceModule} from '../../shared-services/shared-service.module';
 @Module({
 	imports: [],
 	controllers: [
 		QuerieController
 	],
-	providers: [
-		QuerieService
+	providers: [SharedServiceModule
+	
 	],
 })
 export class QueriesModule {}
