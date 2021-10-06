@@ -18,6 +18,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "~4.16.0",
+    "form-data": "^2.3.3",
     "formidable": "^1.2.1",
     "html-to-json": "^0.6.0",
     "http-errors": "~1.6.2",
