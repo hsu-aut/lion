@@ -1,51 +1,60 @@
-import { Controller, Delete, Get, Post, Query} from '@nestjs/common';
-import { query } from 'express';
+import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { RepositoryService } from '../../shared-services/repository.service';
-import { TBoxService } from '../../shared-services/t-box.service';
+import { TBoxPatternName, TBoxService } from '../../shared-services/t-box.service';
 
-@Controller('/lion_BE/repositories') 
+@Controller('/lion_BE/repositories')
 export class RepositoriesController {
-	constructor(private repService:RepositoryService, private tboxService:TBoxService) {}
+	constructor(private repService: RepositoryService, private tboxService: TBoxService) { }
 
 	/**
- * GET list of repositories
- */
+	 * GET list of repositories
+	 * @returns 
+	 */
 	@Get()
 	getListOfRepositories(): any {
 		return this.repService.getAllRepositories();
-	} 
+	}
 
 	/**
- *CREATE new repository TOBEDISCUSSED
-*/ 
+	 * Create a new repository with a given name
+	 * @param repositoryName Name of the repository to create
+	 * @returns 
+	 */
 	@Get('/create')
-	createNewRepository(@Query('repositoryName') repositoryName:string): any {
-		return this.repService.createRepository(repositoryName); // repService.createRepository muss noch angepasst werden 
-	}
-	/** 
- * GET all RDF triples
- */
-
-	@Get()
-	getAllRdfTriples() : any {
-		return this.tboxService.getAllTriples(); 
+	createNewRepository(@Query('repositoryName') repositoryName: string): any {
+		return this.repService.createRepository(repositoryName);
 	}
 
-	/** 
- * DELETE all RDF triples
- */
-	@Delete('/clear')
-	deleteAllRdfTriples(@Query('repositoryName') repositoryName:string): any {
-		return this.repService.clearRepository(repositoryName);
+	/**
+	 * GET all RDF triples
+	 * @returns 
+	 */
+	@Get('/current/triples')
+	getAllRdfTriples(): any {
+		return this.tboxService.getAllTriples();
 	}
 
 	/** 
- * INSERT TBOX to repository  TOBEDISCUSSED
- */
+	* DELETE all RDF triples
+	*/
+	@Delete('/current/statements')
+	deleteAllRdfTriples(): any {
+		return this.repService.clearRepository();
+	}
 
-@Get('/buildTBox')
-	insertTboxToRepository(@Query('patternName') patternName: string): any {
-		return this.tboxService.insertTBox(patternName); //TOBEDISCUSSED
+	/** 
+	* DELETE repository
+	*/
+	@Delete('/current')
+	deleteRepository(): any {
+		return this.repService.deleteRepository();
+	}
 
+	/** 
+	* INSERT TBOX to repository
+	*/
+	@Get('/buildTBox')
+	insertTboxToRepository(@Query('patternName') patternName: TBoxPatternName): any {
+		return this.tboxService.insertTBox(patternName);
 	}
 }
