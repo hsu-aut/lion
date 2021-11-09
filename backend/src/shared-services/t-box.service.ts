@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { RepositoryService } from "./repository.service";
 import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class TBoxService {
@@ -47,7 +48,7 @@ export class TBoxService {
 			url: `/repositories/${currentRepo}/statements`
 		};
 
-		return this.http.request<any>(reqConfig);
+		return this.http.request<any>(reqConfig).pipe(map(res => res.data));
 	}
 
 
@@ -106,7 +107,7 @@ export class TBoxService {
 
 // TODO: This is pretty bad because the urls are currently hard coded
 // -> There is currently no way to set a different version
-enum TBoxPatternName {
+export enum TBoxPatternName {
 	"VDI3682" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/VDI%203682/VDI3682.owl",
 	"VDI2206" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/VDI%202206/VDI2206.owl",
 	"ISA88" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/ISA%2088/ISA88.owl",
