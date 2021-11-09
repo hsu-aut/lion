@@ -77,11 +77,9 @@
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="addButton">
-                                        <a class="dropdown-item"
-                                            (click)="modifyTripel('delete')">Delete
+                                        <a class="dropdown-item" (click)="modifyTripel('delete')">Delete
                                             statement</a>
-                                        <a class="dropdown-item"
-                                            (click)="modifyTripel('build')">Download SPARQL
+                                        <a class="dropdown-item" (click)="modifyTripel('build')">Download SPARQL
                                             INSERT</a>
                                     </div>
                                 </div>
@@ -91,15 +89,16 @@
 
                     <div class="row">
                         <div class="col">
-                            <app-table [currentTable]="processTable" [filter]="filterOption"
-                                [tableTitle]="processTableSubTitle" [tableExplanation]="opcUaNodeSubtitle"
-                                (tableClickedRow)="processTableClick($event)"></app-table>
+                            <!-- <app-table [currentTable]="processTable" [filter]="filterOption"
+                                [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
+                                (tableClickedRow)="processTableClick($event)">
+                            </app-table> -->
                         </div>
                         <div class="col">
-                            <app-table [currentTable]="opcUaNodeTable" [filter]="filterOption"
+                            <!-- <app-table [currentTable]="opcUaNodeTable" [filter]="filterOption"
                                 [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
                                 (tableClickedRow)="opcUaNodeTableClick($event)">
-                            </app-table>
+                            </app-table> -->
                         </div>
                     </div>
 
