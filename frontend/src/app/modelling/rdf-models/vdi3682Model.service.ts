@@ -132,10 +132,10 @@ export class Vdi3682ModelService {
   }
 
   public modifyTripel(variables: tripel, action: string){
-    
+
       var GRAPHS = this.graphs.getGraphs();
       var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
-  
+
       switch (action) {
         case "add": {
           return this.query.SPARQL_UPDATE(this.vdi3682insert.createEntity(variables, activeGraph));
@@ -154,7 +154,7 @@ export class Vdi3682ModelService {
             observer.complete();
           });
           return blobObserver;
-        
+
       }
     }
   }
@@ -207,7 +207,7 @@ export class VDI3682DATA {
 PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?Process WHERE { 
+SELECT ?Process WHERE {
 ?Process a VDI3682:Process.
 
 }
@@ -217,7 +217,7 @@ SELECT ?Process WHERE {
 PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?TR WHERE { 
+SELECT ?TR WHERE {
 ?TR a VDI3682:TechnicalResource.
 }
 `
@@ -226,7 +226,7 @@ SELECT ?TR WHERE {
 PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?IoPoE WHERE { 
+SELECT ?IoPoE WHERE {
 ?IoPoE a ?x.
   VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
 }
@@ -235,10 +235,10 @@ SELECT ?IoPoE WHERE {
   PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE { 
+  SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE {
   ?Process a VDI3682:Process.
   OPTIONAL { ?Process VDI3682:shortName ?pShortName}
-  
+
   OPTIONAL {?Process VDI3682:hasInput ?Input. OPTIONAL {?Input VDI3682:shortName ?iShortName.} ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
   OPTIONAL {?Process VDI3682:hasOutput ?Output. OPTIONAL {?Output VDI3682:shortName ?oShortName.} ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
   OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process. OPTIONAL {?TechnicalResource VDI3682:shortName ?tShortName.}}
@@ -248,7 +248,7 @@ SELECT ?IoPoE WHERE {
 //   public SELECT_TABLE_OF_PROCESS_INFO = `
 // PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
-// SELECT ?Process ?Input ?InputType ?Output ?OutputType ?TechnicalResource WHERE { 
+// SELECT ?Process ?Input ?InputType ?Output ?OutputType ?TechnicalResource WHERE {
 // ?Process a VDI3682:Process.
 //   OPTIONAL {?Process VDI3682:hasInput ?Input. ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
 //   OPTIONAL {?Process VDI3682:hasOutput ?Output. ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
@@ -271,13 +271,13 @@ FILTER(STRSTARTS(STR(?type), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?ObjectProperty WHERE { 
+SELECT ?ObjectProperty WHERE {
   ?ObjectProperty rdfs:domain ?a.
   # optionally if the range is a blank node not changes required
   OPTIONAL {    	?a owl:unionOf ?c.
           ?c rdf:rest* ?e.
           ?e rdf:first ?g.}
-  # in case the range is a blank node, use the rdf:first as return    
+  # in case the range is a blank node, use the rdf:first as return
   BIND(IF(isBlank(?a),?g,?a) AS ?Property)
   # filter for class
   FILTER(?Property = IRI("${owlClass}"))
@@ -290,13 +290,13 @@ SELECT ?ObjectProperty WHERE {
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?Class WHERE { 
+SELECT ?Class WHERE {
   ?ObjectProperty rdfs:range ?a.
   # optionally if the range is a blank node not changes required
   OPTIONAL {    	?a owl:unionOf ?c.
           ?c rdf:rest* ?e.
           ?e rdf:first ?g.}
-  # in case the range is a blank node, use the rdf:first as return    
+  # in case the range is a blank node, use the rdf:first as return
   BIND(IF(isBlank(?a),?g,?a) AS ?Class)
   # filter for class
   FILTER(?ObjectProperty = IRI("${predicate}"))
@@ -352,7 +352,7 @@ export class VDI3682INSERT {
   public createEntity(graph: tripel, activeGraph: string) {
 
     var insertString = `
-      INSERT { 
+      INSERT {
         GRAPH <${activeGraph}>{
             ?subject ?predicate ?object;
             a owl:NamedIndividual.}

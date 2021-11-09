@@ -13,7 +13,7 @@ import { GraphsModule } from './routes/graphs/graphs.module';
 		FpbModule,
 		StepModule,
 		EclassSearchModule,
-		GraphsModule
+		GraphsModule,
 		QueriesModule
 	],
 	controllers: [AppController],
