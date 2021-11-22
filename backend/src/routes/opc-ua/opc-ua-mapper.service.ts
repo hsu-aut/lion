@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { OPCUAClient, MessageSecurityMode, SecurityPolicy, UserTokenType} from 'node-opcua';
-//import { OpcNode } from '../../../../frontend/src/app/mapping/opc/subcomponents/opc-mapping-element.component' ;//'././././subcomponents/opc-mapping-element.component';
 import { DataToMap, ServerInfo, OpcNode} from './opc-ua.controller';
 import { v4 as uuid } from 'uuid';
 
@@ -21,10 +19,10 @@ export class OpcUaMappingCreator {
 
 
 	createMapping(): string {
-		console.log(`opc-prefix: ${this.opcPrefix}`);
-		console.log(`nodesToMap: ${this.nodesToMap}`);
-		console.log(`serverInfo: ${this.serverInfo}`);
-		console.log(`serverIp: ${this.serverIp}`);
+		// console.log(`opc-prefix: ${this.opcPrefix}`);
+		// console.log(`nodesToMap: ${this.nodesToMap}`);
+		// console.log(`serverInfo: ${this.serverInfo}`);
+		// console.log(`serverIp: ${this.serverIp}`);
 
 
 		console.log('Create Mapping...');
@@ -65,7 +63,7 @@ export class OpcUaMappingCreator {
 		return queryString;
 	}
 
-	createObjectProperty(individualIri, property, node): string {
+	createObjectProperty(individualIri: string, property: string, node: OpcNode): string {
 		console.log('Creating Object Property...');
 		const referencedElements = node[property];      // Elements that are connected to node via a reference (which is key)
 		let queryString = '';

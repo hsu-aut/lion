@@ -1,12 +1,9 @@
-import { Controller, Delete, Get, Param, Post, Put, UploadedFile, UseInterceptors, Body , Res, Req} from '@nestjs/common';
-// import { FileInterceptor } from '@nestjs/platform-express';
-// import * as fs from "fs";
+import { Controller, Post, Body , Res} from '@nestjs/common';
 import { Response } from 'express';
 import { OpcUaService } from './opc-ua.service';
-import { OpcUaClientCreator } from './opc-ua-client.service';
 import { OpcUaMappingCreator } from './opc-ua-mapper.service';
 import { SparqlService } from '../../shared-services/sparql.service' ;
-// import { OpcNode } from './subcomponents/opc-mapping-element.component';
+
 
 
 export class ServerInfo{
@@ -19,9 +16,9 @@ export class ServerInfo{
 
 export class DataToMap{
 	// nodesToMap: Array<OpcNode>
-	serverInfo: ServerInfo
-	serverIp: string
-	opcPrefix: string
+	// serverInfo: ServerInfo
+	// serverIp: string
+	// opcPrefix: string
 	repository: string // referenced, but not assigned
 	opc: Opc
 }
@@ -51,9 +48,6 @@ export class OpcUaController {
 	crawlServer(@Body() serverInfo: ServerInfo, @Res() response: Response): void {
 		console.log('trying to crawl server.');
 		this.opcuaService.connectAndCrawl(serverInfo, response);
-		// connectAndCrawl();
-		
-		// let crawlResult;
 	}
 
 	@Post('/mappings') 
@@ -62,10 +56,15 @@ export class OpcUaController {
 		console.log('dataToMap:');
 		console.log(dataToMap);
 
-		console.log('nodesToMap:');
-		console.log(dataToMap.opc.nodesToMap);
-		// figure out where to put: function(req, res)
-		// const repository = dataToMap.repository;
+		// console.log('opc:');
+		// console.log(dataToMap.opc);
+
+		// console.log('nodesToMap:');
+		// console.log(dataToMap.opc.nodesToMap);
+
+		// console.log('ServerInfo:');
+		// console.log(dataToMap.opc.serverInfo);
+
 
 		const opcUaMapper = new OpcUaMappingCreator(dataToMap);
 		const mapping = opcUaMapper.createMapping();
@@ -73,11 +72,6 @@ export class OpcUaController {
 		console.log(`Mapping Query: ${mapping}`);
 		this.sparqlService.update(mapping) ;
 
-		// sparqlUpdate(mapping, repository) { }: .then(queryRes => {
-		// 	res.status(200).json(queryRes);
-		// }).catch(err => {
-		// 	res.status(500).json(err);
-		// })
 	}
 
 }
