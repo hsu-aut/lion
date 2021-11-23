@@ -13,22 +13,21 @@
     "typescript.preferences.importModuleSpecifier": "relative",
     "editor.showFoldingControls": "always",
     "editor.wordWrap": "off",
-    "eslint.enable": false,
     "files.exclude": {
-        "**/app/**/*.js.map": true,
+        ".history": true,
         "**/app/**/*.js": {
             "when": "$(basename).ts"
         },
-        "typings": true,
+        "**/app/**/*.js.map": true,
         "node_modules": true,
-        ".history": true,
-        ".vscode": true // this excludes the folder
+        "typings": true
     },
     "search.exclude": {
         "**/node_modules": true,
         "**/bower_components": true,
         "**/documentation": true
     },
+    "eslint.enable": true,
     "eslint.validate": [
         "vue",
         "javascript",
