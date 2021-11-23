@@ -19,21 +19,21 @@ import { GraphsComponent } from './graphs/graphs.component';
 import { TableModule } from '../shared/modules/table/table.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ConfigurationRoutingModule,
-    NgbCarouselModule,
-    NgbAlertModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TableModule
-  ],
-  declarations: [
-    ConfigurationComponent,
-    SidebarComponent,
-    RepositoryComponent,
-    NamespacesComponent,
-    GraphsComponent
-  ]
+    imports: [
+        CommonModule,
+        ConfigurationRoutingModule,
+        NgbCarouselModule,
+        NgbAlertModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TableModule
+    ],
+    declarations: [
+        ConfigurationComponent,
+        SidebarComponent,
+        RepositoryComponent,
+        NamespacesComponent,
+        GraphsComponent
+    ]
 })
 export class ConfigurationModule { }

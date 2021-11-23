@@ -11,19 +11,19 @@ import { MessagesService } from '../../shared/services/messages.service';
 import { Vdi3682ModelService } from '../../modelling/rdf-models/vdi3682Model.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class FpbService {
 
   public fpbRoute = '/fpb';
 
-constructor(
+  constructor(
   private config: ConfigurationService,
   private http: HttpClient,
   private graphs: GraphOperationsService,
   private messageService: MessagesService,
   private vdi: Vdi3682ModelService
-) { }
+  ) { }
 
 
   /**
@@ -33,13 +33,13 @@ constructor(
    * @memberof FpbService
    */
   getListOfFiles() {
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'none',
-      })
-    };
+      const httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'none',
+          })
+      };
 
-    return this.http.get(this.config.getHost() + this.fpbRoute, httpOptions);
+      return this.http.get(this.config.getHost() + this.fpbRoute, httpOptions);
   }
 
   /**
@@ -50,15 +50,15 @@ constructor(
    * @memberof FpbService
    */
   deleteFile(fileName: string) {
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'none',
-      }),
-      params: new HttpParams().set('fileName',fileName)
-    };
-    var request: string = this.config.getHost() + this.fpbRoute;
+      const httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'none',
+          }),
+          params: new HttpParams().set('fileName',fileName)
+      };
+      const request: string = this.config.getHost() + this.fpbRoute;
 
-    return this.http.delete(request, httpOptions);
+      return this.http.delete(request, httpOptions);
   }
 
 
@@ -72,29 +72,29 @@ constructor(
    */
   mapToRDF(fileName: string) {
 
-    let request: string = this.config.getHost() + this.fpbRoute + '/rdf';
+      const request: string = this.config.getHost() + this.fpbRoute + '/rdf';
 
-    let body = {
-      fileName: fileName,
-      activeGraph: this.graphs.getGraphs()[this.graphs.getActiveGraph()],
-      repositoryName: this.config.getRepository()
-    }
+      const body = {
+          fileName: fileName,
+          activeGraph: this.graphs.getGraphs()[this.graphs.getActiveGraph()],
+          repositoryName: this.config.getRepository()
+      };
     
-    let headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json')
+      const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
     
-    var insertObservable = new Observable((observer) => {
-      this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
-        this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
-        this.vdi.initializeVDI3682();
-        observer.next();
-        observer.complete();
-      },
-        error => {
-          this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
-        });
-    })
+      const insertObservable = new Observable((observer) => {
+          this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
+              this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
+              this.vdi.initializeVDI3682();
+              observer.next();
+              observer.complete();
+          },
+          error => {
+              this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
+          });
+      });
 
-    return insertObservable;
+      return insertObservable;
   }
 
 }

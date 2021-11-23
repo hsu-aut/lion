@@ -18,22 +18,22 @@ import { TableModule } from '../shared/modules/table/table.module';
 import { ChartsModule as Ng2Charts } from 'ng2-charts';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ExplorationRoutingModule,
-    NgbCarouselModule,
-    NgbAlertModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TableModule,
-    Ng2Charts
-  ],
-  declarations: [
-    ExplorationComponent,
-    SidebarComponent,
-    QueryEditorComponent,
-    DashboardComponent,
-    AboxExplorerComponent
-  ]
+    imports: [
+        CommonModule,
+        ExplorationRoutingModule,
+        NgbCarouselModule,
+        NgbAlertModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TableModule,
+        Ng2Charts
+    ],
+    declarations: [
+        ExplorationComponent,
+        SidebarComponent,
+        QueryEditorComponent,
+        DashboardComponent,
+        AboxExplorerComponent
+    ]
 })
 export class ExplorationModule { }

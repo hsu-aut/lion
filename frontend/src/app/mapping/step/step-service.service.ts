@@ -10,7 +10,7 @@ import { Vdi2206ModelService } from '../../modelling/rdf-models/vdi2206Model.ser
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class StepServiceService {
 
@@ -31,13 +31,13 @@ export class StepServiceService {
    * @memberof StepServiceService
    */
   getListOfFiles() {
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'none',
-      })
-    };
+      const httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'none',
+          })
+      };
 
-    return this.http.get(this.config.getHost() + this.stepRoute, httpOptions);
+      return this.http.get(this.config.getHost() + this.stepRoute, httpOptions);
   }
 
   /**
@@ -48,15 +48,15 @@ export class StepServiceService {
    * @memberof StepServiceService
    */
   deleteFile(fileName: string) {
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'none',
-      }),
-      params: new HttpParams().set('fileName',fileName)
-    };
-    var request: string =  this.config.getHost() + this.stepRoute
+      const httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'none',
+          }),
+          params: new HttpParams().set('fileName',fileName)
+      };
+      const request: string =  this.config.getHost() + this.stepRoute;
 
-    return this.http.delete(request, httpOptions);
+      return this.http.delete(request, httpOptions);
   }
 
 
@@ -70,31 +70,31 @@ export class StepServiceService {
    */
   mapToRDF(fileName: string) {
 
-    let request: string = this.config.getHost() + this.stepRoute + '/rdf';
+      const request: string = this.config.getHost() + this.stepRoute + '/rdf';
 
-    let body = {
-      fileName: fileName,
-      repositoryName: this.config.getRepository()
-    }
+      const body = {
+          fileName: fileName,
+          repositoryName: this.config.getRepository()
+      };
     
 
-    let headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json')
+      const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
     
 
 
-    var insertObservable = new Observable((observer) => {
-      this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
-        this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
-        this.vdi.initializeVDI2206();
-        observer.next();
-        observer.complete();
-      },
-        error => {
-          this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
-        });
-    })
+      const insertObservable = new Observable((observer) => {
+          this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
+              this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
+              this.vdi.initializeVDI2206();
+              observer.next();
+              observer.complete();
+          },
+          error => {
+              this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
+          });
+      });
 
-    return insertObservable;
+      return insertObservable;
   }
 
   /**
@@ -105,17 +105,17 @@ export class StepServiceService {
    * @memberof StepServiceService
    */
   getJson(fileName: string) {
-    var httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'none',
-      }),
-      params: new HttpParams().set('fileName',fileName)
-    };
-    var request: string;
+      const httpOptions = {
+          headers: new HttpHeaders({
+              'Content-Type': 'none',
+          }),
+          params: new HttpParams().set('fileName',fileName)
+      };
+      let request: string;
 
-    request = this.config.getHost() + this.stepRoute + '/json';
+      request = this.config.getHost() + this.stepRoute + '/json';
 
-    return this.http.get(request, httpOptions);
+      return this.http.get(request, httpOptions);
   }
 
 }

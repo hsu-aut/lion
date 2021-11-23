@@ -24,28 +24,28 @@ import { Opc61360ConnectorComponent } from './connectors/opc-61360/opc-61360-con
 import { OpcFpdConnectorComponent } from './connectors/opc-fpb/opc-fpb-connector.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MappingRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    UploadModule,
-    TableModule
-  ],
-  declarations: [
-    MappingComponent,
-    SidebarComponent,
-    OpcComponent,
-    OpcMappingElementComponent,
-    StepComponent,
-    FpbComponent,
-    FpbStepComponent,
-    OpcVDI2206ConnectorComponent,
-    Opc61360ConnectorComponent,
-    OpcFpdConnectorComponent
-  ],
-  providers: [
-    OpcMappingService
-  ]
+    imports: [
+        CommonModule,
+        MappingRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        UploadModule,
+        TableModule
+    ],
+    declarations: [
+        MappingComponent,
+        SidebarComponent,
+        OpcComponent,
+        OpcMappingElementComponent,
+        StepComponent,
+        FpbComponent,
+        FpbStepComponent,
+        OpcVDI2206ConnectorComponent,
+        Opc61360ConnectorComponent,
+        OpcFpdConnectorComponent
+    ],
+    providers: [
+        OpcMappingService
+    ]
 })
 export class MappingModule { }

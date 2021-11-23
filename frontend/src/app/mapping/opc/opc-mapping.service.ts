@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class OpcMappingService {
 
-constructor(
+    constructor(
     private httpClient: HttpClient,
     private config: ConfigurationService,
     ) {}
@@ -41,7 +41,7 @@ constructor(
     addAllChildren(node: OpcNode) {
         const keys = Object.keys(node);
         keys.forEach(key => {
-            const currentElement = node[key]
+            const currentElement = node[key];
             if (Array.isArray(currentElement)) {
                 currentElement.forEach(elem => {
                     this.addOpcNode(elem);
@@ -60,7 +60,7 @@ constructor(
         // Filter the list to get all elements that do not have the given ID
         this.nodesToMap = this.nodesToMap.filter(elem =>
             elem.nodeId != node.nodeId
-        )
+        );
     }
 
 
@@ -71,7 +71,7 @@ constructor(
     removeAllChildren(node: {}) {
         const keys = Object.keys(node);
         keys.forEach(key => {
-            const currentElement = node[key]
+            const currentElement = node[key];
             if (Array.isArray(currentElement)) {
                 currentElement.forEach(elem => {
                     this.removeOpcNode(elem);
@@ -93,8 +93,8 @@ constructor(
                 serverInfo: serverInfo,
                 nodesToMap: this.nodesToMap
             }
-        }
-        console.log(dataToMap.repository)
+        };
+        console.log(dataToMap.repository);
         return this.httpClient.post(`${this.opcRoute}/mappings`, dataToMap) as Observable<string>;
     }
 
@@ -109,7 +109,7 @@ constructor(
     isInNodesToMap(node: OpcNode){
         const index = this.nodesToMap.findIndex(nodeToMap =>
             nodeToMap.nodeId === node.nodeId
-        )
+        );
         if (index == -1) {
             return false;
         } else {
@@ -121,9 +121,9 @@ constructor(
 
 
 export interface OpcUaServerInfo {
-    endpointUrl: string,
-    securityPolicy: string,
-    messageSecurityMode: string,
-    username: string,
-    password: string,
+    endpointUrl: string;
+    securityPolicy: string;
+    messageSecurityMode: string;
+    username: string;
+    password: string;
 }

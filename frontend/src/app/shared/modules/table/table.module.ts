@@ -8,14 +8,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TableComponent } from './table.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    NgbCarouselModule,
-    NgbAlertModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  declarations: [TableComponent],
-  exports: [TableComponent]
+    imports: [
+        CommonModule,
+        NgbCarouselModule,
+        NgbAlertModule,
+        FormsModule,
+        ReactiveFormsModule
+    ],
+    declarations: [TableComponent],
+    exports: [TableComponent]
 })
 export class TableModule { }

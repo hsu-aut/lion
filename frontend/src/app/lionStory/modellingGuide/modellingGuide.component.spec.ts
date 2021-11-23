@@ -6,23 +6,23 @@ import { DebugElement } from '@angular/core';
 import { ModellingGuideComponent } from './modellingGuide.component';
 
 describe('ModellingGuideComponent', () => {
-  let component: ModellingGuideComponent;
-  let fixture: ComponentFixture<ModellingGuideComponent>;
+    let component: ModellingGuideComponent;
+    let fixture: ComponentFixture<ModellingGuideComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ModellingGuideComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [ ModellingGuideComponent ]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ModellingGuideComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ModellingGuideComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

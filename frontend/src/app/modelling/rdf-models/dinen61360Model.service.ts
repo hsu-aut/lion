@@ -9,7 +9,7 @@ import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class Dinen61360Service {
 
@@ -34,197 +34,197 @@ export class Dinen61360Service {
     private dlService: DownloadService
   ) {
 
-    this.initializeDINEN61360();
+      this.initializeDINEN61360();
 
   }
 
   public initializeDINEN61360() {
-    this.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_ALL_TYPE_INFO = data;
-    });
-    this.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_All_DE = data;
-    });
-    this.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_All_DEI = data;
-    });
-    this.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_All_DET = data;
-    });
-    this.loadLIST_DATA_TYPES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_DATA_TYPES = data;
-    });
-    this.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_ALL_INSTANCE_INFO = data;
-    });
-    this.loadLIST_EXPRESSION_GOALS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_EXPRESSION_GOALS = data;
-    });
-    this.loadLIST_LOGIC_INTERPRETATIONS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_LOGIC_INTERPRETATIONS = data;
-    });
+      this.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_ALL_TYPE_INFO = data;
+      });
+      this.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_All_DE = data;
+      });
+      this.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_All_DEI = data;
+      });
+      this.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_All_DET = data;
+      });
+      this.loadLIST_DATA_TYPES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_DATA_TYPES = data;
+      });
+      this.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_ALL_INSTANCE_INFO = data;
+      });
+      this.loadLIST_EXPRESSION_GOALS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_EXPRESSION_GOALS = data;
+      });
+      this.loadLIST_LOGIC_INTERPRETATIONS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_LOGIC_INTERPRETATIONS = data;
+      });
   }
 
   public loadTABLE_All_TYPES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.dinen61360data.SELECT_TABLE_ALL_TYPE_INFO);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.dinen61360data.SELECT_TABLE_ALL_TYPE_INFO);
   }
   public loadLIST_All_DE() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDE, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDE, 0);
   }
   public loadLIST_All_DEI() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDEI, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDEI, 0);
   }
   public loadLIST_All_DET() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDET, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SPARQL_SELECT_allDET, 0);
   }
   public loadLIST_DATA_TYPES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_DATA_TYPES, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_DATA_TYPES, 0);
   }
   public loadLIST_LOGIC_INTERPRETATIONS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_LOGIC_INTERPRETATIONS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_LOGIC_INTERPRETATIONS, 0);
   }
   public loadLIST_EXPRESSION_GOALS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_EXPRESSION_GOALS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.dinen61360data.SELECT_LIST_EXPRESSION_GOALS, 0);
   }
   public loadTABLE_ALL_INSTANCE_INFO() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.dinen61360data.SELECT_TABLE_ALL_INSTANCE_INFO);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.dinen61360data.SELECT_TABLE_ALL_INSTANCE_INFO);
   }
 
 
   public setTABLE_All_TYPES(table) {
-    this.TABLE_ALL_TYPE_INFO = table;
+      this.TABLE_ALL_TYPE_INFO = table;
   }
   public setTABLE_ALL_INSTANCE_INFO(table) {
-    this.TABLE_ALL_INSTANCE_INFO = table;
+      this.TABLE_ALL_INSTANCE_INFO = table;
   }
   public setLIST_All_DE(list) {
-    this.LIST_All_DE = list;
+      this.LIST_All_DE = list;
   }
   public setLIST_All_DET(list) {
-    this.LIST_All_DET = list;
+      this.LIST_All_DET = list;
   }
   public setLIST_All_DEI(list) {
-    this.LIST_All_DEI = list;
+      this.LIST_All_DEI = list;
   }
 
 
-  public getTABLE_All_TYPES() { return this.TABLE_ALL_TYPE_INFO }
-  public getLIST_All_DE() { return this.LIST_All_DE }
-  public getLIST_All_DET() { return this.LIST_All_DET }
-  public getLIST_All_DEI() { return this.LIST_All_DEI }
-  public getLIST_DATA_TYPES() { return this.LIST_DATA_TYPES }
-  public getTABLE_ALL_INSTANCE_INFO() { return this.TABLE_ALL_INSTANCE_INFO }
-  public getLIST_EXPRESSION_GOALS() { return this.LIST_EXPRESSION_GOALS }
-  public getLIST_LOGIC_INTERPRETATIONS() { return this.LIST_LOGIC_INTERPRETATIONS }
+  public getTABLE_All_TYPES() { return this.TABLE_ALL_TYPE_INFO; }
+  public getLIST_All_DE() { return this.LIST_All_DE; }
+  public getLIST_All_DET() { return this.LIST_All_DET; }
+  public getLIST_All_DEI() { return this.LIST_All_DEI; }
+  public getLIST_DATA_TYPES() { return this.LIST_DATA_TYPES; }
+  public getTABLE_ALL_INSTANCE_INFO() { return this.TABLE_ALL_INSTANCE_INFO; }
+  public getLIST_EXPRESSION_GOALS() { return this.LIST_EXPRESSION_GOALS; }
+  public getLIST_LOGIC_INTERPRETATIONS() { return this.LIST_LOGIC_INTERPRETATIONS; }
 
   public modifyInstance(action: string, variables: DINEN61360Variables) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
       }
       case "delete": {
-        console.log("not implemented yet")
-        break;
+          console.log("not implemented yet");
+          break;
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.dlService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.dlService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
   }
   public modifyType(action: string, variables: DINEN61360Variables) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
       }
       case "delete": {
-        console.log("not implemented yet")
-        break;
+          console.log("not implemented yet");
+          break;
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.dlService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.dlService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
 
   }
   public insertDET(variables: DINEN61360Variables) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+      const PREFIXES = this.nameService.getPrefixes();
+      const namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
+      return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360T(variables, activeGraph));
   }
   public buildDET(variables: DINEN61360Variables) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+      const PREFIXES = this.nameService.getPrefixes();
+      const namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    return this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
+      return this.dinen61360insert.buildDINEN61360T(variables, activeGraph);
   }
   public insertDEI(variables: DINEN61360Variables) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+      const PREFIXES = this.nameService.getPrefixes();
+      const namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
+      return this.query.SPARQL_UPDATE(this.dinen61360insert.buildDINEN61360I(variables, activeGraph));
   }
   public buildDEI(variables: DINEN61360Variables) {
-    var PREFIXES = this.nameService.getPrefixes();
-    var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+      const PREFIXES = this.nameService.getPrefixes();
+      const namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    return this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
+      return this.dinen61360insert.buildDINEN61360I(variables, activeGraph);
   }
 
 }
 
 export class DINEN61360Data {
-  public IRI: Array<String>;
+  public IRI: Array<string>;
 
   public SELECT_TABLE_ALL_TYPE_INFO = `
   PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
@@ -380,37 +380,37 @@ export class DINEN61360Variables {
 
 export class DINEN61360Insert {
 
-  public buildDINEN61360T(variables: DINEN61360Variables, activeGraph: string) {
+    public buildDINEN61360T(variables: DINEN61360Variables, activeGraph: string) {
 
-    var optionals = {
-      boundSynonymous_Name: `BIND(STR("${variables.optionalTypeVariables.Synonymous_Name}") AS ?Synonymous_Name).`,
-      boundbackwards_compatible_Revision: `BIND(STR("${variables.optionalTypeVariables.backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
-      boundbackwards_compatible_Version: `BIND(STR("${variables.optionalTypeVariables.backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
-      boundValue_Format_Field_length: `BIND(STR("${variables.optionalTypeVariables.Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
-      boundValue_Format_Field_length_Variable: `BIND(STR("${variables.optionalTypeVariables.Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
-      boundValue_Format_non_quantitativ: `BIND(STR("${variables.optionalTypeVariables.Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
-      boundValue_Format_quantitativ: `BIND(STR("${variables.optionalTypeVariables.Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
-      boundValue_List: `BIND(STR("${variables.optionalTypeVariables.Value_List}") AS ?Value_List).`,
-      boundValue_List_Member: `BIND(STR("${variables.optionalTypeVariables.Value_List_Member}") AS ?Value_List_Member).`,
-      boundSource_Document_of_Definition: `BIND(STR("${variables.optionalTypeVariables.Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
-      boundSynonymous_Letter_Symbol: `BIND(STR("${variables.optionalTypeVariables.Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
-      boundNote: `BIND(STR("${variables.optionalTypeVariables.Note}") AS ?Note).`,
-      boundRemark: `BIND(STR("${variables.optionalTypeVariables.Remark}") AS ?Remark).`,
-      boundPreferred_Letter_Symbol: `BIND(STR("${variables.optionalTypeVariables.Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
-      boundFormula: `BIND(STR("${variables.optionalTypeVariables.Formula}") AS ?Formula).`,
-      boundDrawing_Reference: `BIND(STR("${variables.optionalTypeVariables.Drawing_Reference}") AS ?Drawing_Reference).`,
-      boundUnitOfMeasure: `BIND(STR("${variables.mandatoryTypeVariables.unitOfMeasure}") AS ?Unit_of_Measure).`,
-    }
+        const optionals = {
+            boundSynonymous_Name: `BIND(STR("${variables.optionalTypeVariables.Synonymous_Name}") AS ?Synonymous_Name).`,
+            boundbackwards_compatible_Revision: `BIND(STR("${variables.optionalTypeVariables.backwards_compatible_Revision}") AS ?backwards_compatible_Revision).`,
+            boundbackwards_compatible_Version: `BIND(STR("${variables.optionalTypeVariables.backwards_compatible_Version}") AS ?backwards_compatible_Version).`,
+            boundValue_Format_Field_length: `BIND(STR("${variables.optionalTypeVariables.Value_Format_Field_length}") AS ?Value_Format_Field_length).`,
+            boundValue_Format_Field_length_Variable: `BIND(STR("${variables.optionalTypeVariables.Value_Format_Field_length_Variable}") AS ?Value_Format_Field_length_Variable).`,
+            boundValue_Format_non_quantitativ: `BIND(STR("${variables.optionalTypeVariables.Value_Format_non_quantitativ}") AS ?Value_Format_non_quantitativ).`,
+            boundValue_Format_quantitativ: `BIND(STR("${variables.optionalTypeVariables.Value_Format_quantitativ}") AS ?Value_Format_quantitativ).`,
+            boundValue_List: `BIND(STR("${variables.optionalTypeVariables.Value_List}") AS ?Value_List).`,
+            boundValue_List_Member: `BIND(STR("${variables.optionalTypeVariables.Value_List_Member}") AS ?Value_List_Member).`,
+            boundSource_Document_of_Definition: `BIND(STR("${variables.optionalTypeVariables.Source_Document_of_Definition}") AS ?Source_Document_of_Definition).`,
+            boundSynonymous_Letter_Symbol: `BIND(STR("${variables.optionalTypeVariables.Synonymous_Letter_Symbol}") AS ?Synonymous_Letter_Symbol).`,
+            boundNote: `BIND(STR("${variables.optionalTypeVariables.Note}") AS ?Note).`,
+            boundRemark: `BIND(STR("${variables.optionalTypeVariables.Remark}") AS ?Remark).`,
+            boundPreferred_Letter_Symbol: `BIND(STR("${variables.optionalTypeVariables.Preferred_Letter_Symbol}") AS ?Preferred_Letter_Symbol).`,
+            boundFormula: `BIND(STR("${variables.optionalTypeVariables.Formula}") AS ?Formula).`,
+            boundDrawing_Reference: `BIND(STR("${variables.optionalTypeVariables.Drawing_Reference}") AS ?Drawing_Reference).`,
+            boundUnitOfMeasure: `BIND(STR("${variables.mandatoryTypeVariables.unitOfMeasure}") AS ?Unit_of_Measure).`,
+        };
 
-    // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
+        // add a check for empties and if one is found delete the string
+        for (const i in optionals) {
 
-      const element = optionals[i];
-      if (element.search(`undefined`) != -1) { optionals[i] = "" }
-      // console.log(element);
-    }
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = ""; }
+            // console.log(element);
+        }
 
-    var insertString = `
+        const insertString = `
 # DINEN61360_INSERT_SIMPLE with UUID bindings
 # Necessary W3C ontologies
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -516,33 +516,33 @@ INSERT {
       BIND(<${variables.mandatoryTypeVariables.dataTypeIRI}> AS ?DataTypeIRI).
     }
   }
-  }`
-    return insertString
-  }
-
-  public buildDINEN61360I(variables: DINEN61360Variables, activeGraph: string) {
-
-    var optionals = {
-      boundExpressionGoal: `BIND(STR("${variables.instanceVariables.expressionGoalString}") AS ?Expression_Goal).`,
-      boundLogicInterpretation: `BIND(STR("${variables.instanceVariables.logicInterpretationString}") AS ?Logic_Interpretation).`
-
+  }`;
+        return insertString;
     }
 
-    // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
+    public buildDINEN61360I(variables: DINEN61360Variables, activeGraph: string) {
 
-      const element = optionals[i];
-      if (element.search(`undefined`) != -1) { optionals[i] = "" }
-      // console.log(element);
-    }
-    for (const i in optionals) {
+        const optionals = {
+            boundExpressionGoal: `BIND(STR("${variables.instanceVariables.expressionGoalString}") AS ?Expression_Goal).`,
+            boundLogicInterpretation: `BIND(STR("${variables.instanceVariables.logicInterpretationString}") AS ?Logic_Interpretation).`
 
-      const element = optionals[i];
-      if (element.search(`null`) != -1) { optionals[i] = "" }
-      // console.log(element);
-    }
+        };
 
-    var insertString = `
+        // add a check for empties and if one is found delete the string
+        for (const i in optionals) {
+
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = ""; }
+            // console.log(element);
+        }
+        for (const i in optionals) {
+
+            const element = optionals[i];
+            if (element.search(`null`) != -1) { optionals[i] = ""; }
+            // console.log(element);
+        }
+
+        const insertString = `
 # DINEN61360_INSERT_SIMPLE with UUID bindings
 # Necessary W3C ontologies
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -628,10 +628,10 @@ INSERT {
     }
   }
 
-}`
-    return insertString
+}`;
+        return insertString;
 
-  }
+    }
 
 
 }

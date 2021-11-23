@@ -4,16 +4,16 @@ export class cValFns {
 
     noProtocol(pattern: FormControl) {
 
-        let protocols = new DefaultRegularExpressions().protocols
+        const protocols = new DefaultRegularExpressions().protocols;
 
-        let noProtocol: boolean = true;
-        let validatePattern = { valid: false };
+        let noProtocol = true;
+        const validatePattern = { valid: false };
 
         // checks if there is a match between the regexes of the protocols and the pattern
         for (let i = 0; i < protocols.length; i++) {
             if (protocols[i].regularExpression.test(pattern.value)) {
                 noProtocol = false;
-                let description = "ProtocolMatch" + i;
+                const description = "ProtocolMatch" + i;
                 validatePattern[description] = protocols[i].name;
             }
         }
@@ -23,16 +23,16 @@ export class cValFns {
 
     noSpecialCharacters(pattern: FormControl) {
 
-        let specialCharacters = new DefaultRegularExpressions().specialCharacters
-        let noSpecialCharacter: boolean = true;
+        const specialCharacters = new DefaultRegularExpressions().specialCharacters;
+        let noSpecialCharacter = true;
 
-        let validatePattern = { valid: false };
+        const validatePattern = { valid: false };
 
         // checks if there is a match between the regexes of the special characters and the pattern
         for (let i = 0; i < specialCharacters.length; i++) {
             if (specialCharacters[i].regularExpression.test(pattern.value)) {
                 noSpecialCharacter = false;
-                let description = "SpecialCharacterMatch" + i;
+                const description = "SpecialCharacterMatch" + i;
                 validatePattern[description] = specialCharacters[i].name;
             }
         }
@@ -42,16 +42,16 @@ export class cValFns {
 
     noIdentifier(pattern: FormControl) {
 
-        let identifiers = new DefaultRegularExpressions().identifiers
-        let noidentifier: boolean = true;
+        const identifiers = new DefaultRegularExpressions().identifiers;
+        let noidentifier = true;
 
-        let validatePattern = { valid: false };
+        const validatePattern = { valid: false };
 
         // checks if there is a match between the regexes of the special characters and the pattern
         for (let i = 0; i < identifiers.length; i++) {
             if (identifiers[i].regularExpression.test(pattern.value)) {
                 noidentifier = false;
-                let description = "IdentifierMatch" + i;
+                const description = "IdentifierMatch" + i;
                 validatePattern[description] = identifiers[i].name;
             }
         }
@@ -61,17 +61,17 @@ export class cValFns {
 
     isDomain(pattern: FormControl) {
 
-        let domain = new DefaultRegularExpressions().domain
-        let isDomain: boolean = false;
+        const domain = new DefaultRegularExpressions().domain;
+        let isDomain = false;
 
-        let validatePattern = { valid: false };
+        const validatePattern = { valid: false };
 
         // checks if there is a match between the regexes of the special characters and the pattern
         for (let i = 0; i < domain.length; i++) {
             if (domain[i].regularExpression.test(pattern.value)) {
                 isDomain = true;
             } else {
-                let description = "isNoMatchWith" + i;
+                const description = "isNoMatchWith" + i;
                 validatePattern[description] = domain[i].name;
             }
         }
