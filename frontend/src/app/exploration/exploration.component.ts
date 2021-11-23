@@ -7,16 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ExplorationComponent implements OnInit {
 
-  collapedSideBar: boolean;
-  
-  constructor() { }
+    collapedSideBar: boolean;
 
-  ngOnInit() {
-  }
+    constructor() { }
+
+    ngOnInit() {
+    }
 
 
-  receiveCollapsed($event) {
-      this.collapedSideBar = $event;
-  }
+    receiveCollapsed($event) {
+        this.collapedSideBar = $event;
+    }
 
 }

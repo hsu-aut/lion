@@ -9,7 +9,7 @@
         <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to
           an
           existing system structure or create a new system structure. <button type="button"
-            class="badge badge-pill badge-light" data-toggle="modal" data-target="#MCS_HELPER">?</button></p>
+            class="badge rounded-pill bg-light text-dark" data-toggle="modal" data-target="#MCS_HELPER">?</button></p>
 
       </div>
       <div class="col">
@@ -62,7 +62,7 @@
       <div class="tab-content py-3" id="myTabContent">
         <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
           <!-- content to create new individuals -->
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> The Subject of the created statement </label>
               <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
@@ -80,7 +80,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <button class="btn btn-secondary col m-3" (click)="buildInsert('newIndi')">Download SPARQL INSERT</button>
             </div>
@@ -92,7 +92,7 @@
         </div>
         <div class="tab-pane " id="existingIndiContain" role="tabpanel" aria-labelledby="existingIndiContain-tab">
           <!-- content to connect existing individuals -->
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> The Subject of the created statement </label>
               <input [(ngModel)]="selectedSubject" class="form-control" type="text"
@@ -125,7 +125,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">Download SPARQL
                 INSERT</button>
@@ -138,7 +138,7 @@
         <div class="tab-pane " id="existingIndiInheritance" role="tabpanel"
           aria-labelledby="existingIndiInheritance-tab">
           <!-- content to connect existing individuals -->
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> The Subject of the created statement </label>
               <input [(ngModel)]="selectedSubject" class="form-control" type="text"
@@ -161,7 +161,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">Download SPARQL
                 INSERT</button>

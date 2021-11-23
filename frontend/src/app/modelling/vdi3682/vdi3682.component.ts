@@ -157,7 +157,7 @@ export class VDI3682Component implements OnInit {
         this.modelService.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.NoOfProcesses = data.length;
-            this.modelService.setLIST_OF_PROCESSES(data);
+            this.modelService.setListOfProcesses(data);
         });
         this.modelService.loadLIST_OF_INPUTS_AND_OUTPUTS().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();

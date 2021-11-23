@@ -9,7 +9,7 @@
                 <p class="card-text">The VDI3682 template uses a tabular approach for building a graph. One can add
                     elements to
                     an
-                    existing Process or create a new Process. <button type="button" class="badge badge-pill badge-light"
+                    existing Process or create a new Process. <button type="button" class="badge rounded-pill bg-light text-dark"
                         data-toggle="modal" data-target="#FPD_HELPER">?</button></p>
 
             </div>
@@ -58,7 +58,7 @@
             <div class="tab-content py-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
                     <!-- content to create new individuals -->
-                    <div class="form-row" [formGroup]="newIndividualForm">
+                    <div class="row" [formGroup]="newIndividualForm">
                         <div class="form-group col-sm">
                             <label> The Subject of the created statement </label>
                             <input formControlName="name" class="form-control" name="name" type="text"
@@ -104,7 +104,7 @@
                 </div>
                 <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
                     <!-- content to connect existing individuals -->
-                    <div class="form-row" [formGroup]="newConnectionForm">
+                    <div class="row" [formGroup]="newConnectionForm">
                         <div class="form-group col-sm">
                             <label> The Subject of the created statement </label>
                             <input formControlName="subject" class="form-control" type="text"

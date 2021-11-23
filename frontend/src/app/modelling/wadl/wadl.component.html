@@ -10,7 +10,7 @@
           First, a resource base path, and optionally a physical entity that provides that resource, have to be created.
           Afterwards, services can be added to existing resources. After having defined the services, requests and
           responses can be added as well.
-          <button type="button" class="badge badge-pill badge-light" data-toggle="modal"
+          <button type="button" class="badge rounded-pill bg-light text-dark" data-toggle="modal"
             data-target="#WADL_HELPER">?</button></p>
 
       </div>
@@ -67,7 +67,7 @@
       <div class="tab-content py-3" id="myTabContent">
         <div class="tab-pane fade show active" id="createResource" role="tabpanel" aria-labelledby="createResource-tab">
           <!-- content to create resource -->
-          <form class="form-row" [formGroup]="baseResourceForm">
+          <form class="row" [formGroup]="baseResourceForm">
             <div class="form-group col-sm">
               <label> The physical entity providing the base resource </label>
               <input formControlName="serviceProvider" class="form-control" name="serviceProvider" type="text"
@@ -135,7 +135,7 @@
         </div>
         <div class="tab-pane " id="createService" role="tabpanel" aria-labelledby="createService-tab">
           <!-- content to create service -->
-          <div class="form-row" [formGroup]="serviceForm">
+          <div class="row" [formGroup]="serviceForm">
             <div class="form-group col-sm">
               <label> The resource base path </label>
               <select formControlName=resourceBasePath name="resourceBasePath" class="form-control">
@@ -175,7 +175,7 @@
         </div>
         <div class="tab-pane " id="createRequest" role="tabpanel" aria-labelledby="createRequest-tab">
           <!-- content to create new requests -->
-          <div class="form-row" [formGroup]="requestForm">
+          <div class="row" [formGroup]="requestForm">
             <div class="form-group col-sm">
               <label> The resource base path </label>
               <select formControlName=resourceBasePath name="resourceBasePath" class="form-control"
@@ -221,7 +221,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row" [formGroup]="requestForm">
+          <div class="row" [formGroup]="requestForm">
             <div class="form-group col-sm">
               <label> Parameter key </label>
               <input formControlName=parameterKey class="form-control" name="parameterKey" type="text"
@@ -271,7 +271,7 @@
           <!-- div is repeated for number of entries in requestFormParameterArray -->
           <div [formGroup]="requestForm">
             <div formArrayName="requestFormParameterArray">
-              <div class="form-row" *ngFor="let x of requestFormParameterArray.controls; let i=index"
+              <div class="row" *ngFor="let x of requestFormParameterArray.controls; let i=index"
                 [formGroupName]="i">
                 <div class="form-group col-sm">
                   <input formControlName="parameterKey" class="form-control" name="parameterKey" type="text" readonly>
@@ -305,7 +305,7 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <div class="custom-control custom-checkbox">
                 <input [(ngModel)]="requestBodyRepresentationCheck" type="checkbox" class="custom-control-input"
@@ -316,7 +316,7 @@
             </div>
           </div>
 
-          <div class="form-row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
+          <div class="row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
             <div class="form-group col-sm">
               <label> Body media type </label>
               <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text"
@@ -372,7 +372,7 @@
           <div [formGroup]="requestForm"
             *ngIf="requestBodyRepresentationCheck && requestFormRepresentationArray.value[0]">
             <div formArrayName="requestFormRepresentationArray">
-              <div class="form-row" *ngFor="let x of requestFormRepresentationArray.controls; let i=index"
+              <div class="row" *ngFor="let x of requestFormRepresentationArray.controls; let i=index"
                 [formGroupName]="i">
                 <div class="form-group col-sm">
                   <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text" readonly>
@@ -411,7 +411,7 @@
 
         <div class="tab-pane " id="createResponse" role="tabpanel" aria-labelledby="createResponse-tab">
           <!-- content to create new responses -->
-          <div [formGroup]="responseForm" class="form-row">
+          <div [formGroup]="responseForm" class="row">
             <div class="form-group col-sm">
               <label> The resource base path </label>
               <select formControlName="resourceBasePath" name="resourceBasePath" class="form-control"
@@ -442,7 +442,7 @@
               </select>
             </div>
           </div>
-          <div [formGroup]="responseForm" class="form-row">
+          <div [formGroup]="responseForm" class="row">
             <div class="form-group col-sm">
               <label> Response code </label>
               <select formControlName="responseCode" name="responseCode" class="form-control"
@@ -472,7 +472,7 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <div class="custom-control custom-checkbox">
                 <input [(ngModel)]="responseBodyRepresentationCheck" type="checkbox" class="custom-control-input"
@@ -483,7 +483,7 @@
             </div>
           </div>
 
-          <div [formGroup]="responseForm" class="form-row" *ngIf="responseBodyRepresentationCheck">
+          <div [formGroup]="responseForm" class="row" *ngIf="responseBodyRepresentationCheck">
             <div class="form-group col-sm">
               <label> Body media type </label>
               <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text"
@@ -538,7 +538,7 @@
           <div [formGroup]="responseForm"
             *ngIf="responseBodyRepresentationCheck && responseFormRepresentationArray.value[0]">
             <div formArrayName="responseFormRepresentationArray">
-              <div class="form-row" *ngFor="let x of responseFormRepresentationArray.controls; let i=index"
+              <div class="row" *ngFor="let x of responseFormRepresentationArray.controls; let i=index"
                 [formGroupName]="i">
                 <div class="form-group col-sm">
                   <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text" readonly>
@@ -618,7 +618,7 @@
           manually. This is suitable for xsd data types for instance. It is also possible to type the parameter with
           TBox classes, or to set their data type
           in the context of an ABox individual. </p>
-        <div class="form-row">
+        <div class="row">
           <div class="form-group col-sm">
             <div class="custom-control custom-radio custom-control-inline mx-5">
               <input [(ngModel)]="ontologicalDataTypeRadio" value="ontologicalDataTypeTBox" type="radio"
@@ -636,7 +636,7 @@
           </div>
         </div>
 
-        <div [formGroup]="ontologicalDataType" class="form-row" *ngIf="ontologicalDataTypeRadio">
+        <div [formGroup]="ontologicalDataType" class="row" *ngIf="ontologicalDataTypeRadio">
           <div class="form-group col-sm">
             <label> Select a TBox </label>
             <select formControlName="TBox" name="TBox" class="form-control"

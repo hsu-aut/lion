@@ -25,7 +25,7 @@
             <div class="col-sm">
                 <h5>Server information</h5>
                 <form action="submit" [formGroup]="serverInfoForm" (ngSubmit)="crawlServer()">
-                    <div class="form-row">
+                    <div class="row">
                         <div class="col-sm-4">
                             <div class="form-check">
                                 <label for="includeChildNodes">Endpoint:</label>
@@ -58,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-row mt-3 ml-3">
+                    <div class="row mt-3 ml-3">
                         <div class="col-sm">
                             <button type="submit" [disabled]="!this.serverInfoForm.valid" class="btn btn-primary">Crawl
                                 Server</button>

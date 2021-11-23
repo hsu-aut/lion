@@ -57,7 +57,7 @@
                         from each table and add it to the current graph.</p>
 
                     <!-- content to create new individuals -->
-                    <div class="form-row py-3" [formGroup]="newIndividualForm">
+                    <div class="row py-3" [formGroup]="newIndividualForm">
                         <div class="form-group col-sm">
                             <label>The system or module to connect with an OPC UA server</label>
                             <input formControlName="subject" class="form-control" name="subject" type="text"
@@ -122,7 +122,7 @@
 
 
 <!-- <form action="submit" (ngSubmit)="createConnection()" [formGroup]="opcVdiConnectionForm">
-    <div class="form-row">
+    <div class="row">
         <div class="form-group col-sm">
             <label>The System to connect to an OPC UA Server</label>
             <select formControlName="selectedSystem" name="selectedSystem" class="form-control">
