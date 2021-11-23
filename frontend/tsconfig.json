@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "ES2017",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -17,5 +17,8 @@
       "es2018",
       "dom"
     ]
+  },
+  "angularCompilerOptions": {
+      "fullTemplateTypeCheck": true,
   }
 }

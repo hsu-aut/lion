@@ -27,7 +27,6 @@ import { ChartsModule as Ng2Charts } from 'ng2-charts';
     ReactiveFormsModule,
     TableModule,
     Ng2Charts
-
   ],
   declarations: [
     ExplorationComponent,
