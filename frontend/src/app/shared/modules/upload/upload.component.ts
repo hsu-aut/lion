@@ -1,17 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UploadService } from './upload.service';
-import { forkJoin, Observable } from 'rxjs'
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss']
+    selector: 'app-upload',
+    templateUrl: './upload.component.html',
+    styleUrls: ['./upload.component.scss']
 })
 export class UploadComponent implements OnInit {
 
   lastFileName = "Choose file"
   progressObserver;
-  progress: { id: string, percentDone: number }[] = [];
+  progress: { id: string; percentDone: number }[] = [];
   canBeClosed = true
   primaryButtonText = 'Upload'
   showCancelButton = true
@@ -36,12 +36,12 @@ export class UploadComponent implements OnInit {
    * @memberof UploadComponent
    */
   addFiles(files) {
-    for (let key in files) {
-      if (!isNaN(parseInt(key)) && this.checkFileFormat(files[key].name)) {
-        this.files.add(files[key]);
-        this.lastFileName = files[key].name;
+      for (const key in files) {
+          if (!isNaN(parseInt(key)) && this.checkFileFormat(files[key].name)) {
+              this.files.add(files[key]);
+              this.lastFileName = files[key].name;
+          }
       }
-    }
   }
 
 
@@ -51,53 +51,53 @@ export class UploadComponent implements OnInit {
    * @memberof UploadComponent
    */
   upload() {
-    // clear progress
-    this.progress = [];
+      // clear progress
+      this.progress = [];
 
-    // start the upload and save the progress map
-    this.progressObserver = this.uploadService.upload(this.files, this.url);
+      // start the upload and save the progress map
+      this.progressObserver = this.uploadService.upload(this.files, this.url);
 
-    for (const key in this.progressObserver) {
-      let myObject = {
-        id: key,
-        percentDone: 0
+      for (const key in this.progressObserver) {
+          const myObject = {
+              id: key,
+              percentDone: 0
+          };
+          this.progress.push(myObject);
       }
-      this.progress.push(myObject)
-    }
 
-    // set the component state to "uploading"
-    this.uploading = true;
+      // set the component state to "uploading"
+      this.uploading = true;
 
-    // convert the progress map into an array
-    let allProgressObservables = [];
-    for (let key in this.progressObserver) {
-      allProgressObservables.push(this.progressObserver[key].progress);
-      this.progress.forEach(element => {
-        if (element.id == key) {
-          this.progressObserver[key].progress.subscribe(data => {
-            element.percentDone = data;
-          })
-        }
-      });
-    }
+      // convert the progress map into an array
+      const allProgressObservables = [];
+      for (const key in this.progressObserver) {
+          allProgressObservables.push(this.progressObserver[key].progress);
+          this.progress.forEach(element => {
+              if (element.id == key) {
+                  this.progressObserver[key].progress.subscribe(data => {
+                      element.percentDone = data;
+                  });
+              }
+          });
+      }
 
-    // Adjust the state variables
+      // Adjust the state variables
 
-    // The OK-button should have the text "Finish" now
-    this.primaryButtonText = 'Finish';
+      // The OK-button should have the text "Finish" now
+      this.primaryButtonText = 'Finish';
 
-    // When all progress-observables are completed...
-    forkJoin(allProgressObservables).subscribe(end => {
+      // When all progress-observables are completed...
+      forkJoin(allProgressObservables).subscribe(end => {
       // console.log(this.progress[Object.keys(this.progress)[0]].progress)
       // ... the dialog can be closed again...
-      this.canBeClosed = true;
+          this.canBeClosed = true;
 
-      // ... the upload was successful...
-      this.uploadSuccessful = true;
+          // ... the upload was successful...
+          this.uploadSuccessful = true;
 
-      // ... and the component is no longer uploading
-      this.uploading = false;
-    });
+          // ... and the component is no longer uploading
+          this.uploading = false;
+      });
   }
 
 
@@ -109,11 +109,11 @@ export class UploadComponent implements OnInit {
    * @memberof UploadComponent
    */
   checkFileFormat(fileName: string) {
-    let included: Boolean = false;
-    this.fileFormats.forEach(element => {
-      if (fileName.includes(element)) { included = true }
-    });
-    return included
+      let included = false;
+      this.fileFormats.forEach(element => {
+          if (fileName.includes(element)) { included = true; }
+      });
+      return included;
   }
 
 }

@@ -1,13 +1,43 @@
 {
     // The number of spaces a tab is equal to.
     "editor.tabSize": 4,
-
     // Insert spaces when pressing Tab.
     "editor.insertSpaces": true,
-
     // When opening a file, `editor.tabSize` and `editor.insertSpaces` will be detected based on the file contents.
     "editor.detectIndentation": true,
-    
-    "eslint.workingDirectories": ["frontend", "backend", "shared"],
-    "typescript.preferences.importModuleSpecifier": "relative"
+    "eslint.workingDirectories": [
+        "frontend",
+        "backend",
+        "shared"
+    ],
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "editor.showFoldingControls": "always",
+    "editor.wordWrap": "off",
+    "files.exclude": {
+        ".history": true,
+        "**/app/**/*.js": {
+            "when": "$(basename).ts"
+        },
+        "**/app/**/*.js.map": true,
+        "node_modules": true,
+        "typings": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/documentation": true
+    },
+    "eslint.enable": true,
+    "eslint.validate": [
+        "vue",
+        "javascript",
+        "typescript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.alwaysShowStatus": true,
 }

@@ -4,30 +4,30 @@ import { PrefixesService } from './prefixes.service';
 import { IRI } from 'iri';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class EntitiesService {
 
-  constructor(
+    constructor(
     private nameSpaces: PrefixesService
-  ) { }
+    ) { }
 
-  createNamedNode(wannaBeRDF: string) {
-    wannaBeRDF = this.nameSpaces.addOrParseNamespace(wannaBeRDF)
-    return new NamedNode(wannaBeRDF);
-  }
-  createLiterial(wannaBeLiterial: string) {
-    return new Literial(wannaBeLiterial);
-  }
-  createBlankNode(wannaBeBlankNode: string) {
-    return new BlankNode(wannaBeBlankNode);
-  }
-  createVariable(wannaBeVariable: string) {
-    return new Variable(wannaBeVariable);
-  }
-  createNamedGraph(wannaBeNamedGraph) {
-    return new NamedGraph(wannaBeNamedGraph)
-  }
+    createNamedNode(wannaBeRDF: string) {
+        wannaBeRDF = this.nameSpaces.addOrParseNamespace(wannaBeRDF);
+        return new NamedNode(wannaBeRDF);
+    }
+    createLiterial(wannaBeLiterial: string) {
+        return new Literial(wannaBeLiterial);
+    }
+    createBlankNode(wannaBeBlankNode: string) {
+        return new BlankNode(wannaBeBlankNode);
+    }
+    createVariable(wannaBeVariable: string) {
+        return new Variable(wannaBeVariable);
+    }
+    createNamedGraph(wannaBeNamedGraph) {
+        return new NamedGraph(wannaBeNamedGraph);
+    }
 
 }
 
@@ -35,56 +35,56 @@ export class Entity {
   private value: string;
 
   public validateValue(wannaBe: string): boolean {
-    if (typeof wannaBe === "string") {
-      this.Value = wannaBe;
-      return true;
-    } else {
-      return false;
-    }
+      if (typeof wannaBe === "string") {
+          this.Value = wannaBe;
+          return true;
+      } else {
+          return false;
+      }
   }
 
   public set Value(value: string) {
-    this.value = value;
+      this.value = value;
   }
 
   public get Value() {
-    return this.value;
+      return this.value;
   }
 }
 
 export class NamedNode extends Entity {
 
-  constructor(wannaBeRDF: string) {
-    super()
-    this.validateValue(wannaBeRDF);
-  }
-
-
-  validateValue(wannaBeRDF: string): boolean {
-
-    let IRI_REG: RegExp = /^([a-z0-9+.-]+):(?:\/\/(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\d*))?(\/(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?|(\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i
-
-    if (IRI_REG.test(wannaBeRDF)) {
-      this.Value = wannaBeRDF;
-      return true;
-    } else {
-      console.error("NO VALID STRING TO BUILD NAMED NODE")
-      return false;
+    constructor(wannaBeRDF: string) {
+        super();
+        this.validateValue(wannaBeRDF);
     }
-  }
 
-  get Path(){  
-    let iri = new IRI(this.Value).resolveReference('#')
-    return iri.path()
-  }
 
-  get Scheme(){  
-    return new IRI(this.Value).scheme()
-  }
+    validateValue(wannaBeRDF: string): boolean {
 
-  get userinfo(){  
-    return new IRI(this.Value).userinfo()
-  }
+        const IRI_REG = /^([a-z0-9+.-]+):(?:\/\/(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\d*))?(\/(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?|(\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
+
+        if (IRI_REG.test(wannaBeRDF)) {
+            this.Value = wannaBeRDF;
+            return true;
+        } else {
+            console.error("NO VALID STRING TO BUILD NAMED NODE");
+            return false;
+        }
+    }
+
+    get Path(){  
+        const iri = new IRI(this.Value).resolveReference('#');
+        return iri.path();
+    }
+
+    get Scheme(){  
+        return new IRI(this.Value).scheme();
+    }
+
+    get userinfo(){  
+        return new IRI(this.Value).userinfo();
+    }
 
 }
 
@@ -93,9 +93,9 @@ export class Literial extends Entity {
   entityType = entityTypes.literal;
 
   constructor(wannaBeLiterial: string) {
-    super()
+      super();
 
-    this.Value = wannaBeLiterial;
+      this.Value = wannaBeLiterial;
   }
 }
 
@@ -104,9 +104,9 @@ export class BlankNode extends Entity {
   entityType = entityTypes.blankNode;
 
   constructor(wannaBeBlankNode: string) {
-    super()
+      super();
 
-    this.Value = wannaBeBlankNode;
+      this.Value = wannaBeBlankNode;
   }
 }
 
@@ -115,9 +115,9 @@ export class Variable extends Entity {
   entityType = entityTypes.variable;
 
   constructor(wannaBeVariable: string) {
-    super()
+      super();
 
-    this.Value = wannaBeVariable;
+      this.Value = wannaBeVariable;
   }
 }
 
@@ -126,9 +126,9 @@ export class NamedGraph extends Entity {
   entityType = entityTypes.namedGraph;
 
   constructor(wannaBeNamedGraph: string) {
-    super()
+      super();
 
-    this.Value = wannaBeNamedGraph;
+      this.Value = wannaBeNamedGraph;
   }
 }
 

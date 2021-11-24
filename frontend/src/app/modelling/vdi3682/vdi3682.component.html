@@ -1,192 +1,200 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <h5 class="card-header">VDI3682 Template</h5>
-  <div class="card-body">
-    <h5 class="card-title"> Formalized Process Descriptions </h5>
+    <h5 class="card-header">VDI3682 Template</h5>
+    <div class="card-body">
+        <h5 class="card-title"> Formalized Process Descriptions </h5>
 
-    <div class="row">
+        <div class="row">
 
-      <div class="col">
-        <p class="card-text">The VDI3682 template uses a tabular approach for building a graph. One can add elements to
-          an
-          existing Process or create a new Process. <button type="button" class="badge badge-pill badge-light"
-            data-toggle="modal" data-target="#FPD_HELPER">?</button></p>
+            <div class="col">
+                <p class="card-text">The VDI3682 template uses a tabular approach for building a graph. One can add
+                    elements to
+                    an
+                    existing Process or create a new Process. <button type="button" class="badge rounded-pill bg-light text-dark"
+                        data-toggle="modal" data-target="#FPD_HELPER">?</button></p>
 
-      </div>
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-header">
-            Template Statistics
-          </div>
-          <div class="card-body">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">No# Processes</th>
-                  <th scope="col">No# Products, Information, Energies</th>
-                  <th scope="col">No# TechnicalResource</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{NoOfProcesses}}</td>
-                  <td>{{NoOfInOuts}}</td>
-                  <td>{{NoOfTechnicalResources}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="px-sm-2 py-3">
-      <!-- tabs -->
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
-            aria-controls="newIndi" aria-selected="true"> Create new
-            individuals </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="existingIndi-tab" data-toggle="tab" href="#existingIndi" role="tab"
-            aria-controls="existingIndi" aria-selected="false"> Connect
-            existing individuals </a>
-        </li>
-      </ul>
-
-      <div class="tab-content py-3" id="myTabContent">
-        <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
-          <!-- content to create new individuals -->
-          <div class="form-row" [formGroup]="newIndividualForm">
-            <div class="form-group col-sm">
-              <label> The Subject of the created statement </label>
-              <input formControlName="name" class="form-control" name="name" type="text"
-                placeholder="[Name of your subject]">
             </div>
-            <div class="form-group col-sm">
-              <label> The Predicate of the created statement </label>
-              <input class="form-control" type="text" placeholder="rdf:type" readonly>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Object of the created statement </label>
-              <select formControlName="type" name="type" class="form-control">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of allClasses'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm-1 align-self-end">
-              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary"
-                  (click)="modifyTripel('add', 'newIndividual', newIndividualForm)">Add</button>
-                <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="addButton">
-                    <a class="dropdown-item" (click)="modifyTripel('delete', 'newIndividual', newIndividualForm)">Delete
-                      statement</a>
-                    <a class="dropdown-item"
-                      (click)="modifyTripel('build', 'newIndividual', newIndividualForm)">Download SPARQL
-                      INSERT</a>
-                  </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Template Statistics
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No# Processes</th>
+                                    <th scope="col">No# Products, Information, Energies</th>
+                                    <th scope="col">No# TechnicalResource</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{NoOfProcesses}}</td>
+                                    <td>{{NoOfInOuts}}</td>
+                                    <td>{{NoOfTechnicalResources}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
+        </div>
 
-          <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-            (tableClickedCell)="iriTableClick($event)"></app-table>
-        </div>
-        <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
-          <!-- content to connect existing individuals -->
-          <div class="form-row" [formGroup]="newConnectionForm">
-            <div class="form-group col-sm">
-              <label> The Subject of the created statement </label>
-              <input formControlName="subject" class="form-control" type="text"
-                placeholder="Select a Function from Table" readonly>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Predicate of the created statement </label>
-              <select formControlName="predicate" name="predicate" class="form-control"
-                (click)="getObjectClasses(newConnectionForm.controls['predicate'].value)">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of existingPredicates'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Class of the Object of the created statement </label>
-              <select formControlName="objectClass" name="objectClass" class="form-control"
-                (click)="getExistingObjects(newConnectionForm.controls['objectClass'].value)">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of existingObjectClasses'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Object of the created statement </label>
-              <select formControlName="object" name="object" class="form-control">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of existingObjects'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm-1 align-self-end">
-              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary"
-                  (click)="modifyTripel('add', 'connectIndividual', newConnectionForm)">Add</button>
-                <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="addButton">
-                    <a class="dropdown-item"
-                      (click)="modifyTripel('delete', 'connectIndividual', newConnectionForm)">Delete
-                      statement</a>
-                    <a class="dropdown-item"
-                      (click)="modifyTripel('build', 'connectIndividual', newConnectionForm)">Download SPARQL
-                      INSERT</a>
-                  </div>
+        <div class="px-sm-2 py-3">
+            <!-- tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
+                        aria-controls="newIndi" aria-selected="true"> Create new
+                        individuals </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="existingIndi-tab" data-toggle="tab" href="#existingIndi" role="tab"
+                        aria-controls="existingIndi" aria-selected="false"> Connect
+                        existing individuals </a>
+                </li>
+            </ul>
+
+            <div class="tab-content py-3" id="myTabContent">
+                <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
+                    <!-- content to create new individuals -->
+                    <div class="row" [formGroup]="newIndividualForm">
+                        <div class="form-group col-sm">
+                            <label> The Subject of the created statement </label>
+                            <input formControlName="name" class="form-control" name="name" type="text"
+                                placeholder="[Name of your subject]">
+                        </div>
+                        <div class="form-group col-sm">
+                            <label> The Predicate of the created statement </label>
+                            <input class="form-control" type="text" placeholder="rdf:type" readonly>
+                        </div>
+                        <div class="form-group col-sm">
+                            <label> The Object of the created statement </label>
+                            <select formControlName="type" name="type" class="form-control">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let x of allClasses'>
+                                    {{x}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-1 align-self-end">
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <button type="button" class="btn btn-secondary"
+                                    (click)="modifyTripel('add', 'newIndividual', newIndividualForm)">Add</button>
+                                <div class="btn-group" role="group">
+                                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="addButton">
+                                        <a class="dropdown-item"
+                                            (click)="modifyTripel('delete', 'newIndividual', newIndividualForm)">Delete
+                                            statement</a>
+                                        <a class="dropdown-item"
+                                            (click)="modifyTripel('build', 'newIndividual', newIndividualForm)">Download
+                                            SPARQL
+                                            INSERT</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle"
+                        [tableExplanation]="tableSubTitle" (tableClickedCell)="iriTableClick($event)"></app-table>
                 </div>
-              </div>
+                <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
+                    <!-- content to connect existing individuals -->
+                    <div class="row" [formGroup]="newConnectionForm">
+                        <div class="form-group col-sm">
+                            <label> The Subject of the created statement </label>
+                            <input formControlName="subject" class="form-control" type="text"
+                                placeholder="Select a Function from Table" readonly>
+                        </div>
+                        <div class="form-group col-sm">
+                            <label> The Predicate of the created statement </label>
+                            <select formControlName="predicate" name="predicate" class="form-control"
+                                (click)="getObjectClasses(newConnectionForm.controls['predicate'].value)">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let x of existingPredicates'>
+                                    {{x}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm">
+                            <label> The Class of the Object of the created statement </label>
+                            <select formControlName="objectClass" name="objectClass" class="form-control"
+                                (click)="getExistingObjects(newConnectionForm.controls['objectClass'].value)">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let x of existingObjectClasses'>
+                                    {{x}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm">
+                            <label> The Object of the created statement </label>
+                            <select formControlName="object" name="object" class="form-control">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let x of existingObjects'>
+                                    {{x}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-1 align-self-end">
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <button type="button" class="btn btn-secondary"
+                                    (click)="modifyTripel('add', 'connectIndividual', newConnectionForm)">Add</button>
+                                <div class="btn-group" role="group">
+                                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="addButton">
+                                        <a class="dropdown-item"
+                                            (click)="modifyTripel('delete', 'connectIndividual', newConnectionForm)">Delete
+                                            statement</a>
+                                        <a class="dropdown-item"
+                                            (click)="modifyTripel('build', 'connectIndividual', newConnectionForm)">Download
+                                            SPARQL
+                                            INSERT</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle"
+                        [tableExplanation]="tableSubTitle" (tableClickedCell)="iriTableClick($event)"></app-table>
+                </div>
             </div>
-          </div>
-          <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
-            (tableClickedCell)="iriTableClick($event)"></app-table>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal fade" id="FPD_HELPER" tabindex="-1" role="dialog" aria-labelledby="FPD_HELPER" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="FPD_HELPER"> The Formalized Process Description </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <img src="../../../../../../assets/images/vdi3682_grafical_notion.png" class="card-img-top">
-        <p class="card-text">The Formalized Process Description according to VDI 3682 has the modelling elements shown
-          above. A process (P) denotes some kind of manufacturing process that has in- and outputs. These in- and
-          outputs can be products (P), which denote a product to be
-          produced or to use as an input, enegeries (E), that are necessary for a process or a result of it and lastly
-          information (I), which is again used as an input for the process or produced during the execution of the
-          process. </p>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="FPD_HELPER"> The Formalized Process Description </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="../../../../../../assets/images/vdi3682_grafical_notion.png" class="card-img-top">
+                <p class="card-text">The Formalized Process Description according to VDI 3682 has the modelling elements
+                    shown
+                    above. A process (P) denotes some kind of manufacturing process that has in- and outputs. These in-
+                    and
+                    outputs can be products (P), which denote a product to be
+                    produced or to use as an input, enegeries (E), that are necessary for a process or a result of it
+                    and lastly
+                    information (I), which is again used as an input for the process or produced during the execution of
+                    the
+                    process. </p>
+            </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">
-          Got it! </button>
-      </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    Got it! </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

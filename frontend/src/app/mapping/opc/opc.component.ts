@@ -13,7 +13,7 @@ export class OpcComponent {
     node: OpcNode;
     opcModelString: string;
     opcModel;
-    includeChildNodes: Boolean = true;
+    includeChildNodes = true;
     numberOfNodes: number;
     countingDone = false;
 
@@ -38,7 +38,7 @@ export class OpcComponent {
         console.log("crawluing");
         this.opcService.crawlServer(this.serverInfoForm.value).subscribe(nodeset => {
             this.opcModelString = JSON.stringify(nodeset);
-        })
+        });
     }
 
     /**
@@ -64,7 +64,7 @@ export class OpcComponent {
     countNodes(opcModel, count: number) {
         const keys = Object.keys(opcModel);
         keys.forEach(key => {
-            const currentElement = opcModel[key]
+            const currentElement = opcModel[key];
             if (Array.isArray(currentElement)) {
                 this.numberOfNodes += currentElement.length;
                 currentElement.forEach(elem => {

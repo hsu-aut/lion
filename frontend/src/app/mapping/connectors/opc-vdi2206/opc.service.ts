@@ -34,7 +34,7 @@ export class OpcService {
         }`;
 
         return this.queryService.SPARQL_SELECT_TABLE(query);
-    };
+    }
 
 
     createOpcDin61360Connection(instanceDescription: string, opcVariable: string) {
@@ -81,7 +81,7 @@ export class OpcService {
             GRAPH <${activeGraph}> {
                 <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
             }
-        }`
+        }`;
         return this.queryService.SPARQL_UPDATE(query);
     }
 

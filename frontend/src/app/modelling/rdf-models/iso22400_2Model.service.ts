@@ -9,7 +9,7 @@ import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class Iso22400_2ModelService {
 
@@ -36,99 +36,99 @@ export class Iso22400_2ModelService {
     private graphs: GraphOperationsService
   ) {
 
-    this.initializeISO22400_2();
+      this.initializeISO22400_2();
 
   }
 
   initializeISO22400_2() {
-    this.loadLIST_OF_ELEMENT_GROUPS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_ELEMENT_GROUPS = data;
-    });
-    this.loadLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES = data;
-    });
-    this.loadLIST_OF_KPIs().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_KPIs = data;
-    });
-    this.loadLIST_OF_ORGANIZATIONAL_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_ORGANIZATIONAL_ELEMENTS = data;
-    });
-    this.loadLIST_OF_NON_ORGANIZATIONAL_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = data;
-    });
-    this.loadLIST_OF_KPI_GROUPS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_KPI_GROUPS = data;
-    });
-    this.loadTABLE_ALL_ENTITY_INFO().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_ALL_ENTITY_INFO = data;
-    });
-    this.loadTABLE_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_ELEMENTS = data;
-    });
-    this.loadTABLE_KPI().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_KPI = data;
-    });
+      this.loadLIST_OF_ELEMENT_GROUPS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_ELEMENT_GROUPS = data;
+      });
+      this.loadLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES = data;
+      });
+      this.loadLIST_OF_KPIs().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_KPIs = data;
+      });
+      this.loadLIST_OF_ORGANIZATIONAL_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_ORGANIZATIONAL_ELEMENTS = data;
+      });
+      this.loadLIST_OF_NON_ORGANIZATIONAL_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_NON_ORGANIZATIONAL_ELEMENTS = data;
+      });
+      this.loadLIST_OF_KPI_GROUPS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_KPI_GROUPS = data;
+      });
+      this.loadTABLE_ALL_ENTITY_INFO().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_ALL_ENTITY_INFO = data;
+      });
+      this.loadTABLE_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_ELEMENTS = data;
+      });
+      this.loadTABLE_KPI().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_KPI = data;
+      });
   }
 
   // loaders
   public loadLIST_OF_KPI_GROUPS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_KPI_GROUPS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_KPI_GROUPS, 0);
   }
   public loadTABLE_ALL_ENTITY_INFO() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_ALL_ENTITY_INFO);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_ALL_ENTITY_INFO);
   }
   public loadLIST_OF_KPIs() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_KPIs, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_KPIs, 0);
   }
   public loadLIST_OF_ORGANIZATIONAL_ELEMENTS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS, 0);
   }
   public loadLIST_OF_NON_ORGANIZATIONAL_ELEMENTS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS, 0);
   }
   public loadLIST_OF_ELEMENT_GROUPS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ELEMENT_GROUPS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ELEMENT_GROUPS, 0);
   }
   public loadLIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES, 0);
   }
 
   public loadLIST_OF_ELEMENTS_BY_GROUP(groupNameIRI: string) {
-    this.loadingScreenService.startLoading();
-    groupNameIRI = this.nameService.parseToIRI(groupNameIRI);
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI), 0);
+      this.loadingScreenService.startLoading();
+      groupNameIRI = this.nameService.parseToIRI(groupNameIRI);
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI), 0);
   }
   public loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string) {
-    this.loadingScreenService.startLoading();
-    KPI_Class = this.nameService.parseToIRI(KPI_Class);
-    console.log(KPI_Class)
-    ConstrainingDataProperty = this.nameService.parseToIRI(ConstrainingDataProperty);
-    console.log(ConstrainingDataProperty)
-    return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
+      this.loadingScreenService.startLoading();
+      KPI_Class = this.nameService.parseToIRI(KPI_Class);
+      console.log(KPI_Class);
+      ConstrainingDataProperty = this.nameService.parseToIRI(ConstrainingDataProperty);
+      console.log(ConstrainingDataProperty);
+      return this.query.SPARQL_SELECT_LIST(this.isoData.SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstrainingDataProperty), 0);
   }
   public loadTABLE_ELEMENTS(){
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_ELEMENTS);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_ELEMENTS);
   }
   public loadTABLE_KPI(){
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_KPI);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.isoData.SELECT_TABLE_KPI);
   }
 
 
@@ -153,55 +153,55 @@ export class Iso22400_2ModelService {
 
   // builders
   public createElement(variables: elementVariables, action: string) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.isoInsert.createElement(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.isoInsert.createElement(variables, activeGraph));
       }
       case "delete": {
-        this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')
-        break;
+          this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
+          break;
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.isoInsert.createElement(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.isoInsert.createElement(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
 
   }
   public createKPI(KPIVariables: KPIVariables, action: string) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.isoInsert.createKPI(KPIVariables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.isoInsert.createKPI(KPIVariables, activeGraph));
       }
       case "delete": {
-        this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')
-        break;
+          this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
+          break;
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.isoInsert.createKPI(KPIVariables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.isoInsert.createKPI(KPIVariables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
   }
 }
 
@@ -320,7 +320,7 @@ export class ISO22400_2DATA {
 
   public SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI: string) {
 
-    let selectString = `
+      const selectString = `
    PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -332,12 +332,12 @@ export class ISO22400_2DATA {
        FILTER (?ISO_Elements != owl:Nothing)
        FILTER (?ISO_Elements != ?Group)
        FILTER (?ISO_Elements != ISO:OperationCluster)
-   }`
-    return selectString
+   }`;
+      return selectString;
   }
 
   public SELECT_LIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class: string, ConstrainingDataProperty: string) {
-    let selectString = `
+      const selectString = `
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -359,8 +359,8 @@ export class ISO22400_2DATA {
           ?firstBlankNode owl:oneOf ?oneOfBlankNode.
           ?oneOfBlankNode rdf:first ?ConstraintEnum.
         }
-    }`
-    return selectString
+    }`;
+      return selectString;
   }
 
 }
@@ -374,37 +374,37 @@ export class ISO22400_2VARIABLES {
 
 export class ISO22400_2INSERT {
 
-  public createElement(simpleElementVariables: elementVariables, activeGraph: string) {
+    public createElement(simpleElementVariables: elementVariables, activeGraph: string) {
 
-    let value = simpleElementVariables.simpleValue;
-    let duration = simpleElementVariables.duration;
-    let UnitOfMeasure = simpleElementVariables.UnitOfMeasure;
-    let relevantPeriod = simpleElementVariables.relevantPeriod;
-    let entityIRI = simpleElementVariables.entityIRI;
-    let entityClass = simpleElementVariables.entityClass;
-    let elementIRI = simpleElementVariables.elementIRI;
-    let elementClass = simpleElementVariables.elementClass;
+        const value = simpleElementVariables.simpleValue;
+        const duration = simpleElementVariables.duration;
+        const UnitOfMeasure = simpleElementVariables.UnitOfMeasure;
+        const relevantPeriod = simpleElementVariables.relevantPeriod;
+        const entityIRI = simpleElementVariables.entityIRI;
+        const entityClass = simpleElementVariables.entityClass;
+        const elementIRI = simpleElementVariables.elementIRI;
+        const elementClass = simpleElementVariables.elementClass;
 
-    var optionals = {
-      nonTimeElement: `?newElement  ISO:Value "${value}"^^xsd:string;
+        const optionals = {
+            nonTimeElement: `?newElement  ISO:Value "${value}"^^xsd:string;
                                     ISO:UnitOfMeasure "${UnitOfMeasure}"^^xsd:string.`,
-      timeElement: `?newElement ISO:timeSpan "${duration}"^^xsd:duration.`,
+            timeElement: `?newElement ISO:timeSpan "${duration}"^^xsd:duration.`,
 
-    }
+        };
 
-    // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
+        // add a check for empties and if one is found delete the string
+        for (const i in optionals) {
 
-      const element = optionals[i];
-      if (element.search(`null`) != -1) { optionals[i] = "" }
-    }
-    for (const i in optionals) {
+            const element = optionals[i];
+            if (element.search(`null`) != -1) { optionals[i] = ""; }
+        }
+        for (const i in optionals) {
 
-      const element = optionals[i];
-      if (element.search(`undefined`) != -1) { optionals[i] = "" }
-    }
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = ""; }
+        }
 
-    var insertString = `
+        const insertString = `
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
@@ -432,39 +432,39 @@ export class ISO22400_2INSERT {
         BIND(IRI(STR("${elementIRI}")) AS ?newElement).
         BIND(IRI(STR("${elementClass}")) AS ?elementClass).
     }
-    `
-    console.log(insertString)
-    return insertString;
-  }
-  public createKPI(KPIVariables: KPIVariables, activeGraph: string) {
+    `;
+        console.log(insertString);
+        return insertString;
+    }
+    public createKPI(KPIVariables: KPIVariables, activeGraph: string) {
 
-    let value = KPIVariables.simpleValue;
-    let entityIRI = KPIVariables.entityIRI;
-    let entityClass = KPIVariables.entityClass;
-    let KPI_IRI = KPIVariables.KPI_IRI;
-    let KPI_Class = KPIVariables.KPI_Class;
-    let KPI_Timing = KPIVariables.timing;
-    let relevantPeriod = KPIVariables.relevantPeriod;
-    let UnitOfMeasure = KPIVariables.UnitOfMeasure;
+        const value = KPIVariables.simpleValue;
+        const entityIRI = KPIVariables.entityIRI;
+        const entityClass = KPIVariables.entityClass;
+        const KPI_IRI = KPIVariables.KPI_IRI;
+        const KPI_Class = KPIVariables.KPI_Class;
+        const KPI_Timing = KPIVariables.timing;
+        const relevantPeriod = KPIVariables.relevantPeriod;
+        const UnitOfMeasure = KPIVariables.UnitOfMeasure;
 
-    var optionals = {
-      nonTimeElement: `?newKPI  ISO:Value "${value}"^^xsd:string;
+        const optionals = {
+            nonTimeElement: `?newKPI  ISO:Value "${value}"^^xsd:string;
                                     ISO:UnitOfMeasure "${UnitOfMeasure}"^^xsd:string.`,
-    }
+        };
 
-    // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
+        // add a check for empties and if one is found delete the string
+        for (const i in optionals) {
 
-      const element = optionals[i];
-      if (element.search(`null`) != -1) { optionals[i] = "" }
-    }
-    for (const i in optionals) {
+            const element = optionals[i];
+            if (element.search(`null`) != -1) { optionals[i] = ""; }
+        }
+        for (const i in optionals) {
 
-      const element = optionals[i];
-      if (element.search(`undefined`) != -1) { optionals[i] = "" }
-    }
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = ""; }
+        }
 
-    var insertString = `
+        const insertString = `
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
@@ -492,10 +492,10 @@ export class ISO22400_2INSERT {
         BIND(IRI(STR("${KPI_IRI}")) AS ?newKPI).
         BIND(IRI(STR("${KPI_Class}")) AS ?KPI_Class).
     }
-    `
-    console.log(insertString)
-    return insertString;
-  }
+    `;
+        console.log(insertString);
+        return insertString;
+    }
 
 }
 

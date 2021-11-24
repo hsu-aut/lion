@@ -4,17 +4,17 @@ import { OpcMappingService } from '../opc-mapping.service';
 import { find } from 'rxjs/operators';
 
 @Component({
-  selector: 'opc-mapping-element',
-  templateUrl: './opc-mapping-element.component.html',
-  styleUrls: ['./../opc.component.scss']
+    selector: 'opc-mapping-element',
+    templateUrl: './opc-mapping-element.component.html',
+    styleUrls: ['./../opc.component.scss']
 })
 export class OpcMappingElementComponent {
 
     _opcNode: OpcNode;                          // @Input, gets set via setter
     arrayKeys = new Array<string>();      // Array of properties that hold an array
     propertyKeys = new Array<string>();     // Array of properties that hold simple values
-    checked: Boolean;                           // True if node selected for mapping
-    selectChildren: Boolean;                    // Used to select a child node
+    checked: boolean;                           // True if node selected for mapping
+    selectChildren: boolean;                    // Used to select a child node
     @Input() includeChildren;                   // Determines whether or not children are
     children = [];                              // List of all child node objects
     shownDirectChildren = [];                   // Keys of the direct children that are currently displayed
@@ -33,7 +33,7 @@ export class OpcMappingElementComponent {
         this.arrayKeys = this.getArrayKeys(this._opcNode);
         this.propertyKeys = this.getPropertyKeys(this._opcNode);
         this.getAllChildren(this._opcNode);
-        this.shownDirectChildren = new Array(...this.arrayKeys)
+        this.shownDirectChildren = new Array(...this.arrayKeys);
     }
 
 
@@ -92,7 +92,7 @@ export class OpcMappingElementComponent {
         } else {
             this.opcService.removeOpcNode(this._opcNode);
             if(this.includeChildren) {
-                this.opcService.removeAllChildren(this._opcNode)
+                this.opcService.removeAllChildren(this._opcNode);
             }
         }
 
@@ -121,12 +121,12 @@ export class OpcMappingElementComponent {
      * @param node OPC node to get all children from
      */
     getAllChildren(node) {
-        const childKeys = this.getArrayKeys(node)
+        const childKeys = this.getArrayKeys(node);
         childKeys.forEach(key => {
-            const currentProperty = node[key]
+            const currentProperty = node[key];
             currentProperty.forEach(child => {
-                this.children.push(child)
-                this.getAllChildren(child)
+                this.children.push(child);
+                this.getAllChildren(child);
             });
         });
     }
@@ -166,7 +166,7 @@ export class OpcMappingElementComponent {
  * Simple interface of a node. These properties should be present...
  */
 export interface OpcNode {
-    browseName: string,
-    nodeId: string,
-    typeDefinition: string,
+    browseName: string;
+    nodeId: string;
+    typeDefinition: string;
 }

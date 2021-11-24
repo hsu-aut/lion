@@ -8,7 +8,7 @@ import { take } from 'rxjs/operators';
 
 
 @Injectable({
-        providedIn: 'root'
+    providedIn: 'root'
 })
 export class Isa88ModelService {
 
@@ -23,51 +23,51 @@ export class Isa88ModelService {
                 private graphs: GraphOperationsService
 
         ) {
-                this.initializeISA88();
+            this.initializeISA88();
         }
 
         public initializeISA88() {
-                this.loadISA88BehaviorInfo().pipe(take(1)).subscribe((data: any) => {
-                        this.loadingScreenService.stopLoading();
-                        this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = data;
-                });
+            this.loadISA88BehaviorInfo().pipe(take(1)).subscribe((data: any) => {
+                this.loadingScreenService.stopLoading();
+                this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = data;
+            });
         }
         // isa 88 data
         public loadISA88BehaviorInfo() {
-                this.loadingScreenService.startLoading();
-                return this.query.SPARQL_SELECT_TABLE(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
+            this.loadingScreenService.startLoading();
+            return this.query.SPARQL_SELECT_TABLE(this.isa88Data.SPARQL_SELECT_BEHAVIOR_INFO);
         }
 
         public setISA88BehaviorInfo(table) {
-                this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = table;
+            this.isa88Data.ALL_BEHAVIOR_INFO_TABLE = table;
         }
         public getISA88BehaviorInfo() {
-                return this.isa88Data.ALL_BEHAVIOR_INFO_TABLE;
+            return this.isa88Data.ALL_BEHAVIOR_INFO_TABLE;
         }
 
         public insertStateMachine(variables: ISA88Variables) {
-                var PREFIXES = this.nameService.getPrefixes();
-                var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+            const PREFIXES = this.nameService.getPrefixes();
+            const namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                var GRAPHS = this.graphs.getGraphs();
-                var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+            const GRAPHS = this.graphs.getGraphs();
+            const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-                var SystemName = this.nameService.parseToName(variables.SystemName);
-                var SystemIRI = this.nameService.parseToIRI(variables.SystemName);
+            const SystemName = this.nameService.parseToName(variables.SystemName);
+            const SystemIRI = this.nameService.parseToIRI(variables.SystemName);
 
-                return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI));
+            return this.query.SPARQL_UPDATE(this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI));
         }
         public buildStateMachine(variables: ISA88Variables) {
-                var PREFIXES = this.nameService.getPrefixes();
-                var namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+            const PREFIXES = this.nameService.getPrefixes();
+            const namespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-                var GRAPHS = this.graphs.getGraphs();
-                var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+            const GRAPHS = this.graphs.getGraphs();
+            const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-                var SystemName = this.nameService.parseToName(variables.SystemName);
-                var SystemIRI = this.nameService.parseToIRI(variables.SystemName);
+            const SystemName = this.nameService.parseToName(variables.SystemName);
+            const SystemIRI = this.nameService.parseToIRI(variables.SystemName);
 
-                return this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI);
+            return this.isa88Insert.buildISA88(namespace, activeGraph, SystemName, variables.mode, SystemIRI);
         }
 
 }
@@ -76,8 +76,8 @@ class ISA88Data {
 
 
 
-        public IRI: Array<String>;
-        public ALL_BEHAVIOR_INFO_TABLE: Array<Object> = []
+        public IRI: Array<string>;
+        public ALL_BEHAVIOR_INFO_TABLE: Array<Record<string, any>> = []
         public SPARQL_SELECT_BEHAVIOR_INFO = `
   PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -106,9 +106,9 @@ export class ISA88Variables {
 
 export class ISA88Insert {
 
-        public buildISA88(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI): string {
+    public buildISA88(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI): string {
 
-                var insertStringProduction = `      
+        const insertStringProduction = `      
 # Necessary W3C ontologies
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -385,7 +385,7 @@ INSERT {
   }
 }`;
 
-                var insertStringMaintenance = `
+        const insertStringMaintenance = `
 # Necessary W3C ontologies
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -613,10 +613,10 @@ INSERT {
 
 
 `;
-                if (mode == "Production") { return insertStringProduction }
-                if (mode == "Maintenance") { return insertStringMaintenance }
+        if (mode == "Production") { return insertStringProduction; }
+        if (mode == "Maintenance") { return insertStringMaintenance; }
 
-                ;
-        }
+                
+    }
 
 }

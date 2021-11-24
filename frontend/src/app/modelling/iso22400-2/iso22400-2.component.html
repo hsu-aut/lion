@@ -9,7 +9,7 @@
       <div class="col">
         <p class="card-text">The ISO 2400-2 template uses a tabular approach for building a graph. One can add elements
           to an existing key performance indicator or create a new key performance indicator or one of its constituents.
-          <button type="button" class="badge badge-pill badge-light" data-toggle="modal"
+          <button type="button" class="badge rounded-pill bg-light text-dark" data-toggle="modal"
             data-target="#FPD_HELPER">?</button></p>
 
       </div>
@@ -58,7 +58,7 @@
         <!-- parameter tab -->
         <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
           <!-- content to create new simple element -->
-          <div class="form-row" [formGroup]="simpleElementForm">
+          <div class="row" [formGroup]="simpleElementForm">
             <div class="form-group col-sm">
               <label> Described entity </label>
               <input formControlName="entity" class="form-control" name="entity" type="text"
@@ -85,7 +85,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row" [formGroup]="simpleElementForm">
+          <div class="row" [formGroup]="simpleElementForm">
             <div class="form-group col-sm">
               <label> Class of entity </label>
               <select formControlName="entityClass" name="entityClass" class="form-control">
@@ -107,7 +107,7 @@
                 [required]="timeValueReadOnly === true">
             </div>
           </div>
-          <div class="form-row" [formGroup]="simpleElementForm">
+          <div class="row" [formGroup]="simpleElementForm">
             <div class="form-group col-sm">
               <label> The value of the element </label>
               <input formControlName="value" class="form-control" name="value" type="text" placeholder="[xsd:string]"
@@ -141,7 +141,7 @@
         </div>
         <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
           <!-- kpi tab -->
-          <div class="form-row" [formGroup]="KPIForm">
+          <div class="row" [formGroup]="KPIForm">
             <div class="form-group col-sm">
               <label> Described entity </label>
               <input formControlName="entity" class="form-control" name="entity" type="text"
@@ -168,7 +168,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row" [formGroup]="KPIForm">
+          <div class="row" [formGroup]="KPIForm">
             <div class="form-group col-sm">
               <label> Class of entity </label>
               <select formControlName="entityClass" name="entityClass" class="form-control">
@@ -193,7 +193,7 @@
               </select>
             </div>
           </div>
-          <div class="form-row" [formGroup]="KPIForm">
+          <div class="row" [formGroup]="KPIForm">
             <div class="form-group col-sm">
               <label> The value of the element </label>
               <input formControlName="value" class="form-control" name="value" type="text" placeholder="[xsd:string]">

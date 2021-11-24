@@ -8,8 +8,8 @@
             <div class="col">
                 <p class="card-text">The DIN EN 61360 template uses a tabular approach for building a graph. One can add
                     type
-                    and instance descriptions to any kind of entity. <button type="button"
-                        class="badge badge-pill badge-light" data-toggle="modal" data-target="#DIN_HELPER">?</button>
+                    and instance descriptions to any kind of entity.
+                    <button type="button" class="badge rounded-pill bg-light text-dark" data-toggle="modal" data-target="#DIN_HELPER">?</button>
                 </p>
             </div>
             <div class="col">
@@ -53,29 +53,29 @@
             <div class="tab-content py-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="type" role="tabpanel" aria-labelledby="type-tab">
                     <!-- content to create new type -->
-                    <div class="form-row" [formGroup]="typeDescriptionForm">
-                        <div class="form-group col-sm cross-validation">
+                    <div class="row" [formGroup]="typeDescriptionForm">
+                        <div class="col-sm cross-validation">
                             <label> Code </label>
                             <input class="form-control" formControlName="code" name="code" type="text"
                                 placeholder="e.g. 'ABC123'" required>
                         </div>
-                        <div class="form-group col-sm">
+                        <div class="col-sm">
                             <label> Version </label>
                             <input class="form-control" formControlName="version" name="version" type="text"
                                 placeholder="e.g. '1'" required>
                         </div>
-                        <div class="form-group col-sm">
+                        <div class="col-sm">
                             <label> Revision </label>
                             <input class="form-control" formControlName="revision" name="revision" type="text"
                                 placeholder="e.g. '1'" required>
                         </div>
-                        <div class="form-group col-sm">
+                        <div class="col-sm">
                             <label> Preferred Name </label>
                             <input class="form-control" formControlName="preferred_name" name="preferred_name"
                                 type="text" placeholder="e.g. 'MyTypeOfProperty'" required>
                         </div>
                     </div>
-                    <div class="form-row" [formGroup]="typeDescriptionForm">
+                    <div class="row" [formGroup]="typeDescriptionForm">
                         <div class="form-group col-sm">
                             <label> Short Name </label>
                             <input class="form-control" formControlName="short_name" name="short_name" type="text"
@@ -160,7 +160,7 @@
 
                 <div class="tab-pane " id="instance" role="tabpanel" aria-labelledby="instance-tab">
                     <!-- content to create new instance -->
-                    <div class="form-row" [formGroup]="instanceDescriptionForm">
+                    <div class="row" [formGroup]="instanceDescriptionForm">
                         <div class="form-group col-sm">
                             <label> Described Individual </label>
                             <input formControlName="individual" name="individual" type="text"
@@ -172,7 +172,7 @@
                                 class="form-control">
                         </div>
                     </div>
-                    <div class="form-row" [formGroup]="instanceDescriptionForm">
+                    <div class="row" [formGroup]="instanceDescriptionForm">
                         <div class="form-group col-sm">
                             <label> Value </label>
                             <input formControlName="value" name="value" type="text" placeholder="[Input value]"
@@ -356,13 +356,13 @@
         <p class="card-text"> Select an option to add property information. </p>
     </div>
 </div> -->
-<!-- 
+<!--
 <div *ngIf="TemplateOption === 'typeDesc'">
     <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
         <div class="card-body">
             <h5 class="card-title"> DIN EN 61360 Mandatory Type Definition Template </h5>
             <form>
-                <div class="form-row">
+                <div class="row">
                     <div class="form-group col-sm">
                         <label> Code </label>
                         <input class="form-control" [(ngModel)]="code" name="code" type="text" placeholder="[Code]">
@@ -383,7 +383,7 @@
                             placeholder="[Preferred Name]">
                     </div>
                 </div>
-                <div class="form-row">
+                <div class="row">
                     <div class="form-group col-sm">
                         <label> Short Name </label>
                         <input class="form-control" [(ngModel)]="short_name" name="short_name" type="text"
@@ -449,14 +449,14 @@
                         </div>
                         <div class="card-body">
                             <form>
-                                <div class="form-row">
+                                <div class="row">
                                     <div class="form-group col-sm">
                                         <label> Described Individual </label>
                                         <input [(ngModel)]="describedIndividual" name="describedIndividual" type="text"
                                             placeholder="[Input described Individual]" class="form-control">
                                     </div>
                                 </div>
-                                <div class="form-row">
+                                <div class="row">
                                     <div class="form-group col-sm">
                                         <label> Code </label>
                                         <input [(ngModel)]="code" name="code" type="text" placeholder="[Code]"

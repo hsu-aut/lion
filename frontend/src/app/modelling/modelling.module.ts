@@ -23,24 +23,24 @@ import { TableModule } from '../shared/modules/table/table.module';
  
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ModellingRoutingModule,
-    NgbCarouselModule,
-    NgbAlertModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TableModule
-  ],
-  declarations: [
-    ModellingComponent,
-    SidebarComponent,
-    VDI3682Component,
-    Dinen61360Component,
-    Vdi2206Component,
-    WadlComponent,
-    Isa88Component,
-    Iso22400_2Component
-  ]
+    imports: [
+        CommonModule,
+        ModellingRoutingModule,
+        NgbCarouselModule,
+        NgbAlertModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TableModule
+    ],
+    declarations: [
+        ModellingComponent,
+        SidebarComponent,
+        VDI3682Component,
+        Dinen61360Component,
+        Vdi2206Component,
+        WadlComponent,
+        Isa88Component,
+        Iso22400_2Component
+    ]
 })
 export class ModellingModule { }

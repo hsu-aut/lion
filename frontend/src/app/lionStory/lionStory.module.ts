@@ -10,14 +10,14 @@ import { ModellingGuideComponent } from './modellingGuide/modellingGuide.compone
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    LionStoryRoutingModule
-  ],
-  declarations: [
-    LionStoryComponent,
-    AboutComponent,
-    ModellingGuideComponent
-  ]
+    imports: [
+        CommonModule,
+        LionStoryRoutingModule
+    ],
+    declarations: [
+        LionStoryComponent,
+        AboutComponent,
+        ModellingGuideComponent
+    ]
 })
 export class LionStoryModule { }

@@ -11,8 +11,8 @@ export class RDF_Factory {
     entity: Entity;
 
     constructor(entityType: entityTypes, wannaBeRDF: string) {
-        console.log(entityType)
-        console.log(wannaBeRDF)
+        console.log(entityType);
+        console.log(wannaBeRDF);
         // switch (entityType) {
         //     case entityTypes.namedNode:
         //         this.entity = new NamedNode(wannaBeRDF);
@@ -57,12 +57,12 @@ export class NamedNode {
     }
 
     private buildNamedNode(wannaBeRDF: string){
-        let IRI_REG: RegExp = /^([a-z0-9+.-]+):(?:\/\/(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\d*))?(\/(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?|(\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i
+        const IRI_REG = /^([a-z0-9+.-]+):(?:\/\/(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\d*))?(\/(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?|(\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
     
         if(IRI_REG.test(wannaBeRDF)){
             this.value = wannaBeRDF;
         } else {
-            console.error("NO VALID IRI ENCODED STRING TO BUILD NAMED NDOE")
+            console.error("NO VALID IRI ENCODED STRING TO BUILD NAMED NDOE");
         }
         
     }
@@ -73,7 +73,7 @@ export class NamedNode {
 class Literial extends Entity {
 
     constructor(wannaBeRDF: string) {
-        super()
+        super();
         this.entityType = entityTypes.literal;
         this.value = wannaBeRDF;
     }
@@ -82,7 +82,7 @@ class Literial extends Entity {
 class BlankNode extends Entity {
 
     constructor(wannaBeRDF: string) {
-        super()
+        super();
         this.entityType = entityTypes.blankNode;
         this.value = wannaBeRDF;
     }
@@ -91,7 +91,7 @@ class BlankNode extends Entity {
 class Variable extends Entity {
 
     constructor(wannaBeRDF: string) {
-        super()
+        super();
         this.entityType = entityTypes.variable;
         this.value = wannaBeRDF;
     }
@@ -100,7 +100,7 @@ class Variable extends Entity {
 class NamedGraph extends Entity {
 
     constructor(wannaBeRDF: string) {
-        super()
+        super();
         this.entityType = entityTypes.namedGraph;
         this.value = wannaBeRDF;
     }

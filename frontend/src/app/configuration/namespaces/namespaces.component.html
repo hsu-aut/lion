@@ -45,7 +45,7 @@
           <p class="text-sm-left"> You can set the namespace, that your triples will be created in, here.</p>
 
 
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> The current namespace is: </label>
               <input class="form-control" type="text" [placeholder]="activeNamespace" readonly>
@@ -75,7 +75,7 @@
             table and the input fields will be filled so you can edit them. Any changes will not affect already modelled
             triples.</p>
 
-          <div class="form-row" [formGroup]="namespaceFormEditDelete">
+          <div class="row" [formGroup]="namespaceFormEditDelete">
             <div class="form-group col-1">
               <label> No# </label>
               <input class="form-control" type="text" [placeholder]="userKey" readonly>
@@ -107,7 +107,7 @@
           <p class="text-sm-left"> You can create or delete namespace here. Deleting namespaces will not affect any for
             the already modelled triples.</p>
 
-          <div class="form-row" [formGroup]="namespaceFormCreate">
+          <div class="row" [formGroup]="namespaceFormCreate">
             <div class="form-group col-2">
               <label> Prefix </label>
               <input formControlName="prefix" class="form-control" type="text">
@@ -123,7 +123,7 @@
               </div>
             </div>
           </div>
-          <div class="form-row" [formGroup]="namespaceFormEditDelete">
+          <div class="row" [formGroup]="namespaceFormEditDelete">
             <div class="form-group col-1">
               <label> No# </label>
               <input class="form-control" type="text" [placeholder]="userKey" readonly>

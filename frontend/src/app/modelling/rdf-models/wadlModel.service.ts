@@ -9,16 +9,16 @@ import { take } from 'rxjs/operators';
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class WadlModelService {
 
   wadlData = new WADLDATA();
   wadlInsert = new WADLINSERT();
 
-  public TABLE_BASE_RESOURCES: Array<Object> = [];
-  public TABLE_SERVICES: Array<Object> = [];
-  public TABLE_OF_REQUEST_PARAMETERS: Array<Object> = [];
+  public TABLE_BASE_RESOURCES: Array<Record<string, any>> = [];
+  public TABLE_SERVICES: Array<Record<string, any>> = [];
+  public TABLE_OF_REQUEST_PARAMETERS: Array<Record<string, any>> = [];
 
   public LIST_BASE_RESOURCES: Array<string> = [];
   public LIST_SERVICES: Array<string> = [];
@@ -34,93 +34,93 @@ export class WadlModelService {
     private downloadService: DownloadService,
     private graphs: GraphOperationsService
   ) {
-    this.initializeWADL();
+      this.initializeWADL();
   }
 
   public initializeWADL() {
 
-    this.loadTABLE_BASE_RESOURCES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_BASE_RESOURCES = data;
-    });
-    this.loadTABLE_SERVICES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_SERVICES = data;
-    });
-    this.loadLIST_BASE_RESOURCES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_BASE_RESOURCES = data;
-    });
-    this.loadLIST_SERVICES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_SERVICES = data;
-    });
-    this.loadLIST_OF_METHODS().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_METHODS = data;
-    });
-    this.loadLIST_OF_PARAMETER_TYPES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_PARAMETER_TYPES = data;
-    });
-    this.loadLIST_OF_RESPONSE_CODES().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.LIST_OF_RESPONSE_CODES = data;
-    });
+      this.loadTABLE_BASE_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_BASE_RESOURCES = data;
+      });
+      this.loadTABLE_SERVICES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_SERVICES = data;
+      });
+      this.loadLIST_BASE_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_BASE_RESOURCES = data;
+      });
+      this.loadLIST_SERVICES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_SERVICES = data;
+      });
+      this.loadLIST_OF_METHODS().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_METHODS = data;
+      });
+      this.loadLIST_OF_PARAMETER_TYPES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_PARAMETER_TYPES = data;
+      });
+      this.loadLIST_OF_RESPONSE_CODES().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.LIST_OF_RESPONSE_CODES = data;
+      });
   }
 
   // loader
   public loadTABLE_BASE_RESOURCES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_BASE_RESOURCES);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_BASE_RESOURCES);
   }
   public loadTABLE_SERVICES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_SERVICES);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_SERVICES);
   }
   public loadLIST_BASE_RESOURCES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_TABLE_BASE_RESOURCES, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_TABLE_BASE_RESOURCES, 0);
   }
   public loadLIST_SERVICES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_TABLE_SERVICES, 1);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_TABLE_SERVICES, 1);
   }
   public loadLIST_OF_METHODS() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_METHODS, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_METHODS, 0);
   }
   public loadLIST_OF_PARAMETER_TYPES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_PARAMETER_TYPES, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_PARAMETER_TYPES, 0);
   }
   public loadLIST_OF_RESPONSE_CODES() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_RESPONSE_CODES, 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_RESPONSE_CODES, 0);
   }
   public loadLIST_OF_SERVICES_BY_BASE(BASE_IRI) {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI), 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI), 0);
   }
   public loadTABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI) {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI));
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI));
   }
   public loadTABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI) {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI));
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI));
   }
   public loadTABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
   }
   public loadLIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity) {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
   }
   public loadLIST_INDIVIDUALS_BY_CLASS(classIRI) {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_INDIVIDUALS_BY_CLASS(classIRI), 0);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_INDIVIDUALS_BY_CLASS(classIRI), 0);
   }
   // setter 
   public setTABLE_BASE_RESOURCES(table) { this.TABLE_BASE_RESOURCES = table; }
@@ -134,116 +134,116 @@ export class WadlModelService {
   public getTABLE_SERVICES() { return this.TABLE_SERVICES; }
   public getLIST_BASE_RESOURCES() { return this.LIST_BASE_RESOURCES; }
   public getLIST_SERVICES() { return this.LIST_SERVICES; }
-  public getLIST_OF_METHODS() { return this.LIST_OF_METHODS }
-  public getLIST_OF_PARAMETER_TYPES() { return this.LIST_OF_PARAMETER_TYPES }
-  public getLIST_OF_RESPONSE_CODES() { return this.LIST_OF_RESPONSE_CODES }
+  public getLIST_OF_METHODS() { return this.LIST_OF_METHODS; }
+  public getLIST_OF_PARAMETER_TYPES() { return this.LIST_OF_PARAMETER_TYPES; }
+  public getLIST_OF_RESPONSE_CODES() { return this.LIST_OF_RESPONSE_CODES; }
 
   public modifyBaseResource(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
-    switch (action) {
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      switch (action) {
       case "add": {
-        console.log("i was executed")
-        console.log(this.wadlInsert.createBaseResource(variables, activeGraph))
-        return this.query.SPARQL_UPDATE(this.wadlInsert.createBaseResource(variables, activeGraph));
+          console.log("i was executed");
+          console.log(this.wadlInsert.createBaseResource(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.createBaseResource(variables, activeGraph));
       }
       case "delete": {
-        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteBaseResource(variables));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.deleteBaseResource(variables));
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.wadlInsert.createBaseResource(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.wadlInsert.createBaseResource(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
 
   }
 
   public modifyService(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        console.log("i was executed")
-        console.log(this.wadlInsert.createService(variables, activeGraph))
-        return this.query.SPARQL_UPDATE(this.wadlInsert.createService(variables, activeGraph));
+          console.log("i was executed");
+          console.log(this.wadlInsert.createService(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.createService(variables, activeGraph));
       }
       case "delete": {
-        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteService(variables));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.deleteService(variables));
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.wadlInsert.createService(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.wadlInsert.createService(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
   }
   public modifyRequest(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.wadlInsert.createRequest(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.createRequest(variables, activeGraph));
       }
       case "delete": {
-        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteRequest(variables));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.deleteRequest(variables));
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.wadlInsert.createRequest(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.wadlInsert.createRequest(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
   }
   public modifyResponse(variables: WADLVARIABLES, action: string) {
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.wadlInsert.createResponse(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.createResponse(variables, activeGraph));
       }
       case "delete": {
-        return this.query.SPARQL_UPDATE(this.wadlInsert.deleteResponse(variables));
+          return this.query.SPARQL_UPDATE(this.wadlInsert.deleteResponse(variables));
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.wadlInsert.createResponse(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.wadlInsert.createResponse(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
       }
-    }
+      }
   }
   public deleteOption(variables: WADLVARIABLES) {
-    return this.query.SPARQL_UPDATE(this.wadlInsert.deleteOption(variables));
+      return this.query.SPARQL_UPDATE(this.wadlInsert.deleteOption(variables));
   }
   public deleteParameter(variables: WADLVARIABLES) {
-    return this.query.SPARQL_UPDATE(this.wadlInsert.deleteParameter(variables));
+      return this.query.SPARQL_UPDATE(this.wadlInsert.deleteParameter(variables));
   }
 }
 
@@ -304,7 +304,7 @@ export class WADLDATA {
 
   public SELECT_LIST_OF_SERVICES_BY_BASE(BASE_IRI) {
 
-    let selectString = `
+      const selectString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -312,13 +312,13 @@ export class WADLDATA {
     { 
       <${BASE_IRI}> wadl:hasResource ?service.
       ?service rdf:type wadl:Resource. 			         
-    }`
-    return selectString;
+    }`;
+      return selectString;
   }
 
   public SELECT_TABLE_OF_REQUEST_PARAMETERS(serviceIRI, methodIRI, parameterTypeIRI) {
 
-    let selectString = `
+      const selectString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -358,12 +358,12 @@ export class WADLDATA {
         ?option rdf:type wadl:Option;
         a owl:NamedIndividual;
         wadl:hasOptionValue ?optionValue.}
-      } `
-    return selectString;
+      } `;
+      return selectString;
   }
 
   public SELECT_TABLE_OF_REQUEST_REPRESENTATION(serviceIRI, methodIRI) {
-    let selectString = `
+      const selectString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -407,11 +407,11 @@ export class WADLDATA {
         ?bodyRepresentationParameterOption rdf:type wadl:Option;
         a owl:NamedIndividual;
         wadl:hasOptionValue ?bodyOptionValue.
-    }} `
-    return selectString;
+    }} `;
+      return selectString;
   }
   public SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
-    let selectString = `
+      const selectString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -455,12 +455,12 @@ export class WADLDATA {
         ?bodyRepresentationParameterOption rdf:type wadl:Option;
         a owl:NamedIndividual;
         wadl:hasOptionValue ?bodyOptionValue.
-    }} `
-    return selectString;
+    }} `;
+      return selectString;
   }
 
   public SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(Namespace) {
-    let selectString = `
+      const selectString = `
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
     PREFIX sesame: <http://www.openrdf.org/schema/sesame#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -468,16 +468,16 @@ export class WADLDATA {
     WHERE { 
       ?class a owl:Class. 
       FILTER(STRSTARTS(STR(?class), "${Namespace}"))
-    }`
-    return selectString
+    }`;
+      return selectString;
   }
 
   public SELECT_LIST_INDIVIDUALS_BY_CLASS(ClassIRI) {
-    let selectString = `
+      const selectString = `
     SELECT ?individal WHERE { 
       ?individal a <${ClassIRI}> .
-    }`
-    return selectString
+    }`;
+      return selectString;
   }
 
 }
@@ -516,9 +516,9 @@ export class WADLVARIABLES {
 export class WADLINSERT {
 
 
-  public createBaseResource(variables: WADLVARIABLES, activeGraph: string) {
+    public createBaseResource(variables: WADLVARIABLES, activeGraph: string) {
 
-    var insertString = `
+        const insertString = `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -536,12 +536,12 @@ export class WADLINSERT {
     BIND(<${variables.baseResourceIRI}> AS ?baseResource).
     BIND(<${variables.serviceProviderIRI}> AS ?serviceProvider). 
   }
-  `
-    return insertString
-  }
+  `;
+        return insertString;
+    }
 
-  public createService(variables: WADLVARIABLES, activeGraph: string) {
-    var insertString = `
+    public createService(variables: WADLVARIABLES, activeGraph: string) {
+        const insertString = `
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
   PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -558,39 +558,39 @@ export class WADLINSERT {
     BIND(<${variables.baseResourceIRI}> AS ?baseResource).
     BIND(<${variables.serviceIRI}> AS ?service).
   }
-  `
-    return insertString
-  }
+  `;
+        return insertString;
+    }
 
-  public createRequest(variables: WADLVARIABLES, activeGraph: string) {
+    public createRequest(variables: WADLVARIABLES, activeGraph: string) {
 
-    var optionals = {
-      parameter: `        
+        const optionals = {
+            parameter: `        
       BIND(<${variables.parameterIRI}> AS ?parameter).
       BIND(<${variables.parameterTypeIRI}> AS ?parameterType)
       `,
-      parameterOption: `BIND(<${variables.optionIRI}> AS ?option).`,
-      representation: `        
+            parameterOption: `BIND(<${variables.optionIRI}> AS ?option).`,
+            representation: `        
       BIND(<${variables.bodyRepresentationIRI}> AS ?bodyRepresentation).
       BIND(<${variables.bodyRepresentationParameterIRI}> AS ?bodyRepresentationParameter).`,
-      representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`,
-      parameterDataTypeNonOntological: `?parameter wadl:hasParameterType "${variables.parameterDataType}"^^xsd:string.`,
-      parameterDataTypeOntologicalABox: `?parameter wadl:hasOntologicalParameterType <${variables.parameterDataTypeABox}>.`,
-      parameterDataTypeOntologicalTBox: `?parameter rdf:type <${variables.parameterDataTypeTBox}>.`,
+            representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`,
+            parameterDataTypeNonOntological: `?parameter wadl:hasParameterType "${variables.parameterDataType}"^^xsd:string.`,
+            parameterDataTypeOntologicalABox: `?parameter wadl:hasOntologicalParameterType <${variables.parameterDataTypeABox}>.`,
+            parameterDataTypeOntologicalTBox: `?parameter rdf:type <${variables.parameterDataTypeTBox}>.`,
 
-      bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
-      bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
-      bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`
-    }
+            bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
+            bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
+            bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`
+        };
 
-    // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
-      const element = optionals[i];
-      if (element.search('undefined') != -1) { optionals[i] = "" }
-      // console.log(element);
-    }
+        // add a check for empties and if one is found delete the string
+        for (const i in optionals) {
+            const element = optionals[i];
+            if (element.search('undefined') != -1) { optionals[i] = ""; }
+            // console.log(element);
+        }
 
-    var insertString = `
+        const insertString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -649,31 +649,31 @@ export class WADLINSERT {
         ${optionals.parameterOption}
         ${optionals.representation} 
         ${optionals.representationOption}    
-      }`
-    console.log(insertString)
-    return insertString
-  }
-  public createResponse(variables: WADLVARIABLES, activeGraph: string) {
+      }`;
+        console.log(insertString);
+        return insertString;
+    }
+    public createResponse(variables: WADLVARIABLES, activeGraph: string) {
 
-    var optionals = {
-      representation: `        
+        const optionals = {
+            representation: `        
       BIND(<${variables.bodyRepresentationIRI}> AS ?bodyRepresentation).
       BIND(<${variables.bodyRepresentationParameterIRI}> AS ?bodyRepresentationParameter).`,
-      bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
-      bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
-      bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`,
-      representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`
+            bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
+            bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
+            bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`,
+            representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`
 
-    }
+        };
 
-    // add a check for empties and if one is found delete the string
-    for (const i in optionals) {
-      const element = optionals[i];
-      if (element.search(`undefined`) != -1) { optionals[i] = "" }
-      // console.log(element);
-    }
+        // add a check for empties and if one is found delete the string
+        for (const i in optionals) {
+            const element = optionals[i];
+            if (element.search(`undefined`) != -1) { optionals[i] = ""; }
+            // console.log(element);
+        }
 
-    var insertString = `
+        const insertString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -717,14 +717,14 @@ export class WADLINSERT {
         BIND(<${variables.responseIRI}> AS ?response).
         ${optionals.representation}
         ${optionals.representationOption}       
-      }`
-    console.log(insertString)
-    return insertString
-  }
+      }`;
+        console.log(insertString);
+        return insertString;
+    }
 
-  public deleteOption(variables: WADLVARIABLES) {
+    public deleteOption(variables: WADLVARIABLES) {
 
-    let deleteString = `
+        const deleteString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -743,14 +743,14 @@ export class WADLINSERT {
       ?option wadl:hasOptionValue ?optionVal.
       }
     `;
-    console.log(deleteString)
-    return deleteString
+        console.log(deleteString);
+        return deleteString;
 
-  }
+    }
 
-  public deleteParameter(variables: WADLVARIABLES) {
+    public deleteParameter(variables: WADLVARIABLES) {
 
-    let deleteString = `
+        const deleteString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -772,12 +772,12 @@ export class WADLINSERT {
             ?predicate ?object.
         }
     `;
-    console.log(deleteString)
-    return deleteString
-  }
+        console.log(deleteString);
+        return deleteString;
+    }
 
-  deleteBaseResource(variables: WADLVARIABLES) {
-    let deleteString = `
+    deleteBaseResource(variables: WADLVARIABLES) {
+        const deleteString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -943,12 +943,12 @@ export class WADLINSERT {
     DELETE WHERE { 
       <${variables.baseResourceIRI}> ?predicate ?object.
     }
-    `
-    console.log(deleteString)
-    return deleteString
-  }
-  deleteService(variables: WADLVARIABLES) {
-    let deleteString = `
+    `;
+        console.log(deleteString);
+        return deleteString;
+    }
+    deleteService(variables: WADLVARIABLES) {
+        const deleteString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -1092,12 +1092,12 @@ export class WADLINSERT {
     DELETE WHERE { 
       <${variables.serviceIRI}> ?predicate ?object.
     }
-    `
-    console.log(deleteString)
-    return deleteString
-  }
-  deleteRequest(variables: WADLVARIABLES) {
-    let deleteString = `
+    `;
+        console.log(deleteString);
+        return deleteString;
+    }
+    deleteRequest(variables: WADLVARIABLES) {
+        const deleteString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -1158,13 +1158,13 @@ export class WADLINSERT {
     DELETE WHERE { 
       <${variables.requestIRI}> ?predicate ?object.
     }
-    `
-    console.log(deleteString)
-    return deleteString
-  }
+    `;
+        console.log(deleteString);
+        return deleteString;
+    }
 
-  deleteResponse(variables: WADLVARIABLES) {
-    let deleteString = `
+    deleteResponse(variables: WADLVARIABLES) {
+        const deleteString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -1206,10 +1206,10 @@ export class WADLINSERT {
     DELETE WHERE { 
       <${variables.responseIRI}> ?predicate ?object.
     }
-    `
-    console.log(deleteString)
-    return deleteString
-  }
+    `;
+        console.log(deleteString);
+        return deleteString;
+    }
 
 
 }

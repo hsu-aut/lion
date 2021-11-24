@@ -58,7 +58,7 @@
                         from each table and add it to the current graph.</p>
 
                     <!-- content to create new individuals -->
-                    <div class="form-row py-3" [formGroup]="newIndividualForm">
+                    <div class="row py-3" [formGroup]="newIndividualForm">
                         <div class="form-group col-sm">
                             <label> The Instance Description to connect </label>
                             <input formControlName="subject" class="form-control" name="subject" type="text"
@@ -97,7 +97,7 @@
                                 (tableClickedRow)="iDTableClick($event)"></app-table>
                         </div>
                         <div class="col">
-                            <app-table [currentTable]="opcUaTable" [filter]="filterOption" 
+                            <app-table [currentTable]="opcUaTable" [filter]="filterOption"
                                 [tableExplanation]="opcUaSubtitle" (tableClickedRow)="opcUaTableClick($event)">
                             </app-table>
                         </div>

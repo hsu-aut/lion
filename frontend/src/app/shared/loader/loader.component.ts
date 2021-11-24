@@ -5,27 +5,27 @@ import { debounceTime } from "rxjs/operators";
 
 
 @Component({
-  selector: 'app-loader',
-  templateUrl: './loader.component.html',
-  styleUrls: ['./loader.component.scss']
+    selector: 'app-loader',
+    templateUrl: './loader.component.html',
+    styleUrls: ['./loader.component.scss']
 })
 export class LoaderComponent implements OnInit, OnDestroy {
 
-  loading: number = 0;
+  loading = 0;
   loadingSubscription: Subscription;
 
   constructor(private loadingScreenService: DataLoaderService) { }
 
   ngOnInit() {
-    this.loadingSubscription = this.loadingScreenService.loadingStatus.pipe(
-      debounceTime(400)
-    ).subscribe((value) => {
-      this.loading = value;
-    });
+      this.loadingSubscription = this.loadingScreenService.loadingStatus.pipe(
+          debounceTime(400)
+      ).subscribe((value) => {
+          this.loading = value;
+      });
   }
 
   ngOnDestroy() {
-    this.loadingSubscription.unsubscribe();
+      this.loadingSubscription.unsubscribe();
   }
 
 }

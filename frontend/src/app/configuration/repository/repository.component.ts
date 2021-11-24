@@ -18,9 +18,9 @@ import { DashboardService } from '../../shared/services/dashboard.service';
 
 
 @Component({
-  selector: 'app-repository',
-  templateUrl: './repository.component.html',
-  styleUrls: ['./repository.component.scss']
+    selector: 'app-repository',
+    templateUrl: './repository.component.html',
+    styleUrls: ['./repository.component.scss']
 })
 export class RepositoryComponent implements OnInit {
 
@@ -57,89 +57,89 @@ export class RepositoryComponent implements OnInit {
     private fb: FormBuilder
 
   ) {
-    this.activeRepository = this.config.getRepository();
+      this.activeRepository = this.config.getRepository();
   }
 
   ngOnInit() {
-    this.getListOfRepos();
+      this.getListOfRepos();
   }
 
 
   getListOfRepos() {
-    this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
-      this.repositoryList = data;
-      this.repoCount = this.repositoryList.length;
-    })
+      this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
+          this.repositoryList = data;
+          this.repoCount = this.repositoryList.length;
+      });
   }
 
   setRepository(repositoryName: string) {
-    if (this.repositoryOption.valid) {
-      this.config.setRepository(repositoryName);
-      this.activeRepository = this.config.getRepository();
-      this.refreshServices();
-    } else if (this.repositoryOption.invalid) {
-      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
-    }
+      if (this.repositoryOption.valid) {
+          this.config.setRepository(repositoryName);
+          this.activeRepository = this.config.getRepository();
+          this.refreshServices();
+      } else if (this.repositoryOption.invalid) {
+          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+      }
   }
 
   createRepository(repositoryName: string) {
-    if (this.repositoryCreate.valid) {
-      this.repositoryOperation.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-        this.getListOfRepos();
-      })
-    } else if (this.repositoryCreate.invalid) {
-      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
-    }
+      if (this.repositoryCreate.valid) {
+          this.repositoryOperation.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+              this.getListOfRepos();
+          });
+      } else if (this.repositoryCreate.invalid) {
+          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+      }
 
   }
 
 
   clearRepository(repositoryName: string) {
-    if (this.repositoryClear.valid) {
-      this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-      })
-    } else if (this.repositoryClear.invalid) {
-      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
-    }
+      if (this.repositoryClear.valid) {
+          this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+          });
+      } else if (this.repositoryClear.invalid) {
+          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+      }
   }
 
   deleteRepository(repositoryName: string) {
-    if (this.repositoryDelete.valid) {
-      this.repositoryOperation.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-        this.getListOfRepos();
-      })
-    } else if (this.repositoryDelete.invalid) {
-      this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
-    }
+      if (this.repositoryDelete.valid) {
+          this.repositoryOperation.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+              this.getListOfRepos();
+          });
+      } else if (this.repositoryDelete.invalid) {
+          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+      }
   }
 
 
   refreshServices() {
-    console.info("Refreshing data ...")
-    this.VDI3862_Service.initializeVDI3682();
-    this.VDI2206_Service.initializeVDI2206();
-    this.ISA_Service.initializeISA88();
-    this.DINEIN61360_Service.initializeDINEN61360();
-    this.Dashboard_Service.initializeDashboard();
-    this.WadlModelService.initializeWADL();
-    this.Iso22400_2ModelService.initializeISO22400_2();
+      console.info("Refreshing data ...");
+      this.VDI3862_Service.initializeVDI3682();
+      this.VDI2206_Service.initializeVDI2206();
+      this.ISA_Service.initializeISA88();
+      this.DINEIN61360_Service.initializeDINEN61360();
+      this.Dashboard_Service.initializeDashboard();
+      this.WadlModelService.initializeWADL();
+      this.Iso22400_2ModelService.initializeISO22400_2();
   }
 
   loadTBoxes() {
-    var ObservableSequence = concat(
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISA88"),
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
-      this.repositoryOperation.loadTBoxes(this.config.getRepository(), "OPCUA"),
+      const ObservableSequence = concat(
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISA88"),
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
+          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "OPCUA"),
 
-    ).pipe(
-      finalize(() => this.refreshServices()) // Execute when the observable completes
-    )
+      ).pipe(
+          finalize(() => this.refreshServices()) // Execute when the observable completes
+      );
 
-    ObservableSequence.subscribe((data: any) => console.log(data));
+      ObservableSequence.subscribe((data: any) => console.log(data));
   }
 
 

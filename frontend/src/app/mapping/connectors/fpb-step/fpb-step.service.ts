@@ -10,7 +10,7 @@ import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class FpbStepService {
 
@@ -29,81 +29,81 @@ export class FpbStepService {
     private messageService: MessagesService,
     private graphs: GraphOperationsService,
   ) {
-    this.initializeService();
+      this.initializeService();
   }
 
   public initializeService() {
-    this.loadTABLE_OF_TECHNICAL_RESOURCE_INFO().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_OF_TECHNICAL_RESOURCE_INFO = data;
-    });
-    this.loadTABLE_OF_SYSTEM_INFO().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_OF_SYSTEM_INFO = data;
-    });
-    this.loadTABLE_OVERVIEW().pipe(take(1)).subscribe((data: any) => {
-      this.loadingScreenService.stopLoading();
-      this.TABLE_OVERVIEW = data;
-    });
+      this.loadTABLE_OF_TECHNICAL_RESOURCE_INFO().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_OF_TECHNICAL_RESOURCE_INFO = data;
+      });
+      this.loadTABLE_OF_SYSTEM_INFO().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_OF_SYSTEM_INFO = data;
+      });
+      this.loadTABLE_OVERVIEW().pipe(take(1)).subscribe((data: any) => {
+          this.loadingScreenService.stopLoading();
+          this.TABLE_OVERVIEW = data;
+      });
   }
 
   public loadTABLE_OF_TECHNICAL_RESOURCE_INFO() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OF_TECHNICAL_RESOURCE_INFO);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OF_TECHNICAL_RESOURCE_INFO);
   }
 
   public loadTABLE_OF_SYSTEM_INFO() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OF_SYSTEM_INFO);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OF_SYSTEM_INFO);
   }
   public loadTABLE_OVERVIEW() {
-    this.loadingScreenService.startLoading();
-    return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OVERVIEW);
+      this.loadingScreenService.startLoading();
+      return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OVERVIEW);
   }
 
   public setTABLE_OVERVIEW(table){
-    this.TABLE_OVERVIEW = table;
+      this.TABLE_OVERVIEW = table;
   }
 
 
   public getTABLE_OF_TECHNICAL_RESOURCE_INFO() {
-    return this.TABLE_OF_TECHNICAL_RESOURCE_INFO;
+      return this.TABLE_OF_TECHNICAL_RESOURCE_INFO;
   }
 
   public getTABLE_OF_SYSTEM_INFO() {
-    return this.TABLE_OF_SYSTEM_INFO;
+      return this.TABLE_OF_SYSTEM_INFO;
   }
 
   public getTABLE_OVERVIEW(){
-    return this.TABLE_OVERVIEW;
+      return this.TABLE_OVERVIEW;
   }
 
   public modifyTripel(variables, action: string) {
 
-    var GRAPHS = this.graphs.getGraphs();
-    var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      const GRAPHS = this.graphs.getGraphs();
+      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-    switch (action) {
+      switch (action) {
       case "add": {
-        return this.query.SPARQL_UPDATE(this.insert.createEntity(variables, activeGraph));
+          return this.query.SPARQL_UPDATE(this.insert.createEntity(variables, activeGraph));
       }
       case "delete": {
-        this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet')
-        break;
+          this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
+          break;
       }
       case "build": {
-        var blobObserver = new Observable((observer) => {
-          let insertString = this.insert.createEntity(variables, activeGraph);
-          const blob = new Blob([insertString], { type: 'text/plain' });
-          const name = 'insert.txt';
-          this.downloadService.download(blob, name);
-          observer.next();
-          observer.complete();
-        });
-        return blobObserver;
+          const blobObserver = new Observable((observer) => {
+              const insertString = this.insert.createEntity(variables, activeGraph);
+              const blob = new Blob([insertString], { type: 'text/plain' });
+              const name = 'insert.txt';
+              this.downloadService.download(blob, name);
+              observer.next();
+              observer.complete();
+          });
+          return blobObserver;
 
       }
-    }
+      }
   }
 
 }
@@ -156,11 +156,11 @@ export class Data {
 
 export class Insert {
 
-  createEntity(variables, activeGraph) {
-    let subject = variables.subject;
-    let object = variables.object;
+    createEntity(variables, activeGraph) {
+        const subject = variables.subject;
+        const object = variables.object;
 
-    var insertString = `
+        const insertString = `
       INSERT { 
         GRAPH <${activeGraph}>{
             ?subject owl:sameAs ?object.
@@ -168,10 +168,10 @@ export class Insert {
       } WHERE {
           BIND(IRI(STR("${subject}")) AS ?subject).
           BIND(IRI(STR("${object}")) AS ?object).
-      }`
-      console.log(insertString)
-    return insertString;
+      }`;
+        console.log(insertString);
+        return insertString;
 
-  }
+    }
 
 }

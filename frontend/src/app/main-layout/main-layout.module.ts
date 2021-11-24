@@ -16,19 +16,19 @@ import { LoaderComponent } from '../shared/loader/loader.component';
 import { MessagesComponent } from '../shared/messages/messages.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MainLayoutRoutingModule,
-    NgbCarouselModule,
-    NgbAlertModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  declarations: [
-    MainLayoutComponent,
-    HeaderComponent,
-    LoaderComponent,
-    MessagesComponent
-  ]
+    imports: [
+        CommonModule,
+        MainLayoutRoutingModule,
+        NgbCarouselModule,
+        NgbAlertModule,
+        FormsModule,
+        ReactiveFormsModule
+    ],
+    declarations: [
+        MainLayoutComponent,
+        HeaderComponent,
+        LoaderComponent,
+        MessagesComponent
+    ]
 })
 export class MainLayoutModule { }

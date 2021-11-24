@@ -44,7 +44,7 @@
           <p class="text-sm-left"> You can set the named graph, that your triples will be added to, here.</p>
 
 
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> The current named graph is: </label>
               <input class="form-control" type="text" [placeholder]="activeGraph" readonly>
@@ -74,7 +74,7 @@
           <p class="text-sm-left"> Here, you can create or delete named graphs below. When deleting you can choose
             between complete delete or just deleting the triples that are assigned to the graph.</p>
 
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> Name of the new named graph: </label>
               <div class="input-group mb-3">
@@ -89,7 +89,7 @@
               </div>
             </div>
           </div>
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> Delete the following graph: </label>
               <div class="input-group mb-3">
@@ -106,7 +106,7 @@
               </div>
             </div>
           </div>
-          <div class="form-row">
+          <div class="row">
             <div class="form-group col-sm">
               <label> Delete the triples from the following graph: </label>
               <div class="input-group mb-3">
@@ -130,7 +130,7 @@
         <div class="tab-pane py-4" id="UpDown" role="tabpanel" aria-labelledby="UpDown-tab">
           <p class="text-sm-left"> You can up- and download triples from a named graph here.</p>
 
-          <div class="form-row" [formGroup]="downloadOption">
+          <div class="row" [formGroup]="downloadOption">
             <div class="form-group col">
               <label> Named Graph to download: </label>
               <select formControlName="graph" name="activeNamespace" class="form-control">
@@ -157,7 +157,7 @@
             </div>
           </div>
 
-          <div class="form-row" [formGroup]="uploadOption">
+          <div class="row" [formGroup]="uploadOption">
             <div class="form-group col">
               <label> Named Graph to upload to: </label>
               <select formControlName="graph" name="activeNamespace" class="form-control">

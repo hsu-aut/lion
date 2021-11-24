@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-modelling',
-  templateUrl: './modelling.component.html',
-  styleUrls: ['./modelling.component.scss']
+    selector: 'app-modelling',
+    templateUrl: './modelling.component.html',
+    styleUrls: ['./modelling.component.scss']
 })
 export class ModellingComponent implements OnInit {
 
@@ -15,7 +15,7 @@ export class ModellingComponent implements OnInit {
   }
 
   receiveCollapsed($event) {
-    this.collapedSideBar = $event;
+      this.collapedSideBar = $event;
   }
 
 }

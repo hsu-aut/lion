@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ConfigurationService {
 
@@ -9,23 +9,23 @@ export class ConfigurationService {
   private repository: string;
 
   constructor() {
-    // default url
-    this.host = 'lion_BE';
-    this.repository = 'testdb';
+      // default url
+      this.host = 'lion_BE';
+      this.repository = 'testdb';
   }
 
   // getter and setter for repository and host
   getHost() {
-    return this.host;
+      return this.host;
   }
   setHost(hostName: string) {
-    this.host = hostName;
+      this.host = hostName;
   }
   getRepository() {
-    return this.repository;
+      return this.repository;
   }
   setRepository(repositoryName: string) {
-    this.repository = repositoryName;
+      this.repository = repositoryName;
   }
 
 }
