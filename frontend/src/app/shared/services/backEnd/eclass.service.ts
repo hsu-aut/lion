@@ -16,14 +16,14 @@ export class EclassService {
     ) { }
 
 
-    getPropertyList(preferredName: string) {
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'none',
-            })
-        };
+  getPropertyList(preferredName: string, via: string) {
+    var httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'none',
+      })
+    };
 
-        const request = this.config.getHost() + `/eclassSearch/list?prop=${preferredName}`;
+    var request = this.config.getHost() + `/eclassSearch/list?prop=${preferredName}&via=${via}`
 
         console.log("Query executed");
         console.log(request, httpOptions);
