@@ -6,19 +6,14 @@ import { EclassSearchService } from './eclass-search.service';
 export class EclassSearchController {
 	constructor(private eclassSearchService: EclassSearchService) { }
 
-	@Get('connect')
+	@Get('configDB')
 	connectDb(): void {
-		this.eclassSearchService.connectDB();
-	}
-
-	@Get('disconnect')
-	disconnectDb(): void {
-		this.eclassSearchService.disconnectDB();
+		this.eclassSearchService.configDB();
 	}
 
 	@Get('configWS')
 	createRequestConfig(): void {
-		this.eclassSearchService.createRequestConfig();
+		this.eclassSearchService.configWS();
 	}
 
 	@Get('list')

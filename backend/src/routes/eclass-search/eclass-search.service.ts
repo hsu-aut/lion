@@ -10,17 +10,35 @@ import { EclassProperty } from './eclass-property.interface'; //todo: change to 
 @Injectable()
 export class EclassSearchService { 
 
-	constructor(private readonly httpService: HttpService) {}
-	
 	private pool: Pool;  //config for mysql db -- todo: also instantiate in constructor?
 	private requestConfig: AxiosRequestConfig; //config for requests to the eclass webservice, including the webservice certificate
-
+	
+	constructor(
+		private readonly httpService: HttpService 
+	) {
+		try {
+			this.configDB();
+		} catch (err) {
+			console.error('db initialization error: ' + err);
+		}
+		try {
+			this.configWS();
+		} catch (err) {
+			console.error('webservice initialization error: ' + err);
+		}		
+	}
+	
 	//
 	// sql database
 	//
 
 	//connect pool
-	async connectDB(): Promise<void> {
+	async configDB(): Promise<void> {
+		// if pool already existes, discconect it first
+		if (this.pool) {
+			this.pool.end();
+			this.pool = null;
+		}
 		try {
 			//read db config from json file
 			const dbConfig: ConnectionOptions = JSON.parse(readFileSync('./eclass-db-config.json', 'utf-8'));
@@ -28,22 +46,6 @@ export class EclassSearchService {
 			this.pool = createPool(dbConfig);
 		} catch (err) {
 			console.error('db connection error: ' + err);
-		}
-	}
-
-	//disconnect pool
-	async disconnectDB(): Promise<void> {
-		try {
-			if (this.pool) {
-				// dsiconnect pool
-				this.pool.end();
-				this.pool = null;
-			} else {
-				// throw error if no pool is connected
-				throw new Error('no connection established');
-			}
-		} catch (err) {
-			console.error('db disconnection error: ' + err);
 		}
 	}
 
@@ -91,7 +93,7 @@ export class EclassSearchService {
 	//
 	
 	//function for creating the request configuration which includes the webservice ertificate
-	async createRequestConfig(): Promise<void> {
+	async configWS(): Promise<void> {
 		try {
 			this.requestConfig = {
 				headers: {
@@ -137,6 +139,7 @@ export class EclassSearchService {
 	}
 
 	//get a list of all matching eclass properties and request all information about them
+	//todo: extend to approximate search (sql: %propName%), currently only exact string matching is possible
 	async getPropertiesByNameFromWebService(propName: string): Promise<EclassProperty[]> {
 
 		//request url -- max number of results hardcoded, change with &limit=x
