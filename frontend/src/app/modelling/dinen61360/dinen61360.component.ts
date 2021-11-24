@@ -237,10 +237,10 @@ export class Dinen61360Component implements OnInit {
       this.instanceDescriptionForm.controls['individual'].setValue(name);
   }
 
-  eclassSearch(searchForm: FormGroup) {
-      this.eclass.getPropertyList(searchForm.controls['searchTerm'].value).pipe(take(1)).subscribe((rawlist: any) => {
-          this.propertyList = rawlist;
-      });
+  eclassSearch(searchForm: FormGroup, via: string) {
+    this.eclass.getPropertyList(searchForm.controls['searchTerm'].value,via).pipe(take(1)).subscribe((rawlist: any) => {
+      this.propertyList = rawlist;
+    });
   }
 
   eclassTableClick(row) {
