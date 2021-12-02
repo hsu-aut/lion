@@ -117,26 +117,14 @@ export class Vdi3682ModelService {
     }
 
     public getListOfProcesses(): Observable<Array<string>> {
-        return this.http.get("/lion_BE/fpb/processes").pipe(tap(data => {
-            console.log("logging processes");
-            console.log(data);
-        }
-        )) as Observable<Array<string>>;
+        return this.http.get<Array<string>>("/lion_BE/fpb/processes");
     }
 
     public getListOfTechnicalResources(): Observable<Array<string>> {
-        return this.http.get("/lion_BE/fpb/technical-resources").pipe(tap(data => {
-            console.log("logging resources");
-            console.log(data);
-        }
-        )) as Observable<Array<string>>;
+        return this.http.get<Array<string>>("/lion_BE/fpb/technical-resources");
     }
     public getListOfInputsAndOutputs(): Observable<Array<string>> {
-        return this.http.get("/lion_BE/fpb/inputs-outputs").pipe(tap(data => {
-            console.log("logging inputs");
-            console.log(data);
-        }
-        )) as Observable<Array<string>>;
+        return this.http.get<Array<string>>("/lion_BE/fpb/inputs-outputs");
     }
 
     // TODO: Convert to new approach
@@ -146,11 +134,7 @@ export class Vdi3682ModelService {
 
 
     public getListOfAllClasses(): Observable<Array<string>> {
-        return this.http.get("/lion_BE/fpb/classes").pipe(tap(data => {
-            console.log("logging classes");
-            console.log(data);
-        }
-        )) as Observable<Array<string>>;
+        return this.http.get<Array<string>>("/lion_BE/fpb/classes");
     }
 
 

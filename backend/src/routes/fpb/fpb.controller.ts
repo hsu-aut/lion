@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as fs from "fs";
 import { Observable } from 'rxjs';
 import { FileUploadRequest, FpbService } from './fpb.service';
 
