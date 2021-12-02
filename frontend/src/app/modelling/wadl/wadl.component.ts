@@ -16,6 +16,7 @@ import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { Tables } from '../utils/tables';
 import { take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -532,9 +533,13 @@ export class WadlComponent implements OnInit {
       }
   }
 
-  getTables() {
+  async getTables() {
       const cols = ["VDI2206:System", "VDI2206:Module", "VDI3682:TechnicalResource"];
-      const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi2206Service.getLIST_OF_MODULES(), this.vdi3682Service.getLIST_OF_TECHNICAL_RESOURCES()];
+
+      // This is pretty hacky. An alternative would be to get all observables into one and subscribe to the overall result for the data table
+      const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
+
+      const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi2206Service.getLIST_OF_MODULES(), tr];
       this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
       this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
       this.baseResourcesTable = this.wadlService.getTABLE_BASE_RESOURCES();
