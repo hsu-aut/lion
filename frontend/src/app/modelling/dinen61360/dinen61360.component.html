@@ -142,13 +142,15 @@
                         </div>
                         <div class="tab-pane " id="eclass" role="tabpanel" aria-labelledby="eclass-tab">
                             <div class="input-group mb-3" [formGroup]="eclassSearchForm">
-                                <div class="input-group-prepend">
-                                    <button class="btn btn-outline-secondary" (click)="eclassSearch(eclassSearchForm)"
-                                        type="button"> Search ecl@ss
-                                        Database </button>
-                                </div>
                                 <input formControlName="searchTerm" type="text" class="form-control"
                                     placeholder="Preferred Name" aria-label="" aria-describedby="basic-addon1">
+                                <div class="input-group-prepend">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Search ecl@ss</button>
+                                    <div class="dropdown-menu">
+                                      <a class="dropdown-item" (click)="eclassSearch(eclassSearchForm,'db')"> local database </a>
+                                      <a class="dropdown-item" (click)="eclassSearch(eclassSearchForm,'ws')"> webservice </a>
+                                    </div>
+                                </div>
                             </div>
                             <div *ngIf="propertyList.length!==0">
                                 <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)" [filter]="filterOption">
