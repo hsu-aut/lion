@@ -1,7 +1,8 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
+import { SparqlResponse } from "../interfaces/sparql/SparqlResponse";
 import { RepositoryService } from "./repository.service";
 
 @Injectable()
@@ -15,7 +16,7 @@ export class SparqlService {
      * Executes a query against the current repository
      * @param queryString SPARQL query string that will be executed
      */
-	query(queryString: string): Observable<AxiosResponse<any>> {
+	query(queryString: string): Observable<SparqlResponse> {
 		const currentRepo = this.repoService.getCurrentRepository();
         
 		const reqConfig: AxiosRequestConfig = {
@@ -28,9 +29,8 @@ export class SparqlService {
 			baseURL: 'http://localhost:7200/',
 			url: `/repositories/${currentRepo}`
 		};
-        
-		// TODO: Set a proper type for the response
-		return this.http.request<any>(reqConfig);
+		// Return the response body (i.e. the full Sparql Response)
+		return this.http.request<SparqlResponse>(reqConfig).pipe(map((data: AxiosResponse<SparqlResponse>) => data.data));
 	}
 
 
@@ -39,7 +39,7 @@ export class SparqlService {
      * @param updateString SPARQL Update string that will be executed
      * @returns 
      */
-	update(updateString: string): Observable<AxiosResponse<void>> {
+	update(updateString: string): Observable<void> {
 		const currentRepo = this.repoService.getCurrentRepository();
         
 		const reqConfig: AxiosRequestConfig = {
@@ -55,7 +55,7 @@ export class SparqlService {
 		};
         
 		// TODO: Check if it really returns "void"
-		return this.http.request<void>(reqConfig);
+		return this.http.request<void>(reqConfig).pipe(map(data => data.data));
 	}
 
 }
