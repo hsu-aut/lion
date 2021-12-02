@@ -20,7 +20,7 @@ export class Isa88Component implements OnInit {
     constructor(
     private dlService: DownloadService,
     private modelService: Isa88ModelService,
-    private vdi3682ModelService: Vdi3682ModelService, 
+    private vdi3682ModelService: Vdi3682ModelService,
     private loadingScreenService: DataLoaderService
     ) { }
   // util variables
@@ -36,14 +36,14 @@ export class Isa88Component implements OnInit {
   selectedOption: any;
 
 
-  // variables for behavior 
+  // variables for behavior
   isa88 = new ISA88Insert();
   selectOption: Array<string> = [];
   insertreturn: any;
 
   ngOnInit() {
       this.currentTable = this.modelService.getISA88BehaviorInfo();
-      this.selectOption = this.vdi3682ModelService.getLIST_OF_TECHNICAL_RESOURCES();
+      this.vdi3682ModelService.getListOfTechnicalResources().pipe(take(1)).subscribe(data => this.selectOption = data);
       this.setTableDescription();
 
   }
@@ -64,7 +64,7 @@ export class Isa88Component implements OnInit {
           this.insertreturn = data;
           this.refreshISA88();
       });
-    
+
   }
 
 

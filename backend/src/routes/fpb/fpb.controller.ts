@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from "fs";
+import { Observable } from 'rxjs';
 import { FileUploadRequest, FpbService } from './fpb.service';
 
 @Controller("/lion_BE/fpb")
@@ -73,6 +74,28 @@ export class FpbController {
 			console.error(`Error while trying to delete all files of directory '${FpbService.getFpbUploadDirectory()}'`, error);
 		}
 		
+	}
+
+
+	// TODO: Clear this mix between mapping and regular VDI3682 stuff (e.g. by sub-routes)
+	@Get('/processes')
+	getAllProcesses(): Observable<Array<string>> {
+		return this.fpbService.getAllProcesses();
+	}
+
+	@Get('/technical-resources')
+	getAllTechnicalResources(): Observable<Array<string>> {
+		return this.fpbService.getAllTechnicalResources();
+	}
+
+	@Get('inputs-outputs')
+	getInputsAndOutputs(): Observable<Array<string>> {
+		return this.fpbService.getInputsAndOutputs();
+	}
+
+	@Get('classes')
+	getAllClasses(): Observable<Array<string>> {
+		return this.fpbService.getAllClasses();
 	}
 
 }

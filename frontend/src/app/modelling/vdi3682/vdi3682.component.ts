@@ -17,9 +17,9 @@ import { take } from 'rxjs/operators';
 })
 export class VDI3682Component implements OnInit {
     // util variables
-    keys = Object.keys;
-    tableTitle: string;
-    tableSubTitle: string;
+    readonly tableTitle = "Available Processes in Database";
+    readonly tableSubTitle = "Click on a cell to to use it for further descriptions.";
+
     customVal = new cValFns();
 
     // stats
@@ -63,44 +63,44 @@ export class VDI3682Component implements OnInit {
 
     ngOnInit() {
         this.allProcessInfo = this.modelService.getALL_PROCESS_INFO_TABLE();
-        this.allClasses = this.modelService.getLIST_OF_ALL_CLASSES();
-        this.setTableDescription();
+        this.modelService.getListOfAllClasses().pipe(take(1)).subscribe(data => this.allClasses = data);
         this.getStatisticInfo();
     }
 
-    modifyTripel(action: string, context: string, form: FormGroup) {
-        if (form.valid) {
-            switch (context) {
-            case "newIndividual": {
-                this.modelVariables.simpleStatement = {
-                    subject: this.nameService.addOrParseNamespace(form.controls['name'].value),
-                    predicate: this.nameService.parseToIRI(form.controls['predicate'].value),
-                    object: this.nameService.parseToIRI(form.controls['type'].value)
-                };
-                this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
-                    this.loadingScreenService.stopLoading();
-                    this.loadAllProcessInfo();
-                    this.loadStatisticInfo();
-                    this.modelVariables = new VDI3682VARIABLES();
-                });
-                break;
-            }
-            case "connectIndividual": {
-                this.modelVariables.simpleStatement = {
-                    subject: this.nameService.parseToIRI(form.controls['subject'].value),
-                    predicate: this.nameService.parseToIRI(form.controls['predicate'].value),
-                    object: this.nameService.parseToIRI(form.controls['object'].value)
-                };
-                this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
-                    this.loadingScreenService.stopLoading();
-                    this.loadAllProcessInfo();
-                    this.loadStatisticInfo();
-                    this.modelVariables = new VDI3682VARIABLES();
-                });
-                break;
-            }
-            }
-        } else if (form.invalid) {
+    handleNewTriple(action: string) {
+        if (this.newIndividualForm.valid) {
+
+            this.modelVariables.simpleStatement = {
+                subject: this.nameService.addOrParseNamespace(this.newIndividualForm.controls['name'].value),
+                predicate: this.nameService.parseToIRI(this.newIndividualForm.controls['predicate'].value),
+                object: this.nameService.parseToIRI(this.newIndividualForm.controls['type'].value)
+            };
+            this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
+                this.loadingScreenService.stopLoading();
+                this.loadAllProcessInfo();
+                this.loadStatisticInfo();
+                this.modelVariables = new VDI3682VARIABLES();
+            });
+        }  else {
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+        }
+    }
+
+    handleNewConnection(action: string) {
+        if (this.newConnectionForm.valid) {
+            this.modelVariables.simpleStatement = {
+                subject: this.nameService.parseToIRI(this.newConnectionForm.controls['subject'].value),
+                predicate: this.nameService.parseToIRI(this.newConnectionForm.controls['predicate'].value),
+                object: this.nameService.parseToIRI(this.newConnectionForm.controls['object'].value)
+            };
+            this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
+                this.loadingScreenService.stopLoading();
+                this.loadAllProcessInfo();
+                this.loadStatisticInfo();
+                this.modelVariables = new VDI3682VARIABLES();
+            });
+
+        } else {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
     }
@@ -119,62 +119,56 @@ export class VDI3682Component implements OnInit {
 
     }
 
-    getObjectClasses(predicate: string) {
-        if (predicate) {
-            this.modelService.loadLIST_OF_CLASSES_BY_RANGE(predicate).pipe(take(1)).subscribe((data: any) => {
-                this.loadingScreenService.stopLoading();
-                this.existingObjectClasses = data;
-            });
-        }
+    getObjectClasses(predicate: string): void {
+        if (!predicate) return;
+
+        this.modelService.loadListOfClassesByRange(predicate).pipe(take(1)).subscribe(data => {
+            this.loadingScreenService.stopLoading();
+            this.existingObjectClasses = data;
+        });
     }
 
-    getExistingObjects(owlClass: string) {
-        if (owlClass) {
-            this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
-                this.loadingScreenService.stopLoading();
-                this.existingObjects = data;
-            });
-        }
+    getExistingObjects(owlClass: string): void {
+        if (!owlClass) return;
+
+        this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
+            this.loadingScreenService.stopLoading();
+            this.existingObjects = data;
+        });
     }
 
-    loadAllProcessInfo() {
+    loadAllProcessInfo(): void {
         this.modelService.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.allProcessInfo = data;
-            this.modelService.setALL_PROCESS_INFO_TABLE(this.allProcessInfo);
+            this.modelService.setAllProcessInfoTable(this.allProcessInfo);
         });
     }
 
 
     getStatisticInfo() {
         // get stats of functions in TS
-        this.NoOfProcesses = this.modelService.getLIST_OF_PROCESSES().length;
-        this.NoOfInOuts = this.modelService.getLIST_OF_INPUTS_AND_OUTPUTS().length;
-        this.NoOfTechnicalResources = this.modelService.getLIST_OF_TECHNICAL_RESOURCES().length;
+        this.modelService.getListOfProcesses().pipe(take(1)).subscribe(data => this.NoOfProcesses = data.length);
+        this.modelService.getListOfInputsAndOutputs().pipe(take(1)).subscribe(data => this.NoOfInOuts = data.length);
+        this.modelService.getListOfTechnicalResources().pipe(take(1)).subscribe(data => this.NoOfTechnicalResources = data.length);
     }
 
     loadStatisticInfo() {
-        this.modelService.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
-            this.NoOfProcesses = data.length;
-            this.modelService.setListOfProcesses(data);
-        });
-        this.modelService.loadLIST_OF_INPUTS_AND_OUTPUTS().pipe(take(1)).subscribe((data: any) => {
+        // this.modelService.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
+        // this.loadingScreenService.stopLoading();
+        // this.NoOfProcesses = data.length;
+        // this.modelService.setListOfProcesses(data);
+        // });
+        this.modelService.getListOfInputsAndOutputs().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.NoOfInOuts = data.length;
-            this.modelService.setLIST_OF_INPUTS_AND_OUTPUTS(data);
         });
-        this.modelService.loadLIST_OF_TECHNICAL_RESOURCES().pipe(take(1)).subscribe((data: any) => {
+        this.modelService.getListOfTechnicalResources().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.NoOfTechnicalResources = data.length;
-            this.modelService.setLIST_OF_TECHNICAL_RESOURCES(data);
         });
     }
 
-    setTableDescription() {
-        this.tableTitle = "Available Processes in Database";
-        this.tableSubTitle = "Click on a cell to to use it for further descriptions.";
-    }
 }
 
 
