@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from "fs/promises";
+import { Observable } from 'rxjs';
+import { map, take, tap } from 'rxjs/operators';
 import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
+import { SparqlService } from '../../shared-services/sparql.service';
 import { FpbMappingService } from './fpb-mapping.service';
 
 @Injectable()
@@ -10,7 +13,8 @@ export class FpbService {
 
 	constructor(
 		private modelService: GraphDbModelService,
-		private fpbMappingService: FpbMappingService) {}
+		private fpbMappingService: FpbMappingService,
+		private queryService: SparqlService) {}
 
 	static getFpbUploadDirectory(): string {
 		return this.fpbUploadDirectory;
@@ -61,6 +65,68 @@ export class FpbService {
 	parseFileName(fileName: string): string {
 		const newFileName = fileName.replace(/ /g, "_").replace(/\\/g, "_");
 		return newFileName;
+	}
+
+
+	getAllProcesses(): Observable<Array<string>>{
+		const queryString = `
+		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		SELECT ?Process WHERE {
+			?Process a VDI3682:Process.
+		`;
+		
+		return this.queryService.query(queryString).pipe(
+			map(data => data.data as Array<string>)
+		);
+	}
+
+	getAllTechnicalResources(): Observable<Array<string>>{
+		const queryString = `
+		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		SELECT ?TR WHERE {
+			?TR a VDI3682:TechnicalResource.
+		}`;
+		
+		return this.queryService.query(queryString).pipe(
+			map(data => data.data as Array<string>)
+		);
+	}
+
+	getInputsAndOutputs(): Observable<Array<string>>{
+		const queryString = `
+		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		SELECT ?IoPoE WHERE {
+		?IoPoE a ?x.
+			VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
+		}`;
+
+		return this.queryService.query(queryString).pipe(
+			map(data => data.data as Array<string>)
+		);
+	}
+
+	/**
+	 * Gets all classes of the VDI 3682 ODP
+	 * @returns A list of classes
+	 */
+	getAllClasses() {
+		// TODO: This is very similar to the "getAllClasses" of other ODPs -> Should be inside a base service
+		const queryString = `
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>
+		SELECT DISTINCT ?type WHERE {
+			?type a owl:Class.
+			FILTER(STRSTARTS(STR(?type), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
+		}`;
+		return this.queryService.query(queryString).pipe(
+			tap(data => {
+				console.log("getting data");
+				console.log(data);
+			}),
+			map(data => data.data.results.bindings as Array<string>)
+		);
 	}
 
 }

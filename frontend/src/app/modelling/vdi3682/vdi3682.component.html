@@ -44,19 +44,17 @@
             <!-- tabs -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
-                        aria-controls="newIndi" aria-selected="true"> Create new
-                        individuals </a>
+                    <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#newIndividual" id="newIndi-tab" role="tab" type="button"
+                        aria-controls="newIndi" aria-selected="true"> Create new Individuals </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="existingIndi-tab" data-toggle="tab" href="#existingIndi" role="tab"
-                        aria-controls="existingIndi" aria-selected="false"> Connect
-                        existing individuals </a>
+                    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#existingIndividual" id="existingIndi-tab" role="tab" type="button"
+                        aria-controls="existingIndi" aria-selected="false"> Connect existing Individuals </a>
                 </li>
             </ul>
 
             <div class="tab-content py-3" id="myTabContent">
-                <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
+                <div class="tab-pane fade show active" id="newIndividual" role="tabpanel" aria-labelledby="newIndi-tab">
                     <!-- content to create new individuals -->
                     <div class="row" [formGroup]="newIndividualForm">
                         <div class="form-group col-sm">
@@ -80,17 +78,17 @@
                         <div class="form-group col-sm-1 align-self-end">
                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 <button type="button" class="btn btn-secondary"
-                                    (click)="modifyTripel('add', 'newIndividual', newIndividualForm)">Add</button>
+                                    (click)="handleNewTriple('add')">Add</button>
                                 <div class="btn-group" role="group">
                                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="addButton">
                                         <a class="dropdown-item"
-                                            (click)="modifyTripel('delete', 'newIndividual', newIndividualForm)">Delete
+                                            (click)="handleNewTriple('delete')">Delete
                                             statement</a>
                                         <a class="dropdown-item"
-                                            (click)="modifyTripel('build', 'newIndividual', newIndividualForm)">Download
+                                            (click)="handleNewTriple('build')">Download
                                             SPARQL
                                             INSERT</a>
                                     </div>
@@ -102,7 +100,7 @@
                     <app-table [currentTable]="allProcessInfo" [tableTitle]="tableTitle"
                         [tableExplanation]="tableSubTitle" (tableClickedCell)="iriTableClick($event)"></app-table>
                 </div>
-                <div class="tab-pane " id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
+                <div class="tab-pane " id="existingIndividual" role="tabpanel" aria-labelledby="existingIndi-tab">
                     <!-- content to connect existing individuals -->
                     <div class="row" [formGroup]="newConnectionForm">
                         <div class="form-group col-sm">
@@ -142,17 +140,17 @@
                         <div class="form-group col-sm-1 align-self-end">
                             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                 <button type="button" class="btn btn-secondary"
-                                    (click)="modifyTripel('add', 'connectIndividual', newConnectionForm)">Add</button>
+                                    (click)="handleNewConnection('add')">Add</button>
                                 <div class="btn-group" role="group">
                                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="addButton">
                                         <a class="dropdown-item"
-                                            (click)="modifyTripel('delete', 'connectIndividual', newConnectionForm)">Delete
+                                            (click)="handleNewConnection('delete')">Delete
                                             statement</a>
                                         <a class="dropdown-item"
-                                            (click)="modifyTripel('build', 'connectIndividual', newConnectionForm)">Download
+                                            (click)="handleNewConnection('build')">Download
                                             SPARQL
                                             INSERT</a>
                                     </div>
