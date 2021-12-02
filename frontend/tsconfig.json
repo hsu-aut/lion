@@ -1,23 +1,31 @@
 {
+    "extends": "../tsconfig.base.json",
     "compileOnSave": false,
     "compilerOptions": {
-        "baseUrl": "./",
         "outDir": "./dist/out-tsc",
+        "rootDirs": [".", "../shared"],
+        "baseUrl": "./",
         "sourceMap": true,
         "declaration": false,
-        "module": "es2020",
         "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "module": "es2020",
         "target": "ES2015",
-        "typeRoots": [
-            "node_modules/@types"
-        ],
         "lib": [
             "es2018",
             "dom"
-        ]
+        ],
+        "paths": {
+            "@shared/*": [
+                "../shared/*"
+            ]
+        },
     },
+    "references": [
+        {
+            "path": "../shared"
+        }
+    ],
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": true,
     }

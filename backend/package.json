@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint src --ext .ts",
-    "start:dev": "tsc-watch --build tsconfig.build.json --onSuccess  \"node -r tsconfig-paths/register dist/main.js dist/main.js \""
+    "start:dev": "tsc-watch --build --onSuccess \"node -r tsconfig-paths/register dist/main.js dist/main.js \""
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.1",
