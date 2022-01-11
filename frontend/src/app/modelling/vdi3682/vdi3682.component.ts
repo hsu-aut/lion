@@ -41,16 +41,16 @@ export class VDI3682Component implements OnInit {
 
     // forms
     newIndividualForm = this.fb.group({
-        name: [undefined, [Validators.required, this.customVal.noProtocol, this.customVal.noSpecialCharacters, this.customVal.noIdentifier]],
+        name: ["", [Validators.required, this.customVal.noProtocol, this.customVal.noSpecialCharacters, this.customVal.noIdentifier]],
         predicate: ['rdf:type'],
-        type: [undefined, Validators.required],
+        type: ["", Validators.required],
     })
 
     newConnectionForm = this.fb.group({
-        subject: [undefined, Validators.required],
-        predicate: [undefined, Validators.required],
-        objectClass: [undefined, Validators.required],
-        object: [undefined, Validators.required],
+        subject: ["", Validators.required],
+        predicate: ["", Validators.required],
+        objectClass: ["", Validators.required],
+        object: ["", Validators.required],
     })
 
     constructor(
@@ -61,13 +61,13 @@ export class VDI3682Component implements OnInit {
         private fb: FormBuilder,
     ) { }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.allProcessInfo = this.modelService.getALL_PROCESS_INFO_TABLE();
         this.modelService.getListOfAllClasses().pipe(take(1)).subscribe(data => this.allClasses = data);
         this.getStatisticInfo();
     }
 
-    handleNewTriple(action: string) {
+    handleNewTriple(action: string): void {
         if (this.newIndividualForm.valid) {
 
             this.modelVariables.simpleStatement = {
@@ -86,7 +86,7 @@ export class VDI3682Component implements OnInit {
         }
     }
 
-    handleNewConnection(action: string) {
+    handleNewConnection(action: string): void {
         if (this.newConnectionForm.valid) {
             this.modelVariables.simpleStatement = {
                 subject: this.nameService.parseToIRI(this.newConnectionForm.controls['subject'].value),
@@ -105,7 +105,7 @@ export class VDI3682Component implements OnInit {
         }
     }
 
-    iriTableClick(name: string) {
+    iriTableClick(name: string): void {
         this.newConnectionForm.controls['subject'].setValue(name);
 
         this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value).pipe(take(1)).subscribe((data: any) => {
@@ -146,7 +146,7 @@ export class VDI3682Component implements OnInit {
     }
 
 
-    getStatisticInfo() {
+    getStatisticInfo(): void {
         // get stats of functions in TS
         this.modelService.getListOfProcesses().pipe(take(1)).subscribe(data => this.NoOfProcesses = data.length);
         this.modelService.getListOfInputsAndOutputs().pipe(take(1)).subscribe(data => this.NoOfInOuts = data.length);
