@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { EclassProperty } from '@shared/interfaces/eclass-property.interface';
+import { EclassProperty } from './eclass-property.interface';  //todo change to @shared folder
 import { EclassSearchService } from './eclass-search.service';
 
 @Controller('lion_BE/eclassSearch')
