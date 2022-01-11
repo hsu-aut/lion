@@ -238,18 +238,18 @@ export class Dinen61360Component implements OnInit {
   }
 
   eclassSearch(searchForm: FormGroup, via: string) {
-    this.eclass.getPropertyList(searchForm.controls['searchTerm'].value,via).pipe(take(1)).subscribe((rawlist: any) => {
-      this.propertyList = rawlist;
-    });
+      this.eclass.getPropertyList(searchForm.controls['searchTerm'].value,via).pipe(take(1)).subscribe((rawlist: any) => {
+          this.propertyList = rawlist;
+      });
   }
 
   eclassTableClick(row) {
-      this.typeDescriptionForm.controls['code'].setValue(row.Identifier);
-      this.typeDescriptionForm.controls['version'].setValue(row.VersionNumber);
-      this.typeDescriptionForm.controls['revision'].setValue(row.RevisionNumber);
-      this.typeDescriptionForm.controls['preferred_name'].setValue(row.PreferredName);
-      this.typeDescriptionForm.controls['definition'].setValue(row.Definition);
-      this.typeDescriptionForm.controls['UoM'].setValue(row.DINNotation);
+      this.typeDescriptionForm.controls['code'].setValue(row.code);
+      this.typeDescriptionForm.controls['version'].setValue(row.version);
+      this.typeDescriptionForm.controls['revision'].setValue(row.revision);
+      this.typeDescriptionForm.controls['preferred_name'].setValue(row.preferredName);
+      this.typeDescriptionForm.controls['definition'].setValue(row.definition);
+      this.typeDescriptionForm.controls['UoM'].setValue(row.unitShortName);
 
       // check for the data type of the eclass property
       const str = row.DataType.toLowerCase();
@@ -259,10 +259,10 @@ export class Dinen61360Component implements OnInit {
               this.typeDescriptionForm.controls['dataType'].setValue(this.datatypes[i]);
           }
       }
-      if (row.ShortName == "") {
-          this.typeDescriptionForm.controls['short_name'].setValue(row.PreferredName.substring(0, 8));
+      if (row.shortName == "" || row.shortName == " " || row.shortName == null) {
+          this.typeDescriptionForm.controls['short_name'].setValue(row.preferredName.substring(0, 8));
       } else {
-          this.typeDescriptionForm.controls['short_name'].setValue(row.ShortName);
+          this.typeDescriptionForm.controls['short_name'].setValue(row.shortName);
       }
   }
 
