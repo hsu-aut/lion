@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from "fs/promises";
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
 import { SparqlService } from '../../shared-services/sparql.service';
 import { FpbMappingService } from './fpb-mapping.service';
+import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
 
 @Injectable()
 export class FpbService { 
@@ -77,7 +78,7 @@ export class FpbService {
 		`;
 		
 		return this.queryService.query(queryString).pipe(
-			map(data => data.data as Array<string>)
+			map(data => data.results.bindings.map(results => results["Process"].value))
 		);
 	}
 
@@ -90,7 +91,7 @@ export class FpbService {
 		}`;
 		
 		return this.queryService.query(queryString).pipe(
-			map(data => data.data as Array<string>)
+			map(data => data.results.bindings.map(results => results["TR"].value))
 		);
 	}
 
@@ -104,7 +105,7 @@ export class FpbService {
 		}`;
 
 		return this.queryService.query(queryString).pipe(
-			map(data => data.data as Array<string>)
+			map(data => data.results.bindings.map(results => results["IoPoE"].value))
 		);
 	}
 
@@ -112,7 +113,7 @@ export class FpbService {
 	 * Gets all classes of the VDI 3682 ODP
 	 * @returns A list of classes
 	 */
-	getAllClasses() {
+	getAllClasses(): Observable<Array<string>> {
 		// TODO: This is very similar to the "getAllClasses" of other ODPs -> Should be inside a base service
 		const queryString = `
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -120,13 +121,13 @@ export class FpbService {
 			?type a owl:Class.
 			FILTER(STRSTARTS(STR(?type), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
 		}`;
-		return this.queryService.query(queryString).pipe(
-			tap(data => {
-				console.log("getting data");
-				console.log(data);
-			}),
-			map(data => data.data.results.bindings as Array<string>)
-		);
+		
+		const classes =  this.queryService.query(queryString).pipe(
+			map(res => {
+				return res.results.bindings.map(binding => binding["type"].value);
+			}));
+		
+		return classes;
 	}
 
 }
