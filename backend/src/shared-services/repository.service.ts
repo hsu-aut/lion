@@ -33,7 +33,7 @@ export class RepositoryService {
 
 	
 	getCurrentRepository(): string {
-		return "test";
+		return "testdb";
 	}
 
 	// createRepository(repositoryName:string): any {
