@@ -9,7 +9,7 @@
                 <p class="card-text">The DIN EN 61360 template uses a tabular approach for building a graph. One can add
                     type
                     and instance descriptions to any kind of entity.
-                    <button type="button" class="badge rounded-pill bg-light text-dark" data-toggle="modal" data-target="#DIN_HELPER">?</button>
+                    <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal" data-target="#DIN_HELPER">?</button>
                 </p>
             </div>
             <div class="col">
@@ -41,11 +41,11 @@
             <!-- main tabs -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="type-tab" data-toggle="tab" href="#type" role="tab"
+                    <a class="nav-link active" id="type-tab" data-bs-toggle="tab" data-bs-target="#type" type="button" role="tab"
                         aria-controls="type" aria-selected="true"> Create type description </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="instance-tab" data-toggle="tab" href="#instance" role="tab"
+                    <a class="nav-link" id="instance-tab" data-bs-toggle="tab" data-bs-target="#instance" type="button" role="tab"
                         aria-controls="instance" aria-selected="false"> Create instance description </a>
                 </li>
             </ul>
@@ -106,7 +106,7 @@
                                     (click)="createTripel('add', 'type', typeDescriptionForm)">Add</button>
                                 <div class="btn-group" role="group">
                                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="addButton">
                                         <a class="dropdown-item"
@@ -123,11 +123,11 @@
                     <!-- sub tabs -->
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="exType-tab" data-toggle="tab" href="#exType" role="tab"
+                            <a class="nav-link active" id="exType-tab" data-bs-toggle="tab" data-bs-target="#exType" type="button" role="tab"
                                 aria-controls="exType" aria-selected="true"> Existing type descriptions </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="eclass-tab" data-toggle="tab" href="#eclass" role="tab"
+                            <a class="nav-link" id="eclass-tab" data-bs-toggle="tab" data-bs-target="#eclass" type="button" role="tab"
                                 aria-controls="eclass" aria-selected="false"> Ecl@ss search </a>
                         </li>
                     </ul>
@@ -145,7 +145,7 @@
                                 <input formControlName="searchTerm" type="text" class="form-control"
                                     placeholder="Preferred Name" aria-label="" aria-describedby="basic-addon1">
                                 <div class="input-group-prepend">
-                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Search ecl@ss</button>
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Search ecl@ss</button>
                                     <div class="dropdown-menu">
                                       <a class="dropdown-item" (click)="eclassSearch(eclassSearchForm,'db')"> local database </a>
                                       <a class="dropdown-item" (click)="eclassSearch(eclassSearchForm,'ws')"> webservice </a>
@@ -205,7 +205,7 @@
                                     (click)="createTripel('add', 'instance', instanceDescriptionForm)">Add</button>
                                 <div class="btn-group" role="group">
                                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="addButton">
                                         <a class="dropdown-item"
@@ -223,27 +223,27 @@
                     <!-- sub tabs -->
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="exType2-tab" data-toggle="tab" href="#exType2" role="tab"
+                            <a class="nav-link active" id="exType2-tab" data-bs-toggle="tab" data-bs-target="#exType2" type="button" role="tab"
                                 aria-controls="exType2" aria-selected="true"> Existing type descriptions </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="exInstance-tab" data-toggle="tab" href="#exInstance" role="tab"
+                            <a class="nav-link" id="exInstance-tab" data-bs-toggle="tab" data-bs-target="#exInstance" type="button" role="tab"
                                 aria-controls="exInstance" aria-selected="false"> Existing instance descriptions </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="VDI3682-tab" data-toggle="tab" href="#VDI3682" role="tab"
+                            <a class="nav-link" id="VDI3682-tab" data-bs-toggle="tab" data-bs-target="#VDI3682" type="button" role="tab"
                                 aria-controls="VDI3682" aria-selected="false"> VDI 3682 </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="VDI2206-tab" data-toggle="tab" href="#VDI2206" role="tab"
+                            <a class="nav-link" id="VDI2206-tab" data-bs-toggle="tab" data-bs-target="#VDI2206" type="button" role="tab"
                                 aria-controls="VDI2206" aria-selected="false"> VDI 2206 </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="ISA88-tab" data-toggle="tab" href="#ISA88" role="tab"
+                            <a class="nav-link" id="ISA88-tab" data-bs-toggle="tab" data-bs-target="#ISA88" type="button" role="tab"
                                 aria-controls="ISA88" aria-selected="false"> ISA 88 </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="ISO22400-tab" data-toggle="tab" href="#ISO22400" role="tab"
+                            <a class="nav-link" id="ISO22400-tab" data-bs-toggle="tab" data-bs-target="#ISO22400" type="button" role="tab"
                                 aria-controls="ISO22400" aria-selected="false"> ISO22400-2 </a>
                         </li>
                     </ul>
@@ -274,15 +274,15 @@
                             <div class="px-sm-2 py-sm-2">
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab"
+                                        <a class="nav-link active" id="sys-tab" data-bs-toggle="tab" data-bs-target="#sys" type="button" role="tab"
                                             aria-controls="sys" aria-selected="true"> System </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab"
+                                        <a class="nav-link" id="mod-tab" data-bs-toggle="tab" data-bs-target="#mod" type="button" role="tab"
                                             aria-controls="mod" aria-selected="false"> Module </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab"
+                                        <a class="nav-link" id="com-tab" data-bs-toggle="tab" data-bs-target="#com" type="button" role="tab"
                                             aria-controls="com" aria-selected="false"> Component </a>
                                     </li>
                                 </ul>
