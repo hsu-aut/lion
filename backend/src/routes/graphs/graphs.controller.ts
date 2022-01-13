@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Headers, Put, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Headers, Put, Query } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GraphOperationService } from '../../shared-services/graph-operation.service';
 import { StringBody } from '../../custom-decorator/StringBodyDecorator';
+
 
 
 
@@ -10,18 +12,15 @@ import { StringBody } from '../../custom-decorator/StringBodyDecorator';
 export class GraphsController {
 	constructor(private readonly graphService: GraphOperationService) { }
 
-
 	/**
 	 * Get all triples of a named graph
 	 * @param graphName Name of the graph to get all triples from
 	 * @param format Return format of the triples (e.g. text/turtle, application/rdf+xml, etc.)
-	 * @returns All triples included in the given graph
+	 * @returns String with all triples (+ Prefixes) included in the given graph
 	 */
 	@Get()
-	//getTriplesOfNamedGraph(@Query('graph') graph: string, @Headers('accept') format: string): Observable<AxiosResponse<any>> {
-	getTriplesOfNamedGraph(@Query('graph') graph: string, @Headers('accept') format: string): void {
-		console.log(format);
-		this.graphService.getAllTriples(decodeURIComponent(graph), format).subscribe((data) => console.log(data.data));
+	getTriplesOfNamedGraph(@Query('graph') graph: string, @Headers('accept') format: string): Observable<AxiosResponse<string>> {
+		return this.graphService.getAllTriples(decodeURIComponent(graph), format).pipe(map((data: AxiosResponse) => { return data.data;}));
 	}
 
 	/**
@@ -34,10 +33,7 @@ export class GraphsController {
 	@Put()
 	setTriplesOfNamedGraph(@Query('graph') graph: string,
 		@Headers('accept') format: string,
-		@StringBody() triples: string): void{
-		//Observable<AxiosResponse<any>> {
-		console.log(format);
-		// @Aljosha: Returns empty String 
+		@StringBody() triples: string): void {
 		this.graphService.setTriplesToGraph(decodeURIComponent(graph), format, triples).subscribe((data) => console.log(data.data));
 	}
 
@@ -47,9 +43,7 @@ export class GraphsController {
 	 * @returns void
 	 */
 	@Delete()
-	deleteNamedGraph(@Query('graph') graph: string): void{
-	//Observable<AxiosResponse<void>> {
-		// @Aljosha: Returns empty String.
+	deleteNamedGraph(@Query('graph') graph: string): void {
 		this.graphService.deleteGraph(decodeURIComponent(graph)).subscribe((data) => console.log(data.data));
 	}
 }
