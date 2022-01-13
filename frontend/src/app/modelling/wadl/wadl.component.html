@@ -10,8 +10,8 @@
           First, a resource base path, and optionally a physical entity that provides that resource, have to be created.
           Afterwards, services can be added to existing resources. After having defined the services, requests and
           responses can be added as well.
-          <button type="button" class="badge rounded-pill bg-light text-dark" data-toggle="modal"
-            data-target="#WADL_HELPER">?</button></p>
+          <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal"
+            data-bs-target="#WADL_HELPER">?</button></p>
 
       </div>
       <div class="col">
@@ -44,20 +44,20 @@
 
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="createResource-tab" data-toggle="tab" href="#createResource" role="tab"
+          <a class="nav-link active" id="createResource-tab" data-bs-toggle="tab" type="button" data-bs-target="#createResource" role="tab"
             aria-controls="createResource" aria-selected="true"> Create new
             base resource </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="createService-tab" data-toggle="tab" href="#createService" role="tab"
+          <a class="nav-link" id="createService-tab" data-bs-toggle="tab" type="button" data-bs-target="#createService" role="tab"
             aria-controls="createService" aria-selected="false"> Add new service </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="createRequest-tab" data-toggle="tab" href="#createRequest" role="tab"
+          <a class="nav-link" id="createRequest-tab" data-bs-toggle="tab" type="button" data-bs-target="#createRequest" role="tab"
             aria-controls="createRequest" aria-selected="false"> Add new requests </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="createResponse-tab" data-toggle="tab" href="#createResponse" role="tab"
+          <a class="nav-link" id="createResponse-tab" data-bs-toggle="tab" type="button" data-bs-target="#createResponse" role="tab"
             aria-controls="createResponse" aria-selected="false"> Add new responses </a>
         </li>
       </ul>
@@ -86,7 +86,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'baseResource', baseResourceForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -102,15 +102,15 @@
 
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="VDI-tab" data-toggle="tab" href="#VDI" role="tab" aria-controls="VDI"
+              <a class="nav-link active" id="VDI-tab" data-bs-toggle="tab" type="button" data-bs-target="#VDI" role="tab" aria-controls="VDI"
                 aria-selected="true"> VDI 3682/2206 individuals </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="ISO-tab" data-toggle="tab" href="#ISO" role="tab" aria-controls="ISO"
+              <a class="nav-link" id="ISO-tab" data-bs-toggle="tab" type="button" data-bs-target="#ISO" role="tab" aria-controls="ISO"
                 aria-selected="false"> ISO 22400 individuals </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="WADL_BASE_RESOURCES-tab" data-toggle="tab" href="#WADL_BASE_RESOURCES" role="tab"
+              <a class="nav-link" id="WADL_BASE_RESOURCES-tab" data-bs-toggle="tab" type="button" data-bs-target="#WADL_BASE_RESOURCES" role="tab"
                 aria-controls="WADL_BASE_RESOURCES" aria-selected="false"> WADL base resources </a>
             </li>
           </ul>
@@ -158,7 +158,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'service', serviceForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -237,7 +237,7 @@
                   [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
                   [required]="requestForm.controls['parameterType'].value!='none'">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#ONTO_HELPER"
+                  <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
                     (click)="setOntologicalDataType('requestParameter')">
                     O </button>
                 </div>
@@ -254,7 +254,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'requestParameter', requestForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -290,7 +290,7 @@
                   <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group" role="group">
                       <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       </button>
                       <div class="dropdown-menu" aria-labelledby="addButton">
                         <a class="dropdown-item"
@@ -335,7 +335,7 @@
                   [readonly]="requestForm.controls['ontologicalBodyDataType'].value"
                   [required]="requestBodyRepresentationCheck">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#ONTO_HELPER"
+                  <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
                     (click)="setOntologicalDataType('requestBodyParameter')">
                     O </button>
                 </div>
@@ -351,7 +351,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'requestRepresentationParameter', requestForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -392,7 +392,7 @@
                   <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group" role="group">
                       <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       </button>
                       <div class="dropdown-menu" aria-labelledby="addButton">
                         <a class="dropdown-item"
@@ -458,7 +458,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'response', responseForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -502,7 +502,7 @@
                   [readonly]="responseForm.controls['ontologicalBodyDataType'].value"
                   [required]="responseBodyRepresentationCheck">
                 <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#ONTO_HELPER"
+                  <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
                     (click)="setOntologicalDataType('responseBodyParameter')">
                     O </button>
                 </div>
@@ -518,7 +518,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'responseRepresentationParameter', responseForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -558,7 +558,7 @@
                   <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group" role="group">
                       <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       </button>
                       <div class="dropdown-menu" aria-labelledby="addButton">
                         <a class="dropdown-item"
@@ -584,8 +584,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title"> The Web Application Description Language </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
