@@ -9,6 +9,7 @@ import { cValFns } from '../utils/validators';
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-vdi3682',
@@ -105,9 +106,14 @@ export class VDI3682Component implements OnInit {
         }
     }
 
-    iriTableClick(name: string): void {
+    async iriTableClick(name: string): Promise<void> {
         this.newConnectionForm.controls['subject'].setValue(name);
 
+
+        const owlClass = await this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value)[0];
+
+
+        //*
         this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value).pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             const owlClass = data[0];
@@ -153,7 +159,7 @@ export class VDI3682Component implements OnInit {
         this.modelService.getListOfTechnicalResources().pipe(take(1)).subscribe(data => this.NoOfTechnicalResources = data.length);
     }
 
-    loadStatisticInfo() {
+    loadStatisticInfo(): void {
         // this.modelService.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
         // this.loadingScreenService.stopLoading();
         // this.NoOfProcesses = data.length;
