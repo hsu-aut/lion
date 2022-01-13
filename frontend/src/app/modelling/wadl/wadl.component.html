@@ -606,8 +606,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="ONTO_HELPER"> Data type based on ontological definitions </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
@@ -670,15 +669,15 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
           (click)="setDataType(null, requestBodyRepresentationRadio)">
           Revert changes </button>
         <button *ngIf="ontologicalDataTypeRadio === 'ontologicalDataTypeTBox'" type="button" class="btn btn-primary"
-          data-dismiss="modal"
+          data-bs-dismiss="modal"
           (click)="setDataType(ontologicalDataType.controls['type'].value, ontologicalDataTypeRadio)">
           Use this IRI as a data type </button>
         <button *ngIf="ontologicalDataTypeRadio === 'ontologicalDataTypeABox'" type="button" class="btn btn-primary"
-          data-dismiss="modal"
+          data-bs-dismiss="modal"
           (click)="setDataType(ontologicalDataType.controls['individual'].value, ontologicalDataTypeRadio)">
           Use this IRI as a data type </button>
       </div>
