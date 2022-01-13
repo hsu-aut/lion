@@ -4,7 +4,7 @@ import { createPool, Pool } from 'mysql2/promise';
 import { ConnectionOptions } from 'mysql2';
 import { AxiosRequestConfig } from 'axios';
 import { Agent } from 'https';
-import { EclassProperty } from './eclass-property.interface'; //todo: change to @shared folder
+import { EclassProperty } from '@shared/interfaces/eclass-property.interface';
 
 
 @Injectable()
@@ -55,7 +55,8 @@ export class EclassSearchService {
 		try {
 			// query string
 			const queryString =
-				`SELECT p.IrdiPR, p.PreferredName, p.Definition, p.DataType, u.ShortName 
+				`SELECT p.Identifier, p.VersionNumber, p.RevisionNumber, p.PreferredName, \
+				p.Definition, p.ShortName, p.DataType, u.ShortName as unitShortName
       			FROM eclass11_1_pr_de AS p
       			LEFT OUTER JOIN eclass11_1_un_de AS u 
 				ON p.IrdiUN = u.IrdiUN
@@ -73,11 +74,14 @@ export class EclassSearchService {
 				//map values from single property according to EclassProperty interface and return them as one array
 				return rows.map(singleProperty => {
 					return {
-						"irdi": singleProperty.IrdiPR,
+						"code": singleProperty.Identifier,
+						"version": singleProperty.VersionNumber,
+						"revision":singleProperty.RevisionNumber,
 						"preferredName": singleProperty.PreferredName,
 						"definition": singleProperty.Definition,
+						"shortName": singleProperty.ShortName,
 						"dataType": singleProperty.DataType,
-						"unitShortName": singleProperty.ShortName,
+						"unitShortName": singleProperty.unitShortName,
 					};});
 			} else {
 				// throw error if no pool is connected
@@ -118,9 +122,12 @@ export class EclassSearchService {
 
 		if (propertyResponse.data.unit == undefined) {  //if property with no unit is found 
 			return {
-				"irdi": propertyResponse.data.irdi,
+				"code": propertyResponse.data.irdi.substring(10,16),
+				"version": propertyResponse.data.irdi.substring(17,20),
+				"revision": propertyResponse.data.irdi.substring(7,9),
 				"preferredName": propertyResponse.data.preferredName["de-DE"],
 				"definition": propertyResponse.data.definition["de-DE"],
+				"shortName": null,	//cannot get this from webservice :(
 				"dataType": propertyResponse.data.propertyDataType,
 				"unitShortName": null,
 			};	
@@ -129,9 +136,12 @@ export class EclassSearchService {
 			//unitResponse: response to requesting information about a single unit https://eclass-cdp.com//jsonapi/v1/units/{irdi}
 			const unitResponse = await this.httpService.get(propertyResponse.data.unit.href, this.requestConfig).toPromise();
 			return {
-				"irdi": propertyResponse.data.irdi,
+				"code": propertyResponse.data.irdi.substring(10,16),
+				"version": propertyResponse.data.irdi.substring(17,20),
+				"revision": propertyResponse.data.irdi.substring(7,9),
 				"preferredName": propertyResponse.data.preferredName["de-DE"],
 				"definition": propertyResponse.data.definition["de-DE"],
+				"shortName": null,	//cannot get this from webservice :(
 				"dataType": propertyResponse.data.propertyDataType,
 				"unitShortName": unitResponse.data.shortName["de-DE"],
 			};
