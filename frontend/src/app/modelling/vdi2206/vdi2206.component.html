@@ -9,7 +9,7 @@
         <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to
           an
           existing system structure or create a new system structure. <button type="button"
-            class="badge rounded-pill bg-light text-dark" data-toggle="modal" data-target="#MCS_HELPER">?</button></p>
+            class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal" data-bs-target="#MCS_HELPER">?</button></p>
 
       </div>
       <div class="col">
@@ -43,17 +43,17 @@
       <!-- tabs -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
+          <a class="nav-link active" id="newIndi-tab" data-bs-toggle="tab" data-bs-target="#newIndi" role="tab" type="button"
             aria-controls="newIndi" aria-selected="true" (click)="setStructureOption('newIndi')"> Create new individuals
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="existingIndiContain-tab" data-toggle="tab" href="#existingIndiContain" role="tab"
+          <a class="nav-link" id="existingIndiContain-tab" data-bs-toggle="tab" data-bs-target="#existingIndiContain" role="tab" type="button"
             aria-controls="existingIndiContain" aria-selected="false"
             (click)="setStructureOption('existingIndiContain')"> Connect by containment</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="existingIndiInheritance-tab" data-toggle="tab" href="#existingIndiInheritance"
+          <a class="nav-link" id="existingIndiInheritance-tab" data-bs-toggle="tab" data-bs-target="#existingIndiInheritance" type="button"
             role="tab" aria-controls="existingIndiInheritance" aria-selected="false"
             (click)="setStructureOption('existingIndiInheritance')"> Connect by inheritance</a>
         </li>
@@ -176,15 +176,15 @@
     <div class="px-sm-2 py-sm-2">
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="sys-tab" data-toggle="tab" href="#sys" role="tab" aria-controls="sys"
+          <a class="nav-link active" id="sys-tab" data-bs-toggle="tab" type="button" data-bs-target="#sys" role="tab" aria-controls="sys"
             aria-selected="true" (click)="setTableOption('System_BUTTON')"> System </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="mod-tab" data-toggle="tab" href="#mod" role="tab" aria-controls="mod"
+          <a class="nav-link" id="mod-tab" data-bs-toggle="tab" type="button" data-bs-target="#mod" role="tab" aria-controls="mod"
             aria-selected="false" (click)="setTableOption('Module_BUTTON')"> Module </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="com-tab" data-toggle="tab" href="#com" role="tab" aria-controls="com"
+          <a class="nav-link" id="com-tab" data-bs-toggle="tab" type="button" data-bs-target="#com" role="tab" aria-controls="com"
             aria-selected="false" (click)="setTableOption('Component_BUTTON')"> Component </a>
         </li>
       </ul>
@@ -209,7 +209,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="MCS_HELPER"> The Structure of mechatronic Systems </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -223,7 +223,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
           Got it! </button>
       </div>
     </div>
