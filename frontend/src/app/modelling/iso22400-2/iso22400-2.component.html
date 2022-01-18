@@ -9,8 +9,9 @@
       <div class="col">
         <p class="card-text">The ISO 2400-2 template uses a tabular approach for building a graph. One can add elements
           to an existing key performance indicator or create a new key performance indicator or one of its constituents.
-          <button type="button" class="badge rounded-pill bg-light text-dark" data-toggle="modal"
-            data-target="#FPD_HELPER">?</button></p>
+          <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal"
+            data-bs-target="#FPD_HELPER">?</button>
+        </p>
 
       </div>
       <div class="col">
@@ -44,13 +45,13 @@
       <!-- tabs -->
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="newIndi-tab" data-toggle="tab" href="#newIndi" role="tab"
-            aria-controls="newIndi" aria-selected="true"> Create new
+          <a class="nav-link active" id="newIndi-tab" type="button" data-bs-toggle="tab" data-bs-target="#newIndi"
+            role="tab" aria-controls="newIndi" aria-selected="true"> Create new
             simple element </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="existingIndi-tab" data-toggle="tab" href="#existingIndi" role="tab"
-            aria-controls="existingIndi" aria-selected="false"> Create new KPI </a>
+          <a class="nav-link" id="existingIndi-tab" type="button" data-bs-toggle="tab" data-bs-target="#existingIndi"
+            role="tab" aria-controls="existingIndi" aria-selected="false"> Create new KPI </a>
         </li>
       </ul>
 
@@ -124,7 +125,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'element', simpleElementForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -208,7 +209,7 @@
                 <button type="button" class="btn btn-secondary"
                   (click)="createTripel('add', 'KPI', KPIForm)">Add</button>
                 <div class="btn-group" role="group">
-                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                   </button>
                   <div class="dropdown-menu" aria-labelledby="addButton">
@@ -226,22 +227,22 @@
         <div class="px-sm-2 py-sm-2">
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="vdiEntity-tab" data-toggle="tab" href="#vdiEntity" role="tab"
-                aria-controls="vdiEntity" aria-selected="true"> VDI 3682/2206
+              <a class="nav-link active" id="vdiEntity-tab" type="button" data-bs-toggle="tab"
+                data-bs-target="#vdiEntity" role="tab" aria-controls="vdiEntity" aria-selected="true"> VDI 3682/2206
                 entities </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="isoEntity-tab" data-toggle="tab" href="#isoEntity" role="tab"
-                aria-controls="isoEntity" aria-selected="false"> ISO entities
+              <a class="nav-link" id="isoEntity-tab" type="button" data-bs-toggle="tab" data-bs-target="#isoEntity"
+                role="tab" aria-controls="isoEntity" aria-selected="false"> ISO entities
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="isoElement-tab" data-toggle="tab" href="#isoElement" role="tab"
-                aria-controls="isoElement" aria-selected="false"> ISO elements
+              <a class="nav-link" id="isoElement-tab" type="button" data-bs-toggle="tab" data-bs-target="#isoElement"
+                role="tab" aria-controls="isoElement" aria-selected="false"> ISO elements
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="isoKPI-tab" data-toggle="tab" href="#isoKPI" role="tab"
+              <a class="nav-link" id="isoKPI-tab" type="button" data-bs-toggle="tab" data-bs-target="#isoKPI" role="tab"
                 aria-controls="isoKPI" aria-selected="false"> ISO KPIs
               </a>
             </li>
@@ -276,8 +277,7 @@
       <div class="modal-header">
         <h5 class="modal-title" id="FPD_HELPER"> Key Performance Indicators for Manufacturing Operations Management
         </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
         </button>
       </div>
       <div class="modal-body">
@@ -293,7 +293,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
           Got it! </button>
       </div>
     </div>
