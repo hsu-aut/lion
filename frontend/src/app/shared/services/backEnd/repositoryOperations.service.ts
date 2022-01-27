@@ -129,7 +129,7 @@ export class RepositoryOperationsService {
               'responseType': 'text'
           })
       };
-      const request = this.getRepositoryURL() + `/buildTBox?pattern=${TBox}&repositoryName=${repositoryName}`;
+      const request = this.getRepositoryURL() + `/buildTBox?patternName=${TBox}`;
       console.log(request, httpOptions);
 
       this.loadingScreenService.startLoading();
