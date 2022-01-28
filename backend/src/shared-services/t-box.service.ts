@@ -2,8 +2,8 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { RepositoryService } from "./repository.service";
-import { Observable, take } from "rxjs";
-import { map } from "rxjs/operators";
+import { merge, Observable, take } from "rxjs";
+import { concatAll, flatMap, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class TBoxService {
@@ -13,35 +13,29 @@ export class TBoxService {
 		private repoService: RepositoryService) { }
 
 
-	//	async insertTBox(patternName: TBoxPatternName): Promise<AxiosResponse<void>> {
 	insertTBox(patternName: TBoxPatternName): Observable<AxiosResponse<any>> {
 
-		console.log(patternName);
 		const currentRepo = this.repoService.getCurrentRepository();
 		const patternUrl = TBoxPatternName[patternName];
-		console.log(patternName);
-		let reqConfig: AxiosRequestConfig;
 		
-		this.http.get<any>(patternUrl).pipe(take(1)).subscribe((data:any) => {
-	
-			reqConfig = {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/rdf+xml',
-					'Accept': '*/*'
-				},
-				responseType: 'text',
-				data: data,
-				baseURL: 'http://localhost:7200/',
-				url: `/repositories/${currentRepo}/statements`
-			};
-			console.log("1");
-			this.http.request<void>(reqConfig);
-			//	console.log(reqConfig);
-		});
-		return null;
-		// TODO: Check if this really returns void 
-		//return this.http.request<void>(pattern);
+		return this.http.get<any>(patternUrl).pipe(
+			map((data:any) => 
+			{
+				const reqConfig: AxiosRequestConfig = 
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/rdf+xml',
+						'Accept': '*/*'
+					},
+					responseType: 'text',
+					data: data.data,
+					baseURL: 'http://localhost:7200/',
+					url: `/repositories/${currentRepo}/statements`
+				};
+				return this.http.request<any>(reqConfig);
+			}),
+			concatAll());	// flatten output Observable<Observable<>> ---> Observable<>
 	}
 
 	/**

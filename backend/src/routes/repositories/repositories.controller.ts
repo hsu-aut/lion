@@ -1,4 +1,5 @@
 import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { last } from 'rxjs';
 import { RepositoryService } from '../../shared-services/repository.service';
 import { TBoxPatternName, TBoxService } from '../../shared-services/t-box.service';
 
@@ -54,7 +55,13 @@ export class RepositoriesController {
 	* INSERT TBOX to repository
 	*/
 	@Get('/buildTBox')
-	insertTboxToRepository(@Query('patternName') patternName: TBoxPatternName): any {
-		return this.tboxService.insertTBox(patternName);
+	insertTboxToRepository(@Query('patternName') patternName: TBoxPatternName): any {	// todo: add type? ( Observable<AxiosResponse<any>> )
+		// log response status (should be 204)
+		this.tboxService.insertTBox(patternName).pipe(last()).subscribe(out=>console.log(out.status));
+		return null;
+
+		// doesnt work with postman 
+		// ERROR [ExceptionsHandler] Converting circular structure to JSON
+		// return this.tboxService.insertTBox(patternName);
 	}
 }
