@@ -85,13 +85,9 @@ export class Dinen61360Service {
       return this.http.get<SparqlResponse>("lion_BE/dinen61360/getAllDEI")
           .pipe(map((response: any) => this.tableUtil.buildList(response, 0)));  
   }
-  //   public getListOfDataTypes(): Observable<any> { 
-  //       return this.http.get<SparqlResponse>("lion_BE/dinen61360/getDataTypes")
-  //           .pipe(map((response: any) => this.tableUtil.buildList(response, 0)));
-  //   }
   public getListOfDataTypes(): Observable<any> { 
       return this.http.get<SparqlResponse>("lion_BE/dinen61360/getDataTypes")
-          .pipe(map((response: any) => ["datatype1","datatype2"]));
+          .pipe(map((response: any) => this.tableUtil.buildList(response, 0)));
   }
   public getTableOfAllInstanceInfo(): Observable<any> {  
       return this.http.get<SparqlResponse>("lion_BE/dinen61360/getAllInstanceInfo")
