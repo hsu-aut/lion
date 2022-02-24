@@ -1,10 +1,10 @@
 import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { RepositoryService } from '../../shared-services/repository.service';
-import { TBoxPatternName, TBoxService } from '../../shared-services/t-box.service';
+import { TBoxPatternName, ModelService } from '../../shared-services/model.service';
 
 @Controller('/lion_BE/repositories')
 export class RepositoriesController {
-	constructor(private repService: RepositoryService, private tboxService: TBoxService) { }
+	constructor(private repService: RepositoryService, private tboxService: ModelService) { }
 
 	/**
 	 * GET list of repositories

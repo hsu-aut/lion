@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 @Injectable()
-export class TBoxService {
+export class ModelService {
 	
 	constructor(
 		private http: HttpService,

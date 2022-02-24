@@ -9,10 +9,12 @@ import { GraphsModule } from './routes/graphs/graphs.module';
 import { OpcUaModule } from './routes/opc-ua/opc-ua.module';
 import { AppService } from './app.service';
 import { DINEN61360Module } from './routes/dinen61360/dinen61360.module';
+import { TBoxModule } from './routes/t-box/t-box.module';
 
 
 @Module({
 	imports: [
+		TBoxModule,
 		FpbModule,
 		StepModule,
 		EclassSearchModule,

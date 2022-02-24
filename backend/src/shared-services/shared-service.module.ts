@@ -4,7 +4,7 @@ import { GraphOperationService } from './graph-operation.service';
 import { GraphDbModelService } from './graphdb-model.service';
 import { RepositoryService } from './repository.service';
 import { SparqlService } from './sparql.service';
-import { TBoxService } from './t-box.service';
+import { ModelService } from './model.service';
 
 @Global()
 @Module({
@@ -17,14 +17,14 @@ import { TBoxService } from './t-box.service';
 		GraphDbModelService,
 		RepositoryService,
 		SparqlService,
-		TBoxService
+		ModelService
 	],
 	exports: [
 		GraphOperationService,
 		GraphDbModelService,
 		RepositoryService,
 		SparqlService,
-		TBoxService
+		ModelService
 	]
 })
 export class SharedServiceModule {}
