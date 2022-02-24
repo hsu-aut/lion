@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit {
       this.VDI3682Table = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
       this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
       this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
-      this.DINEN61360Table = this.dinen61360Service.getTABLE_All_TYPES();
+      this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => this.DINEN61360Table  =  data);
       this.WADLTable = this.wadlService.getTABLE_BASE_RESOURCES();
       this.getTriplesCount();
       this.getActiveNamespace();
@@ -115,7 +115,7 @@ export class DashboardComponent implements OnInit {
       this.VDI3682Table = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
       this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
       this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
-      this.DINEN61360Table = this.dinen61360Service.getTABLE_All_TYPES();
+      this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => this.DINEN61360Table  =  data);
       this.getTriplesCount();
       this.getActiveNamespace();
   }
