@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Dinen61360Service, DINEN61360Variables } from '../rdf-models/dinen61360Model.service';
+import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
+import { DINEN61360Variables } from '@shared/interfaces/dinen61360-variables.interface';
 import { Isa88ModelService } from '../rdf-models/isa88Model.service';
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
@@ -16,6 +17,7 @@ import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
 import { Tables } from '../utils/tables';
+import { DownloadService } from '../../shared/services/backEnd/download.service';
 
 
 @Component({
@@ -149,11 +151,10 @@ export class Dinen61360Component implements OnInit {
     private loadingScreenService: DataLoaderService,
     private messageService: MessagesService,
     private vdi2206Service: Vdi2206ModelService,
-    private isoService: Iso22400_2ModelService
+    private isoService: Iso22400_2ModelService,
   ) { }
 
   ngOnInit() {
-      // get ProcessData
       this.getDropdowns();
       this.getTables();
       this.getStatisticInfo();
@@ -267,16 +268,24 @@ export class Dinen61360Component implements OnInit {
   }
 
   getDropdowns() {
-      this.datatypes = this.dinen61360Service.getLIST_DATA_TYPES();
-      this.logicInterpretations = this.dinen61360Service.getLIST_LOGIC_INTERPRETATIONS();
-      this.expressionGoals = this.dinen61360Service.getLIST_EXPRESSION_GOALS();
+      this.dinen61360Service.getListOfDataTypes().pipe(take(1)).subscribe((data: any) => this.datatypes  =  data);
+      this.dinen61360Service.getListOfLogicInterpretations().pipe(take(1)).subscribe((data: any) => this.logicInterpretations  =  data);
+      this.dinen61360Service.getListOfExpressionGoals().pipe(take(1)).subscribe((data: any) => this.expressionGoals  =  data);
+      // old code that just gets static data
+      //   this.datatypes = this.dinen61360Service.getLIST_DATA_TYPES();
+      //   this.logicInterpretations = this.dinen61360Service.getLIST_LOGIC_INTERPRETATIONS();
+      //   this.expressionGoals = this.dinen61360Service.getLIST_EXPRESSION_GOALS();
   }
 
   getTables() {
-      this.allProcessInfo = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
-      this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
-      this.allTypes = this.dinen61360Service.getTABLE_All_TYPES();
-      this.allInstances = this.dinen61360Service.getTABLE_ALL_INSTANCE_INFO();
+      // new code 
+      this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => this.allTypes  =  data);
+      this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => this.allInstances  =  data);
+      // old code that just gets static data
+      //   this.allTypes = this.dinen61360Service.getTABLE_All_TYPES();
+      //   this.allInstances = this.dinen61360Service.getTABLE_ALL_INSTANCE_INFO();
+
+      // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
       this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
       this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
       this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
@@ -284,50 +293,74 @@ export class Dinen61360Component implements OnInit {
       this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
       this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
       this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
+      this.allProcessInfo = this.vdi3682Service.getALL_PROCESS_INFO_TABLE();
+      this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
   }
 
   setAllTypes() {
-      this.dinen61360Service.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
+      // new code 
+      this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => {
           this.allTypes = data;
-          this.dinen61360Service.setTABLE_All_TYPES(data);
       });
+      // old code
+      //   this.dinen61360Service.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
+      //       this.loadingScreenService.stopLoading();
+      //       this.allTypes = data;
+      //       this.dinen61360Service.setTABLE_All_TYPES(data);
+      //   });
   }
 
-  setAllInstances() {
-      this.dinen61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
+  setAllInstances() { 
+      // new code 
+      this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => {
           this.allInstances = data;
-          this.dinen61360Service.setTABLE_ALL_INSTANCE_INFO(data);
       });
+      // old code  
+      // this.dinen61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
+      //       this.loadingScreenService.stopLoading();
+      //       this.allInstances = data;
+      //       this.dinen61360Service.setTABLE_ALL_INSTANCE_INFO(data);
+      //   });
   }
 
 
   getStatisticInfo() {
-      // get stats of functions in TS
-      this.NoOfDE = this.dinen61360Service.getLIST_All_DE().length;
-      this.NoOfDET = this.dinen61360Service.getLIST_All_DET().length;
-      this.NoOfDEI = this.dinen61360Service.getLIST_All_DEI().length;
+      // new code 
+      this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => this.NoOfDET  =  data.length);
+      this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => this.NoOfDEI  =  data.length);
+      // old code that just gets static data      this.NoOfDE = this.dinen61360Service.getLIST_All_DE().length;
+      //   this.NoOfDET = this.dinen61360Service.getLIST_All_DET().length;
+      //   this.NoOfDEI = this.dinen61360Service.getLIST_All_DEI().length;
   }
 
-  setStatisticInfo() {
-      // set stats of functions in TS
-      this.dinen61360Service.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
+  setStatisticInfo() {  //remove load function
+      // new code  
+      this.dinen61360Service.getListOfAllDE().pipe(take(1)).subscribe((data: any) => {
           this.NoOfDE = data.length;
-          this.dinen61360Service.setLIST_All_DE(data);
-
       });
-      this.dinen61360Service.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
+      this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => {
           this.NoOfDET = data.length;
-          this.dinen61360Service.setLIST_All_DET(data);
       });
-      this.dinen61360Service.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
-          this.loadingScreenService.stopLoading();
-          this.NoOfDEI = data.length;
-          this.dinen61360Service.setLIST_All_DEI(data);
+      this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => {
+          this.NoOfDEI = data.length;    
       });
+      // old code
+      //   this.dinen61360Service.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
+      //       this.loadingScreenService.stopLoading();
+      //       this.NoOfDE = data.length;
+      //       this.dinen61360Service.setLIST_All_DE(data);
+
+      //   });
+      //   this.dinen61360Service.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
+      //       this.loadingScreenService.stopLoading();
+      //       this.NoOfDET = data.length;
+      //       this.dinen61360Service.setLIST_All_DET(data);
+      //   });
+      //   this.dinen61360Service.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
+      //       this.loadingScreenService.stopLoading();
+      //       this.NoOfDEI = data.length;
+      //       this.dinen61360Service.setLIST_All_DEI(data);
+      //   });
   }
 
   getAllStructuralInfo() {
