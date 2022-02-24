@@ -17,13 +17,13 @@ export class Opc61360ConnectorComponent implements OnInit {
 
     // table var
     instanceDescriptionTable = [{}];
-    instanceDescriptionSubTitle: string = "DIN EN 61360 Instance Descriptions";
-    filterOption: boolean = true;
+    instanceDescriptionSubTitle = "DIN EN 61360 Instance Descriptions";
+    filterOption = true;
 
     opcUaTable = [];
-    opcUaSubtitle: string = "OPC UA Variables";
+    opcUaSubtitle = "OPC UA Variables";
 
-    overviewSubTitle: string = "Connected individuals";
+    overviewSubTitle = "Connected individuals";
     overviewTable = [];
 
     // connection form
@@ -43,10 +43,14 @@ export class Opc61360ConnectorComponent implements OnInit {
 
 
     ngOnInit() {
-        this.dinEn61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: []) => {
-            this.instanceDescriptionTable = data;
-            this.loadingScreenService.stopLoading();
-        })
+        
+        // exchanged with new method which fires request to backend: 
+        this.dinEn61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => this.instanceDescriptionTable  =  data);
+        // old code
+        // this.dinEn61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: []) => {
+        //     this.instanceDescriptionTable = data;
+        //     this.loadingScreenService.stopLoading();
+        // })
 
         // TODO: Should only load UAVariables -> Are currently not automatically created because of bug in node opcua
         this.opcService.loadAllOpcUaNodes().pipe(take(1)).subscribe((nodes: [{}]) => {
@@ -90,10 +94,10 @@ export class Opc61360ConnectorComponent implements OnInit {
 
                 // After adding, refresh existing connections
                 this.loadExistingConnections();
-            })
+            });
 
         } else if (form.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
     }
 
@@ -104,6 +108,6 @@ export class Opc61360ConnectorComponent implements OnInit {
     loadExistingConnections() {
         this.opcService.loadVariableAnd61360Connections().pipe(take(1)).subscribe((data: []) => {
             this.overviewTable = data;
-        })
+        });
     }
 }
