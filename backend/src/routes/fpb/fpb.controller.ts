@@ -75,8 +75,13 @@ export class FpbController {
 		
 	}
 
-
 	// TODO: Clear this mix between mapping and regular VDI3682 stuff (e.g. by sub-routes)
+	@Get('/process-info')
+	getCompleteProcessInfo(): Observable<unknown> {
+		return this.fpbService.getCompleteProcessInfo();
+	}
+
+
 	@Get('/processes')
 	getAllProcesses(): Observable<Array<string>> {
 		return this.fpbService.getAllProcesses();

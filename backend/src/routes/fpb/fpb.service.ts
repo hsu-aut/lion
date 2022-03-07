@@ -69,43 +69,78 @@ export class FpbService {
 	}
 
 
+
+	getCompleteProcessInfo(): Observable<SparqlResponse> {
+		const queryString = `
+		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE {
+			?Process a VDI3682:Process.
+			OPTIONAL { 
+				?Process VDI3682:shortName ?pShortName
+			}
+			OPTIONAL {
+				?Process VDI3682:hasInput ?Input. 
+				OPTIONAL {
+					?Input VDI3682:shortName ?iShortName.
+				} 
+				?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}
+			}
+			OPTIONAL {
+				?Process VDI3682:hasOutput ?Output. 
+				OPTIONAL {
+					?Output VDI3682:shortName ?oShortName.
+				} 
+				?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+			OPTIONAL {
+				?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process. 
+				OPTIONAL {
+					?TechnicalResource VDI3682:shortName ?tShortName.
+				}
+			}
+		}`;
+		return this.queryService.query(queryString);
+		// .pipe(
+		// 	map(data => data.results.bindings.map(results => results["Process"].value))
+		// );
+	}
+
+
 	getAllProcesses(): Observable<Array<string>>{
 		const queryString = `
 		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?Process WHERE {
 			?Process a VDI3682:Process.
-		`;
+		}`;
 		
 		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["Process"].value))
+			map(data => data.results.bindings.map(results => results["Process"].value as string))
 		);
 	}
 
 	getAllTechnicalResources(): Observable<Array<string>>{
 		const queryString = `
 		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?TR WHERE {
 			?TR a VDI3682:TechnicalResource.
 		}`;
-		
 		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["TR"].value))
+			map(data => data.results.bindings.map(results => results["TR"].value as string))
 		);
 	}
 
 	getInputsAndOutputs(): Observable<Array<string>>{
 		const queryString = `
 		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?IoPoE WHERE {
 		?IoPoE a ?x.
 			VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
 		}`;
 
 		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["IoPoE"].value))
+			map(data => data.results.bindings.map(results => results["IoPoE"].value as string))
 		);
 	}
 
@@ -124,9 +159,8 @@ export class FpbService {
 		
 		const classes =  this.queryService.query(queryString).pipe(
 			map(res => {
-				return res.results.bindings.map(binding => binding["type"].value);
+				return res.results.bindings.map(binding => binding["type"].value as string);
 			}));
-		
 		return classes;
 	}
 

@@ -8,6 +8,8 @@ import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { toSparqlTable } from '../utils/rxjs-custom-operators';
+import { SparqlResponse } from '../../../../interfaces/sparql/SparqlResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -48,10 +50,10 @@ export class Vdi3682ModelService {
         //     this.loadingScreenService.stopLoading();
         //     this.LIST_OF_INPUTS_AND_OUTPUTS = data;
         // });
-        this.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
-            this.TABLE_OF_PROCESS_INFO = data;
-        });
+        // this.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
+        //     this.loadingScreenService.stopLoading();
+        //     this.TABLE_OF_PROCESS_INFO = data;
+        // });
         // this.loadLIST_OF_ALL_CLASSES().pipe(take(1)).subscribe((data: any) => {
         //     this.loadingScreenService.stopLoading();
         //     this.LIST_OF_ALL_CLASSES = data;
@@ -87,9 +89,15 @@ export class Vdi3682ModelService {
     //     this.loadingScreenService.startLoading();
     //     return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_INPUTS_AND_OUTPUTS, 0);
     // }
-    public loadALL_PROCESS_INFO_TABLE() {
+
+    /**
+     * Loads complete process info (for below new individual form)
+     * @returns
+     */
+    public loadCompleteProcessInfo(): Observable<unknown> {
         this.loadingScreenService.startLoading();
-        return this.query.SPARQL_SELECT_TABLE(this.vdi3682data.SELECT_TABLE_OF_PROCESS_INFO);
+        const res = this.http.get<SparqlResponse>("/lion_BE/fpb/process-info").pipe(toSparqlTable, take(1));
+        return res;
     }
     // public loadLIST_OF_ALL_CLASSES() {
     //     this.loadingScreenService.startLoading();
@@ -138,8 +146,7 @@ export class Vdi3682ModelService {
     }
 
 
-
-    public modifyTripel(variables: tripel, action: string) {
+    public modifyTripel(variables: Triple, action: string) {
 
         const GRAPHS = this.graphs.getGraphs();
         const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
@@ -172,19 +179,19 @@ export class VDI3682DATA {
 
 
 
-    public SELECT_TABLE_OF_PROCESS_INFO = `
-  PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+    //     public SELECT_TABLE_OF_PROCESS_INFO = `
+    //   PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 
-  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE {
-  ?Process a VDI3682:Process.
-  OPTIONAL { ?Process VDI3682:shortName ?pShortName}
+    //   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    //   SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE {
+    //   ?Process a VDI3682:Process.
+    //   OPTIONAL { ?Process VDI3682:shortName ?pShortName}
 
-  OPTIONAL {?Process VDI3682:hasInput ?Input. OPTIONAL {?Input VDI3682:shortName ?iShortName.} ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-  OPTIONAL {?Process VDI3682:hasOutput ?Output. OPTIONAL {?Output VDI3682:shortName ?oShortName.} ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-  OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process. OPTIONAL {?TechnicalResource VDI3682:shortName ?tShortName.}}
-  }
-`
+    //   OPTIONAL {?Process VDI3682:hasInput ?Input. OPTIONAL {?Input VDI3682:shortName ?iShortName.} ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+    //   OPTIONAL {?Process VDI3682:hasOutput ?Output. OPTIONAL {?Output VDI3682:shortName ?oShortName.} ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+    //   OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process. OPTIONAL {?TechnicalResource VDI3682:shortName ?tShortName.}}
+    //   }
+    // `
 
 
     //TODO: This seems to be exactly the same as in VDI2206Model.service (and possibly others). Should be moved to a common base class
@@ -195,13 +202,15 @@ export class VDI3682DATA {
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             SELECT ?ObjectProperty WHERE {
-            ?ObjectProperty rdfs:domain ?a.
-            # optionally if the range is a blank node not changes required
-            OPTIONAL {    	?a owl:unionOf ?c.
-                    ?c rdf:rest* ?e.
-                    ?e rdf:first ?g.}
+            ?ObjectProperty rdfs:domain ?domain.
+            # optionally if the range is a blank node no changes required
+            OPTIONAL {
+                ?domain owl:unionOf ?c.
+                ?c rdf:rest* ?e.
+                ?e rdf:first ?first.
+            }
             # in case the range is a blank node, use the rdf:first as return
-            BIND(IF(isBlank(?a),?g,?a) AS ?Property)
+            BIND(IF(isBlank(?a),?first,?domain) AS ?Property)
             # filter for class
             FILTER(?Property = IRI("${owlClass}"))
             }`;
@@ -260,20 +269,20 @@ FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
 
 }
 
-export class tripel {
+export class Triple {
     subject: string;
     predicate: string;
     object: string;
 }
 
 export class VDI3682VARIABLES {
-    simpleStatement: tripel
+    simpleStatement: Triple
 
 }
 
 export class VDI3682INSERT {
 
-    public createEntity(graph: tripel, activeGraph: string) {
+    public createEntity(graph: Triple, activeGraph: string) {
 
         const insertString = `
 	  INSERT {
