@@ -8,6 +8,7 @@ import { StepModule } from './routes/step/step.module';
 import { GraphsModule } from './routes/graphs/graphs.module';
 import { OpcUaModule } from './routes/opc-ua/opc-ua.module';
 import { AppService } from './app.service';
+import { DINEN61360Module } from './routes/dinen61360/dinen61360.module';
 
 
 @Module({
@@ -18,7 +19,8 @@ import { AppService } from './app.service';
 		GraphsModule,
 		QueriesModule,
 		RepositoriesModule,
-		OpcUaModule
+		OpcUaModule,
+		DINEN61360Module
 	],
 	controllers: [AppController],
 	providers: [AppService],
