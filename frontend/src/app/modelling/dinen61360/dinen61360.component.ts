@@ -85,7 +85,7 @@ export class Dinen61360Component implements OnInit {
     }
     // forms
     typeDescriptionForm = this.fb.group({
-        code: [undefined, [Validators.required, Validators.pattern('([A-Z]{3})([0-9]{3})')]],
+        code: [undefined, [Validators.required]],
         version: [undefined, [Validators.required, Validators.pattern('([0-9]{1,})')]],
         revision: [undefined, [Validators.required, Validators.pattern('([0-9]{1,})')]],
         preferred_name: [undefined, [Validators.required, Validators.pattern('([A-Z;a-z; ;0-9]{1,})')]],
@@ -120,7 +120,7 @@ export class Dinen61360Component implements OnInit {
     selectString = this.nameService.getPrefixString() + "\n SELECT * WHERE { \n ?a ?b ?c. \n}";
 
     // graph db data VDI 3682
-    allProcessInfo: Array<Record<string, any>> = [];
+    allProcessInfo = new Array<Record<string, any>>();
 
 
     // graph db data ISA 88
@@ -286,7 +286,6 @@ export class Dinen61360Component implements OnInit {
         //   this.allInstances = this.dinen61360Service.getTABLE_ALL_INSTANCE_INFO();
 
         // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
-        this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
         this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
         this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
         this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
