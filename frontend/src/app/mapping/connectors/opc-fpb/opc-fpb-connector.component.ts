@@ -18,13 +18,13 @@ export class OpcFpdConnectorComponent implements OnInit {
 
     // table var
     processTable = [{}];
-    processTableSubTitle: string = "VDI 3682 Processes";
-    filterOption: boolean = true;
+    processTableSubTitle = "VDI 3682 Processes";
+    filterOption = true;
 
     opcUaNodeTable = [];
-    opcUaNodeSubtitle: string = "OPC UA Nodes";
+    opcUaNodeSubtitle = "OPC UA Nodes";
 
-    overviewSubTitle: string = "Connected individuals";
+    overviewSubTitle = "Connected individuals";
     overviewTable = [];
 
     // connection form
@@ -44,10 +44,10 @@ export class OpcFpdConnectorComponent implements OnInit {
 
     ngOnInit() {
         // Load all processes
-        this.fpdService.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: []) => {
+        this.fpdService.loadCompleteProcessInfo().pipe(take(1)).subscribe((data: []) => {
             this.processTable = data;
             this.loadingScreenService.stopLoading();
-        })
+        });
 
         // TODO: Should better load just the methods and variables here...
         this.opcService.loadAllOpcUaNodes().pipe(take(1)).subscribe((nodes: [{}]) => {
@@ -91,10 +91,10 @@ export class OpcFpdConnectorComponent implements OnInit {
             this.opcService.createNodeAndProecssConnection(process, opcUaNode).pipe(take(1)).subscribe(data => {
                 this.loadingScreenService.stopLoading();
                 this.loadExistingConnections();
-            })
+            });
 
         } else if (form.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
     }
 
@@ -104,7 +104,7 @@ export class OpcFpdConnectorComponent implements OnInit {
     loadExistingConnections() {
         this.opcService.loadNodeAndProcessConnections().pipe(take(1)).subscribe((data: []) => {
             this.overviewTable = data;
-        })
+        });
     }
 
 }

@@ -42,7 +42,7 @@ export class TBoxService {
 
 		return this.queryService.query(queryString).pipe(
 			tap(res => console.log(res)),
-			map(data => data.results.bindings.map(results => results["objectProperty"].value))
+			map(data => data.results.bindings.map(results => results["objectProperty"].value as string))
 		);
 	}
 
@@ -77,7 +77,7 @@ export class TBoxService {
             }`;
             
 		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["class"].value))
+			map(data => data.results.bindings.map(results => results["class"].value as string))
 		);
 	}
 
@@ -95,7 +95,7 @@ export class TBoxService {
         }`;
 
 		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["class"].value))
+			map(data => data.results.bindings.map(results => results["class"].value as string))
 		);
 	}
     
@@ -111,7 +111,7 @@ export class TBoxService {
         }`;
 
 		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["individual"].value))
+			map(data => data.results.bindings.map(results => results["individual"].value as string))
 		);
 	}
 }

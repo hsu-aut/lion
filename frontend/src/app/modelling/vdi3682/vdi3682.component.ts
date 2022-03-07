@@ -68,9 +68,13 @@ export class VDI3682Component implements OnInit {
         this.getStatisticInfo();
     }
 
+
+    /**
+     * This method on "add" in the "create new individuals" tab
+     * @param action
+     */
     handleNewTriple(action: string): void {
         if (this.newIndividualForm.valid) {
-
             this.modelVariables.simpleStatement = {
                 subject: this.nameService.addOrParseNamespace(this.newIndividualForm.controls['name'].value),
                 predicate: this.nameService.parseToIRI(this.newIndividualForm.controls['predicate'].value),
@@ -112,16 +116,15 @@ export class VDI3682Component implements OnInit {
 
         const owlClass = await this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value)[0];
 
-
-        //*
-        this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value).pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
-            const owlClass = data[0];
-            this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).pipe(take(1)).subscribe((data: any) => {
+        this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value).pipe(take(1))
+            .subscribe((data: any) => {
                 this.loadingScreenService.stopLoading();
-                this.existingPredicates = data;
+                const owlClass = data[0];
+                this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).pipe(take(1)).subscribe((data: any) => {
+                    this.loadingScreenService.stopLoading();
+                    this.existingPredicates = data;
+                });
             });
-        });
 
     }
 
@@ -144,7 +147,7 @@ export class VDI3682Component implements OnInit {
     }
 
     loadAllProcessInfo(): void {
-        this.modelService.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
+        this.modelService.loadCompleteProcessInfo().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.allProcessInfo = data;
             this.modelService.setAllProcessInfoTable(this.allProcessInfo);
