@@ -44,7 +44,7 @@ export class OpcFpdConnectorComponent implements OnInit {
 
     ngOnInit() {
         // Load all processes
-        this.fpdService.loadCompleteProcessInfo().pipe(take(1)).subscribe((data: []) => {
+        this.fpdService.getCompleteProcessInfo().pipe(take(1)).subscribe((data: []) => {
             this.processTable = data;
             this.loadingScreenService.stopLoading();
         });

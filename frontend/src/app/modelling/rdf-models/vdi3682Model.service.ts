@@ -94,7 +94,7 @@ export class Vdi3682ModelService {
      * Loads complete process info (for below new individual form)
      * @returns
      */
-    public loadCompleteProcessInfo(): Observable<unknown> {
+    public getCompleteProcessInfo(): Observable<Array<Record<string, string | number>>> {
         this.loadingScreenService.startLoading();
         const res = this.http.get<SparqlResponse>("/lion_BE/fpb/process-info").pipe(toSparqlTable, take(1));
         return res;
@@ -135,10 +135,10 @@ export class Vdi3682ModelService {
         return this.http.get<Array<string>>("/lion_BE/fpb/inputs-outputs");
     }
 
-    // TODO: Convert to new approach
-    public getALL_PROCESS_INFO_TABLE() {
-        return this.TABLE_OF_PROCESS_INFO;
-    }
+    // // TODO: Convert to new approach
+    // public getALL_PROCESS_INFO_TABLE() {
+    //     return this.TABLE_OF_PROCESS_INFO;
+    // }
 
 
     public getListOfAllClasses(): Observable<Array<string>> {

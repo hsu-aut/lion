@@ -278,7 +278,7 @@ export class Dinen61360Component implements OnInit {
   }
 
   getTables() {
-      // new code 
+      // new code
       this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => this.allTypes  =  data);
       this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => this.allInstances  =  data);
       // old code that just gets static data
@@ -286,6 +286,8 @@ export class Dinen61360Component implements OnInit {
       //   this.allInstances = this.dinen61360Service.getTABLE_ALL_INSTANCE_INFO();
 
       // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
+      this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
+      this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
       this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
       this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
       this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
@@ -298,7 +300,7 @@ export class Dinen61360Component implements OnInit {
   }
 
   setAllTypes() {
-      // new code 
+      // new code
       this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => {
           this.allTypes = data;
       });
@@ -310,12 +312,12 @@ export class Dinen61360Component implements OnInit {
       //   });
   }
 
-  setAllInstances() { 
-      // new code 
+  setAllInstances() {
+      // new code
       this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => {
           this.allInstances = data;
       });
-      // old code  
+      // old code
       // this.dinen61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
       //       this.loadingScreenService.stopLoading();
       //       this.allInstances = data;
@@ -325,7 +327,7 @@ export class Dinen61360Component implements OnInit {
 
 
   getStatisticInfo() {
-      // new code 
+      // new code
       this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => this.NoOfDET  =  data.length);
       this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => this.NoOfDEI  =  data.length);
       // old code that just gets static data      this.NoOfDE = this.dinen61360Service.getLIST_All_DE().length;
@@ -334,7 +336,7 @@ export class Dinen61360Component implements OnInit {
   }
 
   setStatisticInfo() {  //remove load function
-      // new code  
+      // new code
       this.dinen61360Service.getListOfAllDE().pipe(take(1)).subscribe((data: any) => {
           this.NoOfDE = data.length;
       });
@@ -342,7 +344,7 @@ export class Dinen61360Component implements OnInit {
           this.NoOfDET = data.length;
       });
       this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => {
-          this.NoOfDEI = data.length;    
+          this.NoOfDEI = data.length;
       });
       // old code
       //   this.dinen61360Service.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {

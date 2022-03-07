@@ -34,7 +34,7 @@ export class VDI3682Component implements OnInit {
     modelVariables = new VDI3682VARIABLES();
 
     // graph db data
-    allProcessInfo: Array<Record<string, any>> = [];
+    allProcessInfo: Array<Record<string, string | number>>;
     allClasses: Array<string> = [];
     existingObjectClasses: Array<string> = [];
     existingPredicates: Array<string> = [];
@@ -63,7 +63,7 @@ export class VDI3682Component implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.allProcessInfo = this.modelService.getALL_PROCESS_INFO_TABLE();
+        this.modelService.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
         this.modelService.getListOfAllClasses().pipe(take(1)).subscribe(data => this.allClasses = data);
         this.getStatisticInfo();
     }
@@ -147,7 +147,7 @@ export class VDI3682Component implements OnInit {
     }
 
     loadAllProcessInfo(): void {
-        this.modelService.loadCompleteProcessInfo().pipe(take(1)).subscribe((data: any) => {
+        this.modelService.getCompleteProcessInfo().pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.allProcessInfo = data;
             this.modelService.setAllProcessInfoTable(this.allProcessInfo);
