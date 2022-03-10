@@ -79,13 +79,12 @@ export class FpbService {
           activeGraph: this.graphs.getGraphs()[this.graphs.getActiveGraph()],
           repositoryName: this.config.getRepository()
       };
-    
+
       const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
-    
+
       const insertObservable = new Observable((observer) => {
           this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
               this.messageService.addMessage('success', 'Alright!', `Backend processed the file.`);
-              this.vdi.initializeVDI3682();
               observer.next();
               observer.complete();
           },

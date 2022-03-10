@@ -7,8 +7,8 @@ import { DownloadService } from '../../shared/services/backEnd/download.service'
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take, tap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { toSparqlTable } from '../utils/rxjs-custom-operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { toSparqlTable, toSparqlVariableList } from '../utils/rxjs-custom-operators';
 import { SparqlResponse } from '../../../../interfaces/sparql/SparqlResponse';
 
 @Injectable({
@@ -19,12 +19,6 @@ export class Vdi3682ModelService {
     vdi3682data = new VDI3682DATA();
     vdi3682insert = new VDI3682INSERT();
 
-    private LIST_OF_PROCESSES = [];
-    private LIST_OF_TECHNICAL_RESOURCES = [];
-    private LIST_OF_INPUTS_AND_OUTPUTS = [];
-    private TABLE_OF_PROCESS_INFO = [];
-    private LIST_OF_ALL_CLASSES = [];
-
     constructor(
         private http: HttpClient,
         private query: QueriesService,
@@ -33,91 +27,54 @@ export class Vdi3682ModelService {
         private messageService: MessagesService,
         private downloadService: DownloadService,
         private graphs: GraphOperationsService
-    ) {
-        this.initializeVDI3682();
-    }
+    ) {}
 
-    public initializeVDI3682() {
-        // this.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
-        //     this.loadingScreenService.stopLoading();
-        //     this.LIST_OF_PROCESSES = data;
-        // });
-        // this.loadLIST_OF_TECHNICAL_RESOURCES().pipe(take(1)).subscribe((data: any) => {
-        //     this.loadingScreenService.stopLoading();
-        //     this.LIST_OF_TECHNICAL_RESOURCES = data;
-        // });
-        // this.loadLIST_OF_INPUTS_AND_OUTPUTS().pipe(take(1)).subscribe((data: any) => {
-        //     this.loadingScreenService.stopLoading();
-        //     this.LIST_OF_INPUTS_AND_OUTPUTS = data;
-        // });
-        // this.loadALL_PROCESS_INFO_TABLE().pipe(take(1)).subscribe((data: any) => {
-        //     this.loadingScreenService.stopLoading();
-        //     this.TABLE_OF_PROCESS_INFO = data;
-        // });
-        // this.loadLIST_OF_ALL_CLASSES().pipe(take(1)).subscribe((data: any) => {
-        //     this.loadingScreenService.stopLoading();
-        //     this.LIST_OF_ALL_CLASSES = data;
-        // });
-    }
-
-    // public setListOfProcesses(list): void {
-    //     this.LIST_OF_PROCESSES = list;
-    // }
-    // public setListOfTechnicalResources(list) {
-    //     this.LIST_OF_TECHNICAL_RESOURCES = list;
-    // }
-    // public setListOfInputsAndOutputs(list) {
-    //     this.LIST_OF_INPUTS_AND_OUTPUTS = list;
-    // }
-    public setAllProcessInfoTable(list) {
-        this.TABLE_OF_PROCESS_INFO = list;
-    }
-    // public setListOfAllClasses(list) {
-    //     this.LIST_OF_ALL_CLASSES = list;
-    // }
-
-
-    // public loadLIST_OF_PROCESSES() {
-    //     this.loadingScreenService.startLoading();
-    //     return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_PROCESSES, 0);
-    // }
-    // public loadLIST_OF_TECHNICAL_RESOURCES() {
-    //     this.loadingScreenService.startLoading();
-    //     return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_TECHNICAL_RESOURCES, 0);
-    // }
-    // public loadLIST_OF_INPUTS_AND_OUTPUTS() {
-    //     this.loadingScreenService.startLoading();
-    //     return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_INPUTS_AND_OUTPUTS, 0);
-    // }
 
     /**
-     * Loads complete process info (for below new individual form)
-     * @returns
+     * Loads complete process info (for table below new individual form)
+     * @returns A table-like structure of all processes and their inputs / outputs
      */
-    public getCompleteProcessInfo(): Observable<Array<Record<string, string | number>>> {
-        this.loadingScreenService.startLoading();
-        const res = this.http.get<SparqlResponse>("/lion_BE/fpb/process-info").pipe(toSparqlTable, take(1));
-        return res;
+    public getCompleteProcessInfo(): Observable<Array<Record<string, string>>> {
+        return this.http.get<SparqlResponse>("/lion_BE/fpb/process-info").pipe(toSparqlTable(), take(1));
     }
     // public loadLIST_OF_ALL_CLASSES() {
     //     this.loadingScreenService.startLoading();
     //     return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_ALL_CLASSES, 0);
     // }
-    public loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass) {
+    public loadPredicatesByDomain(owlClass: string) {
         this.loadingScreenService.startLoading();
         owlClass = this.nameService.parseToIRI(owlClass);
-        return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectPredicateByDomain(owlClass), 0);
+
+        // Construct Params Object
+        let params = new HttpParams();
+        params = params.append('domainClass', owlClass);
+        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: This could be done by some Prefix service
+
+        return this.http.get<string[]>("/lion_BE/t-box/properties-by-domain", {params: params});
     }
-    public loadListOfClassesByRange(predicate): Observable<Array<string>> {
+
+    public getListOfClassesByRange(predicate: string): Observable<Array<string>> {
         this.loadingScreenService.startLoading();
         predicate = this.nameService.parseToIRI(predicate);
-        return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectClassByRange(predicate), 0) as Observable<Array<string>>;
+        // Construct Params Object
+        let params = new HttpParams();
+        params = params.append('predicate', predicate);
+        return this.http.get<SparqlResponse>("/lion_BE/t-box/classes-by-range", {params: params}).pipe(toSparqlVariableList());
     }
-    public loadLIST_OF_CLASS_MEMBERSHIP(individual) {
-        this.loadingScreenService.startLoading();
-        individual = this.nameService.parseToIRI(individual);
-        return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectClass(individual), 0);
+
+
+    public getClassOfIndividualWithinNamespace(individual): Observable<Array<string>> {
+        const individualIri = this.nameService.parseToIRI(individual);
+
+        // Construct Params Object
+        let params = new HttpParams();
+        params = params.append('individual', individualIri);
+        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: This could be done by some Prefix service
+
+        return this.http.get<string[]>("/lion_BE/t-box/classes-of-individual", {params: params});
     }
+
+
     public loadLIST_OF_INDIVIDUALS_BY_CLASS(Class) {
         this.loadingScreenService.startLoading();
         Class = this.nameService.parseToIRI(Class);
@@ -135,14 +92,9 @@ export class Vdi3682ModelService {
         return this.http.get<Array<string>>("/lion_BE/fpb/inputs-outputs");
     }
 
-    // // TODO: Convert to new approach
-    // public getALL_PROCESS_INFO_TABLE() {
-    //     return this.TABLE_OF_PROCESS_INFO;
-    // }
-
 
     public getListOfAllClasses(): Observable<Array<string>> {
-        return this.http.get<Array<string>>("/lion_BE/fpb/classes");
+        return this.http.get<Array<string>>("/lion_BE/fpb/classes").pipe(take(1), toSparqlVariableList());
     }
 
 
@@ -195,27 +147,27 @@ export class VDI3682DATA {
 
 
     //TODO: This seems to be exactly the same as in VDI2206Model.service (and possibly others). Should be moved to a common base class
-    public selectPredicateByDomain(owlClass: string): string {
+    // public selectPredicateByDomain(owlClass: string): string {
 
-        const selectString = `
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX owl: <http://www.w3.org/2002/07/owl#>
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            SELECT ?ObjectProperty WHERE {
-            ?ObjectProperty rdfs:domain ?domain.
-            # optionally if the range is a blank node no changes required
-            OPTIONAL {
-                ?domain owl:unionOf ?c.
-                ?c rdf:rest* ?e.
-                ?e rdf:first ?first.
-            }
-            # in case the range is a blank node, use the rdf:first as return
-            BIND(IF(isBlank(?a),?first,?domain) AS ?Property)
-            # filter for class
-            FILTER(?Property = IRI("${owlClass}"))
-            }`;
-        return selectString;
-    }
+    //     const selectString = `
+    //         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    //         PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    //         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    //         SELECT ?ObjectProperty WHERE {
+    //         ?ObjectProperty rdfs:domain ?domain.
+    //         # optionally if the range is a blank node no changes required
+    //         OPTIONAL {
+    //             ?domain owl:unionOf ?c.
+    //             ?c rdf:rest* ?e.
+    //             ?e rdf:first ?first.
+    //         }
+    //         # in case the range is a blank node, use the rdf:first as return
+    //         BIND(IF(isBlank(?a),?first,?domain) AS ?Property)
+    //         # filter for class
+    //         FILTER(?Property = IRI("${owlClass}"))
+    //         }`;
+    //     return selectString;
+    // }
 
     //TODO: This seems to be exactly the same as in VDI2206Model.service (and possibly others). Should be moved to a common base class
     public selectClassByRange(predicate: string): string {
@@ -239,20 +191,20 @@ export class VDI3682DATA {
     }
 
 
-    public selectClass(Individual) {
+    //     public selectClass(Individual) {
 
-        const selectString = `
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?Class WHERE {
-  BIND(IRI("${Individual}") AS ?Individual)
-  ?Individual rdf:type ?Class.
-  ?Class a owl:Class.
-  FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
-}
-`;
-        return selectString;
-    }
+    //         const selectString = `
+    // PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    // PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    // SELECT ?Class WHERE {
+    //   BIND(IRI("${Individual}") AS ?Individual)
+    //   ?Individual rdf:type ?Class.
+    //   ?Class a owl:Class.
+    //   FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
+    // }
+    // `;
+    //         return selectString;
+    //     }
 
     public selectIndividualByClass(Class) {
         const selectString = `
