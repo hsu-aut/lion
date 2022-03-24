@@ -1,5 +1,5 @@
 import { SparqlResponse } from "@shared/interfaces/sparql/SparqlResponse";
-import { map, Observable } from "rxjs";
+import { map, OperatorFunction, pipe } from "rxjs";
 
 /**
  * Extracts all values of one variable from a SparqlResponse. In case only one variable is present in the SparqlResponse, no variableName is
@@ -7,8 +7,8 @@ import { map, Observable } from "rxjs";
  * @param source$ The source observable (a default / raw SparqlResponse)
  * @returns An array of values for the given variableName. In case there is just one variable, the list of values for this variable
  */
-export function toSparqlVariableList(source$: Observable<SparqlResponse>, variableName?: string): Observable<Array<string | number>> {
-    return source$.pipe(map(v => {
+export function toSparqlVariableList(variableName?: string): OperatorFunction<SparqlResponse, Array<string>> {
+    return pipe(map(v => {
         const vars = v.head.vars;
         const bindings = v.results.bindings;
         // grab all values of the given variableName
@@ -25,18 +25,21 @@ export function toSparqlVariableList(source$: Observable<SparqlResponse>, variab
     }));
 }
 
+
+
 /**
  * Converts a source observable of type SparqlResponse to a table-like array where all non existing values of the raw response were filled with empty strings.
  * @param source$ The source observable (a default / raw) SparqlResponse
  * @returns An array of values in which each array contains an object that has the variables  of the SparqlResponse as keys
  */
-export function toSparqlTable(source$: Observable<SparqlResponse>): Observable<Array<Record<string, string | number>>> {
-    return source$.pipe(map(sparqlResponse => {
-        const tableArray = new Array<Record<string, string | number>>();
+export function toSparqlTable(): OperatorFunction<SparqlResponse, Array<Record<string, string>>> {
+    return pipe(map(sparqlResponse => {
+        const tableArray = new Array<Record<string, string>>();
         const vars = sparqlResponse.head.vars;
         const bindings = sparqlResponse.results.bindings;
+
         bindings.forEach(b => {
-            const entry: Record<string, string | number> = {};
+            const entry: Record<string, string> = {};
             let val;
             vars.forEach(v => {
                 try {
