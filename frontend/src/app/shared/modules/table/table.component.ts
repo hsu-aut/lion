@@ -11,7 +11,7 @@ import { IfStmt } from '@angular/compiler';
 export class TableComponent implements OnInit {
 
     // get table
-    @Input() currentTable: Array<Record<string, any>>;
+    @Input() currentTable = new Array<Record<string, any>>();
     @Input() tableTitle: string;
     @Input() tableExplanation: string;
     @Input() filter: boolean;
@@ -47,8 +47,10 @@ export class TableComponent implements OnInit {
     ngOnInit() {
     }
 
+
+    // TODO: Check what this is actually used for
     ngOnChanges(changes: SimpleChanges) {
-        if (typeof this.currentTable !== 'undefined') {
+        if (this.currentTable !== undefined) {
 
             if (this.currentTable.length != 0) {
 

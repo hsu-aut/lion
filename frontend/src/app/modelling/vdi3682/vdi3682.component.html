@@ -4,15 +4,15 @@
         <h5 class="card-title"> Formalized Process Descriptions </h5>
 
         <div class="row">
-
             <div class="col">
-                <p class="card-text">The VDI3682 template uses a tabular approach for building a graph. One can add
-                    elements to
-                    an
-                    existing Process or create a new Process. <button type="button" class="badge rounded-pill bg-light text-dark"
-                        data-bs-toggle="modal" data-bs-target="#FPD_HELPER">?</button></p>
-
+                <p class="card-text">The VDI3682 template uses a tabular approach for building a graph. One can add elements to an
+                    existing Process or create a new Process.
+                    <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal" data-bs-target="#FPD_HELPER">
+                        ?
+                    </button>
+                </p>
             </div>
+
             <div class="col">
                 <div class="card h-100">
                     <div class="card-header">
@@ -55,7 +55,6 @@
 
             <div class="tab-content py-3" id="myTabContent">
                 <div class="tab-pane fade show active" id="newIndividual" role="tabpanel" aria-labelledby="newIndi-tab">
-                    <!-- content to create new individuals -->
                     <div class="row" [formGroup]="newIndividualForm">
                         <div class="form-group col-sm">
                             <label> The Subject of the created statement </label>
@@ -101,7 +100,6 @@
                         [tableExplanation]="tableSubTitle" (tableClickedCell)="iriTableClick($event)"></app-table>
                 </div>
                 <div class="tab-pane " id="existingIndividual" role="tabpanel" aria-labelledby="existingIndi-tab">
-                    <!-- content to connect existing individuals -->
                     <div class="row" [formGroup]="newConnectionForm">
                         <div class="form-group col-sm">
                             <label> The Subject of the created statement </label>
@@ -186,10 +184,8 @@
                     the
                     process. </p>
             </div>
-
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                    Got it! </button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
             </div>
         </div>
     </div>

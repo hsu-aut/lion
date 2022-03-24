@@ -1,9 +1,8 @@
 import { Controller,Post} from '@nestjs/common';
 import { StringBody } from '../../custom-decorator/StringBodyDecorator';
 import { SparqlService } from '../../shared-services/sparql.service';
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
 
 @Controller('/lion_BE/queries')
 export class QuerieController {

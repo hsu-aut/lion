@@ -116,7 +116,6 @@ export class RepositoryComponent implements OnInit {
 
   refreshServices() {
       console.info("Refreshing data ...");
-      this.VDI3862_Service.initializeVDI3682();
       this.VDI2206_Service.initializeVDI2206();
       this.ISA_Service.initializeISA88();
       this.DINEIN61360_Service.initializeDINEN61360();

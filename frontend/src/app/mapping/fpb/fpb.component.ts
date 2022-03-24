@@ -12,43 +12,43 @@ import { MessagesService } from '../../shared/services/messages.service';
 })
 export class FpbComponent implements OnInit {
 
-  public fpbURL = this.fpb.fpbRoute;
-  public fpbJSON = {}
-  public uploadedFiles = ["Do you have a connection to the backend?"]
-  public fileType = [".json"]
+    public fpbURL = this.fpb.fpbRoute;
+    public fpbJSON = {}
+    public uploadedFiles = ["Do you have a connection to the backend?"]
+    public fileType = [".json"]
 
-  constructor(
-    private fpb: FpbService,
-    private connector: FpbStepService,
-    private messageService: MessagesService
-  ) { }
+    constructor(
+        private fpb: FpbService,
+        private connector: FpbStepService,
+        private messageService: MessagesService
+    ) { }
 
-  ngOnInit() {
-      this.getListofFiles();
-  }
+    ngOnInit() {
+        this.getListofFiles();
+    }
 
-  getListofFiles() {
-      this.fpb.getListOfFiles().pipe(take(1)).subscribe((data: any) => {
-          this.uploadedFiles = data;
-      });
-  }
+    getListofFiles() {
+        this.fpb.getListOfFiles().pipe(take(1)).subscribe((data: any) => {
+            this.uploadedFiles = data;
+        });
+    }
 
-  mapToRDF(file: string) {
-      this.messageService.addMessage('warning', 'Alright!', `Backend is processing the file. This may take a while.`);
-      this.fpb.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
-          console.log(data);
-          this.connector.initializeService();
-      });
-  }
+    mapToRDF(file: string) {
+        this.messageService.addMessage('warning', 'Alright!', `Backend is processing the file. This may take a while.`);
+        this.fpb.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
+            console.log(data);
+            this.connector.initializeService();
+        });
+    }
 
 
 
-  deleteFile(file: string) {
-      this.fpb.deleteFile(file).pipe(take(1)).subscribe((data: any) => {
-          console.log(data);
-          this.getListofFiles();
-      });
-  }
+    deleteFile(file: string) {
+        this.fpb.deleteFile(file).pipe(take(1)).subscribe((data: any) => {
+            console.log(data);
+            this.getListofFiles();
+        });
+    }
 
 
 }

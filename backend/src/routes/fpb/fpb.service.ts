@@ -69,51 +69,69 @@ export class FpbService {
 	}
 
 
-	getAllProcesses(): Observable<Array<string>>{
+
+	getCompleteProcessInfo(): Observable<SparqlResponse> {
+		const queryString = `
+		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		SELECT ?process ?processOperator ?input ?inputType ?output ?outputType ?technicalResource  WHERE {
+			?process a VDI3682:Process.
+			OPTIONAL {
+				?process VDI3682:consistsOf ?processOperator
+			}
+			OPTIONAL {
+				?process VDI3682:hasInput ?input. 
+				?input rdf:type ?inputType. 
+				VALUES ?inputType {VDI3682:Product VDI3682:Energy VDI3682:Information}
+			}
+			OPTIONAL {
+				?process VDI3682:hasOutput ?output. 
+				?output rdf:type ?outputType. VALUES ?outputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+			OPTIONAL {
+				?technicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?process. 
+			}
+		}`;
+		return this.queryService.query(queryString);
+	}
+
+
+	getAllProcesses(): Observable<SparqlResponse>{
 		const queryString = `
 		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?Process WHERE {
 			?Process a VDI3682:Process.
-		`;
+		}`;
 		
-		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["Process"].value))
-		);
+		return this.queryService.query(queryString);
 	}
 
-	getAllTechnicalResources(): Observable<Array<string>>{
+	getAllTechnicalResources(): Observable<SparqlResponse>{
 		const queryString = `
 		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?TR WHERE {
 			?TR a VDI3682:TechnicalResource.
 		}`;
-		
-		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["TR"].value))
-		);
+		return this.queryService.query(queryString);
 	}
 
-	getInputsAndOutputs(): Observable<Array<string>>{
+	getInputsAndOutputs(): Observable<SparqlResponse>{
 		const queryString = `
 		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?IoPoE WHERE {
 		?IoPoE a ?x.
 			VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
 		}`;
 
-		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["IoPoE"].value))
-		);
+		return this.queryService.query(queryString);
 	}
 
 	/**
 	 * Gets all classes of the VDI 3682 ODP
 	 * @returns A list of classes
 	 */
-	getAllClasses(): Observable<Array<string>> {
+	getAllClasses(): Observable<SparqlResponse> {
 		// TODO: This is very similar to the "getAllClasses" of other ODPs -> Should be inside a base service
 		const queryString = `
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -122,12 +140,7 @@ export class FpbService {
 			FILTER(STRSTARTS(STR(?type), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
 		}`;
 		
-		const classes =  this.queryService.query(queryString).pipe(
-			map(res => {
-				return res.results.bindings.map(binding => binding["type"].value);
-			}));
-		
-		return classes;
+		return this.queryService.query(queryString);
 	}
 
 }
