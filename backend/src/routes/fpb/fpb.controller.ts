@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Observable } from 'rxjs';
+import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
 import { FileUploadRequest, FpbService } from './fpb.service';
 
 @Controller("/lion_BE/fpb")
@@ -77,28 +78,28 @@ export class FpbController {
 
 	// TODO: Clear this mix between mapping and regular VDI3682 stuff (e.g. by sub-routes)
 	@Get('/process-info')
-	getCompleteProcessInfo(): Observable<unknown> {
+	getCompleteProcessInfo(): Observable<SparqlResponse> {
 		return this.fpbService.getCompleteProcessInfo();
 	}
 
 
 	@Get('/processes')
-	getAllProcesses(): Observable<Array<string>> {
+	getAllProcesses(): Observable<SparqlResponse> {
 		return this.fpbService.getAllProcesses();
 	}
 
 	@Get('/technical-resources')
-	getAllTechnicalResources(): Observable<Array<string>> {
+	getAllTechnicalResources(): Observable<SparqlResponse> {
 		return this.fpbService.getAllTechnicalResources();
 	}
 
 	@Get('inputs-outputs')
-	getInputsAndOutputs(): Observable<Array<string>> {
+	getInputsAndOutputs(): Observable<SparqlResponse> {
 		return this.fpbService.getInputsAndOutputs();
 	}
 
 	@Get('classes')
-	getAllClasses(): Observable<Array<string>> {
+	getAllClasses(): Observable<SparqlResponse> {
 		return this.fpbService.getAllClasses();
 	}
 

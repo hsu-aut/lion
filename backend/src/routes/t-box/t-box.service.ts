@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { map, Observable, pipe, tap } from 'rxjs';
+import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
 import { SparqlService } from '../../shared-services/sparql.service';
 
 /**
@@ -17,9 +18,7 @@ export class TBoxService {
      * @param domainClass IRI of the class in the domain
      * @returns All properties that have the given class in their domain
      */
-	public getPropertiesByDomain(domainClass: string): Observable<string[]> {
-		console.log(domainClass);
-        
+	public getPropertiesByDomain(domainClass: string): Observable<SparqlResponse> {
 		const queryString = `
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -40,10 +39,7 @@ export class TBoxService {
             }
 		`;
 
-		return this.queryService.query(queryString).pipe(
-			tap(res => console.log(res)),
-			map(data => data.results.bindings.map(results => results["objectProperty"].value as string))
-		);
+		return this.queryService.query(queryString);
 	}
 
 
@@ -53,14 +49,16 @@ export class TBoxService {
      * @param namespace (Optional). Filter for a certain namespace
      * @returns List of IRIs of classes that are in the range of the given property
      */
-	public getClassByRange(propertyIri: string, namespace =""): Observable<string[]> {
+	public getClassesByRange(propertyIri: string, namespace =""): Observable<SparqlResponse> {
+		const filterString = this.buildStringStartsFilter("class", namespace);
+		console.log(propertyIri);
 		const queryString = `
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             
             SELECT ?class WHERE {
-                ?ObjectProperty rdfs:range ?range.
+                ?property rdfs:range ?range.
             
                 # optionally if the range is a blank node not changes required
                 OPTIONAL {    	?range owl:unionOf ?c.
@@ -69,20 +67,19 @@ export class TBoxService {
                 }
                 
                 # in case the range is a blank node, use the rdf:first as return
-                BIND(IF(isBlank(?a), ?g, ?range) AS ?class)
+                BIND(IF(isBlank(?range), ?g, ?range) AS ?class)
                 
                 # filter for class
-                FILTER(?ObjectProperty = IRI("${propertyIri}"))
-                FILTER(STRSTARTS(STR(?class), "${namespace}"))
+                FILTER(?property = IRI("${propertyIri}"))
+                ${filterString}
             }`;
             
-		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["class"].value as string))
-		);
+		return this.queryService.query(queryString).pipe(tap(res => console.log(res)));
 	}
 
 
-	public getClassesOfIndividual(individualIri: string, namespace = ""): Observable<string[]> {
+	public getClassesOfIndividual(individualIri: string, namespace = null): Observable<SparqlResponse> {
+		const filterString = this.buildStringStartsFilter("class", namespace);
 
 		const queryString= `
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -91,28 +88,36 @@ export class TBoxService {
         SELECT ?class WHERE {
             <${individualIri}> rdf:type ?class.
             ?class a owl:Class.
-            FILTER(STRSTARTS(STR(?class), "${namespace}"))
+            ${filterString}
         }`;
-
-		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["class"].value as string))
-		);
+        
+		return this.queryService.query(queryString);
 	}
     
-	public getIndividualsByClass(classIri: string, namespace = ""): Observable<string[]> {
+	public getIndividualsByClass(classIri: string, namespace = ""): Observable<SparqlResponse> {
+		const filterString = this.buildStringStartsFilter("individual", namespace);
 		const queryString = `
-        PREFIX owl: <http://www.w3.org/2002/07/owl#>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        
         SELECT ?individual WHERE {
             BIND(IRI("${classIri}") AS ?class)
             ?individual a ?class.
-            FILTER(STRSTARTS(STR(?class), "${namespace}"))
+            ${filterString}
         }`;
 
-		return this.queryService.query(queryString).pipe(
-			map(data => data.results.bindings.map(results => results["individual"].value as string))
-		);
+		return this.queryService.query(queryString);
 	}
+    
+	/**
+     * Creates a SPARQL STRSTARTS-filter for a given variable
+     * @param varToFilter variable that will be filtered
+     * @param filterValue value that will be used for filtering
+     * @returns 
+     */
+	private buildStringStartsFilter(varToFilter: string, filterValue: string): string {
+		let filterString = "";
+		if (filterValue !== null) {
+			filterString = `FILTER(STRSTARTS(STR(?${varToFilter}), "${filterValue}"))`;
+		}
+		return filterString;
+	}
+    
 }
-

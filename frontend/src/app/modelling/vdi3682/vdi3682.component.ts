@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Vdi3682ModelService, VDI3682DATA, VDI3682VARIABLES, VDI3682INSERT } from '../rdf-models/vdi3682Model.service';
+import { Vdi3682ModelService, VDI3682VARIABLES, VDI3682INSERT } from '../rdf-models/vdi3682Model.service';
 import { PrefixesService } from '../../shared/services/prefixes.service';
 import { cValFns } from '../utils/validators';
 
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-vdi3682',
@@ -29,13 +28,12 @@ export class VDI3682Component implements OnInit {
     NoOfTechnicalResources: number;
 
     // model data
-    modelData = new VDI3682DATA();
     modelInsert = new VDI3682INSERT();
     modelVariables = new VDI3682VARIABLES();
 
     // graph db data
-    allProcessInfo: Array<Record<string, string | number>>;
-    allClasses: Array<string> = [];
+    allProcessInfo = new Array<Record<string, string | number>>();
+    allClasses = new Array<string>();
     existingObjectClasses: Array<string> = [];
     existingPredicates: Array<string> = [];
     existingObjects: Array<string> = [];
@@ -63,9 +61,16 @@ export class VDI3682Component implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.modelService.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
-        this.modelService.getListOfAllClasses().pipe(take(1)).subscribe(data => this.allClasses = data);
+        this.getCompleteProcessInfo();
+        this.modelService.getListOfAllClasses().subscribe((data: string[]) => this.allClasses = data);
         this.getStatisticInfo();
+    }
+
+    private getCompleteProcessInfo(): void {
+        this.modelService.getCompleteProcessInfo().subscribe(data => {
+            this.allProcessInfo = data;
+            this.loadingScreenService.stopLoading();
+        });
     }
 
 
@@ -82,8 +87,8 @@ export class VDI3682Component implements OnInit {
             };
             this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
                 this.loadingScreenService.stopLoading();
-                this.loadAllProcessInfo();
-                this.loadStatisticInfo();
+                this.getCompleteProcessInfo();
+                this.getStatisticInfo();
                 this.modelVariables = new VDI3682VARIABLES();
             });
         }  else {
@@ -100,8 +105,8 @@ export class VDI3682Component implements OnInit {
             };
             this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
                 this.loadingScreenService.stopLoading();
-                this.loadAllProcessInfo();
-                this.loadStatisticInfo();
+                this.getCompleteProcessInfo();
+                this.getStatisticInfo();
                 this.modelVariables = new VDI3682VARIABLES();
             });
 
@@ -113,14 +118,15 @@ export class VDI3682Component implements OnInit {
     async iriTableClick(name: string): Promise<void> {
         this.newConnectionForm.controls['subject'].setValue(name);
 
+        this.loadingScreenService.stopLoading();
 
-        const owlClass = await this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value)[0];
-
-        this.modelService.loadLIST_OF_CLASS_MEMBERSHIP(this.newConnectionForm.controls['subject'].value).pipe(take(1))
+        this.modelService.getClassOfIndividualWithinNamespace(this.newConnectionForm.controls['subject'].value).pipe(take(1))
             .subscribe((data: any) => {
-                this.loadingScreenService.stopLoading();
                 const owlClass = data[0];
-                this.modelService.loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass).pipe(take(1)).subscribe((data: any) => {
+                this.modelService.getPredicatesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
+                    console.log("preds");
+                    console.log(data);
+
                     this.loadingScreenService.stopLoading();
                     this.existingPredicates = data;
                 });
@@ -131,7 +137,10 @@ export class VDI3682Component implements OnInit {
     getObjectClasses(predicate: string): void {
         if (!predicate) return;
 
-        this.modelService.loadListOfClassesByRange(predicate).pipe(take(1)).subscribe(data => {
+        this.modelService.getListOfClassesByRange(predicate).subscribe(data => {
+            console.log("Classes by range");
+            console.log(data);
+
             this.loadingScreenService.stopLoading();
             this.existingObjectClasses = data;
         });
@@ -140,42 +149,18 @@ export class VDI3682Component implements OnInit {
     getExistingObjects(owlClass: string): void {
         if (!owlClass) return;
 
-        this.modelService.loadLIST_OF_INDIVIDUALS_BY_CLASS(owlClass).pipe(take(1)).subscribe((data: any) => {
+        this.modelService.getListOfIndividualsByClass(owlClass).pipe(take(1)).subscribe((data: any) => {
             this.loadingScreenService.stopLoading();
             this.existingObjects = data;
-        });
-    }
-
-    loadAllProcessInfo(): void {
-        this.modelService.getCompleteProcessInfo().pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
-            this.allProcessInfo = data;
-            this.modelService.setAllProcessInfoTable(this.allProcessInfo);
         });
     }
 
 
     getStatisticInfo(): void {
         // get stats of functions in TS
-        this.modelService.getListOfProcesses().pipe(take(1)).subscribe(data => this.NoOfProcesses = data.length);
-        this.modelService.getListOfInputsAndOutputs().pipe(take(1)).subscribe(data => this.NoOfInOuts = data.length);
-        this.modelService.getListOfTechnicalResources().pipe(take(1)).subscribe(data => this.NoOfTechnicalResources = data.length);
-    }
-
-    loadStatisticInfo(): void {
-        // this.modelService.loadLIST_OF_PROCESSES().pipe(take(1)).subscribe((data: any) => {
-        // this.loadingScreenService.stopLoading();
-        // this.NoOfProcesses = data.length;
-        // this.modelService.setListOfProcesses(data);
-        // });
-        this.modelService.getListOfInputsAndOutputs().pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
-            this.NoOfInOuts = data.length;
-        });
-        this.modelService.getListOfTechnicalResources().pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
-            this.NoOfTechnicalResources = data.length;
-        });
+        this.modelService.getListOfProcesses().subscribe(data => this.NoOfProcesses = data.length);
+        this.modelService.getListOfInputsAndOutputs().subscribe(data => this.NoOfInOuts = data.length);
+        this.modelService.getListOfTechnicalResources().subscribe(data => this.NoOfTechnicalResources = data.length);
     }
 
 }

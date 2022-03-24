@@ -16,7 +16,6 @@ import { SparqlResponse } from '../../../../interfaces/sparql/SparqlResponse';
 })
 export class Vdi3682ModelService {
 
-    vdi3682data = new VDI3682DATA();
     vdi3682insert = new VDI3682INSERT();
 
     constructor(
@@ -41,25 +40,26 @@ export class Vdi3682ModelService {
     //     this.loadingScreenService.startLoading();
     //     return this.query.SPARQL_SELECT_LIST(this.vdi3682data.SELECT_LIST_OF_ALL_CLASSES, 0);
     // }
-    public loadPredicatesByDomain(owlClass: string) {
+    public getPredicatesByDomain(owlClass: string): Observable<Array<string>> {
         this.loadingScreenService.startLoading();
         owlClass = this.nameService.parseToIRI(owlClass);
 
         // Construct Params Object
         let params = new HttpParams();
         params = params.append('domainClass', owlClass);
-        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: This could be done by some Prefix service
+        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
 
-        return this.http.get<string[]>("/lion_BE/t-box/properties-by-domain", {params: params});
+        return this.http.get<SparqlResponse>("/lion_BE/t-box/properties-by-domain", {params: params}).pipe(toSparqlVariableList(), take(1));
     }
 
-    public getListOfClassesByRange(predicate: string): Observable<Array<string>> {
+    public getListOfClassesByRange(property: string): Observable<Array<string>> {
         this.loadingScreenService.startLoading();
-        predicate = this.nameService.parseToIRI(predicate);
+        const propertyIri = this.nameService.parseToIRI(property);
         // Construct Params Object
         let params = new HttpParams();
-        params = params.append('predicate', predicate);
-        return this.http.get<SparqlResponse>("/lion_BE/t-box/classes-by-range", {params: params}).pipe(toSparqlVariableList());
+        params = params.append('property', propertyIri);
+        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
+        return this.http.get<SparqlResponse>("/lion_BE/t-box/classes-by-range", {params: params}).pipe(toSparqlVariableList(), take(1));
     }
 
 
@@ -69,27 +69,35 @@ export class Vdi3682ModelService {
         // Construct Params Object
         let params = new HttpParams();
         params = params.append('individual', individualIri);
-        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: This could be done by some Prefix service
+        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
 
-        return this.http.get<string[]>("/lion_BE/t-box/classes-of-individual", {params: params});
+        return this.http.get<SparqlResponse>("/lion_BE/t-box/classes-of-individual", {params: params})
+            .pipe(toSparqlVariableList(), take(1));
     }
 
 
-    public loadLIST_OF_INDIVIDUALS_BY_CLASS(Class) {
-        this.loadingScreenService.startLoading();
-        Class = this.nameService.parseToIRI(Class);
-        return this.query.SPARQL_SELECT_LIST(this.vdi3682data.selectIndividualByClass(Class), 0);
+    public getListOfIndividualsByClass(owlClass: string): Observable<Array<string>> {
+        const owlClassIri = this.nameService.parseToIRI(owlClass);
+
+        // Construct Params Object
+        let params = new HttpParams();
+        params = params.append('class', owlClassIri);
+        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#");
+
+        return this.http.get<SparqlResponse>("/lion_BE/t-box/individuals-by-class", {params: params}).pipe(toSparqlVariableList(), take(1));
     }
+
 
     public getListOfProcesses(): Observable<Array<string>> {
-        return this.http.get<Array<string>>("/lion_BE/fpb/processes");
+        return this.http.get<SparqlResponse>("/lion_BE/fpb/processes").pipe(toSparqlVariableList(), take(1));
     }
 
     public getListOfTechnicalResources(): Observable<Array<string>> {
-        return this.http.get<Array<string>>("/lion_BE/fpb/technical-resources");
+        return this.http.get<SparqlResponse>("/lion_BE/fpb/technical-resources").pipe(toSparqlVariableList(), take(1));
     }
+
     public getListOfInputsAndOutputs(): Observable<Array<string>> {
-        return this.http.get<Array<string>>("/lion_BE/fpb/inputs-outputs");
+        return this.http.get<SparqlResponse>("/lion_BE/fpb/inputs-outputs").pipe(toSparqlVariableList(), take(1));
     }
 
 
@@ -127,99 +135,6 @@ export class Vdi3682ModelService {
     }
 }
 
-export class VDI3682DATA {
-
-
-
-    //     public SELECT_TABLE_OF_PROCESS_INFO = `
-    //   PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-
-    //   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    //   SELECT ?Process ?pShortName ?Input ?iShortName ?InputType ?Output ?oShortName ?OutputType ?TechnicalResource ?tShortName WHERE {
-    //   ?Process a VDI3682:Process.
-    //   OPTIONAL { ?Process VDI3682:shortName ?pShortName}
-
-    //   OPTIONAL {?Process VDI3682:hasInput ?Input. OPTIONAL {?Input VDI3682:shortName ?iShortName.} ?Input rdf:type ?InputType. VALUES ?InputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-    //   OPTIONAL {?Process VDI3682:hasOutput ?Output. OPTIONAL {?Output VDI3682:shortName ?oShortName.} ?Output rdf:type ?OutputType. VALUES ?OutputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-    //   OPTIONAL {?TechnicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?Process. OPTIONAL {?TechnicalResource VDI3682:shortName ?tShortName.}}
-    //   }
-    // `
-
-
-    //TODO: This seems to be exactly the same as in VDI2206Model.service (and possibly others). Should be moved to a common base class
-    // public selectPredicateByDomain(owlClass: string): string {
-
-    //     const selectString = `
-    //         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    //         PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    //         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    //         SELECT ?ObjectProperty WHERE {
-    //         ?ObjectProperty rdfs:domain ?domain.
-    //         # optionally if the range is a blank node no changes required
-    //         OPTIONAL {
-    //             ?domain owl:unionOf ?c.
-    //             ?c rdf:rest* ?e.
-    //             ?e rdf:first ?first.
-    //         }
-    //         # in case the range is a blank node, use the rdf:first as return
-    //         BIND(IF(isBlank(?a),?first,?domain) AS ?Property)
-    //         # filter for class
-    //         FILTER(?Property = IRI("${owlClass}"))
-    //         }`;
-    //     return selectString;
-    // }
-
-    //TODO: This seems to be exactly the same as in VDI2206Model.service (and possibly others). Should be moved to a common base class
-    public selectClassByRange(predicate: string): string {
-        const selectString = `
-            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX owl: <http://www.w3.org/2002/07/owl#>
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            SELECT ?Class WHERE {
-            ?ObjectProperty rdfs:range ?a.
-            # optionally if the range is a blank node not changes required
-            OPTIONAL {    	?a owl:unionOf ?c.
-                    ?c rdf:rest* ?e.
-                    ?e rdf:first ?g.}
-            # in case the range is a blank node, use the rdf:first as return
-            BIND(IF(isBlank(?a),?g,?a) AS ?Class)
-            # filter for class
-            FILTER(?ObjectProperty = IRI("${predicate}"))
-            FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
-            }`;
-        return selectString;
-    }
-
-
-    //     public selectClass(Individual) {
-
-    //         const selectString = `
-    // PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    // PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    // SELECT ?Class WHERE {
-    //   BIND(IRI("${Individual}") AS ?Individual)
-    //   ?Individual rdf:type ?Class.
-    //   ?Class a owl:Class.
-    //   FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
-    // }
-    // `;
-    //         return selectString;
-    //     }
-
-    public selectIndividualByClass(Class) {
-        const selectString = `
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?Individual WHERE {
-BIND(IRI("${Class}") AS ?Class)
-?Individual a ?Class.
-FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
-}`;
-        return selectString;
-    }
-
-
-}
 
 export class Triple {
     subject: string;

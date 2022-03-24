@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
 import { TBoxService } from './t-box.service';
 
 
@@ -9,18 +10,23 @@ export class TBoxController {
 	constructor(private tboxService: TBoxService) {}
 
 	@Get("properties-by-domain")
-	getPropertiesByDomain(@Query("domainClass") domainClass: string): Observable<string[]> {
-		const classes = this.tboxService.getPropertiesByDomain(domainClass);
-		return classes;
+	getPropertiesByDomain(@Query("domainClass") domainClass: string): Observable<SparqlResponse> {
+		return this.tboxService.getPropertiesByDomain(domainClass);
 	}
 
-	@Get("class-by-range")
-	async getClassByRange(@Query("domainClass") domainClass: string): Promise<string[]> {
-		const value = await this.tboxService.getPropertiesByDomain(domainClass);
-		console.log("values");
-		console.log(value);
-		
-		return null;
+	@Get("classes-of-individual")
+	getClassOfIndividual(@Query("individual") individual:string, @Query("namespace") namespace?: string): Observable<SparqlResponse> {
+		return this.tboxService.getClassesOfIndividual(individual, namespace);
+	}
+
+	@Get("classes-by-range")
+	getClassByRange(@Query("property") property: string): Observable<SparqlResponse> {
+		return this.tboxService.getClassesByRange(property);
+	}
+
+	@Get("individuals-by-class")
+	getIndividualsByClass(@Query("class") individualsClass: string): Observable<SparqlResponse> {
+		return this.tboxService.getIndividualsByClass(individualsClass);
 	}
 
 }
