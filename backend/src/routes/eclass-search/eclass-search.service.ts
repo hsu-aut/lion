@@ -106,7 +106,7 @@ export class EclassSearchService {
 				},
 				//still testing - todo: find solution for certificate handling
 				httpsAgent: new Agent({
-					pfx: readFileSync("backend/certificates/35-HSU_Webservice.full.pfx"),
+					pfx: readFileSync("./certificates/35-HSU_Webservice.full.pfx"),
 				}),
 			};
 		} catch (err) {
