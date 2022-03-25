@@ -49,7 +49,7 @@ export class OpcService {
                         ${this.prefixService.parseToIRI(instanceDescription)} DINEN61360:hasOntologicalValue <${opcVariable}>.
                     }
             }`;
-        return this.queryService.SPARQL_UPDATE(query);
+        return this.queryService.executeUpdate(query);
     }
 
     loadVariableAnd61360Connections() {
@@ -82,7 +82,7 @@ export class OpcService {
                 <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
             }
         }`;
-        return this.queryService.SPARQL_UPDATE(query);
+        return this.queryService.executeUpdate(query);
     }
 
 
@@ -119,7 +119,7 @@ export class OpcService {
                 <${this.prefixService.parseToIRI(process)}> OpcUa:isExecutableVia <${opcUaNode}>.
             }
         }`;
-        return this.queryService.SPARQL_UPDATE(query);
+        return this.queryService.executeUpdate(query);
     }
 
 

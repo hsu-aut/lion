@@ -158,7 +158,7 @@ export class Iso22400_2ModelService {
 
       switch (action) {
       case "add": {
-          return this.query.SPARQL_UPDATE(this.isoInsert.createElement(variables, activeGraph));
+          return this.query.executeUpdate(this.isoInsert.createElement(variables, activeGraph));
       }
       case "delete": {
           this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
@@ -184,7 +184,7 @@ export class Iso22400_2ModelService {
 
       switch (action) {
       case "add": {
-          return this.query.SPARQL_UPDATE(this.isoInsert.createKPI(KPIVariables, activeGraph));
+          return this.query.executeUpdate(this.isoInsert.createKPI(KPIVariables, activeGraph));
       }
       case "delete": {
           this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
@@ -213,7 +213,7 @@ export class ISO22400_2DATA {
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
   SELECT ?Element
-  WHERE { 
+  WHERE {
        ?Element a ISO:KeyPerformanceIndicator.
   }
   `
@@ -222,9 +222,9 @@ export class ISO22400_2DATA {
   PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
-  
+
   SELECT ?Element
-  WHERE { 
+  WHERE {
        ?Element a ISO:OrganizationalTerms.
   }
   `
@@ -235,7 +235,7 @@ export class ISO22400_2DATA {
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
   SELECT ?Element
-  WHERE { 
+  WHERE {
    	?Element a ISO:Elements.
     MINUS {?Element a ISO:OrganizationalTerms.}
   }
@@ -245,7 +245,7 @@ export class ISO22400_2DATA {
   PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 
   SELECT ?ISO_Elements
-  WHERE { 
+  WHERE {
    ?ISO_Elements sesame:directSubClassOf ISO:Elements.
    FILTER (?ISO_Elements != ISO:OrganizationalTerms)
   }`
@@ -254,7 +254,7 @@ export class ISO22400_2DATA {
   PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 
   SELECT ?ISO_KPIs
-  WHERE { 
+  WHERE {
    ?ISO_KPIs sesame:directSubClassOf ISO:KeyPerformanceIndicator.
   }`
 
@@ -262,9 +262,9 @@ export class ISO22400_2DATA {
   PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
-  
+
   SELECT ?ISO_Elements
-  WHERE { 
+  WHERE {
       BIND(IRI("http://www.hsu-ifa.de/ontologies/ISO22400-2#OrganizationalTerms") AS ?Group)
        ?ISO_Elements rdfs:subClassOf ?Group.
       FILTER (?ISO_Elements != owl:Nothing)
@@ -277,7 +277,7 @@ export class ISO22400_2DATA {
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
   SELECT ?Entity ?EntityType
-  WHERE { 
+  WHERE {
     ?Entity a ISO:OrganizationalTerms.
     ?Entity rdf:type ?EntityType.
     ?EntityType rdfs:subClassOf ISO:OrganizationalTerms.
@@ -295,10 +295,10 @@ export class ISO22400_2DATA {
   ?Entity ISO:hasElement ?Element;
           a owl:NamedIndividual.
   ?Element ISO:forPeriod ?Period.
-  OPTIONAL{	
+  OPTIONAL{
       ?Element ISO:Value ?Value;
                  ISO:UnitOfMeasure ?UnitOfMeasure.}
-  OPTIONAL{   
+  OPTIONAL{
       ?Element ISO:timeSpan ?Duration.}
   }
   `
@@ -324,9 +324,9 @@ export class ISO22400_2DATA {
    PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-   
+
    SELECT ?ISO_Elements
-   WHERE { 
+   WHERE {
        BIND(IRI("${groupNameIRI}") AS ?Group)
         ?ISO_Elements rdfs:subClassOf ?Group.
        FILTER (?ISO_Elements != owl:Nothing)
@@ -409,26 +409,26 @@ export class ISO22400_2INSERT {
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    
+
     INSERT {
-        
+
     GRAPH <${activeGraph}>{
-    
+
     ?entity ISO:hasElement ?newElement;
             rdf:type ?IsoUnit;
             a owl:NamedIndividual.
     ?newElement rdf:type ?elementClass;
             a owl:NamedIndividual.
-    ?newElement ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.       
-    
+    ?newElement ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.
+
     #        optional, depending on whether it is a time element or not
-    ${optionals.nonTimeElement}      
-    ${optionals.timeElement} 
+    ${optionals.nonTimeElement}
+    ${optionals.timeElement}
 
         }
     } WHERE {
-        BIND(IRI(STR("${entityIRI}")) AS ?entity).      
-        BIND(IRI(STR("${entityClass}")) AS ?IsoUnit).   
+        BIND(IRI(STR("${entityIRI}")) AS ?entity).
+        BIND(IRI(STR("${entityClass}")) AS ?IsoUnit).
         BIND(IRI(STR("${elementIRI}")) AS ?newElement).
         BIND(IRI(STR("${elementClass}")) AS ?elementClass).
     }
@@ -469,26 +469,26 @@ export class ISO22400_2INSERT {
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    
+
     INSERT {
-        
+
     GRAPH <${activeGraph}>{
-    
+
     ?entity ISO:hasKeyPerformanceIndicator ?newKPI;
             rdf:type ?IsoUnit;
             a owl:NamedIndividual.
     ?newKPI rdf:type ?KPI_Class;
             a owl:NamedIndividual;
             ISO:Timing "${KPI_Timing}"^^xsd:string.
-    ?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.        
-    
+    ?newKPI ISO:forPeriod "${relevantPeriod}"^^xsd:dateTimeStamp.
+
     #        optional, depending on whether it is a time element or not
-    ${optionals.nonTimeElement}       
+    ${optionals.nonTimeElement}
 
         }
     } WHERE {
-        BIND(IRI(STR("${entityIRI}")) AS ?entity).      
-        BIND(IRI(STR("${entityClass}")) AS ?IsoUnit).   
+        BIND(IRI(STR("${entityIRI}")) AS ?entity).
+        BIND(IRI(STR("${entityClass}")) AS ?IsoUnit).
         BIND(IRI(STR("${KPI_IRI}")) AS ?newKPI).
         BIND(IRI(STR("${KPI_Class}")) AS ?KPI_Class).
     }
