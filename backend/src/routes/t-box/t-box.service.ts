@@ -49,7 +49,7 @@ export class TBoxService {
      * @param namespace (Optional). Filter for a certain namespace
      * @returns List of IRIs of classes that are in the range of the given property
      */
-	public getClassesByRange(propertyIri: string, namespace =""): Observable<SparqlResponse> {
+	public getRangeClasses(propertyIri: string, namespace =""): Observable<SparqlResponse> {
 		const filterString = this.buildStringStartsFilter("class", namespace);
 		console.log(propertyIri);
 		const queryString = `
@@ -69,7 +69,7 @@ export class TBoxService {
                 # in case the range is a blank node, use the rdf:first as return
                 BIND(IF(isBlank(?range), ?g, ?range) AS ?class)
                 
-                # filter for class
+                # filter for given property
                 FILTER(?property = IRI("${propertyIri}"))
                 ${filterString}
             }`;
@@ -78,6 +78,12 @@ export class TBoxService {
 	}
 
 
+	/**
+     * Get all classes of an individual within a given namespace
+     * @param individualIri IRI of an individual to all get classes of
+     * @param namespace Namespace to be used for filtering classes (optional). If none is given,  
+     * @returns 
+     */
 	public getClassesOfIndividual(individualIri: string, namespace = null): Observable<SparqlResponse> {
 		const filterString = this.buildStringStartsFilter("class", namespace);
 

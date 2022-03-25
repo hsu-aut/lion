@@ -123,7 +123,7 @@ export class VDI3682Component implements OnInit {
         this.modelService.getClassOfIndividualWithinNamespace(this.newConnectionForm.controls['subject'].value).pipe(take(1))
             .subscribe((data: any) => {
                 const owlClass = data[0];
-                this.modelService.getPredicatesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
+                this.modelService.getPropertiesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
                     console.log("preds");
                     console.log(data);
 
@@ -137,7 +137,7 @@ export class VDI3682Component implements OnInit {
     getObjectClasses(predicate: string): void {
         if (!predicate) return;
 
-        this.modelService.getListOfClassesByRange(predicate).subscribe(data => {
+        this.modelService.getRangeClasses(predicate).subscribe(data => {
             console.log("Classes by range");
             console.log(data);
 
