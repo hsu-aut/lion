@@ -10,17 +10,16 @@ import { take, tap } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSparqlTable, toSparqlVariableList } from '../utils/rxjs-custom-operators';
 import { SparqlResponse } from '../../../../interfaces/sparql/SparqlResponse';
+import { Triple, TripleService } from './triple.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class Vdi3682ModelService {
 
-    vdi3682insert = new VDI3682INSERT();
-
     constructor(
         private http: HttpClient,
-        private query: QueriesService,
+        private tripleService: TripleService,
         private nameService: PrefixesService,
         private loadingScreenService: DataLoaderService,
         private messageService: MessagesService,
@@ -130,19 +129,22 @@ export class Vdi3682ModelService {
     }
 
 
+    /**
+     * Get a list of all classes of VDI 3682
+     * @returns List of all classes defined in VDI 3682 ODP
+     */
     public getListOfAllClasses(): Observable<Array<string>> {
         return this.http.get<Array<string>>("/lion_BE/fpb/classes").pipe(take(1), toSparqlVariableList());
     }
 
 
-    public modifyTripel(variables: Triple, action: string) {
-
+    public modifyTripel(triple: Triple, action: string) {
         const GRAPHS = this.graphs.getGraphs();
         const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
         switch (action) {
         case "add": {
-            return this.query.SPARQL_UPDATE(this.vdi3682insert.createEntity(variables, activeGraph));
+            return this.tripleService.addTriple(triple, activeGraph);
         }
         case "delete": {
             this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
@@ -150,7 +152,7 @@ export class Vdi3682ModelService {
         }
         case "build": {
             const blobObserver = new Observable((observer) => {
-                const insertString = this.vdi3682insert.createEntity(variables, activeGraph);
+                const insertString = this.tripleService.buildTripleInsertString(triple, activeGraph);
                 const blob = new Blob([insertString], { type: 'text/plain' });
                 const name = 'insert.txt';
                 this.downloadService.download(blob, name);
@@ -162,37 +164,4 @@ export class Vdi3682ModelService {
         }
         }
     }
-}
-
-
-export class Triple {
-    subject: string;
-    predicate: string;
-    object: string;
-}
-
-export class VDI3682VARIABLES {
-    simpleStatement: Triple
-
-}
-
-export class VDI3682INSERT {
-
-    public createEntity(graph: Triple, activeGraph: string) {
-
-        const insertString = `
-	  INSERT {
-		GRAPH <${activeGraph}>{
-			?subject ?predicate ?object;
-			a owl:NamedIndividual.}
-	  } WHERE {
-		  BIND(IRI(STR("${graph.subject}")) AS ?subject).
-		  BIND(IRI(STR("${graph.predicate}")) AS ?predicate).
-		  BIND(IRI(STR("${graph.object}")) AS ?object).
-	  }`;
-        console.log(insertString);
-        return insertString;
-    }
-
-
 }

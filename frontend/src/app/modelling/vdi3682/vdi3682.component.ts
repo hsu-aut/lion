@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { Vdi3682ModelService, VDI3682VARIABLES, VDI3682INSERT } from '../rdf-models/vdi3682Model.service';
+import { Vdi3682ModelService} from '../rdf-models/vdi3682Model.service';
 import { PrefixesService } from '../../shared/services/prefixes.service';
 import { cValFns } from '../utils/validators';
 
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
+import { Triple } from '../rdf-models/triple.service';
 
 @Component({
     selector: 'app-vdi3682',
@@ -26,10 +27,6 @@ export class VDI3682Component implements OnInit {
     NoOfProcesses: number;
     NoOfInOuts: number;
     NoOfTechnicalResources: number;
-
-    // model data
-    modelInsert = new VDI3682INSERT();
-    modelVariables = new VDI3682VARIABLES();
 
     // graph db data
     allProcessInfo = new Array<Record<string, string | number>>();
@@ -80,16 +77,14 @@ export class VDI3682Component implements OnInit {
      */
     handleNewTriple(action: string): void {
         if (this.newIndividualForm.valid) {
-            this.modelVariables.simpleStatement = {
-                subject: this.nameService.addOrParseNamespace(this.newIndividualForm.controls['name'].value),
-                predicate: this.nameService.parseToIRI(this.newIndividualForm.controls['predicate'].value),
-                object: this.nameService.parseToIRI(this.newIndividualForm.controls['type'].value)
-            };
-            this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
+            const subject = this.nameService.addOrParseNamespace(this.newIndividualForm.controls['name'].value);
+            const predicate = this.nameService.parseToIRI(this.newIndividualForm.controls['predicate'].value);
+            const object = this.nameService.parseToIRI(this.newIndividualForm.controls['type'].value);
+            const triple = new Triple(subject, predicate, object);
+            this.modelService.modifyTripel(triple, action).pipe(take(1)).subscribe((data: any) => {
                 this.loadingScreenService.stopLoading();
                 this.getCompleteProcessInfo();
                 this.getStatisticInfo();
-                this.modelVariables = new VDI3682VARIABLES();
             });
         }  else {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
@@ -98,16 +93,14 @@ export class VDI3682Component implements OnInit {
 
     handleNewConnection(action: string): void {
         if (this.newConnectionForm.valid) {
-            this.modelVariables.simpleStatement = {
-                subject: this.nameService.parseToIRI(this.newConnectionForm.controls['subject'].value),
-                predicate: this.nameService.parseToIRI(this.newConnectionForm.controls['predicate'].value),
-                object: this.nameService.parseToIRI(this.newConnectionForm.controls['object'].value)
-            };
-            this.modelService.modifyTripel(this.modelVariables.simpleStatement, action).pipe(take(1)).subscribe((data: any) => {
+            const subject = this.nameService.parseToIRI(this.newConnectionForm.controls['subject'].value);
+            const predicate = this.nameService.parseToIRI(this.newConnectionForm.controls['predicate'].value);
+            const object = this.nameService.parseToIRI(this.newConnectionForm.controls['object'].value);
+            const triple = new Triple(subject, predicate, object);
+            this.modelService.modifyTripel(triple, action).pipe(take(1)).subscribe((data: any) => {
                 this.loadingScreenService.stopLoading();
                 this.getCompleteProcessInfo();
                 this.getStatisticInfo();
-                this.modelVariables = new VDI3682VARIABLES();
             });
 
         } else {
@@ -124,9 +117,6 @@ export class VDI3682Component implements OnInit {
             .subscribe((data: any) => {
                 const owlClass = data[0];
                 this.modelService.getPropertiesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
-                    console.log("preds");
-                    console.log(data);
-
                     this.loadingScreenService.stopLoading();
                     this.existingPredicates = data;
                 });
@@ -138,9 +128,6 @@ export class VDI3682Component implements OnInit {
         if (!predicate) return;
 
         this.modelService.getRangeClasses(predicate).subscribe(data => {
-            console.log("Classes by range");
-            console.log(data);
-
             this.loadingScreenService.stopLoading();
             this.existingObjectClasses = data;
         });
