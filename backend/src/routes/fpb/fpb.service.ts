@@ -79,17 +79,17 @@ export class FpbService {
 			?process a VDI3682:Process.
 			OPTIONAL {
 				?process VDI3682:consistsOf ?processOperator
-			}
-			OPTIONAL {
-				?process VDI3682:hasInput ?input. 
-				?input rdf:type ?inputType. 
-				VALUES ?inputType {VDI3682:Product VDI3682:Energy VDI3682:Information}
-			}
-			OPTIONAL {
-				?process VDI3682:hasOutput ?output. 
-				?output rdf:type ?outputType. VALUES ?outputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
-			OPTIONAL {
-				?technicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?process. 
+				OPTIONAL {
+					?processOperator VDI3682:hasInput ?input. 
+					?input rdf:type ?inputType. 
+					VALUES ?inputType {VDI3682:Product VDI3682:Energy VDI3682:Information}
+				}
+				OPTIONAL {
+					?processOperator VDI3682:hasOutput ?output. 
+					?output rdf:type ?outputType. VALUES ?outputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
+				OPTIONAL {
+					?technicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?processOperator. 
+				}
 			}
 		}`;
 		return this.queryService.query(queryString);
