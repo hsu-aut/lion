@@ -19,27 +19,23 @@ export class TBoxService {
      * @returns All properties that have the given class in their domain
      */
 	public getPropertiesByDomain(domainClass: string): Observable<SparqlResponse> {
+		console.log(domainClass);
+        
 		const queryString = `
-		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-            PREFIX owl: <http://www.w3.org/2002/07/owl#>
-            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-            
-            SELECT ?objectProperty WHERE {
-            ?objectProperty rdfs:domain ?domain.
-            # optionally if the range is a blank node no changes required
-            OPTIONAL {    	
-                ?domain owl:unionOf ?c.
-                ?c rdf:rest* ?e.
-                ?e rdf:first ?first.
-            }
-            # in case the range is a blank node, use the rdf:first as return
-            BIND(IF(isBlank(?a),?first,?domain) AS ?Property)
-            # filter for class
-            FILTER(?domain = IRI("${domainClass}"))
-            }
-		`;
-
-		return this.queryService.query(queryString);
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+        
+        SELECT DISTINCT ?objectProperty WHERE {
+            # That's a killer query that can retrieve domain classes even if they are complex ones 
+            # (e.g. a unionOf multiple classes). Just looking for the domain would in this case return
+            # a blank node. With the chain matching, "unionOfs" are resolved.
+            ?objectProperty rdfs:domain/(owl:unionOf/rdf:rest*/rdf:first)* ?domain.
+            FILTER(?domain = <${domainClass}>)
+        }`;
+        
+		return this.queryService.query(queryString).pipe(tap(console.log));
 	}
 
 
@@ -51,7 +47,6 @@ export class TBoxService {
      */
 	public getRangeClasses(propertyIri: string, namespace =""): Observable<SparqlResponse> {
 		const filterString = this.buildStringStartsFilter("class", namespace);
-		console.log(propertyIri);
 		const queryString = `
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
