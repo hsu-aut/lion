@@ -19,8 +19,6 @@ export class TBoxService {
      * @returns All properties that have the given class in their domain
      */
 	public getPropertiesByDomain(domainClass: string): Observable<SparqlResponse> {
-		console.log(domainClass);
-        
 		const queryString = `
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -47,29 +45,22 @@ export class TBoxService {
      */
 	public getRangeClasses(propertyIri: string, namespace =""): Observable<SparqlResponse> {
 		const filterString = this.buildStringStartsFilter("class", namespace);
+        
 		const queryString = `
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             PREFIX owl: <http://www.w3.org/2002/07/owl#>
             PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             
-            SELECT ?class WHERE {
-                ?property rdfs:range ?range.
-            
-                # optionally if the range is a blank node not changes required
-                OPTIONAL {    	?range owl:unionOf ?c.
-                    ?c rdf:rest* ?e.
-                    ?e rdf:first ?g.
-                }
-                
-                # in case the range is a blank node, use the rdf:first as return
-                BIND(IF(isBlank(?range), ?g, ?range) AS ?class)
+            SELECT ?rangeClass WHERE {
+                # Similar killer query compared to the one above. Resolves complec ranges (i.e. "unionOfs")
+                ?property rdfs:range/(owl:unionOf/rdf:rest*/rdf:first)* ?rangeClass.
                 
                 # filter for given property
-                FILTER(?property = IRI("${propertyIri}"))
+                FILTER(?property = <${propertyIri}>)
                 ${filterString}
             }`;
             
-		return this.queryService.query(queryString).pipe(tap(res => console.log(res)));
+		return this.queryService.query(queryString);
 	}
 
 
@@ -115,7 +106,7 @@ export class TBoxService {
      */
 	private buildStringStartsFilter(varToFilter: string, filterValue: string): string {
 		let filterString = "";
-		if (filterValue !== null) {
+		if (filterValue !== "") {
 			filterString = `FILTER(STRSTARTS(STR(?${varToFilter}), "${filterValue}"))`;
 		}
 		return filterString;
