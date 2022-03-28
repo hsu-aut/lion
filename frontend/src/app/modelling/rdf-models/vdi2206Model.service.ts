@@ -178,39 +178,39 @@ export class Vdi2206ModelService {
         return this.LIST_OF_SYSTEMS;
     }
     public getLIST_OF_MODULES() {
-        return this.LIST_OF_MODULES
+        return this.LIST_OF_MODULES;
     }
     public getLIST_OF_COMPONENTS() {
-        return this.LIST_OF_COMPONENTS
+        return this.LIST_OF_COMPONENTS;
     }
     public getLIST_OF_CLASSES() {
-        return this.LIST_OF_CLASSES
+        return this.LIST_OF_CLASSES;
     }
     public getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS() {
-        return this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS
+        return this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS;
     }
     public getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD() {
-        return this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD
+        return this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD;
     }
     public getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM() {
-        return this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM
+        return this.TABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM;
     }
     public getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS() {
-        return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS
+        return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS;
     }
     public getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD() {
-        return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD
+        return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD;
     }
     public getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM() {
-        return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM
+        return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM;
     }
 
     public insertTripel(graph: tripel) {
-        var PREFIXES = this.nameService.getPrefixes();
-        var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+        const PREFIXES = this.nameService.getPrefixes();
+        const activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-        var GRAPHS = this.graphs.getGraphs();
-        var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+        const GRAPHS = this.graphs.getGraphs();
+        const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
         if (graph.subject.search("http://") != -1) {
             graph.subject = graph.subject;
@@ -222,15 +222,15 @@ export class Vdi2206ModelService {
         graph.predicate = this.nameService.parseToIRI(graph.predicate);
         graph.object = this.nameService.parseToIRI(graph.object);
 
-        return this.query.SPARQL_UPDATE(this.vdi2206Insert.createEntity(graph, activeGraph));
+        return this.query.executeUpdate(this.vdi2206Insert.createEntity(graph, activeGraph));
     }
 
     public buildTripel(graph: tripel) {
-        var PREFIXES = this.nameService.getPrefixes();
-        var activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+        const PREFIXES = this.nameService.getPrefixes();
+        const activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
 
-        var GRAPHS = this.graphs.getGraphs();
-        var activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+        const GRAPHS = this.graphs.getGraphs();
+        const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
         if (graph.subject.search("http://") != -1) {
             graph.subject = graph.subject;
@@ -367,7 +367,7 @@ SELECT ?Component ?childEntity ?childEntityType WHERE {
 
     public selectClass(Individual) {
 
-        var selectString = `
+        const selectString = `
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   SELECT ?Class WHERE {
@@ -376,11 +376,11 @@ SELECT ?Component ?childEntity ?childEntityType WHERE {
       ?Class a owl:Class.
       FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI2206#"))
   }
-  `
-        return selectString
+  `;
+        return selectString;
     }
     public selectPredicateByDomain(owlClass) {
-        var selectString = `
+        const selectString = `
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -394,12 +394,12 @@ SELECT ?Component ?childEntity ?childEntityType WHERE {
       BIND(IF(isBlank(?a),?g,?a) AS ?Property)
       # filter for class
       FILTER(?Property = IRI("${owlClass}"))
-  }`
-        return selectString
+  }`;
+        return selectString;
     }
 
     public selectClassByRange(predicate) {
-        var selectString = `
+        const selectString = `
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -414,19 +414,19 @@ SELECT ?Component ?childEntity ?childEntityType WHERE {
       # filter for class
       FILTER(?ObjectProperty = IRI("${predicate}"))
       FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI2206#"))
-  }`
-        return selectString
+  }`;
+        return selectString;
     }
     public selectIndividualByClass(Class) {
-        var selectString = `
+        const selectString = `
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   SELECT ?Individual WHERE {
   BIND(IRI("${Class}") AS ?Class)
   ?Individual a ?Class.
   FILTER(STRSTARTS(STR(?Class), "http://www.hsu-ifa.de/ontologies/VDI2206#"))
-  }`
-        return selectString
+  }`;
+        return selectString;
     }
 }
 
@@ -445,7 +445,7 @@ export class VDI2206INSERT {
 
     public createEntity(graph: tripel, activeGraph) {
 
-        var insertString = `
+        const insertString = `
       INSERT {
         GRAPH <${activeGraph}>{
           ?subject ?predicate ?object;
@@ -454,7 +454,7 @@ export class VDI2206INSERT {
           BIND(IRI(STR("${graph.subject}")) AS ?subject).
           BIND(IRI(STR("${graph.predicate}")) AS ?predicate).
           BIND(IRI(STR("${graph.object}")) AS ?object).
-      }`
+      }`;
         console.log(insertString);
         return insertString;
     }

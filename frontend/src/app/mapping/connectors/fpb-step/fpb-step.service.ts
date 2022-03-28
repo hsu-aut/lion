@@ -85,7 +85,7 @@ export class FpbStepService {
 
       switch (action) {
       case "add": {
-          return this.query.SPARQL_UPDATE(this.insert.createEntity(variables, activeGraph));
+          return this.query.executeUpdate(this.insert.createEntity(variables, activeGraph));
       }
       case "delete": {
           this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
@@ -113,10 +113,10 @@ export class Data {
   public SELECT_TABLE_OF_TECHNICAL_RESOURCE_INFO = `
   PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  
-  SELECT ?ID ?longName ?shortName 
+
+  SELECT ?ID ?longName ?shortName
   FROM <http://www.ontotext.com/explicit>
-  WHERE { 
+  WHERE {
   ?ID a VDI3682:TechnicalResource.
     OPTIONAL {?ID VDI3682:shortName ?shortName.}
     OPTIONAL {?ID VDI3682:longName ?longName.}
@@ -127,10 +127,10 @@ export class Data {
   PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-  
-  SELECT ?ID ?label 
+
+  SELECT ?ID ?label
   FROM <http://www.ontotext.com/explicit>
-  WHERE { 
+  WHERE {
   ?ID a VDI2206:System.
     OPTIONAL {?ID rdfs:label ?label.}
   }
@@ -142,8 +142,8 @@ export class Data {
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
   PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
-  
-  SELECT DISTINCT ?CADLabel ?longName ?shortName WHERE { 
+
+  SELECT DISTINCT ?CADLabel ?longName ?shortName WHERE {
   ?technicalResource a VDI2206:System.
   ?technicalResource a VDI3682:TechnicalResource.
   ?technicalResource rdfs:label ?CADLabel.
@@ -161,7 +161,7 @@ export class Insert {
         const object = variables.object;
 
         const insertString = `
-      INSERT { 
+      INSERT {
         GRAPH <${activeGraph}>{
             ?subject owl:sameAs ?object.
           }

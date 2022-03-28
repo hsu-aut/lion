@@ -19,9 +19,9 @@ export class TBoxController {
 		return this.tboxService.getClassesOfIndividual(individual, namespace);
 	}
 
-	@Get("classes-by-range")
-	getClassByRange(@Query("property") property: string): Observable<SparqlResponse> {
-		return this.tboxService.getClassesByRange(property);
+	@Get("range-classes")
+	getRangeClasses(@Query("property") property: string): Observable<SparqlResponse> {
+		return this.tboxService.getRangeClasses(property);
 	}
 
 	@Get("individuals-by-class")
