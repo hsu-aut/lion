@@ -91,31 +91,22 @@ export class Iso22400_2Component implements OnInit {
   }
 
   loadClassesElement(selectedElementGroup) {
-      if (selectedElementGroup) {
-          this.isoService.loadLIST_OF_ELEMENTS_BY_GROUP(selectedElementGroup).pipe(take(1)).subscribe((data: any) => {
-              this.loadingScreenService.stopLoading();
-              this.allElementClassesPerGroup = data;
-          });
-      }
+    if (selectedElementGroup) {
+        this.isoService.getListOfElementsByGroup(selectedElementGroup).pipe(take(1)).subscribe((data: string[]) => this.allElementClassesPerGroup = data);
+    }
   }
   loadClassesKPI(selectedKPIGroup) {
-      if (selectedKPIGroup) {
-          this.isoService.loadLIST_OF_ELEMENTS_BY_GROUP(selectedKPIGroup).pipe(take(1)).subscribe((data: any) => {
-              this.loadingScreenService.stopLoading();
-              this.allKPIClassesPerGroup = data;
-          });
-      }
+    if (selectedKPIGroup) {
+      this.isoService.getListOfElementsByGroup(selectedKPIGroup).pipe(take(1)).subscribe((data: string[]) => this.allElementClassesPerGroup = data);
+    }
   }
 
   loadTimingConstraint(KPI_Class) {
       console.log(KPI_Class);
       if (KPI_Class) {
-          const ConstraingDataProperty = "http://www.hsu-ifa.de/ontologies/ISO22400-2#Timing";
-          // TODO loadLIST_OF_CLASS_CONSTRAINT_ENUM exists for this use case only - could ConstraingDataProperty also be a constant?
-          this.isoService.loadLIST_OF_CLASS_CONSTRAINT_ENUM(KPI_Class, ConstraingDataProperty).pipe(take(1)).subscribe((data: any) => {
-              this.loadingScreenService.stopLoading();
-              this.possibleTiming = data;
-          });
+        // TODO getListOfClassConstraintEnum exists for this use case only - could ConstraingDataProperty also be a constant?
+        const ConstraingDataProperty = "http://www.hsu-ifa.de/ontologies/ISO22400-2#Timing";
+        this.isoService.getListOfClassConstraintEnum(KPI_Class, ConstraingDataProperty).pipe(take(1)).subscribe((data: string[]) => this.possibleTiming = data);
       }
   }
 
