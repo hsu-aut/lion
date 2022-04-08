@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlService } from '../../shared-services/sparql.service';
 import { DINEN61360Variables } from '@shared/interfaces/dinen61360-variables.interface';
-import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
 
 @Injectable()
 export class DINEN61360Service {

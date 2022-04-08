@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { PrefixesService } from '../../shared/services/prefixes.service';
 import { QueriesService } from '../../shared/services/backEnd/queries.service';
 import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
@@ -17,18 +16,19 @@ import { DINEN61360Variables } from '@shared/interfaces/dinen61360-variables.int
 })
 export class Dinen61360Service {
 
-  private TABLE_ALL_TYPE_INFO = [];
-  private TABLE_ALL_INSTANCE_INFO = [];
+    private TABLE_ALL_TYPE_INFO = [];
+    private TABLE_ALL_INSTANCE_INFO = [];
 
-  private LIST_DATA_TYPES = [];
-  private LIST_All_DE = [];
-  private LIST_All_DET = [];
-  private LIST_All_DEI = [];
-  private LIST_LOGIC_INTERPRETATIONS = [];
-  private LIST_EXPRESSION_GOALS = [];
-  private tableUtil: Tables = new Tables();
+    private LIST_DATA_TYPES = [];
+    private LIST_All_DE = [];
+    private LIST_All_DET = [];
+    private LIST_All_DEI = [];
+    private LIST_LOGIC_INTERPRETATIONS = [];
+    private LIST_EXPRESSION_GOALS = [];
+    private tableUtil: Tables = new Tables();
 
   constructor(
+
     private http: HttpClient,
     private query: QueriesService,
     private graphs: GraphOperationsService,
@@ -37,7 +37,9 @@ export class Dinen61360Service {
     private dlService: DownloadService,
 
   ) {
+
       this.initializeDINEN61360();
+  
   }
 
   public initializeDINEN61360(): void {
@@ -103,48 +105,52 @@ export class Dinen61360Service {
   }
 
   public modifyInstance(action: string, variables: DINEN61360Variables): Observable<any> {
-      const GRAPHS = this.graphs.getGraphs();
-      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      
+    const GRAPHS = this.graphs.getGraphs();
+    const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-      switch (action) {
-      case "add": {
-          return this.http.post<void>("lion_BE/dinen61360/modifyInstance?action=add&activeGraph=" + activeGraph, variables);
-      }
-      case "delete": {
-          console.log("not implemented yet");
-          break;
-      }
-      case "build": {
-          return this.http.post<string>("lion_BE/dinen61360/modifyType?action=build&activeGraph=" + activeGraph,
-              variables, { responseType:'text' as 'json'}).pipe(map((response: string) => {
-              const blob = new Blob([response], { type: 'text/plain' });
-              const name = 'insert.txt';
-              return this.dlService.download(blob, name);    
-          }));
-      }
-      }
+    switch (action) {
+        case "add": {
+            return this.http.post<void>("lion_BE/dinen61360/modifyInstance?action=add&activeGraph=" + activeGraph, variables);
+        }
+        case "delete": {
+            console.log("not implemented yet");
+            break;
+        }
+        case "build": {
+            return this.http.post<string>("lion_BE/dinen61360/modifyType?action=build&activeGraph=" + activeGraph,
+                variables, { responseType:'text' as 'json'}).pipe(map((response: string) => {
+                const blob = new Blob([response], { type: 'text/plain' });
+                const name = 'insert.txt';
+                return this.dlService.download(blob, name);    
+            }));
+        }
+    }
+
   }
+  
   public modifyType(action: string, variables: DINEN61360Variables): Observable<any> {
-      const GRAPHS = this.graphs.getGraphs();
-      const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
+      
+    const GRAPHS = this.graphs.getGraphs();
+    const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
 
-      switch (action) {
-      case "add": {
-          return this.http.post<void>("lion_BE/dinen61360/modifyType?action=add&activeGraph=" + activeGraph, variables);
-      }
-      case "delete": {
-          console.log("not implemented yet");
-          break;
-      }
-      case "build": {
-          return this.http.post<string>("lion_BE/dinen61360/modifyType?action=build&activeGraph=" + activeGraph,
-              variables, { responseType:'text' as 'json'}).pipe(map((response: string) => {
-              const blob = new Blob([response], { type: 'text/plain' });
-              const name = 'insert.txt';
-              return this.dlService.download(blob, name);    
-          }));
-      }
-      }
+    switch (action) {
+        case "add": {
+            return this.http.post<void>("lion_BE/dinen61360/modifyType?action=add&activeGraph=" + activeGraph, variables);
+        }
+        case "delete": {
+            console.log("not implemented yet");
+            break;
+        }
+        case "build": {
+            return this.http.post<string>("lion_BE/dinen61360/modifyType?action=build&activeGraph=" + activeGraph,
+                variables, { responseType:'text' as 'json'}).pipe(map((response: string) => {
+                const blob = new Blob([response], { type: 'text/plain' });
+                const name = 'insert.txt';
+                return this.dlService.download(blob, name);    
+            }));
+        }
+    }
 
   }
    
