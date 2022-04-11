@@ -29,6 +29,7 @@ export class TBoxService {
             # That's a killer query that can retrieve domain classes even if they are complex ones 
             # (e.g. a unionOf multiple classes). Just looking for the domain would in this case return
             # a blank node. With the chain matching, "unionOfs" are resolved.
+
             ?objectProperty rdfs:domain/(owl:unionOf/rdf:rest*/rdf:first)* ?domain.
             FILTER(?domain = <${domainClass}>)
         }`;
@@ -55,8 +56,9 @@ export class TBoxService {
                 # Similar killer query compared to the one above. Resolves complec ranges (i.e. "unionOfs")
                 ?property rdfs:range/(owl:unionOf/rdf:rest*/rdf:first)* ?rangeClass.
                 
-                # filter for given property
+                # filter for given property, filter out all blank nodes and filter for given namespace
                 FILTER(?property = <${propertyIri}>)
+                FILTER(!ISBLANK (?rangeClass))
                 ${filterString}
             }`;
             
@@ -86,6 +88,12 @@ export class TBoxService {
 		return this.queryService.query(queryString);
 	}
     
+	/**
+     * Get all individuals of a given class within a given namespace
+     * @param classIri IRI of the class to get all individuals of
+     * @param namespace Namespace to filter
+     * @returns All individuals of a class within a namespace
+     */
 	public getIndividualsByClass(classIri: string, namespace = ""): Observable<SparqlResponse> {
 		const filterString = this.buildStringStartsFilter("individual", namespace);
 		const queryString = `
