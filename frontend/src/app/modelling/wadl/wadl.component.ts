@@ -534,14 +534,37 @@ export class WadlComponent implements OnInit {
   }
 
   async getTables() {
-      const cols = ["VDI2206:System", "VDI2206:Module", "VDI3682:TechnicalResource"];
-
+      
       // This is pretty hacky. An alternative would be to get all observables into one and subscribe to the overall result for the data table
-      const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
+      // ------> see commented code below (solution from iso224002 component)
 
+        // // wrap vdi2206Service.getLIST_OF_SYSTEMS() as observable for now
+        // // TODO: exchange with real observable, as soon as vdi2206Service is updated
+        // const vdi2206Observable: Observable<string[]> = new Observable(subscriber => {
+        //     subscriber.next(this.vdi2206Service.getLIST_OF_SYSTEMS());
+        //     subscriber.complete();
+        // });
+
+        // // create new observable of two observables which completes when each observable returns 1st output
+        // const combinedObservable: Observable<[string[], string[]]> = forkJoin([
+        //     vdi2206Observable.pipe(take(1)),    // TODO: exchange this dummy with real observable
+        //     this.vdi3682Service.getListOfTechnicalResources().pipe(take(1))
+        // ]);  
+
+        // // combine in one table as soon as combined observable completes
+        // combinedObservable.pipe(take(1)).subscribe((data: [string[], string[]]) => {
+        //     const cols: string[] = ["VDI2206:System", "VDI3682:TechnicalResource"]; 
+        //     this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
+        // });
+        
+      const cols = ["VDI2206:System", "VDI2206:Module", "VDI3682:TechnicalResource"];
+      const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
       const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi2206Service.getLIST_OF_MODULES(), tr];
       this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
-      this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
+
+      //   this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
+      this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.allIsoEntityInfo = data);
+
       this.baseResourcesTable = this.wadlService.getTABLE_BASE_RESOURCES();
       this.servicesTable = this.wadlService.getTABLE_SERVICES();
   }

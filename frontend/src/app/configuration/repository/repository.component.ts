@@ -121,7 +121,7 @@ export class RepositoryComponent implements OnInit {
       this.DINEIN61360_Service.initializeDINEN61360();
       this.Dashboard_Service.initializeDashboard();
       this.WadlModelService.initializeWADL();
-      this.Iso22400_2ModelService.initializeISO22400_2();
+      this.Iso22400_2ModelService.initializeISO224002();
   }
 
   loadTBoxes() {

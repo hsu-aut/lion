@@ -1,6 +1,5 @@
 import { Component, OnInit, } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
@@ -17,7 +16,6 @@ import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { take } from 'rxjs/operators';
 import { Tables } from '../utils/tables';
-import { DownloadService } from '../../shared/services/backEnd/download.service';
 
 
 @Component({
@@ -162,7 +160,7 @@ export class Dinen61360Component implements OnInit {
         this.structureTable = this.allStructureInfoContainmentbySys;
     }
 
-    createTripel(action: string, context: string, form) {
+    createTriple(action: string, context: string, form) {
         if (form.valid) {
             switch (context) {
             case "type": {
@@ -181,8 +179,8 @@ export class Dinen61360Component implements OnInit {
                 console.log(this.modelVariables);
                 this.dinen61360Service.modifyType(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
                     this.loadingScreenService.stopLoading();
-                    this.setAllTypes();
-                    this.setStatisticInfo();
+                    this.getTables();
+                    this.getStatisticInfo();
                 });
                 console.log(action);
                 console.log(form);
@@ -200,8 +198,8 @@ export class Dinen61360Component implements OnInit {
                 console.log(this.modelVariables);
                 this.dinen61360Service.modifyInstance(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
                     this.loadingScreenService.stopLoading();
-                    this.setAllInstances();
-                    this.setStatisticInfo();
+                    this.getTables();
+                    this.getStatisticInfo();
                 });
                 console.log(action);
                 console.log(form);
@@ -267,108 +265,66 @@ export class Dinen61360Component implements OnInit {
         }
     }
 
-    getDropdowns() {
-        this.dinen61360Service.getListOfDataTypes().pipe(take(1)).subscribe((data: any) => this.datatypes = data);
-        this.dinen61360Service.getListOfLogicInterpretations().pipe(take(1)).subscribe((data: any) => this.logicInterpretations = data);
-        this.dinen61360Service.getListOfExpressionGoals().pipe(take(1)).subscribe((data: any) => this.expressionGoals = data);
-        // old code that just gets static data
-        //   this.datatypes = this.dinen61360Service.getLIST_DATA_TYPES();
-        //   this.logicInterpretations = this.dinen61360Service.getLIST_LOGIC_INTERPRETATIONS();
-        //   this.expressionGoals = this.dinen61360Service.getLIST_EXPRESSION_GOALS();
+    getDropdowns(): void {
+        this.dinen61360Service.getListOfDataTypes().subscribe((data: any) => this.datatypes = data);
+        this.dinen61360Service.getListOfLogicInterpretations().subscribe((data: any) => this.logicInterpretations = data);
+        this.dinen61360Service.getListOfExpressionGoals().subscribe((data: any) => this.expressionGoals = data);
     }
 
-    getTables() {
+    getTables(): void {
         // new code
-        this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => this.allTypes = data);
-        this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => this.allInstances = data);
-        // old code that just gets static data
-        //   this.allTypes = this.dinen61360Service.getTABLE_All_TYPES();
-        //   this.allInstances = this.dinen61360Service.getTABLE_ALL_INSTANCE_INFO();
-
+        this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.allTypes = data);
+        this.dinen61360Service.getTableOfAllInstanceInfo().subscribe((data: any) => this.allInstances = data);
+        this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.isoInfo = data);
         // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
         this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
-        this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
+        // this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
         this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
         this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
         this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
         this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
         this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
         this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
-        this.vdi3682Service.getCompleteProcessInfo().pipe(take(1)).subscribe(data => this.allProcessInfo = data);
+        this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
         this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
     }
 
-    setAllTypes() {
-        // new code
-        this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => {
-            this.allTypes = data;
-        });
-        // old code
-        //   this.dinen61360Service.loadTABLE_All_TYPES().pipe(take(1)).subscribe((data: any) => {
-        //       this.loadingScreenService.stopLoading();
-        //       this.allTypes = data;
-        //       this.dinen61360Service.setTABLE_All_TYPES(data);
-        //   });
+    getStatisticInfo(): void {
+        this.dinen61360Service.getListOfAllDET().subscribe((data: any) => this.NoOfDET = data.length);
+        this.dinen61360Service.getListOfAllDEI().subscribe((data: any) => this.NoOfDEI = data.length);
+        this.dinen61360Service.getListOfAllDE().subscribe((data: any) => this.NoOfDE = data.length);
     }
 
-    setAllInstances() {
-        // new code
-        this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => {
-            this.allInstances = data;
-        });
-        // old code
-        // this.dinen61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: any) => {
-        //       this.loadingScreenService.stopLoading();
-        //       this.allInstances = data;
-        //       this.dinen61360Service.setTABLE_ALL_INSTANCE_INFO(data);
-        //   });
-    }
+    // setAllTypes() {
+    //     this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => {
+    //         this.allTypes = data;
+    //     });
+    // }
+
+    // setAllInstances() {
+    //     this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => {
+    //         this.allInstances = data;
+    //     });
+    // }
 
 
-    getStatisticInfo() {
-        // new code
-        this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => this.NoOfDET = data.length);
-        this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => this.NoOfDEI = data.length);
-        // old code that just gets static data      this.NoOfDE = this.dinen61360Service.getLIST_All_DE().length;
-        //   this.NoOfDET = this.dinen61360Service.getLIST_All_DET().length;
-        //   this.NoOfDEI = this.dinen61360Service.getLIST_All_DEI().length;
-    }
 
-    setStatisticInfo() {  //remove load function
-        // new code
-        this.dinen61360Service.getListOfAllDE().pipe(take(1)).subscribe((data: any) => {
-            this.NoOfDE = data.length;
-        });
-        this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => {
-            this.NoOfDET = data.length;
-        });
-        this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => {
-            this.NoOfDEI = data.length;
-        });
-        // old code
-        //   this.dinen61360Service.loadLIST_All_DE().pipe(take(1)).subscribe((data: any) => {
-        //       this.loadingScreenService.stopLoading();
-        //       this.NoOfDE = data.length;
-        //       this.dinen61360Service.setLIST_All_DE(data);
+    // setStatisticInfo() {
+    //     this.dinen61360Service.getListOfAllDE().pipe(take(1)).subscribe((data: any) => {
+    //         this.NoOfDE = data.length;
+    //     });
+    //     this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => {
+    //         this.NoOfDET = data.length;
+    //     });
+    //     this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => {
+    //         this.NoOfDEI = data.length;
+    //     });
+    // }
 
-        //   });
-        //   this.dinen61360Service.loadLIST_All_DET().pipe(take(1)).subscribe((data: any) => {
-        //       this.loadingScreenService.stopLoading();
-        //       this.NoOfDET = data.length;
-        //       this.dinen61360Service.setLIST_All_DET(data);
-        //   });
-        //   this.dinen61360Service.loadLIST_All_DEI().pipe(take(1)).subscribe((data: any) => {
-        //       this.loadingScreenService.stopLoading();
-        //       this.NoOfDEI = data.length;
-        //       this.dinen61360Service.setLIST_All_DEI(data);
-        //   });
-    }
-
-    getAllStructuralInfo() {
-        //get containment info for sys
-        this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
-        this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
-        this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
-    }
+    // getAllStructuralInfo() {
+    //     this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
+    //     this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
+    //     this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
+    // }
 }
 

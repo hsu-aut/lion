@@ -11,7 +11,7 @@ export class DINEN61360Controller {
 
 	@Post('modifyType')
 	modifyType(@Query('action') action: string, @Query('activeGraph') activeGraph: string, 
-		@Body() variables: DINEN61360Variables): any {
+		@Body() variables: DINEN61360Variables): Observable<void> | string {
 		if (action == 'add') {
 			return this.dinen61360Service.buildDINEN61360T(variables, activeGraph);
 		} else if (action == 'build') {
@@ -23,7 +23,7 @@ export class DINEN61360Controller {
 
 	@Post('modifyInstance')
 	modifyInstance(@Query('action') action: string, @Query('activeGraph') activeGraph: string, 
-		@Body() variables: DINEN61360Variables): any {
+		@Body() variables: DINEN61360Variables): Observable<void> | string {
 		if (action == 'add') {
 			return this.dinen61360Service.buildDINEN61360I(variables, activeGraph);
 		} else if (action == 'build') {

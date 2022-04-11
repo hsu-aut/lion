@@ -10,6 +10,7 @@ import { OpcUaModule } from './routes/opc-ua/opc-ua.module';
 import { AppService } from './app.service';
 import { DINEN61360Module } from './routes/dinen61360/dinen61360.module';
 import { TBoxModule } from './routes/t-box/t-box.module';
+import { ISO224002Module } from './routes/iso224002/iso224002.module';
 
 
 @Module({
@@ -22,7 +23,8 @@ import { TBoxModule } from './routes/t-box/t-box.module';
 		QueriesModule,
 		RepositoriesModule,
 		OpcUaModule,
-		DINEN61360Module
+		DINEN61360Module,
+		ISO224002Module
 	],
 	controllers: [AppController],
 	providers: [AppService],
