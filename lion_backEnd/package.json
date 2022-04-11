@@ -21,7 +21,7 @@
     "formidable": "^1.2.1",
     "html-to-json": "^0.6.0",
     "http-errors": "~1.6.2",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "morgan": "~1.9.0",
     "mysql": "^2.16.0",
     "pug": "3.0.1",
