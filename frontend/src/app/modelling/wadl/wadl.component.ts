@@ -563,7 +563,7 @@ export class WadlComponent implements OnInit {
       this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
 
       //   this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
-      this.isoService.getTableOfAllEntityInfo().pipe(take(1)).subscribe((data: any) => this.allIsoEntityInfo = data);
+      this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.allIsoEntityInfo = data);
 
       this.baseResourcesTable = this.wadlService.getTABLE_BASE_RESOURCES();
       this.servicesTable = this.wadlService.getTABLE_SERVICES();
