@@ -7,11 +7,10 @@ import { Iso22400_2ModelService, ISO224002Variables } from '../rdf-models/iso224
 import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { PrefixesService } from '../../shared/services/prefixes.service';
-import { DataLoaderService } from '../../shared/services/dataLoader.service';
 import { MessagesService } from '../../shared/services/messages.service';
 import { Tables } from '../utils/tables';
 import { take } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
     selector: 'app-iso22400-2',
@@ -78,7 +77,6 @@ export class Iso22400_2Component implements OnInit {
     private fb: FormBuilder,
     private prefixService: PrefixesService,
     private isoService: Iso22400_2ModelService,
-    private loadingScreenService: DataLoaderService,
     private vdi2206Service: Vdi2206ModelService,
     private vdi3682Service: Vdi3682ModelService,
     private messageService: MessagesService
@@ -92,12 +90,12 @@ export class Iso22400_2Component implements OnInit {
 
   loadClassesElement(selectedElementGroup) {
     if (selectedElementGroup) {
-        this.isoService.getListOfElementsByGroup(selectedElementGroup).pipe(take(1)).subscribe((data: string[]) => this.allElementClassesPerGroup = data);
+        this.isoService.getListOfElementsByGroup(selectedElementGroup).subscribe((data: string[]) => this.allElementClassesPerGroup = data);
     }
   }
   loadClassesKPI(selectedKPIGroup) {
     if (selectedKPIGroup) {
-      this.isoService.getListOfElementsByGroup(selectedKPIGroup).pipe(take(1)).subscribe((data: string[]) => this.allElementClassesPerGroup = data);
+      this.isoService.getListOfElementsByGroup(selectedKPIGroup).subscribe((data: string[]) => this.allElementClassesPerGroup = data);
     }
   }
 
@@ -106,7 +104,7 @@ export class Iso22400_2Component implements OnInit {
       if (KPI_Class) {
         // TODO getListOfClassConstraintEnum exists for this use case only - could ConstraingDataProperty also be a constant?
         const ConstraingDataProperty = "http://www.hsu-ifa.de/ontologies/ISO22400-2#Timing";
-        this.isoService.getListOfClassConstraintEnum(KPI_Class, ConstraingDataProperty).pipe(take(1)).subscribe((data: string[]) => this.possibleTiming = data);
+        this.isoService.getListOfClassConstraintEnum(KPI_Class, ConstraingDataProperty).subscribe((data: string[]) => this.possibleTiming = data);
       }
   }
 
@@ -141,7 +139,6 @@ export class Iso22400_2Component implements OnInit {
               };
 
               this.isoService.createElement(this.elementVariables, action).pipe(take(1)).subscribe((data: any) => {
-                  this.loadingScreenService.stopLoading();
                   this.getAllStatistics();
                   this.getAllTableInfo();
                   this.elementVariables = new ISO224002Variables().simpleElement;
@@ -158,7 +155,6 @@ export class Iso22400_2Component implements OnInit {
                   simpleValue: form.controls['value'].value,
               };
               this.isoService.createKPI(this.KPIVariables, action).pipe(take(1)).subscribe((data: any) => {
-                  this.loadingScreenService.stopLoading();
                   this.getAllStatistics();
                   this.getAllTableInfo();
                   this.KPIVariables = new ISO224002Variables().KPI;
@@ -175,9 +171,9 @@ export class Iso22400_2Component implements OnInit {
   }
 
   getAllStatistics() {
-    this.isoService.getListOfNonOrganizationalElements().pipe(take(1)).subscribe((data: string[]) => this.NoOfElements = data.length);
-    this.isoService.getListOfOrganizationalElements().pipe(take(1)).subscribe((data: string[]) => this.NoOfEntities = data.length);
-    this.isoService.getListOfKPIs().pipe(take(1)).subscribe((data: string[]) => this.NoOfKPIs = data.length);
+    this.isoService.getListOfNonOrganizationalElements().subscribe((data: string[]) => this.NoOfElements = data.length);
+    this.isoService.getListOfOrganizationalElements().subscribe((data: string[]) => this.NoOfEntities = data.length);
+    this.isoService.getListOfKPIs().subscribe((data: string[]) => this.NoOfKPIs = data.length);
   }
 
   getAllTableInfo(): void {
@@ -192,76 +188,26 @@ export class Iso22400_2Component implements OnInit {
     // create new observable of two observables which completes when each observable returns 1st output
     const combinedObservable: Observable<[string[], string[]]> = forkJoin([
         vdi2206Observable.pipe(take(1)),    // TODO: exchange this dummy with real observable
-        this.vdi3682Service.getListOfTechnicalResources().pipe(take(1))
+        this.vdi3682Service.getListOfTechnicalResources()
     ]);  
 
     // combine in one table as soon as combined observable completes
-    combinedObservable.pipe(take(1)).subscribe((data: [string[], string[]]) => {
+    combinedObservable.subscribe((data: [string[], string[]]) => {
         const cols: string[] = ["VDI2206:System", "VDI3682:TechnicalResource"]; 
         this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
     });
 
     // remaining tables wihtout joins
-    this.isoService.getTableOfAllEntityInfo().pipe(take(1)).subscribe((data: Record<string, string>[]) => this.allIsoEntityInfo = data);
-    this.isoService.getTableOfElements().pipe(take(1)).subscribe((data: Record<string, string>[]) => this.allIsoElementInfo = data);
-    this.isoService.getTableOfKPIs().pipe(take(1)).subscribe((data: Record<string, string>[]) => this.allIsoKPIInfo = data);
+    this.isoService.getTableOfAllEntityInfo().subscribe((data: Record<string, string>[]) => this.allIsoEntityInfo = data);
+    this.isoService.getTableOfElements().subscribe((data: Record<string, string>[]) => this.allIsoElementInfo = data);
+    this.isoService.getTableOfKPIs().subscribe((data: Record<string, string>[]) => this.allIsoKPIInfo = data);
 
   }
 
   getDropwDownInfo() {
-    this.isoService.getListOfElementGroups().pipe(take(1)).subscribe((data: string[]) => this.elementGroups = data);
-    this.isoService.getListOfKPIGroups().pipe(take(1)).subscribe((data: string[]) => this.KPIGroups = data);
-    this.isoService.getListOfOrganizationalElementClasses().pipe(take(1)).subscribe((data: string[]) => this.organizationalElementClasses = data);
+    this.isoService.getListOfElementGroups().subscribe((data: string[]) => this.elementGroups = data);
+    this.isoService.getListOfKPIGroups().subscribe((data: string[]) => this.KPIGroups = data);
+    this.isoService.getListOfOrganizationalElementClasses().subscribe((data: string[]) => this.organizationalElementClasses = data);
   }
-
-//   loadAllStatistics() {
-//       this.isoService.loadLIST_OF_KPIs().pipe(take(1)).subscribe((data: any) => {
-//           this.loadingScreenService.stopLoading();
-//           this.NoOfKPIs = data.length;
-//           this.isoService.setLIST_OF_KPIs(data);
-//       });
-//       this.isoService.loadLIST_OF_ORGANIZATIONAL_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
-//           this.loadingScreenService.stopLoading();
-//           this.NoOfEntities = data.length;
-//           this.isoService.setLIST_OF_ORGANIZATIONAL_ELEMENTS(data);
-//       });
-//       this.isoService.loadLIST_OF_NON_ORGANIZATIONAL_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
-//           this.loadingScreenService.stopLoading();
-//           this.NoOfElements = data.length;
-//           this.isoService.setLIST_OF_NON_ORGANIZATIONAL_ELEMENTS(data);
-//       });
-//   }
-
-  // old getAllTableInfo with "hacky" workaround
-  //   async getAllTableInfo() {
-//       const cols = ["VDI2206:System", "VDI3682:TechnicalResource"];
-
-//       // This is pretty hacky. An alternative would be to get all observables into one and subscribe to the overall result for the data table
-//       const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
-//       const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), tr];
-
-//       this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
-//       this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
-//       this.allIsoElementInfo = this.isoService.getTABLE_ELEMENTS();
-//       this.allIsoKPIInfo = this.isoService.getTABLE_KPI();
-//   }
-
-//   loadAllTableInfo() {
-//       this.isoService.loadTABLE_ALL_ENTITY_INFO().pipe(take(1)).subscribe((data: any) => {
-//           this.loadingScreenService.stopLoading();
-//           this.allIsoEntityInfo = data;
-//           this.isoService.setTABLE_ALL_ENTITY_INFO(data);
-//       });
-//       this.isoService.loadTABLE_ELEMENTS().pipe(take(1)).subscribe((data: any) => {
-//           this.loadingScreenService.stopLoading();
-//           this.allIsoElementInfo = data;
-//           this.isoService.setTABLE_ELEMENTS(data);
-//       });
-//       this.isoService.loadTABLE_KPI().pipe(take(1)).subscribe((data: any) => {
-//           this.loadingScreenService.stopLoading();
-//           this.allIsoKPIInfo = data;
-//           this.isoService.setTABLE_KPI(data);
-//       });
-//   }
 
 }

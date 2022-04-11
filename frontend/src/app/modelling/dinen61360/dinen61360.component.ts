@@ -266,16 +266,16 @@ export class Dinen61360Component implements OnInit {
     }
 
     getDropdowns(): void {
-        this.dinen61360Service.getListOfDataTypes().pipe(take(1)).subscribe((data: any) => this.datatypes = data);
-        this.dinen61360Service.getListOfLogicInterpretations().pipe(take(1)).subscribe((data: any) => this.logicInterpretations = data);
-        this.dinen61360Service.getListOfExpressionGoals().pipe(take(1)).subscribe((data: any) => this.expressionGoals = data);
+        this.dinen61360Service.getListOfDataTypes().subscribe((data: any) => this.datatypes = data);
+        this.dinen61360Service.getListOfLogicInterpretations().subscribe((data: any) => this.logicInterpretations = data);
+        this.dinen61360Service.getListOfExpressionGoals().subscribe((data: any) => this.expressionGoals = data);
     }
 
     getTables(): void {
         // new code
-        this.dinen61360Service.getTableOfAllTypes().pipe(take(1)).subscribe((data: any) => this.allTypes = data);
-        this.dinen61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => this.allInstances = data);
-        this.isoService.getTableOfAllEntityInfo().pipe(take(1)).subscribe((data: any) => this.isoInfo = data);
+        this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.allTypes = data);
+        this.dinen61360Service.getTableOfAllInstanceInfo().subscribe((data: any) => this.allInstances = data);
+        this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.isoInfo = data);
         // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
         this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
         // this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
@@ -285,14 +285,14 @@ export class Dinen61360Component implements OnInit {
         this.allStructureInfoInheritancebySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_SYS();
         this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
         this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
-        this.vdi3682Service.getCompleteProcessInfo().pipe(take(1)).subscribe(data => this.allProcessInfo = data);
+        this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
         this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
     }
 
     getStatisticInfo(): void {
-        this.dinen61360Service.getListOfAllDET().pipe(take(1)).subscribe((data: any) => this.NoOfDET = data.length);
-        this.dinen61360Service.getListOfAllDEI().pipe(take(1)).subscribe((data: any) => this.NoOfDEI = data.length);
-        this.dinen61360Service.getListOfAllDE().pipe(take(1)).subscribe((data: any) => this.NoOfDE = data.length);
+        this.dinen61360Service.getListOfAllDET().subscribe((data: any) => this.NoOfDET = data.length);
+        this.dinen61360Service.getListOfAllDEI().subscribe((data: any) => this.NoOfDEI = data.length);
+        this.dinen61360Service.getListOfAllDE().subscribe((data: any) => this.NoOfDE = data.length);
     }
 
     // setAllTypes() {
