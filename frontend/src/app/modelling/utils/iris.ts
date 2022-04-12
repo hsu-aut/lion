@@ -1,4 +1,4 @@
-import { IRI } from "iri";
+// import { IRI } from "iri";
 
 //  lib is http://rdf.js.org/, based on http://rdf.js.org/data-model-spec/
 // import * as RDFJS from 'rdf-js';
@@ -39,7 +39,7 @@ export class RDF_Factory {
 
 
 class Entity {
-    
+
     public entityType: entityTypes;
     public value: string;
 
@@ -47,7 +47,7 @@ class Entity {
 
 
 export class NamedNode {
-   
+
     entityType: string = entityTypes.namedNode;
     value: string;
 
@@ -58,13 +58,13 @@ export class NamedNode {
 
     private buildNamedNode(wannaBeRDF: string){
         const IRI_REG = /^([a-z0-9+.-]+):(?:\/\/(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\d*))?(\/(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?|(\/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@\/]|%[0-9A-F]{2})*)?)(?:\?((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:\/?@]|%[0-9A-F]{2})*))?$/i;
-    
+
         if(IRI_REG.test(wannaBeRDF)){
             this.value = wannaBeRDF;
         } else {
             console.error("NO VALID IRI ENCODED STRING TO BUILD NAMED NDOE");
         }
-        
+
     }
 
 
