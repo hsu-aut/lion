@@ -11,7 +11,6 @@ import { ModellingRoutingModule } from './modelling-routing.module';
 
 //  child imports
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { Vdi3682Component } from './vdi3682/vdi3682.component';
 import { Dinen61360Component } from './dinen61360/dinen61360.component';
 import { Vdi2206Component } from './vdi2206/vdi2206.component';
 import { WadlComponent } from './wadl/wadl.component';
