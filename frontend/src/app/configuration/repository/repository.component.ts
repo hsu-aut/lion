@@ -24,122 +24,120 @@ import { DashboardService } from '../../shared/services/dashboard.service';
 })
 export class RepositoryComponent implements OnInit {
 
-  // util variables
-  keys = Object.keys;
+    // util variables
+    keys = Object.keys;
 
-  // stats
-  repoCount: number;
+    // stats
+    repoCount: number;
 
-  // repository config
-  repositoryList: Array<string>;
-  activeRepository: string;
+    // repository config
+    repositoryList: Array<string>;
+    activeRepository: string;
 
-  // forms
-  repositoryOption = this.fb.control('', Validators.required);
-  repositoryCreate = this.fb.control('', Validators.required);
-  repositoryClear = this.fb.control('', Validators.required);
-  repositoryDelete = this.fb.control('', Validators.required);
+    // forms
+    repositoryOption = this.fb.control('', Validators.required);
+    repositoryCreate = this.fb.control('', Validators.required);
+    repositoryClear = this.fb.control('', Validators.required);
+    repositoryDelete = this.fb.control('', Validators.required);
 
-  constructor(
-    private config: ConfigurationService,
-    private repositoryOperation: RepositoryOperationsService,
-    private messageService: MessagesService,
+    constructor(
+        private config: ConfigurationService,
+        private repositoryOperation: RepositoryOperationsService,
+        private messageService: MessagesService,
 
-    // model services
-    private VDI3862_Service: Vdi3682ModelService,
-    private VDI2206_Service: Vdi2206ModelService,
-    private ISA_Service: Isa88ModelService,
-    private DINEIN61360_Service: Dinen61360Service,
-    private Dashboard_Service: DashboardService,
-    private WadlModelService: WadlModelService,
-    private Iso22400_2ModelService: Iso22400_2ModelService,
+        // model services
+        private VDI3862_Service: Vdi3682ModelService,
+        private VDI2206_Service: Vdi2206ModelService,
+        private ISA_Service: Isa88ModelService,
+        private DINEIN61360_Service: Dinen61360Service,
+        private Dashboard_Service: DashboardService,
+        private WadlModelService: WadlModelService,
+        private Iso22400_2ModelService: Iso22400_2ModelService,
 
-    private fb: FormBuilder
+        private fb: FormBuilder
 
-  ) {
-      this.activeRepository = this.config.getRepository();
-  }
+    ) {
+        this.activeRepository = this.config.getRepository();
+    }
 
-  ngOnInit() {
-      this.getListOfRepos();
-  }
-
-
-  getListOfRepos() {
-      this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
-          this.repositoryList = data;
-          this.repoCount = this.repositoryList.length;
-      });
-  }
-
-  setRepository(repositoryName: string) {
-      if (this.repositoryOption.valid) {
-          this.config.setRepository(repositoryName);
-          this.activeRepository = this.config.getRepository();
-          this.refreshServices();
-      } else if (this.repositoryOption.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
-      }
-  }
-
-  createRepository(repositoryName: string) {
-      if (this.repositoryCreate.valid) {
-          this.repositoryOperation.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-              this.getListOfRepos();
-          });
-      } else if (this.repositoryCreate.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
-      }
-
-  }
+    ngOnInit() {
+        this.getListOfRepos();
+    }
 
 
-  clearRepository(repositoryName: string) {
-      if (this.repositoryClear.valid) {
-          this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-          });
-      } else if (this.repositoryClear.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
-      }
-  }
+    getListOfRepos() {
+        this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
+            this.repositoryList = data;
+            this.repoCount = this.repositoryList.length;
+        });
+    }
 
-  deleteRepository(repositoryName: string) {
-      if (this.repositoryDelete.valid) {
-          this.repositoryOperation.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-              this.getListOfRepos();
-          });
-      } else if (this.repositoryDelete.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
-      }
-  }
+    setRepository(repositoryName: string) {
+        if (this.repositoryOption.valid) {
+            this.config.setRepository(repositoryName);
+            this.activeRepository = this.config.getRepository();
+            this.refreshServices();
+        } else if (this.repositoryOption.invalid) {
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+        }
+    }
+
+    createRepository(repositoryName: string) {
+        if (this.repositoryCreate.valid) {
+            this.repositoryOperation.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+                this.getListOfRepos();
+            });
+        } else if (this.repositoryCreate.invalid) {
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+        }
+
+    }
 
 
-  refreshServices() {
-      console.info("Refreshing data ...");
-      this.VDI2206_Service.initializeVDI2206();
-      this.ISA_Service.initializeISA88();
-      this.DINEIN61360_Service.initializeDINEN61360();
-      this.Dashboard_Service.initializeDashboard();
-      this.WadlModelService.initializeWADL();
-      this.Iso22400_2ModelService.initializeISO224002();
-  }
+    clearRepository(repositoryName: string) {
+        if (this.repositoryClear.valid) {
+            this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+            });
+        } else if (this.repositoryClear.invalid) {
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+        }
+    }
 
-  loadTBoxes() {
-      const ObservableSequence = concat(
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISA88"),
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
-          this.repositoryOperation.loadTBoxes(this.config.getRepository(), "OPCUA"),
+    deleteRepository(repositoryName: string) {
+        if (this.repositoryDelete.valid) {
+            this.repositoryOperation.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+                this.getListOfRepos();
+            });
+        } else if (this.repositoryDelete.invalid) {
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+        }
+    }
 
-      ).pipe(
-          finalize(() => this.refreshServices()) // Execute when the observable completes
-      );
 
-      ObservableSequence.subscribe((data: any) => console.log(data));
-  }
+    refreshServices() {
+        console.info("Refreshing data ...");
+        this.VDI2206_Service.initializeVDI2206();
+        this.ISA_Service.initializeISA88();
+        this.Dashboard_Service.initializeDashboard();
+        this.WadlModelService.initializeWADL();
+    }
+
+    loadTBoxes() {
+        const ObservableSequence = concat(
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISA88"),
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
+            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "OPCUA"),
+
+        ).pipe(
+            finalize(() => this.refreshServices()) // Execute when the observable completes
+        );
+
+        ObservableSequence.subscribe((data: any) => console.log(data));
+    }
 
 
 }
