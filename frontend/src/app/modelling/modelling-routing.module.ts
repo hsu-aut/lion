@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { ModellingComponent } from './modelling.component';
 
 // import children
-import { VDI3682Component } from './vdi3682/vdi3682.component';
 import { Dinen61360Component } from './dinen61360/dinen61360.component';
 import { Vdi2206Component } from './vdi2206/vdi2206.component';
 import { WadlComponent } from './wadl/wadl.component';
@@ -17,7 +16,7 @@ const routes: Routes = [
         component: ModellingComponent,
         children: [
             { path: '', redirectTo: 'vdi3682', pathMatch: 'prefix' },
-            { path: 'vdi3682', component: VDI3682Component },
+            { path: 'vdi3682', loadChildren:() => import('./vdi3682/vdi3682.module').then(m => m.Vdi3682Module)},
             { path: 'dinen61360', component: Dinen61360Component },
             { path: 'vdi2206', component: Vdi2206Component },
             { path: 'wadl', component: WadlComponent },
