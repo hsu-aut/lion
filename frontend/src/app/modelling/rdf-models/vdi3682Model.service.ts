@@ -21,7 +21,6 @@ export class Vdi3682ModelService {
         private http: HttpClient,
         private tripleService: TripleService,
         private nameService: PrefixesService,
-        private loadingScreenService: DataLoaderService,
         private messageService: MessagesService,
         private downloadService: DownloadService,
         private graphs: GraphOperationsService
@@ -43,7 +42,6 @@ export class Vdi3682ModelService {
      * @returns All properties that have the given class as their domain
      */
     public getPropertiesByDomain(domainClass: string): Observable<Array<string>> {
-        this.loadingScreenService.startLoading();
         domainClass = this.nameService.parseToIRI(domainClass);
 
         // Construct Params Object
@@ -60,7 +58,6 @@ export class Vdi3682ModelService {
      * @returns All classes that are in the range of the given property
      */
     public getRangeClasses(property: string): Observable<Array<string>> {
-        this.loadingScreenService.startLoading();
         const propertyIri = this.nameService.parseToIRI(property);
         // Construct Params Object
         let params = new HttpParams();
