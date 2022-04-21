@@ -66,12 +66,10 @@ export class NewVdi3682IndividualComponent implements OnInit {
                 this.getCompleteProcessInfo();
                 this.onNewIndividual.emit(triple.subject);
             });
+            this.newIndividualForm.reset();
         } else {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
     }
-
-
-
 
 }
