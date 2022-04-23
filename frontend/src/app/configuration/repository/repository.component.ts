@@ -46,13 +46,10 @@ export class RepositoryComponent implements OnInit {
         private messageService: MessagesService,
 
         // model services
-        private VDI3862_Service: Vdi3682ModelService,
         private VDI2206_Service: Vdi2206ModelService,
         private ISA_Service: Isa88ModelService,
-        private DINEIN61360_Service: Dinen61360Service,
         private Dashboard_Service: DashboardService,
         private WadlModelService: WadlModelService,
-        private Iso22400_2ModelService: Iso22400_2ModelService,
 
         private fb: FormBuilder
 
@@ -122,7 +119,7 @@ export class RepositoryComponent implements OnInit {
         this.WadlModelService.initializeWADL();
     }
 
-    loadTBoxes() {
+    loadTBoxes(): void {
         const ObservableSequence = concat(
             this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
             this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
