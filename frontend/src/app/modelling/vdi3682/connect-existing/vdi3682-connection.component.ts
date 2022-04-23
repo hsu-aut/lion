@@ -79,6 +79,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
 
 
     async iriTableClick(name: string): Promise<void> {
+        this.newConnectionForm.reset();
         this.newConnectionForm.controls['subject'].setValue(name);
 
         this.vdi3682Service.getClassOfIndividualWithinNamespace(this.newConnectionForm.controls['subject'].value).pipe(take(1))

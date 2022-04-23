@@ -25,7 +25,6 @@ export class QueriesService {
     constructor(
         private http: HttpClient,
         private namespaceService: PrefixesService,
-        private loadingScreenService: DataLoaderService,
         private messageService: MessagesService,
         private config: ConfigurationService
     ) { }
@@ -70,7 +69,6 @@ export class QueriesService {
             },
             error => {
                 this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status}`);
-                this.loadingScreenService.stopLoading();
             });
         });
 
@@ -99,7 +97,6 @@ export class QueriesService {
             },
             error => {
                 this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
-                this.loadingScreenService.stopLoading();
             });
         });
 
@@ -112,8 +109,6 @@ export class QueriesService {
      * @returns
      */
     executeUpdate(updateString: string): Observable<void> {
-        this.loadingScreenService.startLoading();
-
         const headers = new HttpHeaders().set('Content-Type', 'text/plain').set('Accept', 'text/plain');
         const params = new HttpParams().set('repositoryName', this.config.getRepository());
 
@@ -133,7 +128,6 @@ export class QueriesService {
             },
             error => {
                 this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
-                this.loadingScreenService.stopLoading();
             });
         });
 

@@ -108,7 +108,7 @@ export class ModelService {
 // TODO: This is pretty bad because the urls are currently hard coded
 // -> There is currently no way to set a different version
 export enum TBoxPatternName {
-	"VDI3682" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/VDI%203682/VDI3682.owl",
+	"VDI3682" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v3.0.0/VDI%203682/VDI3682.owl",
 	"VDI2206" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/VDI%202206/VDI2206.owl",
 	"ISA88" = "https://raw.githubusercontent.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/ISA%2088/ISA88.owl",
 	"DINEN61360" = "https://github.com/hsu-aut/Industrial-Standard-Ontology-Design-Patterns/blob/v1.4.2/DIN%20EN%2061360/DINEN61360.owl",

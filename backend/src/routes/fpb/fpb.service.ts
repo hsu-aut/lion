@@ -88,7 +88,7 @@ export class FpbService {
 					?processOperator VDI3682:hasOutput ?output. 
 					?output rdf:type ?outputType. VALUES ?outputType {VDI3682:Product VDI3682:Energy VDI3682:Information}}
 				OPTIONAL {
-					?technicalResource VDI3682:TechnicalResourceIsAssignedToProcessOperator ?processOperator. 
+					?processOperator VDI3682:isAssignedTo ?technicalResource. 
 				}
 			}
 		}`;
