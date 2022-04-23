@@ -1,14 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { Tables } from '../../../modelling/utils/tables';
-import { IfStmt } from '@angular/compiler';
-
 
 @Component({
     selector: 'app-table',
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnInit {
+export class TableComponent {
 
     // get table
     @Input() currentTable = new Array<Record<string, any>>();
@@ -24,28 +22,21 @@ export class TableComponent implements OnInit {
     filterRow = "";
 
     // layout variables
-    paginationArray = this.TableUtil.paginationValues;
-    paginationNumber = this.TableUtil.paginationValues[this.TableUtil.defaultPaginationIndex];
+    itemsPerPageOptions = [10, 20, 50, 100]
+    itemsPerPage = this.itemsPerPageOptions[0];
     pagedTable: Array<Array<Record<string, any>>>;
     numberOfRows: number;
     numberOfPages: number;
-    pageArray: Array<number> = [];
+    pages: Array<number> = [];
     currentPage = 0;
     originalTableArray: Array<Record<string, any>> = [];
     filteredElements: Array<Record<string, any>> = [];
-    emptyTable: Array<Record<string, any>> = [];
 
 
     // TODO: This variable was used in .html but missing here and lead to problems with stricter template checks
     // What's its purpose?
-    currentPerPage = 10;
 
-    constructor() {
-
-    }
-
-    ngOnInit() {
-    }
+    constructor() {}
 
 
     // TODO: Check what this is actually used for
@@ -64,10 +55,8 @@ export class TableComponent implements OnInit {
 
     initializeTable() {
         this.numberOfRows = this.currentTable.length;
-        this.setRowCount();
         this.setPageCount();
-        this.setPagArray();
-        this.setEmptyTable();
+        this.setPageArray();
     }
 
     tableClickRow(clickedRow: Array<Record<string, any>>) {
@@ -76,42 +65,59 @@ export class TableComponent implements OnInit {
     tableClickCell(cleckedCell: string) {
         this.tableClickedCell.emit(cleckedCell);
     }
-    setPaginationNumber(selectedNumber: number) {
-        this.paginationNumber = selectedNumber;
+
+    setItemsPerPage(selectedNumber: number) {
+        this.itemsPerPage = selectedNumber;
         this.setPageCount();
         this.setCurrentPage(0);
-        this.setPagArray();
+        this.setPageArray();
     }
-    nextPage() {
+
+
+    /**
+     * Go to the next page by increasing the page number if it's not at numberOfPages already
+     */
+    nextPage(): void {
         if (this.currentPage < this.numberOfPages - 1) { this.currentPage++; }
     }
-    previousPage() {
+
+    /**
+     * Go to the previous page by decreasing the page number if it's not at 0 already
+     */
+    previousPage(): void {
         if (this.currentPage > 0) { this.currentPage--; }
     }
-    firstPage() {
+
+    /**
+     * Go to the first page by setting the page number to 0
+     */
+    firstPage(): void {
         this.currentPage = 0;
     }
-    lastPage() {
+
+    /**
+     * Go to the last page by setting the page number to the number of pages
+     */
+    lastPage(): void {
         this.currentPage = this.numberOfPages - 1;
     }
-    setPageCount() {
-        this.pageArray = [];
-        this.numberOfPages = Math.ceil(this.numberOfRows / this.paginationNumber);
-        // console.log(Math.ceil(this.numberOfRows / this.paginationNumber))
+
+
+    setPageCount(): void {
+        this.pages = [];
+        this.numberOfPages = Math.ceil(this.numberOfRows / this.itemsPerPage);
         for (let i = 0; i < this.numberOfPages; i++) {
-            this.pageArray[i] = i + 1;
+            this.pages[i] = i + 1;
         }
     }
-    setRowCount() {
-        this.numberOfRows = this.currentTable.length;
-    }
-    setPagArray() {
+
+    setPageArray(): void {
         const newPagTable: Array<Array<Record<string, any>>> = [];
         let row = 0;
 
         for (let i = 0; i < this.numberOfPages; i++) {
             const pagedTableSlice: Array<Record<string, any>> = [];
-            for (let ii = 0; ii < this.paginationNumber; ii++) {
+            for (let ii = 0; ii < this.itemsPerPage; ii++) {
                 if (this.currentTable[row] == undefined) { break; }
                 pagedTableSlice[ii] = this.currentTable[row];
                 row++;
@@ -121,13 +127,14 @@ export class TableComponent implements OnInit {
         this.pagedTable = newPagTable;
         // console.log(newPagTable)
     }
-    setCurrentPage(page: number) {
+
+    setCurrentPage(page: number): void {
         this.currentPage = page;
     }
 
     applyFilter(keyEvent, columnName: string) {
 
-        if(columnName){    // use the original table
+        if (columnName) {    // use the original table
             this.currentTable = this.originalTableArray;
             // filtered elements is empty on method call
             this.filteredElements = [];
@@ -159,14 +166,14 @@ export class TableComponent implements OnInit {
             if (this.filteredElements.length != 0) {
                 this.currentTable = this.filteredElements;
             } else {
-                this.currentTable = this.emptyTable;
+                this.currentTable = this.createEmptyTable();
             }
             this.initializeTable();
         }
 
     }
 
-    setEmptyTable() {
+    createEmptyTable(): Array<Record<string, any>> {
         const cols = Object.keys(this.currentTable[0]);
         const rowObject = {};
         const emptyTable: Array<Record<string, any>> = [];
@@ -177,7 +184,7 @@ export class TableComponent implements OnInit {
             rowObject[colname] = cellEntry;
         } emptyTable.push(rowObject);
 
-        this.emptyTable = emptyTable;
+        return emptyTable;
     }
 
 

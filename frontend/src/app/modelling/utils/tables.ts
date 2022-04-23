@@ -1,9 +1,6 @@
 
 export class Tables {
 
-    public paginationValues: Array<number> = [10, 20, 50, 100]
-    public defaultPaginationIndex = 1;
-
     buildTable(SPARQLReturn) {
         const heads = SPARQLReturn.head.vars;
         const data = SPARQLReturn.results.bindings;
@@ -33,7 +30,7 @@ export class Tables {
         const list: Array<string> = [];
 
         for (const i in data) {
-            list[i] = data[i][head].value;   
+            list[i] = data[i][head].value;
         }
         return list;
 
@@ -49,7 +46,7 @@ export class Tables {
         for (let i = 0; i < data.length; i++) {
             if (data[i].length > length) { length = data[i].length; }
         }
-    
+
         for (let i = 0; i < length; i++) {
             const row = {};
             for (let head = 0; head < cols.length; head++) {
@@ -59,7 +56,7 @@ export class Tables {
             } table.push(row);
         }
 
-    
+
         for (let i = 0; i < data.length; i++) {
             const colData = data[i];
             for (let ii = 0; ii < colData.length; ii++) {
