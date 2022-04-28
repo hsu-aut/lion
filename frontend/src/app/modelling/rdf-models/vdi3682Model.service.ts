@@ -9,7 +9,7 @@ import { MessagesService } from '../../shared/services/messages.service';
 import { take, tap } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSparqlTable, toSparqlVariableList } from '../utils/rxjs-custom-operators';
-import { SparqlResponse } from '../../../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { Triple, TripleService } from './triple.service';
 
 @Injectable({

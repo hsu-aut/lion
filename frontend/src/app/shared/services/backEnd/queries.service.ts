@@ -8,7 +8,7 @@ import { Tables } from '../../../modelling/utils/tables';
 import { DataLoaderService } from "../dataLoader.service";
 import { MessagesService } from "../messages.service";
 import { ConfigurationService } from './configuration.service';
-import { SparqlResponse } from '../../../../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { toSparqlTable, toSparqlVariableList } from '../../../modelling/utils/rxjs-custom-operators';
 
 

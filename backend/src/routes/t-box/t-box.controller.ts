@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { TBoxService } from './t-box.service';
 
 

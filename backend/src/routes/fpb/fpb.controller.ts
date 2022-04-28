@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { FileUploadRequest, FpbService } from './fpb.service';
 
 @Controller("/lion_BE/fpb")
