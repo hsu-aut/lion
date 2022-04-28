@@ -4,8 +4,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ConfigurationService } from './configuration.service';
-import { DataLoaderService } from "../dataLoader.service";
-
+import { OdpName } from "@shared/models/odps/odp";
 import { MessagesService } from '../messages.service';
 
 
@@ -17,13 +16,11 @@ import { MessagesService } from '../messages.service';
     providedIn: 'root'
 })
 export class RepositoryOperationsService {
-
     private repository: string;
 
     constructor(
         private http: HttpClient,
         private config: ConfigurationService,
-        private loadingScreenService: DataLoaderService,
         private messageService: MessagesService
     ) {
         // default repository
@@ -121,7 +118,7 @@ export class RepositoryOperationsService {
         return dbObservale;
     }
 
-    loadTBoxes(repositoryName, TBox) {
+    loadOdp(repositoryName: string, odpName: OdpName) {
 
         const httpOptions = {
             headers: new HttpHeaders({
@@ -129,12 +126,11 @@ export class RepositoryOperationsService {
                 'responseType': 'text'
             })
         };
-        const request = this.getRepositoryURL() + `/buildTBox?pattern=${TBox}&repositoryName=${repositoryName}`;
+        const request = this.getRepositoryURL() + `/loadTBox?pattern=${odpName}&repositoryName=${repositoryName}`;
 
         const dbObservale = new Observable((observer) => {
             this.http.get(request, httpOptions).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Done!', 'loaded ' + TBox);
-                this.loadingScreenService.stopLoading();
+                this.messageService.addMessage('success', 'Done!', 'loaded ' + odpName);
                 console.log(data);
                 observer.next(data);
                 observer.complete();
