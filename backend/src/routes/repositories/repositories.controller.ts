@@ -1,10 +1,11 @@
 import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
 import { RepositoryService } from '../../shared-services/repository.service';
-import { TBoxPatternName, ModelService } from '../../shared-services/model.service';
+import { ModelService } from '../../shared-services/model.service';
+import { OdpName } from '@shared/enums/OdpName';
 
 @Controller('/lion_BE/repositories')
 export class RepositoriesController {
-	constructor(private repService: RepositoryService, private tboxService: ModelService) { }
+	constructor(private repoService: RepositoryService, private tboxService: ModelService) { }
 
 	/**
 	 * GET list of repositories
@@ -12,7 +13,7 @@ export class RepositoriesController {
 	 */
 	@Get()
 	getListOfRepositories(): any {
-		return this.repService.getAllRepositories();
+		return this.repoService.getAllRepositories();
 	}
 
 	/**
@@ -22,7 +23,7 @@ export class RepositoriesController {
 	 */
 	@Get('/create')
 	createNewRepository(@Query('repositoryName') repositoryName: string): any {
-		return this.repService.createRepository(repositoryName);
+		return this.repoService.createRepository(repositoryName);
 	}
 
 	/**
@@ -39,7 +40,7 @@ export class RepositoriesController {
 	*/
 	@Delete('/current/statements')
 	deleteAllRdfTriples(): any {
-		return this.repService.clearRepository();
+		return this.repoService.clearRepository();
 	}
 
 	/** 
@@ -47,14 +48,6 @@ export class RepositoriesController {
 	*/
 	@Delete('/current')
 	deleteRepository(): any {
-		return this.repService.deleteRepository();
-	}
-
-	/** 
-	* INSERT TBOX to repository
-	*/
-	@Get('/buildTBox')
-	insertTboxToRepository(@Query('patternName') patternName: TBoxPatternName): any {
-		return this.tboxService.insertTBox(patternName);
+		return this.repoService.deleteRepository();
 	}
 }
