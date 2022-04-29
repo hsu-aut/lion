@@ -19,7 +19,7 @@ export class OdpController {
 	/** 
 	* INSERT TBOX to repository
 	*/
-	@Get('/:odpName')
+	@Get(':odpName')
 	insertOdpToRepository(@Param('odpName') odpName: OdpName, @Query('version') version: string): any {
 		return this.odpService.insertOdp(odpName, version);
 	}
