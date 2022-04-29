@@ -118,25 +118,4 @@ export class RepositoryOperationsService {
         return dbObservale;
     }
 
-    loadOdp(repositoryName: string, odpName: OdpName) {
-
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'none',
-                'responseType': 'text'
-            })
-        };
-        const request = this.getRepositoryURL() + `/loadTBox?pattern=${odpName}&repositoryName=${repositoryName}`;
-
-        const dbObservale = new Observable((observer) => {
-            this.http.get(request, httpOptions).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Done!', 'loaded ' + odpName);
-                console.log(data);
-                observer.next(data);
-                observer.complete();
-            });
-        });
-        return dbObservale;
-    }
-
 }
