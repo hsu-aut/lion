@@ -89,7 +89,7 @@ export class RepositoryOperationsService {
                 'responseType': 'text'
             })
         };
-        const request = this.getRepositoryURL() + `?repositoryName=${repositoryName}`;
+        const request = this.getRepositoryURL() + `/${repositoryName}`;
         const dbObservale = new Observable((observer) => {
             this.http.delete(request, httpOptions).subscribe((data: any) => {
                 this.messageService.addMessage('success', 'Done!', 'Deleted the repository ' + repositoryName);
@@ -100,16 +100,15 @@ export class RepositoryOperationsService {
         return dbObservale;
     }
 
-    clearRepository(repositoryName) {
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'none',
-                'responseType': 'text'
-            })
-        };
-        const request = this.getRepositoryURL() + `/clear?repositoryName=${repositoryName}`;
+    /**
+     * Clears all content (i.e., all statements) from a repository
+     * @param repositoryName
+     * @returns
+     */
+    clearRepository(repositoryName: string) {
+        const request = this.getRepositoryURL() + `/${repositoryName}/statements`;
         const dbObservale = new Observable((observer) => {
-            this.http.get(request, httpOptions).subscribe((data: any) => {
+            this.http.delete(request).subscribe((data: any) => {
                 this.messageService.addMessage('success', 'Done!', 'Cleared the repository ' + repositoryName + '. You may want to add TBoxes to it again.');
                 observer.next(data);
                 observer.complete();

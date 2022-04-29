@@ -1,7 +1,6 @@
-import { Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { RepositoryService } from '../../shared-services/repository.service';
 import { ModelService } from '../../shared-services/model.service';
-import { OdpName } from '@shared/enums/OdpName';
 
 @Controller('/lion_BE/repositories')
 export class RepositoriesController {
@@ -38,16 +37,18 @@ export class RepositoriesController {
 	/** 
 	* DELETE all RDF triples
 	*/
-	@Delete('/current/statements')
-	deleteAllRdfTriples(): any {
-		return this.repoService.clearRepository();
+	@Delete('/:repositoryName/statements')
+	deleteAllRdfTriples(@Param("repositoryName") repositoryName: string): any {
+		return this.repoService.clearRepository(repositoryName);
 	}
 
-	/** 
-	* DELETE repository
-	*/
-	@Delete('/current')
-	deleteRepository(): any {
-		return this.repoService.deleteRepository();
+	/**
+	 * Delete a repository with a given repository name
+	 * @param repositoryName Name of the repository to delete
+	 * @returns 
+	 */
+	@Delete('/:repositoryName')
+	deleteRepository(@Param("repositoryName") repositoryName: string): any {
+		return this.repoService.deleteRepository(repositoryName);
 	}
 }

@@ -206,12 +206,11 @@ export class RepositoryService {
      * @param repositoryId ID of the repository to delete 
      * @returns 
      */
-	clearRepository(): Observable<AxiosResponse<null>> {
-		const currentRepo = this.getCurrentRepository();
+	clearRepository(repositoryName: string): Observable<AxiosResponse<null>> {
 		const reqConfig: AxiosRequestConfig = {
 			method: 'DELETE',
 			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}/statements`
+			url: `/repositories/${repositoryName}/statements`
 		};
 
 		return this.http.request<null>(reqConfig).pipe(map(res => res.data));
@@ -223,12 +222,11 @@ export class RepositoryService {
      * @param repositoryId ID of the repository to delete
      * @returns 
      */
-	deleteRepository(): Observable<AxiosResponse<null>> {
-		const currentRepo = this.getCurrentRepository();
+	deleteRepository(repositoryName: string): Observable<AxiosResponse<null>> {
 		const reqConfig: AxiosRequestConfig = {
 			method: 'DELETE',
 			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}`
+			url: `/repositories/${repositoryName}`
 		};
 
 		return this.http.request<null>(reqConfig).pipe(map(res => res.data));

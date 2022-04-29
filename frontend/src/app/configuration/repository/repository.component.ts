@@ -46,7 +46,6 @@ export class RepositoryComponent implements OnInit {
         private odpService: OdpService,
         private messageService: MessagesService,
         private fb: FormBuilder
-
     ) {
         this.activeRepository = this.config.getRepository();
     }
@@ -89,17 +88,24 @@ export class RepositoryComponent implements OnInit {
 
     }
 
-
-    clearRepository(repositoryName: string) {
+    /**
+     * Clears a repository with a given repository name
+     * @param repositoryName Name of the repository to clear
+     */
+    clearRepository(repositoryName: string): void {
         if (this.repositoryClear.valid) {
-            this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-            });
+            this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe();
         } else if (this.repositoryClear.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
+        this.repositoryClear.reset();
     }
 
-    deleteRepository(repositoryName: string) {
+    /**
+     * Deletes a repository with a given repository name
+     * @param repositoryName Name of the repository to delete
+     */
+    deleteRepository(repositoryName: string): void {
         if (this.repositoryDelete.valid) {
             this.repositoryOperation.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
                 this.getListOfRepos();
@@ -107,6 +113,7 @@ export class RepositoryComponent implements OnInit {
         } else if (this.repositoryDelete.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
+        this.repositoryDelete.reset();
     }
 
 
