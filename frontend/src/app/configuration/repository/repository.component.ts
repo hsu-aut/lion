@@ -41,16 +41,14 @@ export class RepositoryComponent implements OnInit {
     repositoryDelete = this.fb.control('', Validators.required);
 
     constructor(
-        private config: ConfigurationService,
-        private repositoryOperation: RepositoryOperationsService,
+        private repoService: RepositoryOperationsService,
         private odpService: OdpService,
         private messageService: MessagesService,
         private fb: FormBuilder
-    ) {
-        this.activeRepository = this.config.getRepository();
-    }
+    ) {}
 
     ngOnInit() {
+        this.repoService.getWorkingRepository().pipe(take(1)).subscribe(data => this.activeRepository = data);
         this.odpService.getAllOdps().pipe(take(1)).subscribe(odps => {
             this.odpInfos = odps;
             odps.forEach(odp => {
@@ -62,30 +60,38 @@ export class RepositoryComponent implements OnInit {
 
 
     getListOfRepos() {
-        this.repositoryOperation.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
+        this.repoService.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
             this.repositoryList = data;
             this.repoCount = this.repositoryList.length;
         });
     }
 
-    setRepository(repositoryName: string) {
+    /**
+     * Selects a repository to be the working repo
+     * @param repositoryName Name of the repository to select
+     */
+    setRepository(repositoryName: string): void {
         if (this.repositoryOption.valid) {
-            this.config.setRepository(repositoryName);
-            this.activeRepository = this.config.getRepository();
+            console.log("setting repo");
+            this.repoService.setWorkingRepository(repositoryName).pipe(take(1)).subscribe();
+
         } else if (this.repositoryOption.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
     }
 
-    createRepository(repositoryName: string) {
+    /**
+     * Creates a new repository with the given repository name
+     * @param repositoryName Name of the repo to create
+     */
+    createRepository(repositoryName: string): void {
         if (this.repositoryCreate.valid) {
-            this.repositoryOperation.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+            this.repoService.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
                 this.getListOfRepos();
             });
         } else if (this.repositoryCreate.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
-
     }
 
     /**
@@ -94,7 +100,7 @@ export class RepositoryComponent implements OnInit {
      */
     clearRepository(repositoryName: string): void {
         if (this.repositoryClear.valid) {
-            this.repositoryOperation.clearRepository(repositoryName).pipe(take(1)).subscribe();
+            this.repoService.clearRepository(repositoryName).pipe(take(1)).subscribe();
         } else if (this.repositoryClear.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
@@ -107,7 +113,7 @@ export class RepositoryComponent implements OnInit {
      */
     deleteRepository(repositoryName: string): void {
         if (this.repositoryDelete.valid) {
-            this.repositoryOperation.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
+            this.repoService.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
                 this.getListOfRepos();
             });
         } else if (this.repositoryDelete.invalid) {

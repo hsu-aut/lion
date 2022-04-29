@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { RepositoryService } from '../../shared-services/repository.service';
 import { ModelService } from '../../shared-services/model.service';
 
@@ -25,6 +25,13 @@ export class RepositoriesController {
 		return this.repoService.createRepository(repositoryName);
 	}
 
+	@Put('')
+	setWorkingRepository(@Query("type") type: string, @Body() repoData: {repositoryName: string}) {
+		if(type == "current") {
+			this.repoService.setWorkingRepository(repoData.repositoryName);
+		}
+	}
+
 	/**
 	 * GET all RDF triples
 	 * @returns 
@@ -34,16 +41,18 @@ export class RepositoriesController {
 		return this.tboxService.getAllTriples();
 	}
 
-	/** 
-	* DELETE all RDF triples
-	*/
+	/**
+	 * Clear a repository by deleting all statements. Does not delete the repository itself.
+	 * @param repositoryName Name of the repository to clear
+	 * @returns 
+	 */
 	@Delete('/:repositoryName/statements')
 	deleteAllRdfTriples(@Param("repositoryName") repositoryName: string): any {
 		return this.repoService.clearRepository(repositoryName);
 	}
 
 	/**
-	 * Delete a repository with a given repository name
+	 * Delete a complete repository with a given repository name
 	 * @param repositoryName Name of the repository to delete
 	 * @returns 
 	 */

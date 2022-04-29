@@ -26,7 +26,7 @@ export class OdpService {
 	
 
 	async insertOdp(patternName: OdpName, version: string): Promise<AxiosResponse<void>> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
 		const odpUrl = this.odpStore.getOdpVersionUrl(patternName, version);
 		const odp = await firstValueFrom(this.http.get<any>(odpUrl));
 

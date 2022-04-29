@@ -11,7 +11,7 @@ export class GraphDbModelService {
         private httpService: HttpService) {}
 
 	async addTurtleFileToGraph(ttlContent: string, graphName: string) {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
         
 		// promise that is returned by them ethod
 

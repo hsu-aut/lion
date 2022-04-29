@@ -22,17 +22,25 @@ export class RepositoryOperationsService {
         private http: HttpClient,
         private config: ConfigurationService,
         private messageService: MessagesService
-    ) {
-        // default repository
-        this.repository = 'testdb';
+    ) {}
+
+    public getWorkingRepository(): Observable<string> {
+        const url = this.getRepositoryURL();
+        const params = {
+            type: "current"
+        };
+        return this.http.get<string>(url, {params: params});
     }
 
-    public getRepository() {
-        return this.repository;
-    }
-
-    private setRepository(repositoryName) {
-        this.repository = repositoryName;
+    public setWorkingRepository(repositoryName): Observable<void> {
+        const url = this.getRepositoryURL();
+        const repoData = {
+            repositoryName: repositoryName
+        };
+        const params = {
+            type: "current"
+        };
+        return this.http.put<void>(url, repoData, {params: params});
     }
 
     private getRepositoryURL() {
@@ -40,7 +48,7 @@ export class RepositoryOperationsService {
     }
 
 
-    createRepository(repositoryName) {
+    createRepository(repositoryName: string) {
         const httpOptions = {
             headers: new HttpHeaders({
                 'Content-Type': 'none',
@@ -49,10 +57,8 @@ export class RepositoryOperationsService {
         };
 
         const request = this.getRepositoryURL() + `/create?repositoryName=${repositoryName}`;
-        console.log(request, httpOptions);
         const dbObservale = new Observable((observer) => {
             this.http.get(request, httpOptions).subscribe((data: any) => {
-                this.setRepository(repositoryName);
                 this.messageService.addMessage('success', 'Done!', 'Created the repository ' + repositoryName + '. You may want to add TBoxes to it.');
                 observer.next(data);
                 observer.complete();

@@ -17,7 +17,7 @@ export class SparqlService {
      * @param queryString SPARQL query string that will be executed
      */
 	query(queryString: string): Observable<SparqlResponse> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
         
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',
@@ -40,7 +40,7 @@ export class SparqlService {
      * @returns 
      */
 	update(updateString: string): Observable<void> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
         
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',

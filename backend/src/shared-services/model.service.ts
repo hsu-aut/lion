@@ -19,7 +19,7 @@ export class ModelService {
 	 * @returns 
 	 */
 	getAllTriples(): Observable<AxiosResponse<any>> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
 		const reqConfig : AxiosRequestConfig = {
 			method: 'GET',
 			headers: {
@@ -38,7 +38,7 @@ export class ModelService {
 		// Has this ever been used???
 		await this.deleteAllTBoxes();
 
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
 		const reqConfig : AxiosRequestConfig= {
 			method: 'GET',
 			headers: {
@@ -53,7 +53,7 @@ export class ModelService {
 
 
 	async deleteTBox(patternName: OdpName): Promise<AxiosResponse<void>> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
 		
 		const patternUrl = OdpName[patternName];
 		const pattern = await this.http.get<any>(patternUrl).toPromise();
