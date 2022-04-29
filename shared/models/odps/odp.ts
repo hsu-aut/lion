@@ -11,6 +11,7 @@ export enum OdpName {
 
 
 export interface OdpInfo {
+	name: OdpName,
 	odpUrl: string,
 	odpVersionUrl: string
 	versions: Array<string>
