@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { finalize } from 'rxjs/operators';
@@ -8,13 +8,9 @@ import { concat } from "rxjs";
 import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
 import { RepositoryOperationsService } from '../../shared/services/backEnd/repositoryOperations.service';
 import { MessagesService } from '../../shared/services/messages.service';
-import { Dinen61360Service } from '../../modelling/rdf-models/dinen61360Model.service';
-import { Isa88ModelService } from '../../modelling/rdf-models/isa88Model.service';
-import { Iso22400_2ModelService } from '../../modelling/rdf-models/iso22400_2Model.service';
-import { Vdi2206ModelService } from '../../modelling/rdf-models/vdi2206Model.service';
-import { Vdi3682ModelService } from '../../modelling/rdf-models/vdi3682Model.service';
-import { WadlModelService } from '../../modelling/rdf-models/wadlModel.service';
 import { DashboardService } from '../../shared/services/dashboard.service';
+import { OdpInfo, OdpName } from '@shared/models/odps/odp';
+import { OdpService } from '../../shared/services/backEnd/odp.service';
 
 
 @Component({
@@ -34,6 +30,10 @@ export class RepositoryComponent implements OnInit {
     repositoryList: Array<string>;
     activeRepository: string;
 
+    // ODPs
+    odpInfos = new Array<OdpInfo>();
+    odpFormGroup = this.fb.group({});
+
     // forms
     repositoryOption = this.fb.control('', Validators.required);
     repositoryCreate = this.fb.control('', Validators.required);
@@ -43,14 +43,8 @@ export class RepositoryComponent implements OnInit {
     constructor(
         private config: ConfigurationService,
         private repositoryOperation: RepositoryOperationsService,
+        private odpService: OdpService,
         private messageService: MessagesService,
-
-        // model services
-        private VDI2206_Service: Vdi2206ModelService,
-        private ISA_Service: Isa88ModelService,
-        private Dashboard_Service: DashboardService,
-        private WadlModelService: WadlModelService,
-
         private fb: FormBuilder
 
     ) {
@@ -58,6 +52,12 @@ export class RepositoryComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.odpService.getAllOdps().pipe(take(1)).subscribe(odps => {
+            this.odpInfos = odps;
+            odps.forEach(odp => {
+                this.odpFormGroup.addControl(odp.name, new FormControl(odp.versions[0]));
+            });
+        });
         this.getListOfRepos();
     }
 
@@ -73,7 +73,6 @@ export class RepositoryComponent implements OnInit {
         if (this.repositoryOption.valid) {
             this.config.setRepository(repositoryName);
             this.activeRepository = this.config.getRepository();
-            this.refreshServices();
         } else if (this.repositoryOption.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
@@ -111,29 +110,37 @@ export class RepositoryComponent implements OnInit {
     }
 
 
-    refreshServices() {
-        console.info("Refreshing data ...");
-        this.VDI2206_Service.initializeVDI2206();
-        this.ISA_Service.initializeISA88();
-        this.Dashboard_Service.initializeDashboard();
-        this.WadlModelService.initializeWADL();
+    /**
+     * Loads one ODP with its specified version
+     * @param odpName Name of the ODP to load
+     */
+    loadOdp(odpName: OdpName): void {
+        const version = this.odpFormGroup.get(odpName).value;
+        this.odpService.loadOdpIntoRepository(odpName, version).pipe(take(1)).subscribe();
     }
 
-    loadTBoxes(): void {
-        const ObservableSequence = concat(
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI3682"),
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "WADL"),
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISA88"),
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "DINEN61360"),
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "VDI2206"),
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "ISO22400_2"),
-            this.repositoryOperation.loadTBoxes(this.config.getRepository(), "OPCUA"),
+    /**
+     * Sets all ODPs to their latest version
+     */
+    setAllVersionsToLatest(): void {
+        Object.keys(this.odpFormGroup.controls).forEach(fgKey => {
+            // This assumes that latest version is always the first retrieved from Github.
+            // This might not always be the case, it might be better to properly sort by tag name
+            const latestVersion = this.odpInfos.find(odpInfo => odpInfo.name == fgKey).versions[0];
+            this.odpFormGroup.get(fgKey).setValue(latestVersion);
+        });
+    }
 
-        ).pipe(
-            finalize(() => this.refreshServices()) // Execute when the observable completes
-        );
-
-        ObservableSequence.subscribe((data: any) => console.log(data));
+    /**
+     * Loads all ODPs with the currently specified versions
+     */
+    loadAllOdps(): void {
+        // Iterate over the form to load every odp with the selected version
+        Object.keys(this.odpFormGroup.controls).forEach(fgKey => {
+            const odpName = OdpName[fgKey];
+            const version = this.odpFormGroup.get(fgKey).value;
+            this.odpService.loadOdpIntoRepository(odpName, version).pipe(take(1)).subscribe();
+        });
     }
 
 
