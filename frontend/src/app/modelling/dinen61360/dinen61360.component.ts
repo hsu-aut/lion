@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
-import { DINEN61360Variables } from '@shared/interfaces/dinen61360-variables.interface';
+import { DINEN61360Variables } from '@shared/models/dinen61360-variables.interface';
 import { Isa88ModelService } from '../rdf-models/isa88Model.service';
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';

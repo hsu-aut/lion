@@ -2,7 +2,7 @@ import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { map, Observable } from "rxjs";
-import { SparqlResponse } from "../interfaces/sparql/SparqlResponse";
+import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { RepositoryService } from "./repository.service";
 
 @Injectable()
@@ -17,7 +17,7 @@ export class SparqlService {
      * @param queryString SPARQL query string that will be executed
      */
 	query(queryString: string): Observable<SparqlResponse> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
         
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',
@@ -40,7 +40,7 @@ export class SparqlService {
      * @returns 
      */
 	update(updateString: string): Observable<void> {
-		const currentRepo = this.repoService.getCurrentRepository();
+		const currentRepo = this.repoService.getWorkingRepository();
         
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',

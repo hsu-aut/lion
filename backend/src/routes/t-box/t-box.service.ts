@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { map, Observable, pipe, tap } from 'rxjs';
-import { SparqlResponse } from '../../interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { SparqlService } from '../../shared-services/sparql.service';
 
 /**

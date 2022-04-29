@@ -1,4 +1,4 @@
-import { SparqlResponse } from "@shared/interfaces/sparql/SparqlResponse";
+import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { map, OperatorFunction, pipe } from "rxjs";
 
 /**

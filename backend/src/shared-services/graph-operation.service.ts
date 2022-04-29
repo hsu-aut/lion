@@ -22,7 +22,7 @@ export class GraphOperationService {
 	getAllTriples(graphName: string, format: string): Observable<AxiosResponse<any>> {
 		// TODO: Format should be an enum
 
-		const currentRepo = this.graphDbRepoService.getCurrentRepository();
+		const currentRepo = this.graphDbRepoService.getWorkingRepository();
 		const reqConfig: AxiosRequestConfig = {
 			method: 'GET',
 			headers: {
@@ -40,7 +40,7 @@ export class GraphOperationService {
 
 	// TODO: Check wtf this method does and check whether it really has no return
 	setGraph(graphName: string, format: string, triples: string): Observable<AxiosResponse<void>> {
-		const currentRepo = this.graphDbRepoService.getCurrentRepository();
+		const currentRepo = this.graphDbRepoService.getWorkingRepository();
 		const reqConfig: AxiosRequestConfig = {
 			method: 'PUT',
 			headers: {
@@ -63,7 +63,7 @@ export class GraphOperationService {
 	 * @returns void
 	 */
 	deleteGraph(graphName: string): Observable<AxiosResponse<void>> {
-		const currentRepo = this.graphDbRepoService.getCurrentRepository();
+		const currentRepo = this.graphDbRepoService.getWorkingRepository();
 		const reqConfig: AxiosRequestConfig = {
 			method: 'DELETE',
 			responseType: 'text',
@@ -83,7 +83,7 @@ export class GraphOperationService {
 	 * @returns 
 	 */
 	setTriplesToGraph(graph: string, format: string, triples: string): Observable<AxiosResponse<any>> {
-		const currentRepo = this.graphDbRepoService.getCurrentRepository();
+		const currentRepo = this.graphDbRepoService.getWorkingRepository();
 		const reqConfig: AxiosRequestConfig = {
 			method: 'PUT',
 			headers: {
@@ -107,7 +107,7 @@ export class GraphOperationService {
 	 * @returns 
 	 */
 	addTriplesToGraph(ttlContent: string, graphName: string): Observable<AxiosResponse<void>> {
-		const currentRepo = this.graphDbRepoService.getCurrentRepository();
+		const currentRepo = this.graphDbRepoService.getWorkingRepository();
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',
 			headers: {

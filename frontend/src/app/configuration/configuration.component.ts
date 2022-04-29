@@ -7,16 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConfigurationComponent implements OnInit {
 
-  collapedSideBar: boolean;
+    collapedSideBar: boolean;
 
-  constructor() { }
+    constructor() { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
 
-  receiveCollapsed($event) {
-      this.collapedSideBar = $event;
-  }
+    receiveCollapsed($event) {
+        this.collapedSideBar = $event;
+    }
 
 }

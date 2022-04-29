@@ -11,11 +11,13 @@ import { AppService } from './app.service';
 import { DINEN61360Module } from './routes/dinen61360/dinen61360.module';
 import { TBoxModule } from './routes/t-box/t-box.module';
 import { ISO224002Module } from './routes/iso224002/iso224002.module';
+import { OdpModule } from './routes/odps/odp.module';
 
 
 @Module({
 	imports: [
 		TBoxModule,
+		OdpModule,
 		FpbModule,
 		StepModule,
 		EclassSearchModule,
