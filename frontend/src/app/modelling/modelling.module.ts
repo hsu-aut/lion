@@ -13,7 +13,6 @@ import { ModellingRoutingModule } from './modelling-routing.module';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { Dinen61360Component } from './dinen61360/dinen61360.component';
 import { Vdi2206Component } from './vdi2206/vdi2206.component';
-import { WadlComponent } from './wadl/wadl.component';
 import { Isa88Component } from './isa88/isa88.component';
 import { Iso22400_2Component } from './iso22400-2/iso22400-2.component';
 
@@ -36,7 +35,6 @@ import { TableModule } from '../shared/modules/table/table.module';
         SidebarComponent,
         Dinen61360Component,
         Vdi2206Component,
-        WadlComponent,
         Isa88Component,
         Iso22400_2Component
     ]
