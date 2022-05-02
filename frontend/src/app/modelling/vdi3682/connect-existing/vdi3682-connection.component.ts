@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { take } from 'rxjs';
 import { MessagesService } from '../../../shared/services/messages.service';
 import { PrefixesService } from '../../../shared/services/prefixes.service';
+import { TboxService } from '../../rdf-models/tbox.service';
 import { Triple } from '../../rdf-models/triple.service';
 import { Vdi3682ModelService } from '../../rdf-models/vdi3682Model.service';
 
@@ -32,6 +33,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
+        private tBoxService: TboxService,
         private vdi3682Service: Vdi3682ModelService,
         private prefixService: PrefixesService,
         private messageService: MessagesService
@@ -72,9 +74,10 @@ export class Vdi3682ConnectionComponent implements OnInit {
     getExistingObjects(owlClass: string): void {
         if (!owlClass) return;
 
-        this.vdi3682Service.getListOfIndividualsByClass(owlClass).pipe(take(1)).subscribe((data: any) => {
-            this.existingObjects = data;
-        });
+        this.tBoxService.getListOfIndividualsByClass(owlClass, "http://www.hsu-ifa.de/ontologies/VDI3682#").pipe(take(1))
+            .subscribe((data: any) => {
+                this.existingObjects = data;
+            });
     }
 
 

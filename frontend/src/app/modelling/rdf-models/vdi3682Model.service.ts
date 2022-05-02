@@ -86,22 +86,6 @@ export class Vdi3682ModelService {
 
 
     /**
-     * Get a list of all individuals of a class within a certain namespace
-     * @param owlClass IRI of an OWL class to get all individuals of
-     * @returns List of all individual of the given class
-     */
-    public getListOfIndividualsByClass(owlClass: string): Observable<Array<string>> {
-        const owlClassIri = this.nameService.parseToIRI(owlClass);
-
-        // Construct Params Object
-        let params = new HttpParams();
-        params = params.append('class', owlClassIri);
-        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#");
-
-        return this.http.get<SparqlResponse>("/lion_BE/t-box/individuals-by-class", {params: params}).pipe(toSparqlVariableList(), take(1));
-    }
-
-    /**
      * Get a list of all Processes according to VDI 3682
      * @returns A list of processes
      */
