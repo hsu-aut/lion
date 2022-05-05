@@ -277,7 +277,7 @@ export class Dinen61360Component implements OnInit {
         this.dinen61360Service.getTableOfAllInstanceInfo().subscribe((data: any) => this.allInstances = data);
         this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.isoInfo = data);
         // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
-        this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
+        this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
         // this.isoInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
         this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
         this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
@@ -286,7 +286,7 @@ export class Dinen61360Component implements OnInit {
         this.allStructureInfoInheritancebyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_MOD();
         this.allStructureInfoInheritancebyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM();
         this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
-        this.allBehaviorInfo = this.isa88Service.getISA88BehaviorInfo();
+        this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
     }
 
     getStatisticInfo(): void {
