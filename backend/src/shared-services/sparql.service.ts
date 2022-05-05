@@ -1,9 +1,10 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
-import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { map, Observable } from "rxjs";
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { catchError, map, Observable } from "rxjs";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { RepositoryService } from "./repository.service";
+import { GraphDbRequestException } from "../custom-exceptions/GraphDbRequestException";
 
 @Injectable()
 export class SparqlService {
@@ -12,10 +13,13 @@ export class SparqlService {
         private http: HttpService,
         private repoService: RepositoryService) {}
 
+
 	/**
-     * Executes a query against the current repository
-     * @param queryString SPARQL query string that will be executed
-     */
+	 * Executes a query against the current repository
+	 * @param queryString SPARQL query string that will be executed
+	 * @returns An observable of the SparqlResponse object
+	 * @throws GraphDbRequestException
+	 */
 	query(queryString: string): Observable<SparqlResponse> {
 		const currentRepo = this.repoService.getWorkingRepository();
         
@@ -29,8 +33,16 @@ export class SparqlService {
 			baseURL: 'http://localhost:7200/',
 			url: `/repositories/${currentRepo}`
 		};
+
 		// Return the response body (i.e. the full Sparql Response)
-		return this.http.request<SparqlResponse>(reqConfig).pipe(map((data: AxiosResponse<SparqlResponse>) => data.data));
+		return this.http.request<SparqlResponse>(reqConfig)
+			.pipe(
+				map((data: AxiosResponse<SparqlResponse>) => data.data),
+				catchError((err:AxiosError) => {
+					console.log(err.response.data);
+				
+					throw new GraphDbRequestException(err.response.data, err.response.status);
+				}));
 	}
 
 
@@ -54,8 +66,15 @@ export class SparqlService {
 			url: `/repositories/${currentRepo}/statements`
 		};
         
-		// TODO: Check if it really returns "void"
-		return this.http.request<void>(reqConfig).pipe(map(data => data.data));
+		// Return the response body (i.e. the full Sparql Response) and catch errors should they occur
+		return this.http.request<void>(reqConfig)
+			.pipe(
+				map(data => data.data), 
+				catchError((err:AxiosError) => {
+					console.log(err.response.data);
+					
+					throw new GraphDbRequestException(err.response.data, err.response.status);
+				}));
 	}
 
 }

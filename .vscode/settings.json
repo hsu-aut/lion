@@ -10,6 +10,8 @@
         "backend",
         "shared"
     ],
+    // Set HTML line length to 120
+    "html.format.wrapLineLength": 140,
     "typescript.preferences.importModuleSpecifier": "relative",
     "editor.showFoldingControls": "always",
     "editor.wordWrap": "off",

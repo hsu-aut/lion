@@ -1,5 +1,5 @@
 <!-- Table card -->
-<div class="px-sm-3 py-sm-3 shadow p-3 mb-5 bg-white rounded" *ngIf="currentTable.length!=0">
+<div class="px-sm-3 py-sm-3 shadow p-3 bg-white rounded" *ngIf="currentTable.length!=0">
     <div class="card border-0">
         <div class="card-body ">
             <!-- titles -->
@@ -43,9 +43,46 @@
                     </tbody>
                 </table>
             </div>
-            <!-- paggination -->
-            <div class="row justify-content-end">
-                <div class="dropdown col-sm-2">
+            <!-- pagination -->
+            <div class="row float-end">
+                <div class="btn-toolbar" role="toolbar">
+
+                        <div class="btn-group me-2" role="group">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Items per page: {{itemsPerPageOptions[0]}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" *ngFor='let option of itemsPerPageOptions'
+                                    (click)="setItemsPerPage(option)">{{option}}</a>
+                            </div>
+                        </div>
+                        <div class="btn-group me-2" role="group" aria-label="Second group">
+                            <button type="button" class="btn btn-outline-secondary" (click)="firstPage()">
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" (click)="previousPage()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" (click)="nextPage()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" (click)="lastPage()">
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </div>
+                        <div class="btn-group" role="group" aria-label="Third group">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Page: {{currentPage + 1}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" *ngFor='let page of pages' (click)="setCurrentPage(page-1)">{{page}}</a>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- <div class="dropdown col-lg-2 col-sm-3 col-xs-6">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Items per page: {{itemsPerPageOptions[0]}}
@@ -55,7 +92,7 @@
                             (click)="setItemsPerPage(option)">{{option}}</a>
                     </div>
                 </div>
-                <div class="btn-group col-sm-2" role="group" aria-label="Basic example">
+                <div class="btn-group col-lg-2 col-sm-3" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-outline-secondary" (click)="firstPage()"><i
                             class="fas fa-angle-double-left"></i></button>
                     <button type="button" class="btn btn-outline-secondary" (click)="previousPage()"><i
@@ -65,7 +102,7 @@
                     <button type="button" class="btn btn-outline-secondary" (click)="lastPage()"><i
                             class="fas fa-angle-double-right"></i></button>
                 </div>
-                <div class="dropleft col-sm-1">
+                <div class="dropleft col-lg-1 col-sm-2">
                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Page: {{currentPage + 1}}
@@ -73,7 +110,7 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <a class="dropdown-item" *ngFor='let page of pages' (click)="setCurrentPage(page-1)">{{page}}</a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
