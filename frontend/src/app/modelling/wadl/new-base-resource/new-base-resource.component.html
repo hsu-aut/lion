@@ -1,0 +1,71 @@
+ <!-- content to create resource -->
+ <form class="row" [formGroup]="baseResourceForm">
+    <div class="form-group col-sm-5">
+        <label class="form-label"> The physical entity providing the base resource</label>
+        <input formControlName="serviceProvider" class="form-control" name="serviceProvider"
+            type="text" placeholder="[Click from table below]" readonly>
+    </div>
+    <div class="form-group col-sm-5">
+        <label class="form-label"> The resource base path</label>
+        <div class="input-group">
+            <span class="input-group-text" id="resourcePathLabel">http://</span>
+            <input type="text" class="form-control" formControlName="resourceBasePath" placeholder="[URL of resource base path]"  aria-describedby="resourcePathLabel">
+        </div>
+    </div>
+    <div class="form-group col-sm-2 align-self-end">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary"
+                (click)="addBaseResource()">Add</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                        (click)="deleteBaseResource()">Delete
+                        base resource</a>
+                    <a class="dropdown-item"
+                        (click)="getInsertString()">Download
+                        SPARQL INSERT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="tab-content py-3" id="myTabContent">
+    <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="VDI-tab" data-bs-toggle="tab" type="button"
+                data-bs-target="#VDI" role="tab" aria-controls="VDI" aria-selected="true"> VDI 3682/2206
+                individuals </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="ISO-tab" data-bs-toggle="tab" type="button" data-bs-target="#ISO"
+                role="tab" aria-controls="ISO" aria-selected="false"> ISO 22400 individuals </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="WADL_BASE_RESOURCES-tab" data-bs-toggle="tab" type="button"
+                data-bs-target="#WADL_BASE_RESOURCES" role="tab" aria-controls="WADL_BASE_RESOURCES"
+                aria-selected="false"> WADL base resources </a>
+        </li>
+    </ul>
+    <div class="tab-pane border border-top-0 fade show active" id="VDI" role="tabpanel" aria-labelledby="VDI-tab">
+        <!-- table for VDI3682/2206 individuals -->
+        <app-table [currentTable]="allVDIInfo" (tableClickedCell)="tableClick('VDI',$event)">
+        </app-table>
+    </div>
+    <div class="tab-pane fade" id="ISO" role="tabpanel" aria-labelledby="ISO-tab">
+        <!-- table for ISO 22400-2 individuals -->
+        <app-table [currentTable]="allIsoEntityInfo" (tableClickedRow)="tableClick('ISO',$event)">
+        </app-table>
+    </div>
+    <div class="tab-pane fade" id="WADL_BASE_RESOURCES" role="tabpanel"
+        aria-labelledby="WADL_BASE_RESOURCES-tab">
+        <!-- table for ISO 22400-2 individuals -->
+        <app-table [currentTable]="baseResourcesTable"
+            (tableClickedRow)="tableClick('WADL',$event)">
+        </app-table>
+    </div>
+</div>

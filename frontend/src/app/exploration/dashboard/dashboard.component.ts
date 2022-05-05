@@ -12,6 +12,7 @@ import { DashboardService } from '../../shared/services/dashboard.service';
 import { DataLoaderService } from '../../shared/services/dataLoader.service';
 
 import { take } from 'rxjs/operators';
+import { toSparqlTable } from '../../modelling/utils/rxjs-custom-operators';
 
 @Component({
     selector: 'app-dashboard',
@@ -101,7 +102,7 @@ export class DashboardComponent implements OnInit {
         this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
         this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
         this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.DINEN61360Table  =  data);
-        this.WADLTable = this.wadlService.getTABLE_BASE_RESOURCES();
+        this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe(data => this.WADLTable = data);
         this.getTriplesCount();
         this.getActiveNamespace();
 
