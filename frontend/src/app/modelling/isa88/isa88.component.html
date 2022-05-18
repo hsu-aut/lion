@@ -14,8 +14,9 @@
         </div>
         <div class="col">Select Mode to be included
           <select [(ngModel)]="optionMode" name="optionMode" class="form-control">
-            <option>Production</option>
-            <option>Maintenance</option>
+            <option *ngFor='let x of optionsMode'>
+              {{x}}
+            </option>
           </select>
         </div>
       </div>
