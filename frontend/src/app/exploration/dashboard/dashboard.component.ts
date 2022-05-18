@@ -100,9 +100,9 @@ export class DashboardComponent implements OnInit {
             this.currentTable = data;
         });
         this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
-        this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
-        this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.DINEN61360Table  =  data);
         this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe(data => this.WADLTable = data);
+        this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.ISA88Table = data);
+        this.dinen61360Service.getTableOfAllTypes().subscribe((data: Record<string, string>[]) => this.DINEN61360Table  =  data);
         this.getTriplesCount();
         this.getActiveNamespace();
 
@@ -117,7 +117,7 @@ export class DashboardComponent implements OnInit {
         });
         this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.VDI2206Table = data);
         this.VDI2206Table = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
-        this.ISA88Table = this.isa88Service.getISA88BehaviorInfo();
+        this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.ISA88Table = data);
         this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.DINEN61360Table  =  data);
         this.getTriplesCount();
         this.getActiveNamespace();
