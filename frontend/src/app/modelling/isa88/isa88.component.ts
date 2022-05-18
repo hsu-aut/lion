@@ -39,19 +39,18 @@ export class Isa88Component implements OnInit {
   }
 
   buildInsert() {
-    // console.log(this.optionMode);
-    // console.log(this.selectedOption);
     // TODO: errors occur, when preselected selectedOption is not changed
     const mode: string  = this.optionMode;
     const SystemName: string  = this.selectedOption;
-    this.modelService.buildISA88(SystemName, mode,"build").subscribe((data: any) => {});
+    this.modelService.buildISA88(SystemName, mode,"build").subscribe();
   }
 
   executeInsert() {
     const mode: string = this.optionMode;
     const SystemName: string = this.selectedOption;
-    this.modelService.buildISA88(SystemName, mode,"add");
-    this.modelService.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.currentTable = data);
+    this.modelService.buildISA88(SystemName, mode,"add").subscribe(()=>{
+      this.modelService.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.currentTable = data);
+    });
   }
 
   setTableDescription(){
