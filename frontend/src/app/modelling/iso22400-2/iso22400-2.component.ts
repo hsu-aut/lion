@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormArray } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 import { Iso22400_2ModelService, ISO224002Variables } from '../rdf-models/iso22400_2Model.service';
@@ -8,9 +7,9 @@ import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
 import { PrefixesService } from '../../shared/services/prefixes.service';
 import { MessagesService } from '../../shared/services/messages.service';
-import { Tables } from '../utils/tables';
+import { concatListsToTable2, Tables } from '../utils/tables';
 import { take } from 'rxjs/operators';
-import { forkJoin, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-iso22400-2',
@@ -185,17 +184,9 @@ export class Iso22400_2Component implements OnInit {
         subscriber.complete();
     });
 
-    // create new observable of two observables which completes when each observable returns 1st output
-    const combinedObservable: Observable<[string[], string[]]> = forkJoin([
-        vdi2206Observable.pipe(take(1)),    // TODO: exchange this dummy with real observable
-        this.vdi3682Service.getListOfTechnicalResources()
-    ]);  
-
-    // combine in one table as soon as combined observable completes
-    combinedObservable.subscribe((data: [string[], string[]]) => {
-        const cols: string[] = ["VDI2206:System", "VDI3682:TechnicalResource"]; 
-        this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
-    });
+    // joined tabele (vdi 2206 & 3682) TODO: replace vdi2206Observable 
+    concatListsToTable2([vdi2206Observable.pipe(take(1)), this.vdi3682Service.getListOfTechnicalResources()],["VDI2206:System", "VDI3682:TechnicalResource"])
+        .subscribe((data: Array<Record<string, string>>) => this.allVDIInfo = data);
 
     // remaining tables wihtout joins
     this.isoService.getTableOfAllEntityInfo().subscribe((data: Record<string, string>[]) => this.allIsoEntityInfo = data);
