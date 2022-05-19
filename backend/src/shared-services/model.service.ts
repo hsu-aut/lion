@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { RepositoryService } from "./repository.service";
 import { firstValueFrom, Observable } from "rxjs";
-import { OdpName } from "@shared/enums/OdpName";
+import { OdpName } from "@shared/models/odps/odp";
 import { map } from "rxjs/operators";
 
 @Injectable()

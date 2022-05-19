@@ -1,4 +1,4 @@
-export class ISO224002Variables {
+export interface ISO224002Variables {
     simpleElement: ISO224002ElementVariables
     KPI: ISO224002KPIVariables
   }
