@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { DINEN61360Variables } from '@shared/interfaces/dinen61360-variables.interface';
+import { DINEN61360Variables } from '@shared/models/dinen61360-variables.interface';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { DINEN61360Service } from './dinen61360.service';
 
 @Controller('lion_BE/dinen61360')

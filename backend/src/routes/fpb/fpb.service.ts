@@ -5,7 +5,7 @@ import { map, take, tap } from 'rxjs/operators';
 import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
 import { SparqlService } from '../../shared-services/sparql.service';
 import { FpbMappingService } from './fpb-mapping.service';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 
 @Injectable()
 export class FpbService { 
