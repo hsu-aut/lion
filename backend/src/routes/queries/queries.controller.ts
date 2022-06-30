@@ -2,7 +2,7 @@ import { Controller,Post} from '@nestjs/common';
 import { StringBody } from '../../custom-decorator/StringBodyDecorator';
 import { SparqlService } from '../../shared-services/sparql.service';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 
 /**
  * A controller that provides access to SPARQL operations

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ISO224002ElementVariables, ISO224002KPIVariables } from '@shared/interfaces/iso224002-variables.interface';
+import { ISO224002ElementVariables, ISO224002KPIVariables } from '@shared/models/iso224002-variables.interface';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { ISO224002Service } from './iso224002.service';
 
 @Controller('lion_BE/iso224002')

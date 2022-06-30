@@ -4,7 +4,7 @@ import { createPool, Pool } from 'mysql2/promise';
 import { ConnectionOptions } from 'mysql2';
 import { AxiosRequestConfig } from 'axios';
 import { Agent } from 'https';
-import { EclassProperty } from '@shared/interfaces/eclass-property.interface';
+import { EclassProperty } from '@shared/models/eclass-property.interface';
 
 
 @Injectable()

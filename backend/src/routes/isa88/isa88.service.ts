@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlService } from '../../shared-services/sparql.service';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 
 @Injectable()
 export class ISA88Service {
@@ -11,18 +11,18 @@ export class ISA88Service {
 	){}
 
 	public executeISA88Build(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI: string): Observable<void> {
-                return this.sparqlService.update(this.buildISA88(activeNameSpace, activeGraph, SystemName, mode, SystemIRI));
+		return this.sparqlService.update(this.buildISA88(activeNameSpace, activeGraph, SystemName, mode, SystemIRI));
 	}
 
 	public getISA88BuildString(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI: string): string {
-                return this.buildISA88(activeNameSpace, activeGraph, SystemName, mode, SystemIRI);
+		return this.buildISA88(activeNameSpace, activeGraph, SystemName, mode, SystemIRI);
 	}
 
 	public getBehaviorInfoTable(): Observable<SparqlResponse> {
-                return this.sparqlService.query(this.sparqlSelectBehaviorInfo);
+		return this.sparqlService.query(this.sparqlSelectBehaviorInfo);
 	}
 
-	private sparqlSelectBehaviorInfo: string =`
+	private sparqlSelectBehaviorInfo =`
 PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -44,7 +44,7 @@ SELECT ?State ?Transition WHERE {
 	// query string method
 	private buildISA88(activeNameSpace: string, activeGraph: string, SystemName: string, mode: string, SystemIRI: string): string {
 
-        const insertStringProduction = `
+		const insertStringProduction = `
 # Necessary W3C ontologies
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -321,7 +321,7 @@ INSERT {
   }
 }`;
 
-        const insertStringMaintenance = `
+		const insertStringMaintenance = `
 # Necessary W3C ontologies
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -549,10 +549,10 @@ INSERT {
 
 
 `;
-        if (mode == "Production") { return insertStringProduction; }
-        if (mode == "Maintenance") { return insertStringMaintenance; }
+		if (mode == "Production") { return insertStringProduction; }
+		if (mode == "Maintenance") { return insertStringMaintenance; }
 
 
-    }
+	}
 
 }
