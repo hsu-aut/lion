@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlResponse } from '../../models/sparql/SparqlResponse';
 import { WadlService } from './wadl.service';
 import { BaseResourceDefinition } from '@shared/models/odps/wadl/BaseResourceDefinition';
+import { ServiceDefinition } from '@shared/models/odps/wadl/ServiceDefinition';
 
 @Controller('lion_BE/wadl')
 export class WadlController {
@@ -22,6 +23,16 @@ export class WadlController {
 	@Get('services')
 	getServices(@Query('baseResource') baseResource: string): Observable<SparqlResponse> {
 		return this.wadlService.getServices(baseResource);
+	}
+
+	@Post('services')
+	addService(@Body() serviceDefinition: ServiceDefinition): Observable<void> {
+		return this.wadlService.addService(serviceDefinition);
+	}
+
+	@Delete('services/:serviceIri')
+	deleteService(@Param('serviceIri') serviceIri: string): Observable<void> {
+		return this.wadlService.deleteService(serviceIri);
 	}
 
 	@Get('methods')

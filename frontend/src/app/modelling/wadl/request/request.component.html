@@ -1,0 +1,221 @@
+<div class="row" [formGroup]="requestForm">
+    <div class="form-group col-sm">
+        <label> The resource base path </label>
+        <select formControlName=resourceBasePath name="resourceBasePath" class="form-control"
+            (click)="getExistingServicesByBase(requestForm.controls['resourceBasePath'].value)">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of resourceBasePaths'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label> The service path </label>
+        <select formControlName=servicePath name="servicePath" class="form-control"
+            (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
+            (click)="getExistingRequestRepresentation()">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of servicePaths'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label> Method </label>
+        <select formControlName=method name="method" class="form-control"
+            (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
+            (click)="getExistingRequestRepresentation()">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of methods'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label> Parameter type </label>
+        <select formControlName=parameterType name="parameterType" class="form-control"
+            (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
+            (click)="getExistingRequestRepresentation()">
+            <option value=null selected hidden></option>
+            <option>none</option>
+            <option *ngFor='let x of parameterTypes'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+</div>
+<div class="row" [formGroup]="requestForm">
+    <div class="form-group col-sm">
+        <label> Parameter key </label>
+        <input formControlName=parameterKey class="form-control" name="parameterKey" type="text"
+            placeholder="[the key of your parameter/representation]" [readonly]="requestForm.controls['parameterType'].value=='none'"
+            [required]="requestForm.controls['parameterType'].value!='none'">
+    </div>
+    <div class="form-group col-sm">
+        <label> Data type </label>
+        <div class="input-group">
+            <input formControlName=dataType class="form-control" name="dataType" type="text" placeholder="[the required data type]"
+                [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
+                [required]="requestForm.controls['parameterType'].value!='none'">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
+                    (click)="setOntologicalDataType('requestParameter')">
+                    O </button>
+                    <!-- //TODO: setOntologicalDataType('requestParameter')" should only be in modal -->
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-sm">
+        <label> Option value </label>
+        <input formControlName=optionValue class="form-control" name="optionValue" type="text" placeholder="[the key´s option values]"
+            [readonly]="requestForm.controls['parameterType'].value=='none'">
+    </div>
+    <div class="form-group col-sm-1 align-self-end">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary" (click)="createRequestParameter('add')">Add</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createRequestParameter('delete')">Delete
+                        request</a>
+                    <a class="dropdown-item" (click)="createRequestParameter('build')">Download
+                        SPARQL
+                        INSERT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- div is repeated for number of entries in requestFormParameterArray -->
+<div [formGroup]="requestForm">
+    <div formArrayName="requestFormParameterArray">
+        <div class="row" *ngFor="let x of requestFormParameterArray.controls; let i=index" [formGroupName]="i">
+            <div class="form-group col-sm">
+                <input formControlName="parameterKey" class="form-control" name="parameterKey" type="text" readonly>
+            </div>
+            <div class="form-group col-sm">
+                <div class="input-group">
+                    <input formControlName="dataType" class="form-control" name="dataType" type="text" readonly>
+                    <div class="input-group-append">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-sm">
+                <input formControlName="optionValue" class="form-control" name="optionValue" type="text" readonly>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group" role="group">
+                        <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="addButton">
+                            <a class="dropdown-item" (click)="deleteParameter('key', x.controls['parameterKey'].value)">Delete
+                                key</a>
+                            <a class="dropdown-item" (click)="deleteParameter('option', x.controls['parameterKey'].value)">Delete
+                                options</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-sm">
+        <div class="custom-control custom-checkbox">
+            <input [(ngModel)]="requestBodyRepresentationCheck" type="checkbox" class="custom-control-input"
+                id="requestBodyRepresentationCheck">
+            <label class="custom-control-label" for="requestBodyRepresentationCheck">Include body
+                representation</label>
+        </div>
+    </div>
+</div>
+
+<div class="row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
+    <div class="form-group col-sm">
+        <label> Body media type </label>
+        <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text"
+            placeholder="[the required media type of the body]" [required]="requestBodyRepresentationCheck">
+    </div>
+    <div class="form-group col-sm">
+        <label> Body parameter key </label>
+        <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey" type="text"
+            placeholder="[the key of the body representation]" [required]="requestBodyRepresentationCheck">
+    </div>
+    <div class="form-group col-sm">
+        <label> Body data type </label>
+        <div class="input-group">
+            <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text"
+                placeholder="[the required data type]" [readonly]="requestForm.controls['ontologicalBodyDataType'].value"
+                [required]="requestBodyRepresentationCheck">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
+                    (click)="setOntologicalDataType('requestBodyParameter')">
+                    O </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group col-sm">
+        <label> Body option value </label>
+        <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue" type="text" placeholder="[the option values]">
+    </div>
+    <div class="form-group col-sm-1 align-self-end">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary"
+                (click)="createRequestRepresentationParameter('add')">Add</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="createRequestRepresentationParameter('delete')">Delete
+                        body representation</a>
+                    <a class="dropdown-item" (click)="createRequestRepresentationParameter('build')">Download
+                        SPARQL
+                        INSERT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- div is repeated for number of entries in requestFormRepresentationArray -->
+
+<div [formGroup]="requestForm" *ngIf="requestBodyRepresentationCheck && requestFormRepresentationArray.value[0]">
+    <div formArrayName="requestFormRepresentationArray">
+        <div class="row" *ngFor="let x of requestFormRepresentationArray.controls; let i=index" [formGroupName]="i">
+            <div class="form-group col-sm">
+                <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text" readonly>
+            </div>
+            <div class="form-group col-sm">
+                <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey" type="text" readonly>
+            </div>
+            <div class="form-group col-sm">
+                <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text" readonly>
+            </div>
+            <div class="form-group col-sm">
+                <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue" type="text" readonly>
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group" role="group">
+                        <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="addButton">
+                            <a class="dropdown-item" (click)="deleteParameter('key', x.controls['bodyParameterKey'].value)">Delete
+                                key</a>
+                            <a class="dropdown-item" (click)="deleteParameter('option', x.controls['bodyParameterKey'].value)">Delete
+                                options</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<onto-helper-modal></onto-helper-modal>

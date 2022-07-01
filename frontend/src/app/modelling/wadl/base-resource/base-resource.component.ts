@@ -14,10 +14,10 @@ import { Tables } from "../../utils/tables";
 
 @Component({
     selector: 'wadl-base-resource',
-    templateUrl: './new-base-resource.component.html',
+    templateUrl: './base-resource.component.html',
     // styleUrls: ['../wadl.component.scss']
 })
-export class WadlBaseResourceComponent implements OnInit {
+export class BaseResourceComponent implements OnInit {
 
     // Custom validator
     customVal = new cValFns();
@@ -29,16 +29,10 @@ export class WadlBaseResourceComponent implements OnInit {
     resourceBasePaths: Array<string> = [];
     NoOfResourceBasePaths: number;
 
-    servicesTable: Array<Record<string, any>> = [];
 
     baseResourceForm = this.fb.group({
         resourceBasePath: [undefined, [Validators.required, this.customVal.noProtocol, this.customVal.isDomain]],
         serviceProvider: [undefined]
-    })
-
-    serviceForm = this.fb.group({
-        resourceBasePath: [undefined, Validators.required],
-        servicePath: [undefined, [Validators.required, this.customVal.noProtocol, Validators.pattern('([-a-zA-Z0-9()@:%_\+.~#?&//=]){1,}')]]
     })
 
     allIsoEntityInfo: Array<Record<string, any>> = [];
@@ -74,16 +68,14 @@ export class WadlBaseResourceComponent implements OnInit {
             this.baseResourceForm.controls['resourceBasePath'].setValue(event.basePath.slice(7));
             break;
         }
-        case "SERVICE": {
-            this.serviceForm.controls['resourceBasePath'].setValue(event.baseResource);
-            this.serviceForm.controls['servicePath'].setValue(event.servicePath.slice(1));
-            break;
-        }
         }
     }
 
     addBaseResource(): void {
-        if (!this.baseResourceForm.valid) {
+        if (this.baseResourceForm.invalid) {
+            console.log("errors");
+
+            this.baseResourceForm.errors;
             console.log("Form invalid");
             return;
         }
@@ -133,9 +125,6 @@ export class WadlBaseResourceComponent implements OnInit {
         this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe((data: any) => {
             this.baseResourcesTable = data;
         });
-        this.wadlService.getServices().pipe(take(1), toSparqlTable()).subscribe((data: any) => {
-            this.servicesTable = data;
-        });
     }
 
 
@@ -174,7 +163,6 @@ export class WadlBaseResourceComponent implements OnInit {
         this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.allIsoEntityInfo = data);
 
         this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe(data => this.baseResourcesTable = data);
-        this.wadlService.getServices().pipe(take(1), toSparqlTable()).subscribe(data => this.servicesTable = data);
     }
 
 }
