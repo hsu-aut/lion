@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { ISA88Service } from './isa88.service';
 
 @Controller('lion_BE/isa88')

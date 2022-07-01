@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlService } from '../../shared-services/sparql.service';
-import { ISO224002ElementVariables, ISO224002KPIVariables } from '@shared/interfaces/iso224002-variables.interface';
-import { SparqlResponse } from '@shared/interfaces/sparql/SparqlResponse';
+import { ISO224002ElementVariables, ISO224002KPIVariables } from '@shared/models/iso224002-variables.interface';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 
 @Injectable()
 export class ISO224002Service {
 
 	iso224002Insert = new ISO224002Insert();
 	iso224002Data = new ISO224002Data();
-  
+	
 	constructor(
 		private sparqlService: SparqlService,
 	){}
@@ -68,7 +68,7 @@ export class ISO224002Service {
 // TODO: this can be a normal helper method, no additional class needed
 class ISO224002Data {
 
-	public SELECT_LIST_OF_KPIs: string  = `
+	public SELECT_LIST_OF_KPIs  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -79,7 +79,7 @@ class ISO224002Data {
 	}
 	`
   
-	public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS: string  = `
+	public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -90,7 +90,7 @@ class ISO224002Data {
 	}
 	`
   
-	public SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS: string  = `
+	public SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -102,7 +102,7 @@ class ISO224002Data {
 	}
 	`
   
-	public SELECT_LIST_OF_ELEMENT_GROUPS: string  = `
+	public SELECT_LIST_OF_ELEMENT_GROUPS  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
   
 	SELECT ?ISO_Elements
@@ -111,7 +111,7 @@ class ISO224002Data {
 	 FILTER (?ISO_Elements != ISO:OrganizationalTerms)
 	}`
   
-	public SELECT_LIST_OF_KPI_GROUPS: string  = `
+	public SELECT_LIST_OF_KPI_GROUPS  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
   
 	SELECT ?ISO_KPIs
@@ -119,7 +119,7 @@ class ISO224002Data {
 	 ?ISO_KPIs sesame:directSubClassOf ISO:KeyPerformanceIndicator.
 	}`
   
-	public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES: string  = `
+	public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -133,7 +133,7 @@ class ISO224002Data {
 		FILTER (?ISO_Elements != ISO:OperationCluster)
 	}`
   
-	public SELECT_TABLE_ALL_ENTITY_INFO: string  = `
+	public SELECT_TABLE_ALL_ENTITY_INFO  = `
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   
@@ -146,7 +146,7 @@ class ISO224002Data {
 	  FILTER (?EntityType != ISO:OperationCluster)
 	}
 	`
-	public SELECT_TABLE_ELEMENTS: string  = `
+	public SELECT_TABLE_ELEMENTS  = `
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
@@ -163,7 +163,7 @@ class ISO224002Data {
 		?Element ISO:timeSpan ?Duration.}
 	}
 	`
-	public SELECT_TABLE_KPI: string = `
+	public SELECT_TABLE_KPI = `
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
@@ -223,7 +223,7 @@ class ISO224002Data {
 		return selectString;
 	}
   
-  }
+}
 
 // TODO: this can be a normal helper method, no additional class needed
 class ISO224002Insert {
@@ -351,5 +351,5 @@ class ISO224002Insert {
 		  return insertString;
 	  }
   
-  }
+}
   
