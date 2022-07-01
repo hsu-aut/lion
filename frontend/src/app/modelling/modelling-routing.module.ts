@@ -5,7 +5,7 @@ import { ModellingComponent } from './modelling.component';
 // import children
 import { Dinen61360Component } from './dinen61360/dinen61360.component';
 import { Vdi2206Component } from './vdi2206/vdi2206.component';
-import { Isa88Component } from './isa88/isa88.component';
+// import { Isa88Component } from './isa882/isa88.component';
 import { Iso22400_2Component } from './iso22400-2/iso22400-2.component';
 
 
@@ -19,7 +19,7 @@ const routes: Routes = [
             { path: 'wadl', loadChildren:() => import('./wadl/wadl.module').then(m => m.WadlModule)},
             { path: 'dinen61360', component: Dinen61360Component },
             { path: 'vdi2206', component: Vdi2206Component },
-            { path: 'isa88', component: Isa88Component },
+            { path: 'isa88', loadChildren:() => import('./isa882/isa88.module').then(m => m.Isa88Module)},
             { path: 'iso22400-2', component: Iso22400_2Component },
 
         ]
