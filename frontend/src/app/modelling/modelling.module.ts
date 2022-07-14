@@ -11,7 +11,6 @@ import { ModellingRoutingModule } from './modelling-routing.module';
 
 //  child imports
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { Dinen61360Component } from './dinen61360/dinen61360.component';
 import { Vdi2206Component } from './vdi2206/vdi2206.component';
 import { Iso22400_2Component } from './iso22400-2/iso22400-2.component';
 
@@ -32,7 +31,6 @@ import { TableModule } from '../shared/modules/table/table.module';
     declarations: [
         ModellingComponent,
         SidebarComponent,
-        Dinen61360Component,
         Vdi2206Component,
         Iso22400_2Component
     ]

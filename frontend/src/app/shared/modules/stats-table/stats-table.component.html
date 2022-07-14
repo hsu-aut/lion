@@ -1,0 +1,17 @@
+<div class="card h-100">
+    <div class="card-header">{{header}}</div>
+    <div class="card-body">
+        <table class="table table-hover table-sm" style="cursor: pointer">
+            <thead>
+                <tr>
+                    <th *ngFor="let stat of stats">{{stat.name}} </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td *ngFor="let stat of stats">{{stat.number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

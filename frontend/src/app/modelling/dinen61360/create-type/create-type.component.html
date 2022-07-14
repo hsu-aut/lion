@@ -1,0 +1,113 @@
+<!-- row 1/2 of form -->
+<div class="row" [formGroup]="typeDescriptionForm">
+    <div class="col-sm cross-validation">
+        <label> Code </label>
+        <input class="form-control" formControlName="code" name="code" type="text"
+            placeholder="e.g. 'ABC123'" required>
+    </div>
+    <div class="col-sm">
+        <label> Version </label>
+        <input class="form-control" formControlName="version" name="version" type="text"
+            placeholder="e.g. '1'" required>
+    </div>
+    <div class="col-sm">
+        <label> Revision </label>
+        <input class="form-control" formControlName="revision" name="revision" type="text"
+            placeholder="e.g. '1'" required>
+    </div>
+    <div class="col-sm">
+        <label> Preferred Name </label>
+        <input class="form-control" formControlName="preferred_name" name="preferred_name"
+            type="text" placeholder="e.g. 'MyTypeOfProperty'" required>
+    </div>
+</div>
+<!-- row 2/2 of form -->
+<div class="row" [formGroup]="typeDescriptionForm">
+    <div class="form-group col-sm">
+        <label> Short Name </label>
+        <input class="form-control" formControlName="short_name" name="short_name" type="text"
+            placeholder="e.g. 'myProperty'" required>
+    </div>
+    <div class="form-group col-sm">
+        <label> Definition </label>
+        <input class="form-control" formControlName="definition" name="definition" type="text"
+            placeholder="e.g. 'My property is defined as...'" required>
+    </div>
+    <div class="form-group col-sm">
+        <label> Unit of Measure </label>
+        <input class="form-control" formControlName="UoM" name="UoM" type="text"
+            placeholder="e.g. 'km/h'" required>
+    </div>
+    <div class="form-group col-sm">
+        <label> Data type </label>
+        <select formControlName="dataType" name="dataType" class="form-control" required>
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of datatypes'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm-1 align-self-end">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary"
+                (click)="createTriple('add', typeDescriptionForm)">Add</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                        (click)="createTriple('delete', typeDescriptionForm)">Delete
+                        type description</a>
+                    <a class="dropdown-item"
+                        (click)="createTriple('build', typeDescriptionForm)">Download SPARQL
+                        INSERT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- sub tab headers to chose source of existing data -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <!-- existing types -->
+    <li class="nav-item">
+        <a class="nav-link active" id="exType-tab" data-bs-toggle="tab" data-bs-target="#exType" type="button" role="tab"
+            aria-controls="exType" aria-selected="true"> Existing type descriptions </a>
+    </li>
+    <!-- eclass -->
+    <li class="nav-item">
+        <a class="nav-link" id="eclass-tab" data-bs-toggle="tab" data-bs-target="#eclass" type="button" role="tab"
+            aria-controls="eclass" aria-selected="false"> Ecl@ss search </a>
+    </li>
+</ul>
+<!-- content of sub tabs with existing data -->
+<div class="tab-content py-3" id="myTabContent">
+    <!-- existing types -->
+    <div class="tab-pane fade show active" id="exType" role="tabpanel" aria-labelledby="type-tab">
+        <app-table 
+            [currentTable]="allTypes"
+            [tableTitle]="'Available Type Descriptions in Database'"
+            [tableExplanation]="'Click on a row to fill the form above.'"
+            (tableClickedRow)="typeTableClick($event)"
+            [filter]="filterOption"
+        ></app-table>
+    </div>
+    <!-- eclass -->
+    <div class="tab-pane " id="eclass" role="tabpanel" aria-labelledby="eclass-tab">
+        <div class="input-group mb-3" [formGroup]="eclassSearchForm">
+            <input formControlName="searchTerm" type="text" class="form-control"
+                placeholder="Preferred Name" aria-label="" aria-describedby="basic-addon1">
+            <div class="input-group-prepend">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Search ecl@ss</button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" (click)="eclassSearch(eclassSearchForm,'db')"> local database </a>
+                  <a class="dropdown-item" (click)="eclassSearch(eclassSearchForm,'ws')"> webservice </a>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="propertyList.length!==0">
+            <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)" [filter]="filterOption">
+            </app-table>
+        </div>
+    </div>
+</div>
