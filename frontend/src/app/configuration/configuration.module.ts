@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { NgbCarouselModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -22,8 +21,6 @@ import { TableModule } from '../shared/modules/table/table.module';
     imports: [
         CommonModule,
         ConfigurationRoutingModule,
-        NgbCarouselModule,
-        NgbAlertModule,
         FormsModule,
         ReactiveFormsModule,
         TableModule
