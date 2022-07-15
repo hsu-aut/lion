@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TableModule } from '../../shared/modules/table/table.module';
-import { ChartsModule as Ng2Charts } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { PieChartComponent } from './pie-chart/pie-chart.component';
+// import { PieChartComponent } from './pie-chart/pie-chart.component';
 
 @NgModule({
     imports: [
@@ -14,11 +14,11 @@ import { PieChartComponent } from './pie-chart/pie-chart.component';
         ReactiveFormsModule,
         DashboardRoutingModule,
         TableModule,
-        Ng2Charts,
+        NgChartsModule,
     ],
     declarations: [
         DashboardComponent,
-        PieChartComponent,
+        // PieChartComponent,
     ]
 })
 export class DashboardModule { }

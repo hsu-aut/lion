@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgbCarouselModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -14,18 +13,16 @@ import { AboxExplorerComponent } from './abox-explorer/abox-explorer.component';
 
 // util modules
 import { TableModule } from '../shared/modules/table/table.module';
-import { ChartsModule as Ng2Charts } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
     imports: [
         CommonModule,
         ExplorationRoutingModule,
-        NgbCarouselModule,
-        NgbAlertModule,
         FormsModule,
         ReactiveFormsModule,
         TableModule,
-        Ng2Charts
+        NgChartsModule
     ],
     declarations: [
         ExplorationComponent,

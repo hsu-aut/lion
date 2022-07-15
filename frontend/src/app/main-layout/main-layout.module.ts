@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgbCarouselModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -19,8 +18,6 @@ import { MessagesComponent } from '../shared/messages/messages.component';
     imports: [
         CommonModule,
         MainLayoutRoutingModule,
-        NgbCarouselModule,
-        NgbAlertModule,
         FormsModule,
         ReactiveFormsModule
     ],
