@@ -18,9 +18,9 @@ export class OntoHelperModalComponent {
     _OntologicalDataType: string;
 
     ontologicalDataType = this.fb.group({
-        TBox: [undefined, Validators.required],
-        type: [undefined, Validators.required],
-        individual: [undefined]
+        TBox: ["", Validators.required],
+        type: ["", Validators.required],
+        individual: [""]
     })
 
     tboxes: Array<string> = [];
