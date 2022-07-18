@@ -29,9 +29,9 @@ export class OpcFpdConnectorComponent implements OnInit {
 
     // connection form
     newIndividualForm = this.fb.group({
-        subject: [undefined, Validators.required],
+        subject: ["", Validators.required],
         predicate: ['OpcUa:isExecutableVia'],
-        object: [undefined, Validators.required],
+        object: ["", Validators.required],
     })
 
     constructor(

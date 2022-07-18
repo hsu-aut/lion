@@ -1,7 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { stringify } from 'querystring';
+import { Component, Input } from '@angular/core';
 import { OpcMappingService } from '../opc-mapping.service';
-import { find } from 'rxjs/operators';
 
 @Component({
     selector: 'opc-mapping-element',

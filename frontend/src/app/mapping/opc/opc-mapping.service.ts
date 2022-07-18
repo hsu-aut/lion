@@ -124,6 +124,6 @@ export interface OpcUaServerInfo {
     endpointUrl: string;
     securityPolicy: string;
     messageSecurityMode: string;
-    username: string;
-    password: string;
+    username?: string;
+    password?: string;
 }
