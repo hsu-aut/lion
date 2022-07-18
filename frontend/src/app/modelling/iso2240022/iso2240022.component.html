@@ -1,0 +1,64 @@
+<!-- main content -->
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <!-- header -->
+  <h5 class="card-header"> ISO 22400-2 Template </h5>
+  <div class="card-body">
+    <!-- subtitle -->
+    <h5 class="card-title"> Key Performance Indicators for Manufacturing Operations Management </h5>
+    <div class="row">
+      <!-- description with helper modal button -->
+      <div class="col">
+        <p class="card-text">The ISO 22400-2 template uses a tabular approach for building a graph. One can add elements
+          to an existing key performance indicator or create a new key performance indicator or one of its constituents.
+          <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal"
+            data-bs-target="#FPD_HELPER">?</button>
+        </p>
+      </div>
+      <!-- statistics table -->
+      <div class="col">
+        <app-stats-table [headerInput]="'Template Statistics'" [statsInput]="statsTable"></app-stats-table>
+      </div>
+    </div>
+    <div class="px-sm-2 py-3">
+      <!-- main tab headers -->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <!-- new simple element tab -->
+        <li class="nav-item">
+          <a class="nav-link active" id="newIndi-tab" type="button" data-bs-toggle="tab" data-bs-target="#newIndi"
+            role="tab" aria-controls="newIndi" aria-selected="true"> Create new
+            simple element </a>
+        </li>
+        <!-- new kpi tab -->
+        <li class="nav-item">
+          <a class="nav-link" id="existingIndi-tab" type="button" data-bs-toggle="tab" data-bs-target="#existingIndi"
+            role="tab" aria-controls="existingIndi" aria-selected="false"> Create new KPI </a>
+        </li>
+      </ul>
+      <!-- content of main tabs -->
+      <div class="tab-content py-3" id="myTabContent">
+        <!-- form to create new simple element -->
+        <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
+          <app-new-simple-element 
+            [entityName]="entityName" 
+            [updateBoolean]="updateBoolean" 
+            (onNewTriple)="updateData()">
+          </app-new-simple-element>
+        </div>
+        <!-- form to create new kpi -->
+        <div class="tab-pane" id="existingIndi" role="tabpanel" aria-labelledby="existingIndi-tab">
+          <app-new-kpi 
+            [entityName]="entityName" 
+            [updateBoolean]="updateBoolean" 
+            (onNewTriple)="updateData()">
+          </app-new-kpi>
+        </div>
+        <!-- existing stuff -->
+        <div class="px-sm-2 py-sm-2">
+          <app-existing-data [updateBoolean]="updateBoolean" (onAppTableClick)="setEntityName($event)"></app-existing-data>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  helper modal (initially hidden) -->
+<app-helper-modal></app-helper-modal>
