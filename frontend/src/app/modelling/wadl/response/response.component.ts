@@ -18,18 +18,18 @@ export class ResponseComponent {
     customVal = new cValFns();
 
     responseForm = this.fb.group({
-        resourceBasePath: [undefined, Validators.required],
-        servicePath: [undefined, Validators.required],
-        method: [undefined, Validators.required],
-        responseCode: [undefined, Validators.required],
+        resourceBasePath: ["", Validators.required],
+        servicePath: ["", Validators.required],
+        method: ["", Validators.required],
+        responseCode: ["", Validators.required],
         responseFormRepresentationArray: this.fb.array([
             this.fb.control('')
         ]),
-        bodyMediaType: [undefined, this.customVal.noSpecialCharacters],
-        bodyParameterKey: [undefined, this.customVal.noSpecialCharacters],
-        bodyDataType: [undefined, this.customVal.noSpecialCharacters],
-        ontologicalBodyDataType: [undefined],
-        bodyOptionValue: [undefined, this.customVal.noSpecialCharacters],
+        bodyMediaType: ["", this.customVal.noSpecialCharacters()],
+        bodyParameterKey: ["", this.customVal.noSpecialCharacters()],
+        bodyDataType: ["", this.customVal.noSpecialCharacters()],
+        ontologicalBodyDataType: [""],
+        bodyOptionValue: ["", this.customVal.noSpecialCharacters()],
     })
 
     resourceBasePaths: Array<string> = [];

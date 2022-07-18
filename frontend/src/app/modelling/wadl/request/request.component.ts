@@ -25,25 +25,25 @@ export class RequestComponent implements OnInit {
     customVal = new cValFns();
 
     requestForm = this.fb.group({
-        resourceBasePath: [undefined, Validators.required],
-        resourcePath: [undefined, Validators.required],
-        method: [undefined, Validators.required],
-        parameterType: [undefined, Validators.required],
+        resourceBasePath: ["", Validators.required],
+        resourcePath: ["", Validators.required],
+        method: ["", Validators.required],
+        parameterType: ["", Validators.required],
         requestFormParameterArray: this.fb.array([
             this.fb.control('')
         ]),
-        parameterName: [undefined, this.customVal.noSpecialCharacters],
-        dataType: [undefined, this.customVal.noSpecialCharacters],
-        ontologicalDataType: [undefined],
-        optionValue: [undefined, this.customVal.noSpecialCharacters],
+        parameterName: ["", this.customVal.noSpecialCharacters()],
+        dataType: ["", this.customVal.noSpecialCharacters()],
+        ontologicalDataType: [""],
+        optionValue: ["", this.customVal.noSpecialCharacters()],
         requestFormRepresentationArray: this.fb.array([
             this.fb.control('')
         ]),
-        bodyMediaType: [undefined, this.customVal.noSpecialCharacters],
-        bodyParameterName: [undefined, this.customVal.noSpecialCharacters],
-        bodyDataType: [undefined, this.customVal.noSpecialCharacters],
-        ontologicalBodyDataType: [undefined],
-        bodyOptionValue: [undefined, this.customVal.noSpecialCharacters],
+        bodyMediaType: ["", this.customVal.noSpecialCharacters()],
+        bodyParameterName: ["", this.customVal.noSpecialCharacters()],
+        bodyDataType: ["", this.customVal.noSpecialCharacters()],
+        ontologicalBodyDataType: [""],
+        bodyOptionValue: ["", this.customVal.noSpecialCharacters()],
     })
 
     baseResources = new Array<WadlBaseResource>();
