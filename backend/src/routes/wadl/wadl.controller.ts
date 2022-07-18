@@ -2,8 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/commo
 import { Observable } from 'rxjs';
 import { SparqlResponse } from '../../models/sparql/SparqlResponse';
 import { WadlService } from './wadl.service';
-import { BaseResourceDefinition } from '@shared/models/odps/wadl/BaseResourceDefinition';
-import { ServiceDefinition } from '@shared/models/odps/wadl/ServiceDefinition';
+import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
+import { WadlResource } from '@shared/models/odps/wadl/Resource';
+import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
 
 @Controller('lion_BE/wadl')
 export class WadlController {
@@ -16,28 +17,34 @@ export class WadlController {
 	}
 
 	@Post('base-resources')
-	addBaseResource(@Body() baseResource: BaseResourceDefinition): Observable<void>{
+	addBaseResource(@Body() baseResource: WadlBaseResource): Observable<void>{
 		return this.wadlService.addBaseResource(baseResource);
 	}
 
-	@Get('services')
-	getServices(@Query('baseResource') baseResource: string): Observable<SparqlResponse> {
-		return this.wadlService.getServices(baseResource);
+	@Get('resources')
+	getResources(@Query('baseResource') baseResource: string): Observable<SparqlResponse> {
+		return this.wadlService.getResources(baseResource);
 	}
 
-	@Post('services')
-	addService(@Body() serviceDefinition: ServiceDefinition): Observable<void> {
-		return this.wadlService.addService(serviceDefinition);
+	@Post('resources')
+	addResource(@Body() resourceDefinition: WadlResource): Observable<void> {
+		return this.wadlService.addResource(resourceDefinition);
 	}
 
-	@Delete('services/:serviceIri')
-	deleteService(@Param('serviceIri') serviceIri: string): Observable<void> {
-		return this.wadlService.deleteService(serviceIri);
+	@Delete('resources/:resourceIri')
+	deleteResource(@Param('resourceIri') resourceIri: string): Observable<void> {
+		return this.wadlService.deleteResource(resourceIri);
 	}
+
 
 	@Get('methods')
-	getMethods(): Observable<SparqlResponse> {
-		return this.wadlService.getMethods();
+	getMethodTypes(): Observable<SparqlResponse> {
+		return this.wadlService.getMethodTypes();
+	}
+
+	@Post('methods')
+	addMethod(@Body() method: WadlMethod): Observable<void> {
+		return this.wadlService.addMethod(method);
 	}
 
 	@Get('response-codes')
@@ -51,8 +58,18 @@ export class WadlController {
 	}
 
 	@Get('request-parameters')
-	getRequestParameters(): Observable<SparqlResponse> {
-		return this.getRequestParameters();
+	getRequestParametersOfType(
+		@Query("resourceIri") resourceIri: string, 
+		@Query("methodTypeIri") methodTypeIri: string,
+		@Query("parameterTypeIri") parameterTypeIri: string): Observable<SparqlResponse> 
+	{
+		return this.wadlService.getRequestParameters(resourceIri, methodTypeIri, parameterTypeIri);
+	}
+
+	// ${this.wadlBasePath}${resourceIri}/${methodIri}/request-representation
+	@Get('/:resourceIri/:methodTypeIri/request-representation')
+	getRequestRepresentation(@Param('resourceIri') resourceIri: string, @Param('methodTypeIri') methodTypeIri: string){
+		return this.wadlService.getRequestRepresentation(resourceIri, methodTypeIri);
 	}
 
 }

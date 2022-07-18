@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { BaseResourceComponent } from './base-resource/base-resource.component';
 import { RequestComponent } from './request/request.component';
 import { ResponseComponent } from './response/response.component';
-import { ServiceComponent } from './service/service.component';
+import { ResourceComponent } from './resource/resource.component';
 import { WadlComponent } from './wadl.component';
 
 const routes: Routes = [
@@ -12,7 +12,7 @@ const routes: Routes = [
         component: WadlComponent,
         children: [
             {path: "base-resources", component: BaseResourceComponent},
-            {path: "services", component: ServiceComponent},
+            {path: "services", component: ResourceComponent},
             {path: "requests", component: RequestComponent},
             {path: "responses", component: ResponseComponent}
         ]

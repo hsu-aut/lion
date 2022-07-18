@@ -1,97 +1,96 @@
-<div class="row" [formGroup]="requestForm">
-    <div class="form-group col-sm">
-        <label> The resource base path </label>
-        <select formControlName=resourceBasePath name="resourceBasePath" class="form-control"
-            (click)="getExistingServicesByBase(requestForm.controls['resourceBasePath'].value)">
-            <option value=null selected hidden></option>
-            <option *ngFor='let x of resourceBasePaths'>
-                {{x}}
-            </option>
-        </select>
+<div [formGroup]="requestForm">
+    <div class="row">
+        <div class="col-sm">
+            <label class="form-label">The base resource path</label>
+            <select formControlName=resourceBasePath name="resourceBasePath" class="form-select"
+                (click)="getExistingResourcesOfBase()">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of baseResources'>
+                    {{x.baseResourcePath}}
+                </option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <label class="form-label">The resource path</label>
+            <select formControlName=resourcePath name="resourcePath" class="form-select">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of resources'>
+                    {{x.resourcePath}}
+                </option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <label class="form-label">Method</label>
+            <!-- TODO: Currently, the two methods are done on every click. This can be done better (e.g. by subscribing to form changes) -->
+            <select formControlName="method" name="method" class="form-select"
+                (click)="getExistingParameters()"
+                (click)="getExistingRequestRepresentation()">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of methods'>
+                    {{x}}
+                </option>
+            </select>
+        </div>
+        <div class="col-sm">
+            <label class="form-label">Parameter type</label>
+            <select formControlName=parameterType name="parameterType" class="form-select"
+                (click)="getExistingParameters()"
+                (click)="getExistingRequestRepresentation()">
+                <option value=null selected hidden></option>
+                <option>none</option>
+                <option *ngFor='let x of parameterTypes'>
+                    {{x}}
+                </option>
+            </select>
+        </div>
     </div>
-    <div class="form-group col-sm">
-        <label> The service path </label>
-        <select formControlName=servicePath name="servicePath" class="form-control"
-            (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
-            (click)="getExistingRequestRepresentation()">
-            <option value=null selected hidden></option>
-            <option *ngFor='let x of servicePaths'>
-                {{x}}
-            </option>
-        </select>
-    </div>
-    <div class="form-group col-sm">
-        <label> Method </label>
-        <select formControlName=method name="method" class="form-control"
-            (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
-            (click)="getExistingRequestRepresentation()">
-            <option value=null selected hidden></option>
-            <option *ngFor='let x of methods'>
-                {{x}}
-            </option>
-        </select>
-    </div>
-    <div class="form-group col-sm">
-        <label> Parameter type </label>
-        <select formControlName=parameterType name="parameterType" class="form-control"
-            (click)="getExistingParameter(requestForm.controls['servicePath'].value, requestForm.controls['method'].value, requestForm.controls['parameterType'].value)"
-            (click)="getExistingRequestRepresentation()">
-            <option value=null selected hidden></option>
-            <option>none</option>
-            <option *ngFor='let x of parameterTypes'>
-                {{x}}
-            </option>
-        </select>
-    </div>
-</div>
-<div class="row" [formGroup]="requestForm">
-    <div class="form-group col-sm">
-        <label> Parameter key </label>
-        <input formControlName=parameterKey class="form-control" name="parameterKey" type="text"
-            placeholder="[the key of your parameter/representation]" [readonly]="requestForm.controls['parameterType'].value=='none'"
-            [required]="requestForm.controls['parameterType'].value!='none'">
-    </div>
-    <div class="form-group col-sm">
-        <label> Data type </label>
-        <div class="input-group">
-            <input formControlName=dataType class="form-control" name="dataType" type="text" placeholder="[the required data type]"
-                [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
+
+    <div class="row mt-2">
+        <div class="col-sm-3">
+            <label class="form-label"> Parameter name </label>
+            <input formControlName=parameterName class="form-control" name="parameterName" type="text"
+                placeholder="[the name of your parameter/representation]" [readonly]="requestForm.controls['parameterType'].value=='none'"
                 [required]="requestForm.controls['parameterType'].value!='none'">
-            <div class="input-group-append">
+        </div>
+        <div class="col-sm-3">
+            <label class="form-label"> Data type </label>
+            <div class="input-group">
+                <input formControlName=dataType class="form-control" name="dataType" type="text" placeholder="[the required data type]"
+                    [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
+                    [required]="requestForm.controls['parameterType'].value!='none'">
                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
                     (click)="setOntologicalDataType('requestParameter')">
                     O </button>
                     <!-- //TODO: setOntologicalDataType('requestParameter')" should only be in modal -->
             </div>
         </div>
-    </div>
-    <div class="form-group col-sm">
-        <label> Option value </label>
-        <input formControlName=optionValue class="form-control" name="optionValue" type="text" placeholder="[the key´s option values]"
-            [readonly]="requestForm.controls['parameterType'].value=='none'">
-    </div>
-    <div class="form-group col-sm-1 align-self-end">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-            <button type="button" class="btn btn-secondary" (click)="createRequestParameter('add')">Add</button>
-            <div class="btn-group" role="group">
-                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                </button>
-                <div class="dropdown-menu" aria-labelledby="addButton">
-                    <a class="dropdown-item" (click)="createRequestParameter('delete')">Delete
-                        request</a>
-                    <a class="dropdown-item" (click)="createRequestParameter('build')">Download
-                        SPARQL
-                        INSERT</a>
+        <div class="col-sm-4">
+            <label class="form-label"> Option value </label>
+            <input formControlName=optionValue class="form-control" name="optionValue" type="text" placeholder="[the key's option values]"
+                [readonly]="requestForm.controls['parameterType'].value=='none'">
+        </div>
+        <div class="col-sm-2 align-self-end">
+            <div class="btn-group float-end" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary" (click)="addMethod()">Add</button>
+                <div class="btn-group" role="group">
+                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="addButton">
+                        <a class="dropdown-item" (click)="createRequestParameter('delete')">Delete
+                            request</a>
+                        <a class="dropdown-item" (click)="createRequestParameter('build')">Download
+                            SPARQL
+                            INSERT</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- div is repeated for number of entries in requestFormParameterArray -->
-<div [formGroup]="requestForm">
+
+    <!-- div is repeated for number of entries in requestFormParameterArray -->
     <div formArrayName="requestFormParameterArray">
-        <div class="row" *ngFor="let x of requestFormParameterArray.controls; let i=index" [formGroupName]="i">
+        <div class="row mt-3" *ngFor="let x of requestFormParameterArray.controls; let i=index" [formGroupName]="i">
             <div class="form-group col-sm">
                 <input formControlName="parameterKey" class="form-control" name="parameterKey" type="text" readonly>
             </div>
@@ -124,13 +123,11 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="form-group col-sm">
-        <div class="custom-control custom-checkbox">
-            <input [(ngModel)]="requestBodyRepresentationCheck" type="checkbox" class="custom-control-input"
-                id="requestBodyRepresentationCheck">
-            <label class="custom-control-label" for="requestBodyRepresentationCheck">Include body
-                representation</label>
+<div class="row mt-2">
+    <div class="col-sm">
+        <div class="form-check">
+            <label class="form-check-label" for="requestBodyRepresentationCheck">Include body representation</label>
+            <input class="form-check-input" [(ngModel)]="requestBodyRepresentationCheck" type="checkbox" id="requestBodyRepresentationCheck">
         </div>
     </div>
 </div>
@@ -215,6 +212,16 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-sm">
+        <app-table
+            [currentTable]="requestParameterTable"
+            [tableTitle]="'Existing parameters'"
+            [tableExplanation]="'This table shows all existing parameters of the request that belongs to this method'" >
+        </app-table>
     </div>
 </div>
 

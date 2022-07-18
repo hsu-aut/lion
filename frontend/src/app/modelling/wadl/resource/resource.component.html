@@ -1,0 +1,45 @@
+<div class="row justify-content-between" [formGroup]="resourceForm">
+    <div class="form-group col-sm-5">
+        <label class="form-label">Select the path of a base resource</label>
+        <select formControlName=resourceBasePath name="resourceBasePath" class="form-select">
+            <option value=null selected hidden></option>
+            <option *ngFor='let resourceBasePath of resourceBasePaths'>
+                {{resourceBasePath}}
+            </option>
+        </select>
+    </div>
+
+    <div class="form-group col-sm-5">
+        <label class="form-label">Path of the new sub-resource</label>
+        <div class="input-group">
+            <span class="input-group-text" id="resourcePathLabel">/</span>
+            <input type="text" class="form-control" formControlName="resourcePath" placeholder="[Path to the sub resource]"  aria-describedby="resourcePathLabel">
+        </div>
+    </div>
+
+    <div class="form-group col-sm-2 align-self-end">
+        <div class="btn-group float-end" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary"
+                (click)="addResource()">Add</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                        (click)="deleteResource()">Delete resource</a>
+                    <a class="dropdown-item"
+                        (click)="getResourceInsertString()">Download SPARQL
+                        INSERT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-sm">
+        <app-table [currentTable]="resourceTable" [tableTitle]="'Existing Resources'" [tableExplanation]="'The following table shows all base resources with their sub resources'" (tableClickedRow)="tableClick($event)">
+        </app-table>
+    </div>
+</div>

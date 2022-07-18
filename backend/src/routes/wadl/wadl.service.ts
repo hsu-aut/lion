@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlService } from '../../shared-services/sparql.service';
-import { BaseResourceDefinition } from '@shared/models/odps/wadl/BaseResourceDefinition';
+import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
-import { ServiceDefinition } from '@shared/models/odps/wadl/ServiceDefinition';
+import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { GraphOperationService } from '../../shared-services/graph-operation.service';
+import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
+import { WadlParameterService } from './wadl-parameter.service';
+import { WadlRepresentationService } from './wadl-representation.service';
 
 @Injectable()
 export class WadlService {
 
 	constructor(
+		private wadlParamService: WadlParameterService,
+		private wadlRepService: WadlRepresentationService,
 		private queryService: SparqlService,
 		private graphService: GraphOperationService
 	) { }
@@ -31,7 +36,7 @@ export class WadlService {
 		return this.queryService.query(queryString);
 	}
 
-	addBaseResource(baseResource: BaseResourceDefinition): Observable<void> {
+	addBaseResource(baseResource: WadlBaseResource): Observable<void> {
 		const activeGraph = this.graphService.getCurrentGraph();
 		const updateString = `
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -222,19 +227,23 @@ export class WadlService {
 	 * Get all services as a SparqlResponse object. If a base resource IRI is passed, this IRI is taken as a filter criterium to return only services of this base
 	 * @returns All currently existing services with their base resource, base path and service path
 	 */
-	getServices(baseResource = ""): Observable<SparqlResponse> {
+	getResources(baseResource = ""): Observable<SparqlResponse> {
 		let filterString = "";
-		if (baseResource) { filterString = `FILTER (?baseIri == ${baseResource});`; }
-
+		if (baseResource) { filterString = `FILTER (?baseResource = <${baseResource}>)`; }
+		
 		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-		SELECT ?baseResource ?service ?basePath ?servicePath WHERE {
-			?baseResource wadl:hasResource ?service;
-				wadl:hasBase ?basePath.
+		SELECT ?baseResource ?serviceProvider ?basePath ?resource ?resourcePath WHERE {
+			?baseResource wadl:hasBase ?basePath;
+				wadl:RestResourcesAreProvidedByEntity ?serviceProvider.
+				
+			OPTIONAL {
+				?baseResource wadl:hasResource ?resource.
 
-			?service rdf:type wadl:Resource;
-				a owl:NamedIndividual;
-				wadl:hasPath ?servicePath.
+				?resource rdf:type wadl:Resource;
+					a owl:NamedIndividual;
+					wadl:hasPath ?resourcePath.
+			}
 			${filterString}
 		}`;
 		return this.queryService.query(queryString);
@@ -245,7 +254,7 @@ export class WadlService {
 	 * @param serviceDefinition A service definition object containing info about the service to insert
 	 * @returns 
 	 */
-	addService(serviceDefinition: ServiceDefinition): Observable<void> {
+	addResource(serviceDefinition: WadlResource): Observable<void> {
 		const activeGraph = this.graphService.getCurrentGraph();
 
 		const insertString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -253,17 +262,17 @@ export class WadlService {
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         INSERT DATA { 
 			GRAPH <${activeGraph}> {
-                <${serviceDefinition.baseResourceIri}> wadl:hasResource <${serviceDefinition.serviceIri}>.
-                <${serviceDefinition.serviceIri}> rdf:type wadl:Resource;
+                <${serviceDefinition.baseResourceIri}> wadl:hasResource <${serviceDefinition.resourceIri}>.
+                <${serviceDefinition.resourceIri}> rdf:type wadl:Resource;
                 a owl:NamedIndividual;
-                wadl:hasPath "${serviceDefinition.servicePath}"^^xsd:string.
+                wadl:hasPath "${serviceDefinition.resourcePath}"^^xsd:string.
 			}
         }`;
 		return this.queryService.update(insertString);
 	}
 
 	// TODO: This query can pretty surely be simplified - do it :D
-	deleteService(serviceIri: string): Observable<void> {
+	deleteResource(serviceIri: string): Observable<void> {
 		const deleteString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -379,10 +388,10 @@ export class WadlService {
 
 
 	/**
- * Get all methods as a SparqlResponse object
- * @returns All currently existing methods
- */
-	getMethods(): Observable < SparqlResponse > {
+	 * Get all methods as a SparqlResponse object
+	 * @returns All currently existing methods
+	 */
+	getMethodTypes(): Observable < SparqlResponse > {
 		const queryString = `PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 		SELECT DISTINCT ?methods WHERE {
 			?methods sesame:directSubClassOf wadl:Method.
@@ -391,69 +400,30 @@ export class WadlService {
 	}
 
 
-	addRequest() {
-		// const activeGraph = this.graphService.getCurrentGraph();
-		// const queryString =  `
-		// PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-		// PREFIX owl: <http://www.w3.org/2002/07/owl#>
-		// PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-		// PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-	
-
-		// INSERT DATA {
-		//     GRAPH <${activeGraph}> {
-		// 		?service wadl:hasMethod ?method.
-		// 		?method rdf:type <${variables.methodTypeIRI}>;
-		// 			a owl:NamedIndividual;
-		// 			wadl:hasRequest ?request.
-	
-		// 		?request rdf:type wadl:Request;
-		// 			a owl:NamedIndividual.
-				
-		// 		# for parameter
-		// 		?request wadl:hasParameter ?parameter.	
-				
-		// 		?parameter rdf:type ?parameterType;
-		// 			a owl:NamedIndividual;
-		// 			wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
-		// 			wadl:hasParameterOption ?option;
-		// 			wadl:hasParameterType "${variables.parameterDataType}"^^xsd:string;		// For string parameter type
-		// 			wadl:hasOntologicalParameterType <${variables.parameterDataTypeABox}>;	// For pointing to type individuals
-		// 			rdf:type <${variables.parameterDataTypeTBox}>.							// For type classes
-	
-		// 		?option rdf:type wadl:Option;
-		// 			a owl:NamedIndividual;
-		// 			wadl:hasOptionValue "${variables.optionValue}"^^xsd:string.
-	
-		// 		# for representation
-		// 		?request wadl:hasRepresentation ?bodyRepresentation.
-		// 		?bodyRepresentation rdf:type wadl:Representation;
-		// 			a owl:NamedIndividual;
-		// 			wadl:hasMediaType "${variables.bodyRepresentationMediaType}";
-		// 			wadl:hasParameter ?bodyRepresentationParameter.
-	
-		// 		?bodyRepresentationParameter rdf:type wadl:Parameter;
-		// 			a owl:NamedIndividual;
-		// 			wadl:hasParameterName "${variables.bodyRepresentationParameterKey}"^^xsd:NMTOKEN;
-		// 			wadl:hasParameterOption ?bodyRepresentationParameterOption.
-		// 			?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string;
-		// 				wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>;
-		// 				rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.
-	
-		// 		?bodyRepresentationParameterOption rdf:type wadl:Option;
-		// 			a owl:NamedIndividual;
-		// 			wadl:hasOptionValue "${variables.bodyRepresentationParameterOptionValue}"^^xsd:string.
-		// 	}
-	
-		//   } WHERE {
-		// 	BIND(<${variables.serviceIRI}> AS ?service).
-		// 	BIND(<${variables.methodIRI}> AS ?method).
-		// 	BIND(<${variables.requestIRI}> AS ?request).
-		// 	BIND(<${variables.bodyRepresentationIRI}> AS ?bodyRepresentation).
-		// 	BIND(<${variables.bodyRepresentationParameterIRI}> AS ?bodyRepresentationParameter).
-		// 	BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).
-		//   }`;
+	addMethod(method: WadlMethod): Observable<void> {
+		const activeGraph = this.graphService.getCurrentGraph();
 		
+		const parameterString = this.wadlParamService.createParameterString(method.request.requestIri, method.request.parameters);
+		const repString = this.wadlRepService.createRepresentationString(method.request.requestIri, method.request.representation);
+		const updateString = `
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+		INSERT DATA{ 
+			GRAPH <${activeGraph}> {
+				<${method.resourceIri}> wadl:hasMethod <${method.methodIri}>.
+				<${method.methodIri}> rdf:type <${method.methodTypeIri}>;
+					wadl:hasRequest <${method.request.requestIri}>.
+				<${method.request.requestIri}> rdf:type wadl:Request;
+					a owl:NamedIndividual.
+				${parameterString}
+				${repString}
+			}
+		}`;
+		console.log(updateString);
+		return this.queryService.update(updateString);
 	}
 
 
@@ -473,46 +443,100 @@ export class WadlService {
  * Gets all parameter types as a SparqlResponse object
  * @returns All different types of parameters that can be sent via HTTP
  */
-	getParameterTypes(): Observable < SparqlResponse > {
+	getParameterTypes(): Observable<SparqlResponse> {
 		const queryString = `PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-		SELECT DISTINCT ?parameterType
-		WHERE {
-			?parameter sesame:directSubClassOf wadl:Parameter.
+		SELECT DISTINCT ?parameterType WHERE {
+			?parameterType sesame:directSubClassOf wadl:Parameter.
 		}`;
 		return this.queryService.query(queryString);
 	}
 
-	getRequestParameter(serviceIri: string, methodTypeIri: string, parameterTypeIri: string): Observable < SparqlResponse > {
-		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	getRequestParameters(resourceIri: string, methodTypeIri: string, parameterTypeIri: string): Observable <SparqlResponse> {
+		const queryString = `
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 
 		SELECT DISTINCT ?parameter ?parameterKey ?dataType ?optionValue WHERE {
-			<${serviceIri}> wadl:hasMethod ?method.
+			<${resourceIri}> wadl:hasMethod ?method.
 			?method rdf:type <${methodTypeIri}>;
 				wadl:hasRequest ?request.
-			?request rdf:type wadl:Request;
-				wadl:hasParameter ?parameter.
+			<${methodTypeIri}> rdfs:subClassOf wadl:Method.
+			?request wadl:hasParameter ?parameter.
 			?parameter rdf:type <${parameterTypeIri}>;
 				wadl:hasParameterName ?parameterKey.
+			<${parameterTypeIri}> rdfs:subClassOf wadl:Parameter.
 
-			OPTIONAL {?parameter  wadl:hasParameterType ?nonOntologicalDataType.}
-			OPTIONAL {?parameter  wadl:hasOntologicalParameterType ?ontologicalDataTypeABox.}
-			OPTIONAL {?parameter  rdf:type ?ontologicalDataTypeTBox. MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
+			{OPTIONAL {?parameter  wadl:hasParameterType ?dataType.}} UNION
+			{OPTIONAL {?parameter  wadl:hasOntologicalParameterType ?dataType.}} UNION
+			{OPTIONAL {
+				?parameter  rdf:type ?dataType. 
+				MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
+			}}
+		
+			FILTER(!ISBLANK(?dataType))
+
+			OPTIONAL{
+				?parameter wadl:hasParameterOption ?option.
+				?option rdf:type wadl:Option;
+				a owl:NamedIndividual;
+				wadl:hasOptionValue ?optionValue.
+			}
+		} `;
+
+		return this.queryService.query(queryString);
+	}
+
+
+	getRequestRepresentation(serviceIri: string, methodTypeIri: string): Observable <SparqlResponse>  {
+		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+	
+		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+		SELECT DISTINCT ?bodyRepresentation ?bodyMediaType ?bodyParameterKey ?bodyDataType ?bodyOptionValue WHERE {
+		BIND(<${serviceIri}> AS ?service).
+		BIND(<${methodTypeIri}> AS ?methodType).
+	
+		?service wadl:hasMethod ?method.
+		?method a ?methodType.
+	
+		?method rdf:type ?Method;
+			a owl:NamedIndividual;
+			wadl:hasRequest ?request.
+	
+		?request rdf:type wadl:Request;
+			a owl:NamedIndividual;
+			wadl:hasRepresentation ?bodyRepresentation.
+	
+		?bodyRepresentation rdf:type wadl:Representation;
+			a owl:NamedIndividual;
+			wadl:hasMediaType ?bodyMediaType;
+			wadl:hasParameter ?bodyRepresentationParameter.
+	
+		?bodyRepresentationParameter rdf:type wadl:Parameter;
+			a owl:NamedIndividual;
+			wadl:hasParameterName ?bodyParameterKey.
+	
+		OPTIONAL {?bodyRepresentationParameter  wadl:hasParameterType ?nonOntologicalDataType.}
+		OPTIONAL {?bodyRepresentationParameter  wadl:hasOntologicalParameterType ?ontologicalDataTypeABox.}
+		OPTIONAL {
+			?bodyRepresentationParameter  rdf:type ?ontologicalDataTypeTBox. 
+			MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
 			FILTER(STRSTARTS(STR(?ontologicalDataTypeTBox), "http://www.hsu-ifa.de"))
 		}
-		{BIND(IF(STRLEN(?nonOntologicalDataType) > 0 ,?nonOntologicalDataType,BNODE()) AS ?dataType).}UNION
-		{BIND(IF(BOUND(?ontologicalDataTypeABox),?ontologicalDataTypeABox,BNODE()) AS ?dataType).}UNION
-		{BIND(IF(BOUND(?ontologicalDataTypeTBox),?ontologicalDataTypeTBox,BNODE()) AS ?dataType).}
-		
-		FILTER(!ISBLANK(?dataType))
-
-		OPTIONAL{
-			?parameter wadl:hasParameterOption ?option.
-			?option rdf:type wadl:Option;
+		{BIND(IF(STRLEN(?nonOntologicalDataType) > 0 ,?nonOntologicalDataType,BNODE()) AS ?bodyDataType).}UNION
+		{BIND(IF(BOUND(?ontologicalDataTypeABox),?ontologicalDataTypeABox,BNODE()) AS ?bodyDataType).}UNION
+		{BIND(IF(BOUND(?ontologicalDataTypeTBox),?ontologicalDataTypeTBox,BNODE()) AS ?bodyDataType).}
+		FILTER(!ISBLANK(?bodyDataType))
+	
+		OPTIONAL {
+			?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+			?bodyRepresentationParameterOption rdf:type wadl:Option;
 			a owl:NamedIndividual;
-			wadl:hasOptionValue ?optionValue.}
-		} `;
+			wadl:hasOptionValue ?bodyOptionValue.
+		}} `;
+		
 
 		return this.queryService.query(queryString);
 	}

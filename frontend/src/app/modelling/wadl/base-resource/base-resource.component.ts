@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { firstValueFrom, take } from "rxjs";
-import { BaseResourceDefinition } from "@shared/models/odps/wadl/BaseResourceDefinition";
+import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { MessagesService } from "../../../shared/services/messages.service";
 import { PrefixesService } from "../../../shared/services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
@@ -83,7 +83,7 @@ export class BaseResourceComponent implements OnInit {
         const baseResourcePath = "http://" + basePath;
         const baseResourceIri = this.prefixService.addOrParseNamespace(basePath);
         const serviceProviderIri = this.prefixService.addOrParseNamespace(this.baseResourceForm.get("serviceProvider").value);
-        const baseResourceDefinition = new BaseResourceDefinition(baseResourcePath, baseResourceIri, serviceProviderIri);
+        const baseResourceDefinition = new WadlBaseResource(baseResourcePath, baseResourceIri, serviceProviderIri);
         this.wadlService.createBaseResource(baseResourceDefinition).pipe(take(1)).subscribe((data: any) => {
             this.loadDynamicDropdowns();
             this.loadDynamicTables();
@@ -116,7 +116,7 @@ export class BaseResourceComponent implements OnInit {
             this.resourceBasePaths = data;
             this.NoOfResourceBasePaths = this.resourceBasePaths.length;
         });
-        this.wadlService.getServices().pipe(take(1), toSparqlVariableList("service")).subscribe((data: any) => {
+        this.wadlService.getResources().pipe(take(1), toSparqlVariableList("service")).subscribe((data: any) => {
             this.NoOfResourceBasePaths = this.resourceBasePaths.length;
         });
     }

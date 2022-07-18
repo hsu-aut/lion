@@ -6,7 +6,7 @@ import { BaseResourceComponent } from "./base-resource/base-resource.component";
 import { OntoHelperModalComponent } from "./helper-modal/onto-helper-modal.component";
 import { RequestComponent } from "./request/request.component";
 import { ResponseComponent } from "./response/response.component";
-import { ServiceComponent } from "./service/service.component";
+import { ResourceComponent } from "./resource/resource.component";
 import { WadlRoutingModule } from "./wadl-routing.module";
 import { WadlComponent } from "./wadl.component";
 
@@ -21,7 +21,7 @@ import { WadlComponent } from "./wadl.component";
     declarations: [
         WadlComponent,
         BaseResourceComponent,
-        ServiceComponent,
+        ResourceComponent,
         RequestComponent,
         ResponseComponent,
         OntoHelperModalComponent

@@ -2,7 +2,9 @@ import { Component } from "@angular/core";
 import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { PrefixesService } from "../../../shared/services/prefixes.service";
-import { WadlMethod, WadlModelService, WadlResponse } from "../../rdf-models/wadlModel.service";
+import { WadlModelService } from "../../rdf-models/wadlModel.service";
+import { WadlMethod } from "@shared/models/odps/wadl/WadlMethod";
+import { WadlResponse } from "@shared/models/odps/wadl/WadlResponse";
 import { cValFns } from "../../utils/validators";
 
 @Component({
@@ -75,7 +77,7 @@ export class ResponseComponent {
         const serviceIri = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
         const methodTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
         const methodIri = serviceIri + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
-        const method = new WadlMethod(serviceIri, methodIri, methodTypeIri);
+        const method = new WadlMethod(serviceIri, methodTypeIri);
 
         const responseTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
         const responseIri = methodIri + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
