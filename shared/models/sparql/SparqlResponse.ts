@@ -4,7 +4,7 @@ export interface SparqlResponse {
     },
     results: {
         bindings:[
-            Record<string, {type: string, value: string}>
+            Record<string, {type: string, value: string, datatype?: string}>
         ]
     }
 }
