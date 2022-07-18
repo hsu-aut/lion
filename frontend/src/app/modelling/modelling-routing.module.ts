@@ -13,7 +13,7 @@ const routes: Routes = [
         children: [
             { path: '', redirectTo: 'vdi3682', pathMatch: 'prefix' },
             { path: 'vdi3682', loadChildren:() => import('./vdi3682/vdi3682.module').then(m => m.Vdi3682Module)},
-            // { path: 'wadl', loadChildren:() => import('./wadl/wadl.module').then(m => m.WadlModule)},
+            { path: 'wadl', loadChildren:() => import('./wadl/wadl.module').then(m => m.WadlModule)},
             { path: 'vdi2206', component: Vdi2206Component },
             { path: 'isa88', loadChildren:() => import('./isa88/isa88.module').then(m => m.Isa88Module)},
             { path: 'dinen61360', loadChildren:() => import('./dinen61360/dinen61360.module').then(m => m.Dinen61360Module)},
