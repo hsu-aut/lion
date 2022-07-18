@@ -9,7 +9,7 @@ import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
 import { WadlRequest } from "@shared/models/odps/wadl/WadlRequest";
-import { WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
+import { WadlParameterTypes, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
 import { WadlMethod } from "@shared/models/odps/wadl/WadlMethod";
 
 @Component({
@@ -184,7 +184,7 @@ export class RequestComponent implements OnInit {
             console.log(methodIri);
 
             const paramName = this.requestForm.controls['parameterName'].value;
-            const paramType = this.requestForm.controls['parameterType'].value;
+            const paramType = WadlParameterTypes[this.requestForm.controls['parameterType'].value];
             const dataType = this.requestForm.controls['dataType'].value;
 
             const request = new WadlRequest(methodIri);
