@@ -3,11 +3,11 @@ import { Observable } from 'rxjs';
 import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
 
 @Component({
-  selector: 'app-iso2240022',
-  templateUrl: './iso2240022.component.html',
-  styleUrls: ['./iso2240022.component.scss']
+  selector: 'app-iso224002',
+  templateUrl: './iso224002.component.html',
+  styleUrls: ['./iso224002.component.scss']
 })
-export class Iso2240022Component implements OnInit {
+export class Iso224002Component implements OnInit {
 
   // variable for stats table module input
   public statsTable: Array<{name: string, arrayObservable: Observable<Array<string>>}> = [];

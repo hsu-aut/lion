@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Iso2240022RoutingModule } from './iso2240022-routing.module';
-import { Iso2240022Component } from './iso2240022.component';
+import { Iso224002RoutingModule } from './iso224002-routing.module';
+import { Iso224002Component } from './iso224002.component';
 import { NewSimpleElementComponent } from './new-simple-element/new-simple-element.component';
 import { NewKpiComponent } from './new-kpi/new-kpi.component';
 import { ExistingDataComponent } from './existing-data/existing-data.component';
@@ -14,7 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    Iso2240022Component,
+    Iso224002Component,
     NewSimpleElementComponent,
     NewKpiComponent,
     ExistingDataComponent,
@@ -22,10 +22,10 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    Iso2240022RoutingModule,
+    Iso224002RoutingModule,
     StatsTableModule,
     TableModule,
     ReactiveFormsModule
   ]
 })
-export class Iso2240022Module { }
+export class Iso224002Module { }
