@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
 
 @Component({
@@ -9,9 +9,9 @@ import { Dinen61360Service } from '../rdf-models/dinen61360Model.service';
 })
 
 export class Dinen61360Component implements OnInit {
-
-  // variable for stats table content
-  public statsTableInput: Array<{name: string, number: number}> = [];
+ 
+  // variable for stats table module input
+  public statsTable: Array<{name: string, arrayObservable: Observable<Array<string>>}> = [];
 
   constructor(
     private dinen61360Service: Dinen61360Service,
@@ -25,18 +25,14 @@ export class Dinen61360Component implements OnInit {
    * update content of stats table
    */
   public updateTable() {
-    // fork join to write data once ALL 3 observables completed
-    forkJoin([
-      this.dinen61360Service.getListOfAllDE(), 
-        this.dinen61360Service.getListOfAllDET(), 
-        this.dinen61360Service.getListOfAllDEI()
-      ]).subscribe((data:[string[], string[], string[]]) => {
-        this.statsTableInput = [
-          {name:"No# Data Elements", number: data[0].length},
-          {name:"No# Type Descriptions", number: data[1].length},
-          {name:"No# Instance Descriptions", number: data[2].length}
-        ]
-      })
-  }
+    // trigger update by reassigning
+    this.statsTable = [];
+    this.statsTable = 
+      [
+        { name:"No# Data Elements", arrayObservable: this.dinen61360Service.getListOfAllDE() },
+        { name:"No# Type Descriptions", arrayObservable: this.dinen61360Service.getListOfAllDET() },
+        { name:"No# Instance Descriptions", arrayObservable: this.dinen61360Service.getListOfAllDEI() }
+      ];
+  }  
 
 }

@@ -1,0 +1,80 @@
+<div class="row" [formGroup]="simpleElementForm">
+    <div class="form-group col-sm">
+      <label> Described entity </label>
+      <input formControlName="entity" class="form-control" name="entity" type="text"
+        placeholder="e.g. myWorkplace">
+    </div>
+    <div class="form-group col-sm">
+      <label> Group of new element </label>
+      <select formControlName="elementGroup" name="elementGroup" class="form-control"
+        (click)="loadClassesElement(simpleElementForm.controls['elementGroup'].value)">
+        <option value=null selected hidden></option>
+        <option *ngFor='let x of elementGroups'>
+          {{x}}
+        </option>
+      </select>
+    </div>
+    <div class="form-group col-sm">
+      <label> The Class of the new element </label>
+      <select formControlName="elementClass" name="elementClass" class="form-control"
+        (click)="setValueVisibility(simpleElementForm.controls['elementClass'].value)">
+        <option value=null selected hidden></option>
+        <option *ngFor='let x of allElementClassesPerGroup'>
+          {{x}}
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="row" [formGroup]="simpleElementForm">
+    <div class="form-group col-sm">
+      <label> Class of entity </label>
+      <select formControlName="entityClass" name="entityClass" class="form-control">
+        <option value=null selected hidden></option>
+        <option *ngFor='let x of organizationalElementClasses'>
+          {{x}}
+        </option>
+      </select>
+    </div>
+    <div class="form-group col-sm">
+      <label> The relevant period of the element </label>
+      <input formControlName="elementPeriod" class="form-control" name="elementPeriod" type="text"
+        placeholder="[YYYY-MM-DDThh:mm:ss]">
+    </div>
+    <div class="form-group col-sm">
+      <label> The relevant duration </label>
+      <input formControlName="duration" class="form-control" name="duration" type="text"
+        placeholder="[xsd:duration]" [readonly]="timeValueReadOnly === false"
+        [required]="timeValueReadOnly === true">
+    </div>
+  </div>
+  <div class="row" [formGroup]="simpleElementForm">
+    <div class="form-group col-sm">
+      <label> The value of the element </label>
+      <input formControlName="value" class="form-control" name="value" type="text" placeholder="[xsd:string]"
+        [readonly]="anyValueReadOnly === false" [required]="anyValueReadOnly === true">
+    </div>
+    <div class="form-group col-sm">
+      <label> The value's unit of measure </label>
+      <input formControlName="unitOfMeasure" class="form-control" name="unitOfMeasure" type="text"
+        placeholder="[xsd:string]" [readonly]="anyValueReadOnly === false"
+        [required]="anyValueReadOnly === true">
+    </div>
+    <div class="form-group col-sm-1 align-self-end">
+      <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+        <button type="button" class="btn btn-secondary"
+          (click)="createTriple('add')">Add</button>
+        <div class="btn-group" role="group">
+          <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+          </button>
+          <div class="dropdown-menu" aria-labelledby="addButton">
+            <a class="dropdown-item" (click)="createTriple('delete')">Delete
+              request</a>
+            <a class="dropdown-item" (click)="createTriple('build')">Download
+              SPARQL
+              INSERT</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
