@@ -1,8 +1,12 @@
+<!-- main content -->
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <!-- header -->
     <h5 class="card-header">DIN EN 61360 Template </h5>
     <div class="card-body">
+        <!-- subtitle -->
         <h5 class="card-title"> Data element types and instances </h5>
         <div class="row">
+            <!-- description with helper modal button -->
             <div class="col">
                 <p class="card-text">The DIN EN 61360 template uses a tabular approach for building a graph. One can add
                     type
@@ -10,8 +14,9 @@
                     <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal" data-bs-target="#DIN_HELPER">?</button>
                 </p>
             </div>
+            <!-- statistics table -->
             <div class="col">
-                <app-stats-table [headerInput]="'Template Statistics'" [statsInput]="statsTableInput"></app-stats-table>
+                <app-stats-table [headerInput]="'Template Statistics'" [statsInput]="statsTable"></app-stats-table>
             </div>
         </div>
         <div class="px-sm-2 py-3">
@@ -38,6 +43,5 @@
         </div>
     </div>
 </div>
-
 <!--  helper modal (initially hidden) -->
 <app-helper-modal></app-helper-modal>

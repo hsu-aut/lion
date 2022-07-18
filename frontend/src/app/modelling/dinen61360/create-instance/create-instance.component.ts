@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
-import { FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { Dinen61360Service } from '../../rdf-models/dinen61360Model.service';
 import { DINEN61360Variables } from '@shared/models/dinen61360-variables.interface';
