@@ -59,63 +59,25 @@
                     [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
                     [required]="requestForm.controls['parameterType'].value!='none'">
                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
-                    (click)="setOntologicalDataType('requestParameter')">
-                    O </button>
-                    <!-- //TODO: setOntologicalDataType('requestParameter')" should only be in modal -->
+                    (click)="setOntologicalDataType('requestParameter')"><i class="fa-regular fa-square-plus"></i></button>
             </div>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <label class="form-label"> Option value </label>
             <input formControlName=optionValue class="form-control" name="optionValue" type="text" placeholder="[the key's option values]"
                 [readonly]="requestForm.controls['parameterType'].value=='none'">
         </div>
-        <div class="col-sm-2 align-self-end">
+        <div class="col-sm-3 align-self-end">
             <div class="btn-group float-end" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary" (click)="addMethod()">Add</button>
+                <button type="button" class="btn btn-secondary">Add Request & Parameter</button>
                 <div class="btn-group" role="group">
                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                     </button>
                     <div class="dropdown-menu" aria-labelledby="addButton">
-                        <a class="dropdown-item" (click)="createRequestParameter('delete')">Delete
-                            request</a>
-                        <a class="dropdown-item" (click)="createRequestParameter('build')">Download
-                            SPARQL
-                            INSERT</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- div is repeated for number of entries in requestFormParameterArray -->
-    <div formArrayName="requestFormParameterArray">
-        <div class="row mt-3" *ngFor="let x of requestFormParameterArray.controls; let i=index" [formGroupName]="i">
-            <div class="form-group col-sm">
-                <input formControlName="parameterKey" class="form-control" name="parameterKey" type="text" readonly>
-            </div>
-            <div class="form-group col-sm">
-                <div class="input-group">
-                    <input formControlName="dataType" class="form-control" name="dataType" type="text" readonly>
-                    <div class="input-group-append">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group col-sm">
-                <input formControlName="optionValue" class="form-control" name="optionValue" type="text" readonly>
-            </div>
-            <div class="form-group col-sm-1 align-self-end">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <div class="btn-group" role="group">
-                        <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="addButton">
-                            <a class="dropdown-item" (click)="deleteParameter('key', x.controls['parameterKey'].value)">Delete
-                                key</a>
-                            <a class="dropdown-item" (click)="deleteParameter('option', x.controls['parameterKey'].value)">Delete
-                                options</a>
-                        </div>
+                        <a class="dropdown-item" (click)="createRequestParameter('delete')">Delete request parameter</a>
+                        <a class="dropdown-item" (click)="createRequestParameter('delete')">Delete request</a>
+                        <a class="dropdown-item" (click)="createRequestParameter('build')">Download SPARQL INSERT</a>
                     </div>
                 </div>
             </div>
@@ -123,15 +85,7 @@
     </div>
 </div>
 
-<div class="row mt-2">
-    <div class="col-sm">
-        <div class="form-check">
-            <label class="form-check-label" for="requestBodyRepresentationCheck">Include body representation</label>
-            <input class="form-check-input" [(ngModel)]="requestBodyRepresentationCheck" type="checkbox" id="requestBodyRepresentationCheck">
-        </div>
-    </div>
-</div>
-
+<!--
 <div class="row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
     <div class="form-group col-sm">
         <label> Body media type </label>
@@ -149,11 +103,9 @@
             <input formControlName="bodyDataType" class="form-control" name="bodyDataType" type="text"
                 placeholder="[the required data type]" [readonly]="requestForm.controls['ontologicalBodyDataType'].value"
                 [required]="requestBodyRepresentationCheck">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
-                    (click)="setOntologicalDataType('requestBodyParameter')">
-                    O </button>
-            </div>
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
+                (click)="setOntologicalDataType('requestBodyParameter')">
+                O </button>
         </div>
     </div>
     <div class="form-group col-sm">
@@ -178,8 +130,68 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 <!-- div is repeated for number of entries in requestFormRepresentationArray -->
+
+<h5>Add body representations:</h5>
+<div class="row">
+    <div class="form-group col-sm-4">
+        <input [(ngModel)]="newBodyRepresentationMediaType" class="form-control" name="bodyMediaType" type="text">
+    </div>
+    <div class="col-sm-3">
+        <button class="btn btn-primary" (click)="this.addRepresentation()">Add representation</button>
+    </div>
+</div>
+
+<h5>Representations</h5>
+<div class="accordion" *ngFor="let control of this.bodyRepresentations.controls; let i=index">
+    <div class="accordion-item" [formGroup]="control">
+        <h2 class="accordion-header">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Body Representation: {{control.get("mediaType").value}}
+        </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+            <div class="row justify-content-end">
+                <div class="col-sm-3">
+                    <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(i)">
+                        Delete representation<i class="ml-3 fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row align-items-end">
+                <div class="col-sm-3">
+                    <label [for]="'parameterName_' + i" class="form-label">Parameter Name:</label>
+                    <input class="form-control" [id]="'parameterName_' + i" type="text" formControlName="parameterName">
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label"> Data type </label>
+                    <div class="input-group">
+                        <input formControlName=dataType class="form-control" name="dataType" type="text" placeholder="[the required data type]"
+                        [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
+                        [required]="requestForm.controls['parameterType'].value!='none'">
+                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
+                        (click)="setOntologicalDataType('requestParameter')">
+                            <i class="fa-regular fa-square-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label class="form-label"> Option values</label>
+                    <input formControlName=optionValue class="form-control" name="optionValue" type="text" placeholder="[the key's option values]"
+                        [readonly]="requestForm.controls['parameterType'].value=='none'">
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-success float-end">
+                        Add parameter
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
 
 <div [formGroup]="requestForm" *ngIf="requestBodyRepresentationCheck && requestFormRepresentationArray.value[0]">
     <div formArrayName="requestFormRepresentationArray">

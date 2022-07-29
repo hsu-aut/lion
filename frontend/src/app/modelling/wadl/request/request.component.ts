@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormArray, FormBuilder, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { PrefixesService } from "../../../shared/services/prefixes.service";
@@ -8,9 +8,6 @@ import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-ope
 import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
-import { WadlRequest } from "@shared/models/odps/wadl/WadlRequest";
-import { WadlParameterTypes, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
-import { WadlMethod } from "@shared/models/odps/wadl/WadlMethod";
 
 @Component({
     selector: 'wadl-request',
@@ -29,9 +26,6 @@ export class RequestComponent implements OnInit {
         resourcePath: ["", Validators.required],
         method: ["", Validators.required],
         parameterType: ["", Validators.required],
-        requestFormParameterArray: this.fb.array([
-            this.fb.control('')
-        ]),
         parameterName: ["", this.customVal.noSpecialCharacters()],
         dataType: ["", this.customVal.noSpecialCharacters()],
         ontologicalDataType: [""],
@@ -39,12 +33,20 @@ export class RequestComponent implements OnInit {
         requestFormRepresentationArray: this.fb.array([
             this.fb.control('')
         ]),
-        bodyMediaType: ["", this.customVal.noSpecialCharacters()],
-        bodyParameterName: ["", this.customVal.noSpecialCharacters()],
-        bodyDataType: ["", this.customVal.noSpecialCharacters()],
-        ontologicalBodyDataType: [""],
-        bodyOptionValue: ["", this.customVal.noSpecialCharacters()],
     })
+
+    // MediaType of the new body rep
+    newBodyRepresentationMediaType: string;
+
+    bodyRepresentations = this.fb.array<FormGroup<{
+        mediaType: FormControl<string|null>,
+        parameters: FormArray<FormGroup<{
+            parameterName: FormControl<string|null>,
+            dataType: FormControl<string|null>,
+            ontologicalDataType: FormControl<string|null>,
+            optionValue: FormControl<string|null>,
+        }>>
+    }>>([])
 
     baseResources = new Array<WadlBaseResource>();
     resources = new Array<WadlResource>();
@@ -85,22 +87,6 @@ export class RequestComponent implements OnInit {
         }
     }
 
-    // form array utils
-    get requestFormParameterArray() {
-        return this.requestForm.get('requestFormParameterArray') as FormArray;
-    }
-    setRequestFormParameter(table) {
-        while (this.requestFormParameterArray.length !== 0) {
-            this.requestFormParameterArray.removeAt(0);
-        }
-        for (let i = 0; i < table.length; i++) {
-            this.requestFormParameterArray.push(this.fb.group({
-                parameterName: [table[i].parameterKey],
-                dataType: [table[i].dataType],
-                optionValue: [table[i].optionValue]
-            }));
-        }
-    }
     get requestFormRepresentationArray() {
         return this.requestForm.get('requestFormRepresentationArray') as FormArray;
     }
@@ -167,33 +153,6 @@ export class RequestComponent implements OnInit {
         return resource;
     }
 
-    addMethod(): void {
-        if(this.requestForm.valid) {
-            const baseresourcePath = this.prefixService.parseToIRI(this.requestForm.controls['resourceBasePath'].value);
-            const resourcePath = this.prefixService.parseToIRI(this.requestForm.controls['resourcePath'].value);
-            const resource = this.getResource(baseresourcePath, resourcePath);
-            const resourceIri = resource.resourceIri;
-            const methodTypeName = this.prefixService.parseToName(this.requestForm.controls['method'].value);
-            const methodTypeIri = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
-            const methodIri = resourceIri + "_" + methodTypeName;
-
-            console.log("resource IRI");
-            console.log(resourceIri);
-
-            console.log("methodIri");
-            console.log(methodIri);
-
-            const paramName = this.requestForm.controls['parameterName'].value;
-            const paramType = WadlParameterTypes[this.requestForm.controls['parameterType'].value];
-            const dataType = this.requestForm.controls['dataType'].value;
-
-            const request = new WadlRequest(methodIri);
-            request.addParameter(paramName, paramType, WadlTypesOfDataTypes.NonOntological, dataType);
-
-            const method = new WadlMethod(resourceIri, methodTypeIri, request);
-            this.wadlService.addMethod(method).pipe(take(1)).subscribe();
-        }
-    }
 
     // TODO: Add separate methods for delete and build
     createRequestParameter(action:string): void {
@@ -262,6 +221,28 @@ export class RequestComponent implements OnInit {
         }
     }
 
+    addRepresentation(): void{
+        const newMediaType = this.newBodyRepresentationMediaType;
+        console.log(newMediaType);
+
+        this.bodyRepresentations.push(this.fb.group({
+            mediaType: [newMediaType, this.customVal.noSpecialCharacters()],
+            parameters: this.fb.array([
+                this.fb.group({
+                    parameterName: ["", this.customVal.noSpecialCharacters()],
+                    dataType: ["", this.customVal.noSpecialCharacters()],
+                    ontologicalDataType: [""],
+                    optionValue: ["", this.customVal.noSpecialCharacters()],
+                })
+            ])
+        }));
+    }
+
+    deleteRepresentation(representationIndex: number): void {
+        // TODO: Delete via SPARQL
+        this.bodyRepresentations.removeAt(representationIndex);
+
+    }
 
 
     deleteParameter(context: string, parameterName) {
