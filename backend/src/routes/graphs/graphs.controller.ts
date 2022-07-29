@@ -1,16 +1,27 @@
-import { Controller, Delete, Get, Headers, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Put, Query } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GraphOperationService } from '../../shared-services/graph-operation.service';
 import { StringBody } from '../../custom-decorator/StringBodyDecorator';
-
+import { GraphUpdate } from '../../models/graphs/GraphUpdate';
 
 
 
 @Controller('/lion_BE/graphs')
 export class GraphsController {
 	constructor(private readonly graphService: GraphOperationService) { }
+
+
+	@Get('')
+	getCurrentGraph(@Query('type') type: string): string {
+		return this.graphService.getCurrentGraph();
+	}
+
+	@Put('')
+	setCurrentGraph(@Query('') type: string, @Body() graphUpdate: GraphUpdate): void {
+		this.graphService.setCurrentGraph(graphUpdate);
+	}
 
 	/**
 	 * Get all triples of a named graph

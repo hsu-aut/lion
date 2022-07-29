@@ -5,6 +5,9 @@
 /out-tsc
 /dist
 
+# angular cache
+/.angular/cache
+
 # dependencies
 /node_modules
 package-lock.json

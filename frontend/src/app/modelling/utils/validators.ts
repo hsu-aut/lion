@@ -1,81 +1,65 @@
-import { FormControl } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class cValFns {
 
-    noProtocol(pattern: FormControl) {
+    /**
+     * Validator making sure that no protocol is specified
+     * @param pattern Pattern to check
+     * @returns
+     */
+    noProtocol(): ValidatorFn {
 
         const protocols = new DefaultRegularExpressions().protocols;
 
-        let noProtocol = true;
-        const validatePattern = { valid: false };
-
-        // checks if there is a match between the regexes of the protocols and the pattern
-        for (let i = 0; i < protocols.length; i++) {
-            if (protocols[i].regularExpression.test(pattern.value)) {
-                noProtocol = false;
-                const description = "ProtocolMatch" + i;
-                validatePattern[description] = protocols[i].name;
-            }
-        }
-
-        return noProtocol ? null : { validatePattern };
+        return (control: AbstractControl): ValidationErrors | null => {
+            // checks if one of the protocols is found
+            const protocolFound = protocols.find(protocol => protocol.regularExpression.test(control.value));
+            return protocolFound ? {protocolForbidden: {value: control.value}} : null;
+        };
     }
 
-    noSpecialCharacters(pattern: FormControl) {
+    /**
+     * Custom validator checking that no special characters are present
+     * @returns
+     */
+    noSpecialCharacters(): ValidatorFn {
 
         const specialCharacters = new DefaultRegularExpressions().specialCharacters;
-        let noSpecialCharacter = true;
-
-        const validatePattern = { valid: false };
-
-        // checks if there is a match between the regexes of the special characters and the pattern
-        for (let i = 0; i < specialCharacters.length; i++) {
-            if (specialCharacters[i].regularExpression.test(pattern.value)) {
-                noSpecialCharacter = false;
-                const description = "SpecialCharacterMatch" + i;
-                validatePattern[description] = specialCharacters[i].name;
-            }
-        }
-
-        return noSpecialCharacter ? null : { validatePattern };
+        return (control: AbstractControl): ValidationErrors | null => {
+            // checks if one of the protocols is found
+            const specialCharacterFound = specialCharacters.find(specialChar => specialChar.regularExpression.test(control.value));
+            return specialCharacterFound ? {specialCharacterForbidden: {value: control.value}} : null;
+        };
     }
 
-    noIdentifier(pattern: FormControl) {
+    /**
+     * Simple validator checking whether or not the given form control is an identifier
+     * @returns
+     */
+    noIdentifier(): ValidatorFn {
+        // TODO: This seems to be a very much simplified validator... What
+        const identifierRegExp =  /urn:/i;      // Simple regexp looking for urn only
 
-        const identifiers = new DefaultRegularExpressions().identifiers;
-        let noidentifier = true;
-
-        const validatePattern = { valid: false };
-
-        // checks if there is a match between the regexes of the special characters and the pattern
-        for (let i = 0; i < identifiers.length; i++) {
-            if (identifiers[i].regularExpression.test(pattern.value)) {
-                noidentifier = false;
-                const description = "IdentifierMatch" + i;
-                validatePattern[description] = identifiers[i].name;
-            }
-        }
-
-        return noidentifier ? null : { validatePattern };
+        return (control: AbstractControl): ValidationErrors | null => {
+            // checks if one of the protocols is found
+            const isIdentifier = identifierRegExp.test(control.value);
+            return isIdentifier ? {isIdentifier: {value: control.value}} : null;
+        };
     }
 
-    isDomain(pattern: FormControl) {
+    /**
+     * Validator checking that control value is a correct domain (localhost or IP / URL)
+     * @returns
+     */
+    isDomain(): ValidatorFn {
 
-        const domain = new DefaultRegularExpressions().domain;
-        let isDomain = false;
+        const domains = new DefaultRegularExpressions().domain;
 
-        const validatePattern = { valid: false };
-
-        // checks if there is a match between the regexes of the special characters and the pattern
-        for (let i = 0; i < domain.length; i++) {
-            if (domain[i].regularExpression.test(pattern.value)) {
-                isDomain = true;
-            } else {
-                const description = "isNoMatchWith" + i;
-                validatePattern[description] = domain[i].name;
-            }
-        }
-        return isDomain ? null : { validatePattern };
+        return (control: AbstractControl): ValidationErrors | null => {
+        // checks if one of the protocols is found
+            const noDomain = domains.find(domain => domain.regularExpression.test(control.value));
+            return noDomain ? {noDomain: {value: control.value}} : null;
+        };
     }
 
 }
@@ -89,10 +73,6 @@ class DefaultRegularExpressions {
         { name: "opc", regularExpression: /opc:/i },
         { name: "ftp", regularExpression: /ftp:/i },
         { name: "ssh", regularExpression: /ssh:/i },
-    ]
-
-    identifiers: Array<RegularExpressionObject> = [
-        { name: "urn", regularExpression: /urn:/i },
     ]
 
     specialCharacters: Array<RegularExpressionObject> = [

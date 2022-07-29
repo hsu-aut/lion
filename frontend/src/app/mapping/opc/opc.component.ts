@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OpcMappingService } from './opc-mapping.service';
+import { OpcMappingService, OpcUaServerInfo } from './opc-mapping.service';
 import { OpcNode } from './subcomponents/opc-mapping-element.component';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -24,7 +24,7 @@ export class OpcComponent {
 
 
     serverInfoForm = this.fb.group({
-        endpointUrl: this.fb.control('', Validators.pattern(/\w.+:(\/?\/?)[^\s]+:[0-9]{2,6}((\/)[\w-]*)*/)),
+        endpointUrl: this.fb.control('', [Validators.required, Validators.pattern(/\w.+:(\/?\/?)[^\s]+:[0-9]{2,6}((\/)[\w-]*)*/)]),
         securityPolicy: this.fb.control('', Validators.required),
         messageSecurityMode: this.fb.control('', Validators.required),
         username: this.fb.control(''),
@@ -35,8 +35,9 @@ export class OpcComponent {
 
 
     crawlServer() {
-        console.log("crawluing");
-        this.opcService.crawlServer(this.serverInfoForm.value).subscribe(nodeset => {
+        console.log("crawling");
+        const serverInfo = this.serverInfoForm.value as OpcUaServerInfo;
+        this.opcService.crawlServer(serverInfo).subscribe(nodeset => {
             this.opcModelString = JSON.stringify(nodeset);
         });
     }
@@ -76,7 +77,7 @@ export class OpcComponent {
 
 
     createMapping() {
-        const serverInfo = this.serverInfoForm.value;
+        const serverInfo = this.serverInfoForm.value as OpcUaServerInfo;
         this.opcService.createMapping(serverInfo).subscribe(data => {
             console.log(data);
 
