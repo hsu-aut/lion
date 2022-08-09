@@ -1,15 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlResponse } from '../../models/sparql/SparqlResponse';
 import { WadlService } from './wadl.service';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
+import { WadlRequestService } from './wadl-request.service';
+import { WadlRequest } from '../../models/odps/wadl/WadlRequest';
 
 @Controller('lion_BE/wadl')
 export class WadlController {
 	
-	constructor(private wadlService: WadlService) { }
+	constructor(
+		private wadlService: WadlService,
+		private wadlRequestService: WadlRequestService
+	) { }
 
 	@Get('base-resources') 
 	getBaseResources(): Observable<SparqlResponse>{
@@ -36,7 +41,6 @@ export class WadlController {
 		return this.wadlService.deleteResource(resourceIri);
 	}
 
-
 	@Get('methods')
 	getMethodTypes(): Observable<SparqlResponse> {
 		return this.wadlService.getMethodTypes();
@@ -55,6 +59,15 @@ export class WadlController {
 	@Get('parameter-types')
 	getParameterTypes(): Observable<SparqlResponse> {
 		return this.wadlService.getParameterTypes();
+	}
+
+	@Get('requests')
+	getRequest(@Query('resourceIri') resourceIri: string, @Query('methodTypeIri') methodTypeIri: string): Promise<WadlRequest> {
+		console.log(resourceIri);
+		console.log(methodTypeIri);
+		
+		
+		return this.wadlRequestService.getRequest(resourceIri, methodTypeIri);
 	}
 
 	@Get('request-parameters')
