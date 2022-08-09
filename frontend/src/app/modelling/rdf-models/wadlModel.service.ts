@@ -9,6 +9,8 @@ import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
 import { WadlResponse } from '@shared/models/odps/wadl/WadlResponse';
+import { WadlRequest } from '../../../../models/odps/wadl/WadlRequest';
+import { ResourceComponent } from '../wadl/resource/resource.component';
 
 
 @Injectable({
@@ -64,6 +66,7 @@ export class WadlModelService {
         const url = `${this.wadlBasePath}/resources`;
         return this.http.get<SparqlResponse>(url, {params: queryParam});
     }
+
     /**
      * Get all existing methods
      * @returns A SparqlResponse object with all existing methods with their base resource, base path and service path
@@ -80,6 +83,16 @@ export class WadlModelService {
     getResponseCodes(): Observable<SparqlResponse> {
         const url = `${this.wadlBasePath}/response-codes`;
         return this.http.get<SparqlResponse>(url);
+    }
+
+
+    getRequest(resourceIri: string, methodTypeIri: string): Observable<WadlRequest> {
+        const url = `${this.wadlBasePath}/requests`;
+        const queryParams = {
+            resourceIri: resourceIri,
+            methodTypeIri: methodTypeIri,
+        };
+        return this.http.get<WadlRequest>(url, {params: queryParams});
     }
 
     /**

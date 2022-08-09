@@ -1,0 +1,38 @@
+<h5 class="my-3">Parameters</h5>
+<div class="row align-items-end" *ngFor="let param of this.parameterForm.controls; let i = index">
+    <div class="col-sm-3">
+        <label class="form-label">Parameter type</label>
+        <select [formControl]="param.get('parameterType')" name="parameterType" class="form-select">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of parameterTypes'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <label for="newParamName" class="form-label">Parameter Name:</label>
+        <input class="form-control" id="newParamName" type="text" [formControl]="param.get('parameterName')">
+    </div>
+    <div class="col-sm-3">
+        <label class="form-label"> Data type </label>
+        <div class="input-group">
+            <input [formControl]="param.get('dataType')" class="form-control" name="dataType" type="text" placeholder="[the required data type]">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
+                (click)="setOntologicalDataType('requestParameter')">
+                <i class="fa-regular fa-square-plus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <label class="form-label"> Option values</label>
+        <input [formControl]="param.get('optionValue')" class="form-control" name="optionValue" type="text" placeholder="[Possible options]">
+    </div>
+    <div class="col-sm-2">
+        <button *ngIf="param.enabled" class="btn btn-success float-end" (click)="addParameter()">
+            Add parameter
+        </button>
+        <button *ngIf="param.disabled" class="btn btn-danger float-end" (click)="deleteParameter(i)">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+    </div>
+</div>

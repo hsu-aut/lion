@@ -12,17 +12,17 @@
         </div>
         <div class="col-sm">
             <label class="form-label">The resource path</label>
-            <select formControlName=resourcePath name="resourcePath" class="form-select">
+            <select formControlName=resource name="resource" class="form-select">
                 <option value=null selected hidden></option>
-                <option *ngFor='let x of resources'>
-                    {{x.resourcePath}}
+                <option *ngFor='let resource of resources' [ngValue]="resource">
+                    {{resource.resourcePath}}
                 </option>
             </select>
         </div>
         <div class="col-sm">
             <label class="form-label">Method</label>
             <!-- TODO: Currently, the two methods are done on every click. This can be done better (e.g. by subscribing to form changes) -->
-            <select formControlName="method" name="method" class="form-select"
+            <select formControlName="methodType" name="method" class="form-select"
                 (click)="getExistingParameters()"
                 (click)="getExistingRequestRepresentation()">
                 <option value=null selected hidden></option>
@@ -31,19 +31,29 @@
                 </option>
             </select>
         </div>
-        <div class="col-sm">
-            <label class="form-label">Parameter type</label>
-            <select formControlName=parameterType name="parameterType" class="form-select"
-                (click)="getExistingParameters()"
-                (click)="getExistingRequestRepresentation()">
-                <option value=null selected hidden></option>
-                <option>none</option>
-                <option *ngFor='let x of parameterTypes'>
-                    {{x}}
-                </option>
-            </select>
+    </div>
+
+    <div class="row mt-3 justify-content-end">
+        <div class="col-sm-3">
+            <div class="btn-group float-end" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                (click)="addRequest()">Add Request</button>
+                <div class="btn-group" role="group">
+                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="addButton">
+                        <a class="dropdown-item"
+                        (click)="deleteRequest()">Delete Request</a>
+                        <a class="dropdown-item"
+                        (click)="getSparqlInsert()">Download SPARQL INSERT</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+<!--
 
     <div class="row mt-2">
         <div class="col-sm-3">
@@ -82,8 +92,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
 </div>
+
+<wadl-parameter *ngIf="this.existingRequest" [parameters]="this.existingRequest.parameters"></wadl-parameter>
 
 <!--
 <div class="row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
@@ -133,67 +146,9 @@
 </div> -->
 <!-- div is repeated for number of entries in requestFormRepresentationArray -->
 
-<h5>Add body representations:</h5>
-<div class="row">
-    <div class="form-group col-sm-4">
-        <input [(ngModel)]="newBodyRepresentationMediaType" class="form-control" name="bodyMediaType" type="text">
-    </div>
-    <div class="col-sm-3">
-        <button class="btn btn-primary" (click)="this.addRepresentation()">Add representation</button>
-    </div>
-</div>
+<wadl-representation *ngIf="this.existingRequest"></wadl-representation>
 
-<h5>Representations</h5>
-<div class="accordion" *ngFor="let control of this.bodyRepresentations.controls; let i=index">
-    <div class="accordion-item" [formGroup]="control">
-        <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Body Representation: {{control.get("mediaType").value}}
-        </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-            <div class="row justify-content-end">
-                <div class="col-sm-3">
-                    <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(i)">
-                        Delete representation<i class="ml-3 fa-solid fa-trash-can"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="row align-items-end">
-                <div class="col-sm-3">
-                    <label [for]="'parameterName_' + i" class="form-label">Parameter Name:</label>
-                    <input class="form-control" [id]="'parameterName_' + i" type="text" formControlName="parameterName">
-                </div>
-                <div class="col-sm-3">
-                    <label class="form-label"> Data type </label>
-                    <div class="input-group">
-                        <input formControlName=dataType class="form-control" name="dataType" type="text" placeholder="[the required data type]"
-                        [readonly]="requestForm.controls['ontologicalDataType'].value || requestForm.controls['parameterType'].value=='none'"
-                        [required]="requestForm.controls['parameterType'].value!='none'">
-                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
-                        (click)="setOntologicalDataType('requestParameter')">
-                            <i class="fa-regular fa-square-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <label class="form-label"> Option values</label>
-                    <input formControlName=optionValue class="form-control" name="optionValue" type="text" placeholder="[the key's option values]"
-                        [readonly]="requestForm.controls['parameterType'].value=='none'">
-                </div>
-                <div class="col-sm-3">
-                    <button class="btn btn-success float-end">
-                        Add parameter
-                    </button>
-                </div>
-            </div>
-        </div>
-        </div>
-    </div>
-</div>
-
-<div [formGroup]="requestForm" *ngIf="requestBodyRepresentationCheck && requestFormRepresentationArray.value[0]">
+<!-- <div [formGroup]="requestForm" *ngIf="requestBodyRepresentationCheck && requestFormRepresentationArray.value[0]">
     <div formArrayName="requestFormRepresentationArray">
         <div class="row" *ngFor="let x of requestFormRepresentationArray.controls; let i=index" [formGroupName]="i">
             <div class="form-group col-sm">
@@ -225,7 +180,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <div class="row mt-3">
     <div class="col-sm">

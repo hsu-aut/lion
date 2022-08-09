@@ -8,6 +8,8 @@ import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-ope
 import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
+import { WadlRequest } from "../../../../../models/odps/wadl/WadlRequest";
+import { MessagesService } from "../../../shared/services/messages.service";
 
 @Component({
     selector: 'wadl-request',
@@ -21,43 +23,23 @@ export class RequestComponent implements OnInit {
     // Custom validator
     customVal = new cValFns();
 
-    requestForm = this.fb.group({
-        resourceBasePath: ["", Validators.required],
-        resourcePath: ["", Validators.required],
-        method: ["", Validators.required],
-        parameterType: ["", Validators.required],
-        parameterName: ["", this.customVal.noSpecialCharacters()],
-        dataType: ["", this.customVal.noSpecialCharacters()],
-        ontologicalDataType: [""],
-        optionValue: ["", this.customVal.noSpecialCharacters()],
-        requestFormRepresentationArray: this.fb.array([
-            this.fb.control('')
-        ]),
-    })
-
-    // MediaType of the new body rep
-    newBodyRepresentationMediaType: string;
-
-    bodyRepresentations = this.fb.array<FormGroup<{
-        mediaType: FormControl<string|null>,
-        parameters: FormArray<FormGroup<{
-            parameterName: FormControl<string|null>,
-            dataType: FormControl<string|null>,
-            ontologicalDataType: FormControl<string|null>,
-            optionValue: FormControl<string|null>,
-        }>>
-    }>>([])
-
     baseResources = new Array<WadlBaseResource>();
     resources = new Array<WadlResource>();
     methods: Array<string> = [];
-    parameterTypes: Array<string> = [];
+    existingRequest: WadlRequest;
+
+    requestForm = this.fb.group({
+        resourceBasePath: ["", Validators.required],
+        resource: [this.resources[0], Validators.required],
+        methodType: ["", Validators.required],
+    })
+
     requestParameterTable: Array<Record<string, any>> = [];
     requestRepresentationTable: Array<Record<string, any>> = [];
 
     constructor(
         private fb: FormBuilder,
-        private prefixService: PrefixesService,
+        private messageService: MessagesService,
         private wadlService: WadlModelService,
     ) {}
 
@@ -65,8 +47,11 @@ export class RequestComponent implements OnInit {
     ngOnInit(): void {
         this.loadBaseResources();
         this.wadlService.getMethods().pipe(take(1), toSparqlVariableList()).subscribe(data => this.methods = data);
-        this.wadlService.getParameterTypes().pipe(take(1), toSparqlVariableList()).subscribe(data => {
-            this.parameterTypes = data;});
+        this.requestForm.valueChanges.subscribe(data => {
+            if (this.requestForm.valid) {
+                this.updateExistingRequest();
+            }
+        });
     }
 
     /**
@@ -87,64 +72,94 @@ export class RequestComponent implements OnInit {
         }
     }
 
-    get requestFormRepresentationArray() {
-        return this.requestForm.get('requestFormRepresentationArray') as FormArray;
+    updateExistingRequest() {
+        const {resource, methodType} = this.requestForm.value;
+        this.wadlService.getRequest(resource.resourceIri, methodType).subscribe(data => {
+            console.log(data);
+
+            // TODO: Currently, a whole resource is returned. Make sure to only return request of it
+            this.existingRequest = data;
+        });
     }
 
-    setRequestFormRepresentation(table) {
-        while (this.requestFormRepresentationArray.length !== 0) {
-            this.requestFormRepresentationArray.removeAt(0);
-        }
-        for (let i = 0; i < table.length; i++) {
-            this.requestFormRepresentationArray.push(this.fb.group({
-                bodyMediaType: [table[i].bodyMediaType],
-                bodyParameterName: [table[i].bodyParameterName],
-                bodyDataType: [table[i].bodyDataType],
-                bodyOptionValue: [table[i].bodyOptionValue],
-            }));
+
+    addRequest() {
+        if(this.requestForm.invalid || this.existingRequest) {
+            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request already exists");
         }
     }
+
+    deleteRequest() {
+        if(this.requestForm.invalid || !this.existingRequest) {
+            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request doesn't exist");
+        }
+    }
+
+    getSparqlInsert(){
+        if(this.requestForm.invalid) {
+            this.messageService.addMessage("warn", "False request info", "Form is invalid");
+        }
+    }
+
+
+    // get requestFormRepresentationArray() {
+    //     return this.requestForm.get('requestFormRepresentationArray') as FormArray;
+    // }
+
+    // setRequestFormRepresentation(table) {
+    //     while (this.requestFormRepresentationArray.length !== 0) {
+    //         this.requestFormRepresentationArray.removeAt(0);
+    //     }
+    //     for (let i = 0; i < table.length; i++) {
+    //         this.requestFormRepresentationArray.push(this.fb.group({
+    //             bodyMediaType: [table[i].bodyMediaType],
+    //             bodyParameterName: [table[i].bodyParameterName],
+    //             bodyDataType: [table[i].bodyDataType],
+    //             bodyOptionValue: [table[i].bodyOptionValue],
+    //         }));
+    //     }
+    // }
 
     getExistingParameters(): void {
-        console.log("get params");
-        // this method should get the existing parameter table
-        const basePath = this.requestForm.controls["resourceBasePath"].value;
-        const resourcePath = this.requestForm.controls['resourcePath'].value;
-        const method = this.requestForm.controls['method'].value;
-        const parameterType = this.requestForm.controls['parameterType'].value;
-        this.requestForm.controls['parameterName'].reset();
-        this.requestForm.controls['dataType'].reset();
-        this.requestForm.controls['optionValue'].reset();
-        if (parameterType == "none") {
-            // this.setRequestFormParameter([]);
-        } else if (resourcePath && method && parameterType) {
-            const resource = this.getResource(basePath, resourcePath);
-            const methodTypeIri = this.prefixService.parseToIRI(method);
-            const parameterTypeIri = this.prefixService.parseToIRI(parameterType);
-            this.wadlService.getRequestParameters(resource.baseResourceIri, resource.resourceIri, methodTypeIri, parameterTypeIri)
-                .pipe(take(1), toSparqlTable())
-                .subscribe((data: any) => {
-                    console.log("got data");
-                    console.log(data);
-                    this.requestParameterTable = data;
-                    // this.setRequestFormParameter(this.requestParameterTable);
-                });
-        }
+        // console.log("get params");
+        // // this method should get the existing parameter table
+        // const basePath = this.requestForm.controls["resourceBasePath"].value;
+        // const resourcePath = this.requestForm.controls['resourcePath'].value;
+        // const method = this.requestForm.controls['method'].value;
+        // const parameterType = this.requestForm.controls['parameterType'].value;
+        // this.requestForm.controls['parameterName'].reset();
+        // this.requestForm.controls['dataType'].reset();
+        // this.requestForm.controls['optionValue'].reset();
+        // if (parameterType == "none") {
+        //     // this.setRequestFormParameter([]);
+        // } else if (resourcePath && method && parameterType) {
+        //     const resource = this.getResource(basePath, resourcePath);
+        //     const methodTypeIri = this.prefixService.parseToIRI(method);
+        //     const parameterTypeIri = this.prefixService.parseToIRI(parameterType);
+        //     this.wadlService.getRequestParameters(resource.baseResourceIri, resource.resourceIri, methodTypeIri, parameterTypeIri)
+        //         .pipe(take(1), toSparqlTable())
+        //         .subscribe((data: any) => {
+        //             console.log("got data");
+        //             console.log(data);
+        //             this.requestParameterTable = data;
+        //             // this.setRequestFormParameter(this.requestParameterTable);
+        //         });
+        // }
     }
 
     // TODO: THis one and the method "getExistingParameters" should be called on value changes and not on click
     getExistingRequestRepresentation() {
-        // this method should get the existing parameter table
-        const basePath = this.requestForm.controls['resourceBasePath'].value;
-        const resourcePath = this.requestForm.controls['resourcePath'].value;
-        const methodTypeIri = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
-        if(basePath && resourcePath && methodTypeIri) {
-            const resourceIri = this.getResource(basePath, resourcePath).resourceIri;
-            this.wadlService.getRequestRepresentation(resourceIri, methodTypeIri).pipe(take(1), toSparqlTable()).subscribe((data: any) => {
-                this.requestRepresentationTable = data;
-                // this.setRequestFormRepresentation(this.requestRepresentationTable);
-            });
-        }
+        // // this method should get the existing parameter table
+        // const basePath = this.requestForm.controls['resourceBasePath'].value;
+        // const resourcePath = this.requestForm.controls['resourcePath'].value;
+        // const methodTypeIri = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
+        // if(basePath && resourcePath && methodTypeIri) {
+        //     const resourceIri = this.getResource(basePath, resourcePath).resourceIri;
+        //     this.wadlService.getRequestRepresentation(resourceIri, methodTypeIri).pipe(take(1), toSparqlTable()).subscribe((data: any) => {
+        //         this.requestRepresentationTable = data;
+        //         // this.setRequestFormRepresentation(this.requestRepresentationTable);
+        //     });
+        // }
     }
 
     getResource(basePath: string, resourcePath: string): WadlResource {
@@ -156,93 +171,72 @@ export class RequestComponent implements OnInit {
 
     // TODO: Add separate methods for delete and build
     createRequestParameter(action:string): void {
-        if(this.requestForm.valid) {
-            const serviceIRI = this.prefixService.parseToIRI(this.requestForm.controls['resourcePath'].value);
-            const methodTypeIRI = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
-            const methodIRI = serviceIRI + "_" + this.prefixService.parseToName(this.requestForm.controls['method'].value);
-            const requestIRI = methodIRI + "_Req";
-            let parameterIri = "";
-            if (this.requestForm.controls['parameterType'].value != "none" && this.requestForm.controls['parameterName'].value != "") {
-                const parameterName = this.requestForm.controls['parameterName'].value;
-                parameterIri = requestIRI + "_" + parameterName;
-                const parameterTypeIRI = this.prefixService.parseToIRI(this.requestForm.controls['parameterType'].value);
-            }
-            if (this.requestForm.controls['ontologicalDataType'].value == "ontologicalDataTypeTBox") {
-                const parameterDataTypeTBox = this.prefixService.parseToIRI(this.requestForm.controls['dataType'].value);
-            } else if (this.requestForm.controls['ontologicalDataType'].value == "ontologicalDataTypeABox") {
-                const parameterDataTypeABox = this.prefixService.parseToIRI(this.requestForm.controls['dataType'].value);
-            } else {
-                const parameterDataType = this.requestForm.controls['dataType'].value;
-            }
-            const optionValue = this.requestForm.controls['optionValue'].value;
-            if (optionValue) {
-                const optionIRI = parameterIri + "_Option";
-            }
+        // if(this.requestForm.valid) {
+        //     const serviceIRI = this.prefixService.parseToIRI(this.requestForm.controls['resourcePath'].value);
+        //     const methodTypeIRI = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
+        //     const methodIRI = serviceIRI + "_" + this.prefixService.parseToName(this.requestForm.controls['method'].value);
+        //     const requestIRI = methodIRI + "_Req";
+        //     let parameterIri = "";
+        //     if (this.requestForm.controls['parameterType'].value != "none" && this.requestForm.controls['parameterName'].value != "") {
+        //         const parameterName = this.requestForm.controls['parameterName'].value;
+        //         parameterIri = requestIRI + "_" + parameterName;
+        //         const parameterTypeIRI = this.prefixService.parseToIRI(this.requestForm.controls['parameterType'].value);
+        //     }
+        //     if (this.requestForm.controls['ontologicalDataType'].value == "ontologicalDataTypeTBox") {
+        //         const parameterDataTypeTBox = this.prefixService.parseToIRI(this.requestForm.controls['dataType'].value);
+        //     } else if (this.requestForm.controls['ontologicalDataType'].value == "ontologicalDataTypeABox") {
+        //         const parameterDataTypeABox = this.prefixService.parseToIRI(this.requestForm.controls['dataType'].value);
+        //     } else {
+        //         const parameterDataType = this.requestForm.controls['dataType'].value;
+        //     }
+        //     const optionValue = this.requestForm.controls['optionValue'].value;
+        //     if (optionValue) {
+        //         const optionIRI = parameterIri + "_Option";
+        //     }
 
-            const request = null;
+        //     const request = null;
 
-            this.wadlService.addMethod(request).pipe(take(1)).subscribe((data: any) => {
-                // this.loadDynamicDropdowns();
-                // this.loadDynamicTables();
-                this.getExistingParameters();
-            });
-        }
+        //     this.wadlService.addMethod(request).pipe(take(1)).subscribe((data: any) => {
+        //         // this.loadDynamicDropdowns();
+        //         // this.loadDynamicTables();
+        //         this.getExistingParameters();
+        //     });
+        // }
     }
 
     createRequestRepresentationParameter(action: string): void {
-        if(this.requestForm.valid) {
-            const serviceIRI = this.prefixService.parseToIRI(this.requestForm.controls['resourcePath'].value);
-            const methodTypeIRI = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
-            const methodIRI = serviceIRI + "_" + this.prefixService.parseToName(this.requestForm.controls['method'].value);
-            const requestIRI = methodIRI + "_Req";
-            const bodyRepresentationMediaType = this.requestForm.controls['bodyMediaType'].value;
-            const bodyRepresentationIRI = requestIRI + "_BodyRep_" + bodyRepresentationMediaType;
-            const bodyRepresentationParameterName = this.requestForm.controls['bodyParameterName'].value;
+        // if(this.requestForm.valid) {
+        //     const serviceIRI = this.prefixService.parseToIRI(this.requestForm.controls['resourcePath'].value);
+        //     const methodTypeIRI = this.prefixService.parseToIRI(this.requestForm.controls['method'].value);
+        //     const methodIRI = serviceIRI + "_" + this.prefixService.parseToName(this.requestForm.controls['method'].value);
+        //     const requestIRI = methodIRI + "_Req";
+        //     const bodyRepresentationMediaType = this.requestForm.controls['bodyMediaType'].value;
+        //     const bodyRepresentationIRI = requestIRI + "_BodyRep_" + bodyRepresentationMediaType;
+        //     const bodyRepresentationParameterName = this.requestForm.controls['bodyParameterName'].value;
 
-            if (this.requestForm.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
-                const bodyRepresentationParameterDataTypeOntologicalTBox = this.prefixService.parseToIRI(this.requestForm.controls['bodyDataType'].value);
-            } else if (this.requestForm.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
-                const bodyRepresentationParameterDataTypeOntologicalABox = this.prefixService.parseToIRI(this.requestForm.controls['bodyDataType'].value);
-            } else {
-                const bodyRepresentationParameterDataType = this.requestForm.controls['bodyDataType'].value;
-            }
+        //     if (this.requestForm.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
+        //         const bodyRepresentationParameterDataTypeOntologicalTBox = this.prefixService.parseToIRI(this.requestForm.controls['bodyDataType'].value);
+        //     } else if (this.requestForm.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
+        //         const bodyRepresentationParameterDataTypeOntologicalABox = this.prefixService.parseToIRI(this.requestForm.controls['bodyDataType'].value);
+        //     } else {
+        //         const bodyRepresentationParameterDataType = this.requestForm.controls['bodyDataType'].value;
+        //     }
 
-            const bodyRepresentationParameterDataType = this.requestForm.controls['bodyDataType'].value;
-            const bodyRepresentationParameterIRI = bodyRepresentationIRI + "_" + bodyRepresentationParameterName;
-            const bodyRepresentationParameterOptionValue = this.requestForm.controls['bodyOptionValue'].value;
-            if (bodyRepresentationParameterOptionValue != "" && bodyRepresentationParameterOptionValue) {
-                const bodyRepresentationParameterOptionIRI = bodyRepresentationParameterIRI + "_Option";
-            }
-            // TODO: Pass proper data object
-            const request = null;
-            this.wadlService.addMethod(request).pipe(take(1)).subscribe((data: any) => {
-                this.getExistingRequestRepresentation();
-            });
-        }
+        //     const bodyRepresentationParameterDataType = this.requestForm.controls['bodyDataType'].value;
+        //     const bodyRepresentationParameterIRI = bodyRepresentationIRI + "_" + bodyRepresentationParameterName;
+        //     const bodyRepresentationParameterOptionValue = this.requestForm.controls['bodyOptionValue'].value;
+        //     if (bodyRepresentationParameterOptionValue != "" && bodyRepresentationParameterOptionValue) {
+        //         const bodyRepresentationParameterOptionIRI = bodyRepresentationParameterIRI + "_Option";
+        //     }
+        //     // TODO: Pass proper data object
+        //     const request = null;
+        //     this.wadlService.addMethod(request).pipe(take(1)).subscribe((data: any) => {
+        //         this.getExistingRequestRepresentation();
+        //     });
+        // }
     }
 
-    addRepresentation(): void{
-        const newMediaType = this.newBodyRepresentationMediaType;
-        console.log(newMediaType);
 
-        this.bodyRepresentations.push(this.fb.group({
-            mediaType: [newMediaType, this.customVal.noSpecialCharacters()],
-            parameters: this.fb.array([
-                this.fb.group({
-                    parameterName: ["", this.customVal.noSpecialCharacters()],
-                    dataType: ["", this.customVal.noSpecialCharacters()],
-                    ontologicalDataType: [""],
-                    optionValue: ["", this.customVal.noSpecialCharacters()],
-                })
-            ])
-        }));
-    }
-
-    deleteRepresentation(representationIndex: number): void {
-        // TODO: Delete via SPARQL
-        this.bodyRepresentations.removeAt(representationIndex);
-
-    }
 
 
     deleteParameter(context: string, parameterName) {
