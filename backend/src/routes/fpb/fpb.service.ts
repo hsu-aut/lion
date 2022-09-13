@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from "fs/promises";
-import { Observable, firstValueFrom } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
 import { SparqlService } from '../../shared-services/sparql.service';
 import { FpbMappingService } from './fpb-mapping.service';
