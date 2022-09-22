@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from "fs/promises";
-import * as fs1 from "fs";
 
 import { Observable } from 'rxjs';
 import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
 import { SparqlService } from '../../shared-services/sparql.service';
-import { FpbMappingService } from './fpb-mapping.service';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
-import { map as mapFbpToOwl } from 'fpb-owl-mapper';
+import { map as mapFpbToOwl } from 'fpb-owl-mapper';
 
 @Injectable()
 export class FpbService { 
@@ -55,7 +53,7 @@ export class FpbService {
 			const file = await fs.readFile(jsonFilePath);
 			const fpbjs = JSON.parse(file.toString());
 			// console.log(JSON.stringify(fpbjs))
-			const processRdf = mapFbpToOwl(fpbjs);
+			const processRdf = mapFpbToOwl(fpbjs);
 			// Insert rdf into ontology
 			this.modelService.addTurtleFileToGraph(processRdf, activeGraph);
 
