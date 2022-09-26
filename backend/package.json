@@ -19,7 +19,7 @@
     "express": "~4.16.0",
     "form-data": "^2.3.3",
     "formidable": "^1.2.1",
-    "fpb-owl-mapper": "^1.0.2",
+    "fpb-owl-mapper": "1.0.4",
     "html-to-json": "^0.6.0",
     "http-errors": "~1.6.2",
     "moment": "^2.24.0",
