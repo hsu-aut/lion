@@ -46,17 +46,11 @@ export class FpbService {
 
 		try {
 			// Read the fpb file, parse to JSON and use the mapper to map it to RDF
-			// old
-			// const processRdf = this.fpbMappingService.mapJsonToRDF(fpbjs);
-			// const fpbjs = (await fs.readFile(jsonFilePath)).toJSON();
-			// new
 			const file = await fs.readFile(jsonFilePath);
 			const fpbjs = JSON.parse(file.toString());
-			// console.log(JSON.stringify(fpbjs))
 			const processRdf = mapFpbToOwl(fpbjs);
 			// Insert rdf into ontology
 			this.modelService.addTurtleFileToGraph(processRdf, activeGraph);
-
 		} catch (error) {
 			console.error(error);
 		}
