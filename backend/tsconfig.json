@@ -13,7 +13,8 @@
     },
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "temp"
     ],
     "references": [
         {"path": "../shared"}
