@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from "fs/promises";
-import { Observable, firstValueFrom } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+
+import { Observable } from 'rxjs';
 import { GraphDbModelService } from '../../shared-services/graphdb-model.service';
 import { SparqlService } from '../../shared-services/sparql.service';
-import { FpbMappingService } from './fpb-mapping.service';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
+import { map as mapFpbToOwl } from 'fpb-owl-mapper';
 
 @Injectable()
 export class FpbService { 
@@ -14,7 +14,7 @@ export class FpbService {
 
 	constructor(
 		private modelService: GraphDbModelService,
-		private fpbMappingService: FpbMappingService,
+		// private fpbMappingService: FpbMappingService,
 		private queryService: SparqlService) {}
 
 	static getFpbUploadDirectory(): string {
@@ -46,8 +46,9 @@ export class FpbService {
 
 		try {
 			// Read the fpb file, parse to JSON and use the mapper to map it to RDF
-			const fpbjs = (await fs.readFile(jsonFilePath)).toJSON();
-			const processRdf = this.fpbMappingService.mapJsonToRDF(fpbjs);
+			const file = await fs.readFile(jsonFilePath);
+			const fpbjs = JSON.parse(file.toString());
+			const processRdf = mapFpbToOwl(fpbjs);
 			// Insert rdf into ontology
 			this.modelService.addTurtleFileToGraph(processRdf, activeGraph);
 		} catch (error) {
