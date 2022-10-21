@@ -4,15 +4,20 @@ import { SparqlResponse } from '../../models/sparql/SparqlResponse';
 import { WadlService } from './wadl.service';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
-import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
 import { WadlRequestService } from './wadl-request.service';
-import { WadlRequest } from '../../models/odps/wadl/WadlRequest';
+import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '@shared/models/odps/wadl/WadlRequest';
+import { WadlParameterDto } from '../../models/odps/wadl/WadlParameter';
+import { WadlParameterService } from './wadl-parameter.service';
+
+
+type ParamRequest = {parameter: WadlParameterDto} & {parentIri: string}
 
 @Controller('lion_BE/wadl')
 export class WadlController {
 	
 	constructor(
 		private wadlService: WadlService,
+		private wadlParameterService: WadlParameterService,
 		private wadlRequestService: WadlRequestService
 	) { }
 
@@ -46,9 +51,26 @@ export class WadlController {
 		return this.wadlService.getMethodTypes();
 	}
 
-	@Post('methods')
-	addMethod(@Body() method: WadlMethod): Observable<void> {
-		return this.wadlService.addMethod(method);
+	@Post('requests')
+	addMethod(@Body() createRequestDto: WadlCreateRequestDto): Promise<WadlRequestDto> {
+		return this.wadlRequestService.addRequest(createRequestDto);
+	}
+
+	@Get('requests')
+	getRequest(@Query('resourceIri') resourceIri: string, @Query('methodTypeIri') methodTypeIri: string): Promise<WadlRequestDto> {
+		return this.wadlRequestService.getRequest(resourceIri, methodTypeIri);
+	}
+
+	@Post('parameters')
+	addParameter(@Body() paramRequest: ParamRequest): Observable<void> {
+		return this.wadlParameterService.addParameters(paramRequest.parentIri, [paramRequest.parameter]);
+	}
+
+	@Delete('parameters/:parameterIri')
+	deleteParameter(@Param("parameterIri") parameterIri: string): Observable<void> {
+		console.log("deleting " + parameterIri);
+		
+		return this.wadlParameterService.deleteParameter(parameterIri);
 	}
 
 	@Get('response-codes')
@@ -61,25 +83,11 @@ export class WadlController {
 		return this.wadlService.getParameterTypes();
 	}
 
-	@Get('requests')
-	getRequest(@Query('resourceIri') resourceIri: string, @Query('methodTypeIri') methodTypeIri: string): Promise<WadlRequest> {
-		console.log(resourceIri);
-		console.log(methodTypeIri);
-		
-		
-		return this.wadlRequestService.getRequest(resourceIri, methodTypeIri);
+	@Get('parameters')
+	getRequestParametersOfType(@Query("parentIri") parentIri: string): Observable<SparqlResponse> {
+		return this.wadlService.getParameters(parentIri);
 	}
 
-	@Get('request-parameters')
-	getRequestParametersOfType(
-		@Query("resourceIri") resourceIri: string, 
-		@Query("methodTypeIri") methodTypeIri: string,
-		@Query("parameterTypeIri") parameterTypeIri: string): Observable<SparqlResponse> 
-	{
-		return this.wadlService.getRequestParameters(resourceIri, methodTypeIri, parameterTypeIri);
-	}
-
-	// ${this.wadlBasePath}${resourceIri}/${methodIri}/request-representation
 	@Get('/:resourceIri/:methodTypeIri/request-representation')
 	getRequestRepresentation(@Param('resourceIri') resourceIri: string, @Param('methodTypeIri') methodTypeIri: string){
 		return this.wadlService.getRequestRepresentation(resourceIri, methodTypeIri);

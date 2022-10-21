@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { WadlRequest } from "../../models/odps/wadl/WadlRequest";
+import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from "../../models/odps/wadl/WadlRequest";
 import { SparqlService } from "../../shared-services/sparql.service";
 import { MappingDefinition, SparqlResultConverter } from "sparql-result-converter";
 import { lastValueFrom } from "rxjs";
@@ -14,20 +14,43 @@ export class WadlRequestService {
 	) { }
 
 
-	async getRequest(resourceIri: string, methodTypeIri: string): Promise<WadlRequest> {
+	async addRequest(createRequestDto: WadlCreateRequestDto): Promise<WadlRequestDto> {
+		const {resourceIri, methodTypeIri} = createRequestDto;
+		const httpMethod = methodTypeIri.split('#')[1];		// TODO: This is pretty bad. IRIs should be objects of an IRI class that has this method
+		const methodIri = `${resourceIri}_${httpMethod}`;
+		const requestIri = `${methodIri}_Req`;
+		const query = `
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		INSERT DATA {
+			<${createRequestDto.resourceIri}> wadl:hasMethod <${methodIri}>.
+			<${methodIri}> a <${methodTypeIri}>;
+				wadl:hasRequest <${requestIri}>.
+			<${requestIri}> a wadl:Request.
+		}`;
+
+		await lastValueFrom(this.queryService.update(query));
+		return this.getRequest(resourceIri, methodTypeIri);
+	}
+
+	async getRequest(resourceIri: string, methodTypeIri: string): Promise<WadlRequestDto> {
 		const queryString = `
+		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 		SELECT * WHERE {
-			BIND(<${methodTypeIri}> AS ?methodTypeIri)
 			<${resourceIri}> wadl:hasMethod ?methodIri.
-			?methodIri a ?methodTypeIri;
+			?methodIri a <${methodTypeIri}>;
 					wadl:hasRequest ?requestIri.
 			?requestIri a wadl:Request.
 			OPTIONAL {
-				?requestIri wadl:hasParameter ?parameter.
-				?parameter a wadl:Parameter;
-					wadl:hasParameterName ?parameterName;
-					wadl:hasParameterType ?parameterType.
+				?requestIri wadl:hasParameter ?parameterIri.
+				?parameterIri a ?type;
+					wadl:hasParameterName ?name;
+					wadl:hasParameterType ?dataType.
+				?type rdfs:subClassOf wadl:Parameter.
+				OPTIONAL {
+					?parameterIri wadl:hasOption ?option.
+					?option wadl:hasOptionValue ?value.
+				}
 			}
 			OPTIONAL {
 				?requestIri wadl:hasRepresentation ?bodyRepresentation. 
@@ -73,7 +96,8 @@ export class WadlRequestService {
 		// 	wadl:hasOptionValue ?bodyOptionValue.
 		// }
 		const rawResult = await lastValueFrom(this.queryService.query(queryString));
-		const mappedResult = this.converter.convertToDefinition(rawResult.results.bindings, requestMappingDefinition).getFirstRootElement() as Array<WadlRequest>;
+		const mappedResult = this.converter.convertToDefinition(rawResult.results.bindings, requestMappingDefinition)
+			.getFirstRootElement() as Array<WadlRequestDto>;
 		console.log(mappedResult);
 		
 		return mappedResult[0];
@@ -82,36 +106,39 @@ export class WadlRequestService {
 
 
 const requestMappingDefinition: MappingDefinition[] = [{
-	rootName: 'methodIri',
-	propertyToGroup: 'methodIri',
-	name: 'methodIri',
-	toCollect: ['methodTypeIri'],
+	rootName: 'requestIri',
+	propertyToGroup: 'requestIri',
+	name: 'requestIri',
+	toCollect: ['methodIri'],
 	childMappings: [{
-		rootName: 'request',
+		rootName: 'parameters',
+		toCollect: ['name', 'type', 'dataType'],
 		childMappings: [{
-			rootName: 'parameter',
-			toCollect: ['parameterName', 'parameterType']
-		},
-		{
-			rootName: 'representation',
-			childMappings: [{
-				rootName: 'parameter',
-				toCollect: ['parameterName', 'parameterType']
-			}],
-		}]
+			rootName: 'options',
+			toCollect: ['value']
+		}],
 	},
 	{
-		rootName: 'responses',
+		rootName: 'representations',
+		propertyToGroup: 'representationIri',
 		childMappings: [{
-			rootName: 'parameter',
+			rootName: 'parameters',
 			toCollect: ['parameterName', 'parameterType']
-		},
-		{
-			rootName: 'representation',
-			childMappings: [{
-				rootName: 'parameter',
-				toCollect: ['parameterName', 'parameterType']
-			}],
-		}]
+		}],
 	}]
 }];
+
+// {
+// 	rootName: 'responses',
+// 	childMappings: [{
+// 		rootName: 'parameter',
+// 		toCollect: ['parameterName', 'parameterType']
+// 	},
+// 	{
+// 		rootName: 'representation',
+// 		childMappings: [{
+// 			rootName: 'parameter',
+// 			toCollect: ['parameterName', 'parameterType']
+// 		}],
+// 	}]
+// }]

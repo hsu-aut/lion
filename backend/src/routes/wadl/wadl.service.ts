@@ -404,7 +404,7 @@ export class WadlService {
 		const activeGraph = this.graphService.getCurrentGraph();
 		
 		const parameterString = this.wadlParamService.createParameterString(method.request.requestIri, method.request.parameters);
-		const repString = this.wadlRepService.createRepresentationString(method.request.requestIri, method.request.representation);
+		const repString = this.wadlRepService.createRepresentationString(method.request.requestIri, method.request.representations);
 		const updateString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -451,21 +451,17 @@ export class WadlService {
 		return this.queryService.query(queryString);
 	}
 
-	getRequestParameters(resourceIri: string, methodTypeIri: string, parameterTypeIri: string): Observable <SparqlResponse> {
+	getParameters(parentIri: string): Observable <SparqlResponse> {
 		const queryString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 
 		SELECT DISTINCT ?parameter ?parameterKey ?dataType ?optionValue WHERE {
-			<${resourceIri}> wadl:hasMethod ?method.
-			?method rdf:type <${methodTypeIri}>;
-				wadl:hasRequest ?request.
-			<${methodTypeIri}> rdfs:subClassOf wadl:Method.
-			?request wadl:hasParameter ?parameter.
-			?parameter rdf:type <${parameterTypeIri}>;
+			<${parentIri}> wadl:hasParameter ?parameter.
+			?parameter rdf:type ?parameterType;
 				wadl:hasParameterName ?parameterKey.
-			<${parameterTypeIri}> rdfs:subClassOf wadl:Parameter.
+			?parameterType rdfs:subClassOf wadl:Parameter.
 
 			{OPTIONAL {?parameter  wadl:hasParameterType ?dataType.}} UNION
 			{OPTIONAL {?parameter  wadl:hasOntologicalParameterType ?dataType.}} UNION

@@ -14,18 +14,20 @@ export class WadlRepresentationService {
      * @param parameters A WADL representation
      * @returns SPARQL insert
      */
-	createRepresentationString(parentIri: string, representation: WadlRepresentation): string{
-		if(!representation) return "";
+	createRepresentationString(parentIri: string, representations: Array<WadlRepresentation>): string{
+		let repString = "";
 		
-		let repString = `
-        <${parentIri}> wadl:hasRepresentation <${representation.iri}>.
-        <${representation.iri}> rdf:type wadl:Representation;
-			a owl:NamedIndividual;
-			wadl:hasMediaType "${representation.mediaType}".`;
-
-		// Create and add representation parameters
-		const repParamString = this.wadlParamService.createParameterString(representation.iri, representation.parameters);
-		repString += repParamString;
+		representations.forEach(representation => {
+			repString += `
+			<${parentIri}> wadl:hasRepresentation <${representation.iri}>.
+			<${representation.iri}> rdf:type wadl:Representation;
+				a owl:NamedIndividual;
+				wadl:hasMediaType "${representation.mediaType}".`;
+			
+			// Create and add representation parameters
+			const repParamString = this.wadlParamService.createParameterString(representation.iri, representation.parameters);
+			repString += repParamString;
+		});
 
 		return repString;
 	}
