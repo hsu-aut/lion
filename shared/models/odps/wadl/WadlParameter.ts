@@ -1,19 +1,40 @@
+export class WadlParameterDto {
+	name: string;
+	type: WadlParameterTypes;
+	dataType: string;						// actual data type value (e.g. "string" or some IRI to an individual or class)
+	typeOfDataType: WadlTypesOfDataTypes;	// simple data type, T-Box or A-Box?
+	defaultValue?: any;
+	required: boolean = false;
+	options: WadlOption[] = new Array<WadlOption>()
+}
+
 export class WadlParameter {
-	public iri: string;
+	public parameterIri: string;
+	public parameterType: WadlParameterTypes;
 	constructor(
 		public parentIri: string, // IRI of the parent request, response or representation
 		public name: string,
 		public type: WadlParameterTypes,
-		public typeOfDataType: WadlTypesOfDataTypes,	// simple data type, T-Box or A-Box?
 		public dataType: string,						// actual data type value (e.g. "string" or some IRI to an individual or class)
+		public typeOfDataType: WadlTypesOfDataTypes,	// simple data type, T-Box or A-Box?
 		public defaultValue?: any,
 		public required: boolean = false,
 		public options: WadlOption[] = new Array<WadlOption>()
 	){
-		this.iri = `${parentIri}_${name}`;
+		this.parameterType = type;
+		this.parameterIri = `${parentIri}_${name}`;
 		this.options.forEach(op => {
-			op.createIri(this.iri);
+			op.createIri(this.parameterIri);
 		});
+	}
+
+	static fromDto(parentIri: string, paramDto: WadlParameterDto): WadlParameter {
+		return new WadlParameter(parentIri, paramDto.name, paramDto.type, paramDto.dataType, paramDto.typeOfDataType, 
+			paramDto.defaultValue, paramDto.required, paramDto.options);
+	}
+
+	toDto(): WadlParameterDto {
+		return this;
 	}
 }
 

@@ -9,8 +9,9 @@ import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
 import { WadlResponse } from '@shared/models/odps/wadl/WadlResponse';
-import { WadlRequest } from '../../../../models/odps/wadl/WadlRequest';
+import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '../../../../models/odps/wadl/WadlRequest';
 import { ResourceComponent } from '../wadl/resource/resource.component';
+import { WadlParameter } from '../../../../models/odps/wadl/WadlParameter';
 
 
 @Injectable({
@@ -85,6 +86,10 @@ export class WadlModelService {
         return this.http.get<SparqlResponse>(url);
     }
 
+    addRequest(request: WadlCreateRequestDto): Observable<WadlRequestDto> {
+        const url = `${this.wadlBasePath}/requests`;
+        return this.http.post<WadlRequestDto>(url, request);
+    }
 
     getRequest(resourceIri: string, methodTypeIri: string): Observable<WadlRequest> {
         const url = `${this.wadlBasePath}/requests`;
@@ -104,17 +109,29 @@ export class WadlModelService {
         return this.http.get<SparqlResponse>(url);
     }
 
-
-    getRequestParameters(baseResourceIri: string, resourceIri: string, methodTypeIri: string, parameterTypeIri:string): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/request-parameters`;
+    /**
+     * Returns all existing parameters of a parent element (either a request or response)
+     * @param parentIri IRI of the parent element (request or response)
+     * @returns
+     */
+    getExistingParameters(parentIri: string): Observable<WadlParameter[]> {
+        const url = `${this.wadlBasePath}/parameters`;
         const queryParams = {
-            baseResourceIri: baseResourceIri,
-            resourceIri: resourceIri,
-            methodTypeIri: methodTypeIri,
-            parameterTypeIri: parameterTypeIri
+            parentIri: parentIri,
         };
-        return this.http.get<SparqlResponse>(url, {params: queryParams});
+        return this.http.get<WadlParameter[]>(url, {params: queryParams});
     }
+
+    // getRequestParameters(baseResourceIri: string, resourceIri: string, methodTypeIri: string, parameterTypeIri:string): Observable<SparqlResponse> {
+    //     const url = `${this.wadlBasePath}/request-parameters`;
+    //     const queryParams = {
+    //         baseResourceIri: baseResourceIri,
+    //         resourceIri: resourceIri,
+    //         methodTypeIri: methodTypeIri,
+    //         parameterTypeIri: parameterTypeIri
+    //     };
+    //     return this.http.get<SparqlResponse>(url, {params: queryParams});
+    // }
 
     getRequestRepresentation(resourceIri: string, methodTypeIri: string) {
         const encodedResourceIri = encodeURIComponent(resourceIri);
@@ -190,6 +207,17 @@ export class WadlModelService {
     public addMethod(request: WadlMethod): Observable<void> {
         const url = `${this.wadlBasePath}/methods`;
         return this.http.post<void>(url, request);
+    }
+
+    public addParameter(parameter: WadlParameter): Observable<void> {
+        const url = `${this.wadlBasePath}/parameters`;
+        return this.http.post<void>(url, parameter);
+    }
+
+    public deleteParameter(parameterIri: string): Observable<void> {
+        const encodedIri = encodeURIComponent(parameterIri);
+        const url = `${this.wadlBasePath}/parameters/${encodedIri}`;
+        return this.http.delete<void>(url);
     }
 
 
@@ -305,9 +333,6 @@ export class WadlModelService {
 
     public deleteOption(variables: WADLVARIABLES) {
         return this.query.executeUpdate(this.wadlInsert.deleteOption(variables));
-    }
-    public deleteParameter(variables: WADLVARIABLES) {
-        return this.query.executeUpdate(this.wadlInsert.deleteParameter(variables));
     }
 }
 

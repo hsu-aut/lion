@@ -13,10 +13,18 @@ import { toSparqlVariableList } from '../utils/rxjs-custom-operators';
 })
 export class TboxService {
 
+    baseUrl = "/lion_BE/t-box"
+
     constructor(
         private prefixService: PrefixesService,
         private http: HttpClient
     ) {}
+
+    public getClassesWithinNamespace(namespace: string): Observable<Array<string>> {
+        const encodedNs = encodeURIComponent(namespace);
+        const url = `${this.baseUrl}/classes-in-namespace/${encodedNs}`;
+        return this.http.get(url).pipe(toSparqlVariableList("class"));
+    }
 
 
     /**
@@ -25,6 +33,7 @@ export class TboxService {
      * @returns List of all individual of the given class
      */
     public getListOfIndividualsByClass(owlClass: string, namenspace: string): Observable<Array<string>> {
+        const url = `${this.baseUrl}/individuals-by-class`;
         const owlClassIri = this.prefixService.parseToIRI(owlClass);
 
         // Construct Params Object
@@ -32,7 +41,7 @@ export class TboxService {
         params = params.append('class', owlClassIri);
         params = params.append('namespace', namenspace);
 
-        return this.http.get<SparqlResponse>("/lion_BE/t-box/individuals-by-class", {params: params}).pipe(toSparqlVariableList(), take(1));
+        return this.http.get<SparqlResponse>(url, {params: params}).pipe(toSparqlVariableList(), take(1));
     }
 
 }

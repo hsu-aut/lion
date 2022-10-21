@@ -71,21 +71,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
         this.successFormArray.removeAt(0);
         this.warningFormArray.removeAt(0);
         this.errorFormArray.removeAt(0);
-        this.messageSubscription = this.messageService.messages.pipe().subscribe((messageObject) => {
+        this.messageSubscription = this.messageService.messages.subscribe((messageObject) => {
             // do some message stuff
             switch (messageObject['type']) {
-                case "success": {
-                    this.setSuccessFormArray(messageObject['head'], messageObject['body']);
-                    break;
-                }
-                case "warning": {
-                    this.setWarningFormArray(messageObject['head'], messageObject['body']);
-                    break;
-                }
-                case "error": {
-                    this.setErrorFormArray(messageObject['head'], messageObject['body']);
-                    break;
-                }
+            case "success": {
+                this.setSuccessFormArray(messageObject['head'], messageObject['body']);
+                break;
+            }
+            case "warning": {
+                this.setWarningFormArray(messageObject['head'], messageObject['body']);
+                break;
+            }
+            case "error": {
+                this.setErrorFormArray(messageObject['head'], messageObject['body']);
+                break;
+            }
             }
         });
     }
@@ -96,18 +96,18 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
     removeMessage(type, index) {
         switch (type) {
-            case "success": {
-                this.successFormArray.removeAt(index);
-                break;
-            }
-            case "warning": {
-                this.warningFormArray.removeAt(index);
-                break;
-            }
-            case "error": {
-                this.errorFormArray.removeAt(index);
-                break;
-            }
+        case "success": {
+            this.successFormArray.removeAt(index);
+            break;
+        }
+        case "warning": {
+            this.warningFormArray.removeAt(index);
+            break;
+        }
+        case "error": {
+            this.errorFormArray.removeAt(index);
+            break;
+        }
         }
     }
 }

@@ -2,14 +2,14 @@ import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
-import { PrefixesService } from "../../../shared/services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
-import { WadlRequest } from "../../../../../models/odps/wadl/WadlRequest";
+import { WadlCreateRequestDto, WadlRequest } from "@shared/models/odps/wadl/WadlRequest";
 import { MessagesService } from "../../../shared/services/messages.service";
+import { plainToClass } from "class-transformer";
 
 @Component({
     selector: 'wadl-request',
@@ -83,10 +83,18 @@ export class RequestComponent implements OnInit {
     }
 
 
-    addRequest() {
-        if(this.requestForm.invalid || this.existingRequest) {
+    addRequest(): void {
+        if(!this.requestCanBeCreated) {
             this.messageService.addMessage("warn", "False request info", "Form is invalid or this request already exists");
+        } else {
+            const {resource, methodType} = this.requestForm.value;
+            const request = new WadlCreateRequestDto(resource.resourceIri, methodType);
+            this.wadlService.addRequest(request).subscribe(data => this.existingRequest = plainToClass(WadlRequest, data));
         }
+    }
+
+    get requestCanBeCreated(): boolean {
+        return (this.requestForm.valid && this.existingRequest == undefined);
     }
 
     deleteRequest() {

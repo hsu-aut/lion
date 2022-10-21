@@ -36,7 +36,7 @@
     <div class="row mt-3 justify-content-end">
         <div class="col-sm-3">
             <div class="btn-group float-end" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary"
+                <button type="button" class="btn btn-secondary" [disabled]="!this.requestCanBeCreated"
                 (click)="addRequest()">Add Request</button>
                 <div class="btn-group" role="group">
                     <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
@@ -96,7 +96,7 @@
 
 </div>
 
-<wadl-parameter *ngIf="this.existingRequest" [parameters]="this.existingRequest.parameters"></wadl-parameter>
+<wadl-parameter *ngIf="this.existingRequest" [parentIri]="this.existingRequest.requestIri" [parameters]="this.existingRequest.parameters"></wadl-parameter>
 
 <!--
 <div class="row" *ngIf="requestBodyRepresentationCheck" [formGroup]="requestForm">
