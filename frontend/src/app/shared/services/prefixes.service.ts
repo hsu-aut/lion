@@ -7,45 +7,55 @@ export class PrefixesService {
 
     constructor() { }
 
-    DefaultNamespaces = new DefaultNamespaces;
-    PREFIXES = this.DefaultNamespaces.PREFIXES;
-    // GRAPHS = this.prefixes.GRAPHS;
-    // activeGraph = this.prefixes.activeGraph;
-    activeNamespace = this.DefaultNamespaces.activeNamespace;
+    // TODO: This should be stored in a config database / file
+    defaultPrefixes: Array<Prefix> =[
+        new Prefix("VDI3682:","http://www.hsu-ifa.de/ontologies/VDI3682#"),
+        new Prefix("VDI2206:", "http://www.hsu-ifa.de/ontologies/VDI2206#"),
+        new Prefix("DE6:",  "http://www.hsu-ifa.de/ontologies/DINEN61360#"),
+        new Prefix("ISA88:",  "http://www.hsu-ifa.de/ontologies/ISA-TR88#"),
+        new Prefix("wadl:",  "http://www.hsu-ifa.de/ontologies/WADL#"),
+        new Prefix("OpcUa:",  "http://www.hsu-ifa.de/ontologies/OpcUa#"),
+        new Prefix("iso:",  "http://www.hsu-ifa.de/ontologies/ISO22400-2#"),
+        new Prefix("rdf:",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+        new Prefix("rdfs:",  "http://www.w3.org/2000/01/rdf-schema#"),
+        new Prefix("owl:",  "http://www.w3.org/2002/07/owl#"),
+        new Prefix("lf:",  "http://lionFacts#")
+    ];
 
-    getPrefixes() {
-        return this.PREFIXES;
+    activeNamespace: Prefix = this.defaultPrefixes[this.defaultPrefixes.length - 1];
+
+
+    getPrefixes(): Array<Prefix> {
+        return this.defaultPrefixes;
     }
 
-    addNamespace(PREFIX, NAMESPACE) {
-        const pre = PREFIX;
-        const name = NAMESPACE;
-        const entry = { prefix: pre, namespace: name };
-        this.PREFIXES.push(entry);
+    addNamespace(prefix: string, namespace: string): void {
+        const entry = new Prefix(prefix, namespace);
+        this.defaultPrefixes.push(entry);
     }
 
-    editNamespace(key, userPrefix, userNamespace) {
-        this.PREFIXES[key].prefix = userPrefix;
-        this.PREFIXES[key].namespace = userNamespace;
+    editNamespace(key: number, newPrefix: string, newNamespace: string): void {
+        this.defaultPrefixes[key].prefix = newPrefix;
+        this.defaultPrefixes[key].namespace = newNamespace;
     }
 
-    deleteNamespace(key) {
-        this.PREFIXES.splice(key, 1);
+    deleteNamespace(key: number): void {
+        this.defaultPrefixes.splice(key, 1);
     }
 
-    getActiveNamespace() {
+    getActiveNamespace():Prefix {
         return this.activeNamespace;
     }
 
-    setActiveNamespace(key) {
-        const max = this.PREFIXES.length;
+    setActiveNamespace(key:number): void {
+        const max = this.defaultPrefixes.length;
 
         if (key <= max) {
-            this.activeNamespace = key;
+            this.activeNamespace = this.defaultPrefixes[key];
         }
     }
 
-    getPrefixString() {
+    getPrefixString(): string {
         const PREFIXES = this.getPrefixes();
         let prefixString = "";
 
@@ -56,23 +66,20 @@ export class PrefixesService {
         return prefixString;
     }
 
-    addOrParseNamespace(individual) {
-        const PREFIXES = this.getPrefixes();
-        const activeNamespace = PREFIXES[this.getActiveNamespace()].namespace;
+    addOrParseNamespace(individual: string): string  {
+        if (individual.search("urn:") != -1) return individual;
 
-        if (individual.search("urn:") != -1) {
-            individual = individual;
-        } else if (individual.search("http://") != -1) {
-            individual = individual;
-        } else if (individual.search(":") != -1) {
+        if (individual.search("http://") != -1) return individual;
+
+        if (individual.search(":") != -1) {
             const newindividual = this.parseToIRI(individual);
             if (newindividual != individual) {
                 individual = newindividual;
             } else {
-                individual = activeNamespace + individual;
+                individual = this.activeNamespace.namespace + individual;
             }
         } else {
-            individual = activeNamespace + individual;
+            individual = this.activeNamespace.namespace + individual;
         }
         return individual;
     }
@@ -160,28 +167,6 @@ export class PrefixesService {
 
 }
 
-export interface Prefix {
-    prefix: string;
-    namespace: string;
-}
-
-export class DefaultNamespaces {
-
-    public PREFIXES: Array<Prefix> = [
-
-        { prefix: "VDI3682:", namespace: "http://www.hsu-ifa.de/ontologies/VDI3682#" },
-        { prefix: "VDI2206:", namespace: "http://www.hsu-ifa.de/ontologies/VDI2206#" },
-        { prefix: "DE6:", namespace: "http://www.hsu-ifa.de/ontologies/DINEN61360#" },
-        { prefix: "ISA88:", namespace: "http://www.hsu-ifa.de/ontologies/ISA-TR88#" },
-        { prefix: "wadl:", namespace: "http://www.hsu-ifa.de/ontologies/WADL#" },
-        { prefix: "OpcUa:", namespace: "http://www.hsu-ifa.de/ontologies/OpcUa#" },
-        { prefix: "iso:", namespace: "http://www.hsu-ifa.de/ontologies/ISO22400-2#" },
-        { prefix: "rdf:", namespace: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" },
-        { prefix: "rdfs:", namespace: "http://www.w3.org/2000/01/rdf-schema#" },
-        { prefix: "owl:", namespace: "http://www.w3.org/2002/07/owl#" },
-        { prefix: "lf:", namespace: "http://lionFacts#" }
-    ]
-
-    public activeNamespace: number = this.PREFIXES.length - 1;
-
+export class Prefix {
+    constructor(public prefix: string, public namespace: string) {}
 }

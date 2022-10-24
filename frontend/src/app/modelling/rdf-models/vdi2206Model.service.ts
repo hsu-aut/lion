@@ -27,7 +27,7 @@ export class Vdi2206ModelService {
 
     constructor(
         private query: QueriesService,
-        private nameService: PrefixesService,
+        private prefixService: PrefixesService,
         private loadingScreenService: DataLoaderService,
         private graphs: GraphOperationsService
     ) {
@@ -126,19 +126,19 @@ export class Vdi2206ModelService {
     }
 
     public loadLIST_OF_PREDICATES_BY_DOMAIN(owlClass) {
-        owlClass = this.nameService.parseToIRI(owlClass);
+        owlClass = this.prefixService.parseToIRI(owlClass);
         return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectPredicateByDomain(owlClass), 0);
     }
     public loadLIST_OF_CLASSES_BY_RANGE(predicate) {
-        predicate = this.nameService.parseToIRI(predicate);
+        predicate = this.prefixService.parseToIRI(predicate);
         return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectClassByRange(predicate), 0);
     }
     public loadLIST_OF_CLASS_MEMBERSHIP(individual) {
-        individual = this.nameService.parseToIRI(individual);
+        individual = this.prefixService.parseToIRI(individual);
         return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectClass(individual), 0);
     }
     public loadLIST_OF_INDIVIDUALS_BY_CLASS(Class) {
-        Class = this.nameService.parseToIRI(Class);
+        Class = this.prefixService.parseToIRI(Class);
         return this.query.SPARQL_SELECT_LIST(this.vdi2206Data.selectIndividualByClass(Class), 0);
     }
 
@@ -206,8 +206,8 @@ export class Vdi2206ModelService {
     }
 
     public insertTripel(graph: tripel) {
-        const PREFIXES = this.nameService.getPrefixes();
-        const activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+        const PREFIXES = this.prefixService.getPrefixes();
+        const activeNamespace = this.prefixService.getActiveNamespace().namespace;
 
         const GRAPHS = this.graphs.getGraphs();
         const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
@@ -215,19 +215,19 @@ export class Vdi2206ModelService {
         if (graph.subject.search("http://") != -1) {
             graph.subject = graph.subject;
         } else if (graph.subject.search(":") != -1) {
-            graph.subject = this.nameService.parseToIRI(graph.subject);
+            graph.subject = this.prefixService.parseToIRI(graph.subject);
         } else {
-            graph.subject = activeNamespace + this.nameService.parseToIRI(graph.subject);
+            graph.subject = activeNamespace + this.prefixService.parseToIRI(graph.subject);
         }
-        graph.predicate = this.nameService.parseToIRI(graph.predicate);
-        graph.object = this.nameService.parseToIRI(graph.object);
+        graph.predicate = this.prefixService.parseToIRI(graph.predicate);
+        graph.object = this.prefixService.parseToIRI(graph.object);
 
         return this.query.executeUpdate(this.vdi2206Insert.createEntity(graph, activeGraph));
     }
 
     public buildTripel(graph: tripel) {
-        const PREFIXES = this.nameService.getPrefixes();
-        const activeNamespace = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+        const PREFIXES = this.prefixService.getPrefixes();
+        const activeNamespace = this.prefixService.getActiveNamespace().namespace;
 
         const GRAPHS = this.graphs.getGraphs();
         const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
@@ -235,12 +235,12 @@ export class Vdi2206ModelService {
         if (graph.subject.search("http://") != -1) {
             graph.subject = graph.subject;
         } else if (graph.subject.search(":") != -1) {
-            graph.subject = this.nameService.parseToIRI(graph.subject);
+            graph.subject = this.prefixService.parseToIRI(graph.subject);
         } else {
-            graph.subject = activeNamespace + this.nameService.parseToIRI(graph.subject);
+            graph.subject = activeNamespace + this.prefixService.parseToIRI(graph.subject);
         }
-        graph.predicate = this.nameService.parseToIRI(graph.predicate);
-        graph.object = this.nameService.parseToIRI(graph.object);
+        graph.predicate = this.prefixService.parseToIRI(graph.predicate);
+        graph.object = this.prefixService.parseToIRI(graph.object);
 
         return this.vdi2206Insert.createEntity(graph, activeGraph);
     }

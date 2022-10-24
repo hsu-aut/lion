@@ -2,7 +2,6 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { firstValueFrom, take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
-import { MessagesService } from "../../../shared/services/messages.service";
 import { PrefixesService } from "../../../shared/services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
@@ -31,8 +30,8 @@ export class BaseResourceComponent implements OnInit {
 
 
     baseResourceForm = this.fb.group({
-        resourceBasePath: [undefined, [Validators.required, this.customVal.noProtocol, this.customVal.isDomain]],
-        serviceProvider: [undefined]
+        resourceBasePath: ["", [Validators.required, this.customVal.noProtocol, this.customVal.isDomain]],
+        serviceProvider: [""]
     })
 
     allIsoEntityInfo: Array<Record<string, any>> = [];
