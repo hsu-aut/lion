@@ -3,7 +3,7 @@ import { QueriesService } from '../../shared/services/backEnd/queries.service';
 import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
 import { DownloadService } from '../../shared/services/backEnd/download.service';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
@@ -20,21 +20,7 @@ import { WadlRepresentation } from '../../../../models/odps/wadl/WadlRepresentat
 })
 export class WadlModelService {
 
-    wadlBasePath = "lion_BE/wadl"
-
-    wadlData = new WADLDATA();
-    wadlInsert = new WADLINSERT();
-
-    public TABLE_BASE_RESOURCES: Array<Record<string, any>> = [];
-    public TABLE_SERVICES: Array<Record<string, any>> = [];
-    public TABLE_OF_REQUEST_PARAMETERS: Array<Record<string, any>> = [];
-
-    public LIST_BASE_RESOURCES: Array<string> = [];
-    public LIST_SERVICES: Array<string> = [];
-    public LIST_OF_METHODS: Array<string> = [];
-    public LIST_OF_PARAMETER_TYPES: Array<string> = [];
-    public LIST_OF_RESPONSE_CODES: Array<string> = [];
-    public LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE: Array<string> = [];
+    baseUrl = "lion_BE/wadl"
 
     constructor(
         private http: HttpClient,
@@ -48,7 +34,7 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all base resources, their base paths and the entity providing the base path
      */
     getBaseResources(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/base-resources`;
+        const url = `${this.baseUrl}/base-resources`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -57,7 +43,7 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all existing services with their base resource, base path and service path
      */
     getResources(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/resources`;
+        const url = `${this.baseUrl}/resources`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -65,7 +51,7 @@ export class WadlModelService {
         const queryParam = {
             baseResource: baseIri
         };
-        const url = `${this.wadlBasePath}/resources`;
+        const url = `${this.baseUrl}/resources`;
         return this.http.get<SparqlResponse>(url, {params: queryParam});
     }
 
@@ -74,7 +60,7 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all existing methods with their base resource, base path and service path
      */
     getMethods(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/methods`;
+        const url = `${this.baseUrl}/methods`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -83,17 +69,17 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all response codes that may be retrieved as a reponse
      */
     getResponseCodes(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/response-codes`;
+        const url = `${this.baseUrl}/response-codes`;
         return this.http.get<SparqlResponse>(url);
     }
 
     addRequest(request: WadlCreateRequestDto): Observable<WadlRequestDto> {
-        const url = `${this.wadlBasePath}/requests`;
+        const url = `${this.baseUrl}/requests`;
         return this.http.post<WadlRequestDto>(url, request);
     }
 
     getRequest(resourceIri: string, methodTypeIri: string): Observable<WadlRequest> {
-        const url = `${this.wadlBasePath}/requests`;
+        const url = `${this.baseUrl}/requests`;
         const queryParams = {
             resourceIri: resourceIri,
             methodTypeIri: methodTypeIri,
@@ -106,7 +92,7 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all parameter types that can be used to send parameters via HTTP
      */
     getParameterTypes(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/parameter-types`;
+        const url = `${this.baseUrl}/parameter-types`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -116,37 +102,17 @@ export class WadlModelService {
      * @returns
      */
     getExistingParameters(parentIri: string): Observable<WadlParameter[]> {
-        const url = `${this.wadlBasePath}/parameters`;
+        const url = `${this.baseUrl}/parameters`;
         const queryParams = {
             parentIri: parentIri,
         };
         return this.http.get<WadlParameter[]>(url, {params: queryParams});
     }
 
-    // getRequestParameters(baseResourceIri: string, resourceIri: string, methodTypeIri: string, parameterTypeIri:string): Observable<SparqlResponse> {
-    //     const url = `${this.wadlBasePath}/request-parameters`;
-    //     const queryParams = {
-    //         baseResourceIri: baseResourceIri,
-    //         resourceIri: resourceIri,
-    //         methodTypeIri: methodTypeIri,
-    //         parameterTypeIri: parameterTypeIri
-    //     };
-    //     return this.http.get<SparqlResponse>(url, {params: queryParams});
-    // }
-
-    getRequestRepresentation(resourceIri: string, methodTypeIri: string) {
-        const encodedResourceIri = encodeURIComponent(resourceIri);
-        const encodedMethodTypeIri = encodeURIComponent(methodTypeIri);
-        const url = `${this.wadlBasePath}/${encodedResourceIri}/${encodedMethodTypeIri}/request-representation`;
-        return this.http.get<SparqlResponse>(url);
-    }
-
-
-    public loadTABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
-        return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
-    }
-    public loadLIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity) {
-        return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
+    getRepresentations(parentIri: string) {
+        const url = `${this.baseUrl}/representations`;
+        const params = new HttpParams().append("parentIri", parentIri);
+        return this.http.get<SparqlResponse>(url, {params: params});
     }
 
 
@@ -172,23 +138,23 @@ export class WadlModelService {
     }
 
     public createBaseResource(baseResource: WadlBaseResource): Observable<void> {
-        const url = `${this.wadlBasePath}/base-resources`;
+        const url = `${this.baseUrl}/base-resources`;
         return this.http.post<void>(url, baseResource);
     }
 
 
     public deleteBaseResource(baseResourceIri: string): Observable<void> {
-        const url = `${this.wadlBasePath}/base-resources/${baseResourceIri}`;
+        const url = `${this.baseUrl}/base-resources/${baseResourceIri}`;
         return this.http.delete<void>(url);
     }
 
     public addResource(sD: WadlResource): Observable<void> {
-        const url = `${this.wadlBasePath}/resources`;
+        const url = `${this.baseUrl}/resources`;
         return this.http.post<void>(url, sD);
     }
 
     public deleteResource(resourceIri: string): Observable<void> {
-        const url = `${this.wadlBasePath}/resources/${resourceIri}`;
+        const url = `${this.baseUrl}/resources/${resourceIri}`;
         return this.http.delete<void>(url);
     }
 
@@ -206,23 +172,23 @@ export class WadlModelService {
     }
 
     public addMethod(request: WadlMethod): Observable<void> {
-        const url = `${this.wadlBasePath}/methods`;
+        const url = `${this.baseUrl}/methods`;
         return this.http.post<void>(url, request);
     }
 
     public addParameter(parameter: WadlParameter): Observable<void> {
-        const url = `${this.wadlBasePath}/parameters`;
+        const url = `${this.baseUrl}/parameters`;
         return this.http.post<void>(url, parameter);
     }
 
     public deleteParameter(parameterIri: string): Observable<void> {
         const encodedIri = encodeURIComponent(parameterIri);
-        const url = `${this.wadlBasePath}/parameters/${encodedIri}`;
+        const url = `${this.baseUrl}/parameters/${encodedIri}`;
         return this.http.delete<void>(url);
     }
 
     public addRepresentation(rep: WadlRepresentation): Observable<void> {
-        const url = `${this.wadlBasePath}/representations`;
+        const url = `${this.baseUrl}/representations`;
         return this.http.post<void>(url, rep);
     }
 
@@ -325,21 +291,17 @@ export class WadlModelService {
     }
 
     addResponse(method: WadlMethod, response: WadlResponse): Observable<void> {
-        return this.http.post<void>(this.wadlBasePath, null);
+        return this.http.post<void>(this.baseUrl, null);
     }
 
     deleteResponse(response: WadlResponse): Observable<void> {
-        return this.http.delete<void>(this.wadlBasePath);
+        return this.http.delete<void>(this.baseUrl);
     }
 
     createResponseInsertString(method: WadlMethod, response: WadlResponse): Observable<string> {
-        return this.http.get<string>(this.wadlBasePath);
+        return this.http.get<string>(this.baseUrl);
     }
 
-
-    public deleteOption(variables: WADLVARIABLES) {
-        return this.query.executeUpdate(this.wadlInsert.deleteOption(variables));
-    }
 }
 
 

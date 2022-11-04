@@ -1,172 +1,76 @@
 <div [formGroup]="responseForm">
     <div class="row">
-        <div class="form-group col-sm">
-            <label> The resource base path </label>
-            <select formControlName="resourceBasePath" name="resourceBasePath" class="form-control"
-                (click)="getExistingServicesByBase(responseForm.controls['resourceBasePath'].value)">
+        <div class="col-sm">
+            <label class="form-label">The base resource path</label>
+            <select formControlName=resourceBasePath name="resourceBasePath" class="form-select" (click)="getExistingResourcesOfBase()">
                 <option value=null selected hidden></option>
-                <option *ngFor='let x of resourceBasePaths'>
-                    {{x}}
+                <option *ngFor='let x of baseResources'>
+                    {{x.baseResourcePath}}
                 </option>
             </select>
         </div>
-        <div class="form-group col-sm">
-            <label> The service path </label>
-            <select formControlName="servicePath" name="servicePath" class="form-control">
+        <div class="col-sm">
+            <label class="form-label">The resource path</label>
+            <select formControlName=resource name="resource" class="form-select">
                 <option value=null selected hidden></option>
-                <option *ngFor='let x of servicePaths'>
-                    {{x}}
+                <option *ngFor='let resource of resources' [ngValue]="resource">
+                    {{resource.resourcePath}}
                 </option>
             </select>
         </div>
-        <div class="form-group col-sm">
-            <label> Method </label>
-            <select formControlName="method" name="method" class="form-control"
-                (click)="getExistingResponseRepresentation()">
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <label class="form-label">Method</label>
+            <!-- TODO: Currently, the two methods are done on every click. This can be done better (e.g. by subscribing to form changes) -->
+            <select formControlName="methodType" name="method" class="form-select">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of methods'>
                     {{x}}
                 </option>
             </select>
         </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-sm">
-            <label> Response code </label>
-            <select formControlName="responseCode" name="responseCode" class="form-control"
-                (click)="getExistingResponseRepresentation()">
+        <div class="col-sm">
+            <label class="form-label">Response Code</label>
+            <select formControlName="responseCode" name="responseCode" class="form-select">
                 <option value=null selected hidden></option>
-                <option *ngFor='let x of responseCodes'>
-                    {{x}}
+                <option *ngFor='let rC of responseCodes'>
+                    {{rC}}
                 </option>
             </select>
         </div>
-        <div class="form-group col-sm-1 align-self-end">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary"
-                    (click)="addResponse()">Add</button>
-                <div class="btn-group" role="group">
-                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="addButton">
-                        <a class="dropdown-item"
-                            (click)="deleteResponse()">Delete
-                            response</a>
-                        <a class="dropdown-item"
-                            (click)="createResponseInsertString()">Download SPARQL
-                            INSERT</a>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    <div class="row">
-        <div class="form-group col-sm">
-            <div class="custom-control custom-checkbox">
-                <input [(ngModel)]="responseBodyRepresentationCheck" type="checkbox"
-                    class="custom-control-input" id="responseBodyRepresentationCheck">
-                <label class="custom-control-label" for="responseBodyRepresentationCheck">Include body
-                    representation</label>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <div class="row" *ngIf="responseBodyRepresentationCheck">
-        <div class="form-group col-sm">
-            <label> Body media type </label>
-            <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType" type="text"
-                placeholder="[the required media type of the body]"
-                [required]="responseBodyRepresentationCheck">
-        </div>
-        <div class="form-group col-sm">
-            <label> Body parameter key </label>
-            <input formControlName="bodyParameterKey" class="form-control" name="bodyParameterKey"
-                type="text" placeholder="[the key of the body representation]"
-                [required]="responseBodyRepresentationCheck">
-        </div>
-        <div class="form-group col-sm">
-            <label> Body data type </label>
-            <div class="input-group">
-                <input formControlName="bodyDataType" class="form-control" name="bodyDataType"
-                    type="text" placeholder="[the required data type]"
-                    [readonly]="responseForm.controls['ontologicalBodyDataType'].value"
-                    [required]="responseBodyRepresentationCheck">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
-                        data-bs-target="#ONTO_HELPER"
-                        (click)="setOntologicalDataType('responseBodyParameter')">
-                        <!-- setOntologicalDataType('responseBodyParameter')"> should only be part of the modal -->
-                        O </button>
-                </div>
-            </div>
-        </div>
-        <div class="form-group col-sm">
-            <label> Body option value </label>
-            <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue"
-                type="text" placeholder="[the option values]">
-        </div>
-        <div class="form-group col-sm-1 align-self-end">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <button type="button" class="btn btn-secondary"
-                    (click)="addResponseRepresentationParameter()">Add</button>
-                <div class="btn-group" role="group">
-                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="addButton">
-                        <a class="dropdown-item"
-                            (click)="deleteResponseRepresentationParameter()">Delete</a>
-                        <a class="dropdown-item"
-                            (click)="createResponseRepresentationParameterInsertString()">Download
-                            SPARQL
-                            INSERT</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-<!-- div is repeated for number of entries in responseFormRepresentationArray -->
-
-    <div *ngIf="responseBodyRepresentationCheck && responseFormRepresentationArray.value[0]">
-        <div formArrayName="responseFormRepresentationArray">
-            <div class="row" *ngFor="let x of responseFormRepresentationArray.controls; let i=index"
-                [formGroupName]="i">
-                <div class="form-group col-sm">
-                    <input formControlName="bodyMediaType" class="form-control" name="bodyMediaType"
-                        type="text" readonly>
-                </div>
-                <div class="form-group col-sm">
-                    <input formControlName="bodyParameterKey" class="form-control"
-                        name="bodyParameterKey" type="text" readonly>
-                </div>
-                <div class="form-group col-sm">
-                    <input formControlName="bodyDataType" class="form-control" name="bodyDataType"
-                        type="text" readonly>
-                </div>
-                <div class="form-group col-sm">
-                    <input formControlName="bodyOptionValue" class="form-control" name="bodyOptionValue"
-                        type="text" readonly>
-                </div>
-                <div class="form-group col-sm-1 align-self-end">
-                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                        <div class="btn-group" role="group">
-                            <button id="addButton" type="button"
-                                class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="addButton">
-                                <a class="dropdown-item"
-                                    (click)="deleteParameter('key', x.controls['bodyParameterKey'].value)">Delete
-                                    key</a>
-                                <a class="dropdown-item"
-                                    (click)="deleteParameter('option', x.controls['bodyParameterKey'].value)">Delete
-                                    options</a>
-                            </div>
-                        </div>
-                    </div>
+<div class="row mt-3 justify-content-end">
+    <div class="col-sm-3">
+        <div class="btn-group float-end" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary" [disabled]="!this.responseCanBeCreated" (click)="addResponse()">Add
+                Response</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="deleteResponse()">Delete Request</a>
+                    <a class="dropdown-item" (click)="getSparqlInsert()">Download SPARQL INSERT</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<wadl-parameter *ngIf="this.existingResponse" [parentIri]="this.existingResponse.responseIri">
+</wadl-parameter>
+
+<wadl-representation *ngIf="this.existingResponse"></wadl-representation>
+
+<!-- TODO: Is this still needed? Params are shown above -->
+<!-- <div class="row mt-3">
+    <div class="col-sm">
+        <app-table [currentTable]="requestParameterTable" [tableTitle]="'Existing parameters'"
+            [tableExplanation]="'This table shows all existing parameters of the request that belongs to this method'">
+        </app-table>
+    </div>
+</div> -->

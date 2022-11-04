@@ -36,16 +36,18 @@ export class ParameterComponent {
             this.parameterTypes = data;
         });
 
+        this.wadlService.getExistingParameters(this.parentIri).pipe(take(1)).subscribe(data => {
         // Fill form with existing parameters
-        this.parameters.forEach(parameter => {
-            const formEntry = this.createNewParameterFormEntry(parameter);
-            this.parameterForm.push(formEntry);
-            const lastAddedIndex = this.parameterForm.controls.length-1;
-            this.parameterForm.at(lastAddedIndex).disable();
+            this.parameters.forEach(parameter => {
+                const formEntry = this.createNewParameterFormEntry(parameter);
+                this.parameterForm.push(formEntry);
+                const lastAddedIndex = this.parameterForm.controls.length-1;
+                this.parameterForm.at(lastAddedIndex).disable();
+            });
+            // Add one empty row
+            this.parameterForm.push(this.createNewParameterFormEntry());
         });
 
-        // Add one empty row
-        this.parameterForm.push(this.createNewParameterFormEntry());
     }
 
     setOntologicalDataType(typeChangedEvent: TypeChangedEvent): void {

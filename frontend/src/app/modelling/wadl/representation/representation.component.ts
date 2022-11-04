@@ -37,8 +37,8 @@ export class RepresentationComponent {
     }
 
     ngOnInit(): void {
-        //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-        //Add 'implements OnInit' to the class.
+        // Load representations of parent
+        this.wadlService.getRepresentations(this.parentIri).subscribe;
         console.log("rep init");
 
     }
