@@ -23,7 +23,6 @@
             <label class="form-label">Method</label>
             <!-- TODO: Currently, the two methods are done on every click. This can be done better (e.g. by subscribing to form changes) -->
             <select formControlName="methodType" name="method" class="form-select"
-                (click)="getExistingParameters()"
                 (click)="getExistingRequestRepresentation()">
                 <option value=null selected hidden></option>
                 <option *ngFor='let x of methods'>
@@ -191,5 +190,3 @@
         </app-table>
     </div>
 </div>
-
-<onto-helper-modal></onto-helper-modal>

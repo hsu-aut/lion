@@ -12,6 +12,7 @@ import { WadlResponse } from '@shared/models/odps/wadl/WadlResponse';
 import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '../../../../models/odps/wadl/WadlRequest';
 import { ResourceComponent } from '../wadl/resource/resource.component';
 import { WadlParameter } from '../../../../models/odps/wadl/WadlParameter';
+import { WadlRepresentation } from '../../../../models/odps/wadl/WadlRepresentation';
 
 
 @Injectable({
@@ -218,6 +219,11 @@ export class WadlModelService {
         const encodedIri = encodeURIComponent(parameterIri);
         const url = `${this.wadlBasePath}/parameters/${encodedIri}`;
         return this.http.delete<void>(url);
+    }
+
+    public addRepresentation(rep: WadlRepresentation): Observable<void> {
+        const url = `${this.wadlBasePath}/representations`;
+        return this.http.post<void>(url, rep);
     }
 
 

@@ -19,8 +19,8 @@ export class ResourceComponent implements OnInit {
     customVal = new cValFns();
 
     resourceForm = this.fb.group({
-        resourceBasePath: [undefined, Validators.required],
-        resourcePath: [undefined, [Validators.required, this.customVal.noProtocol, Validators.pattern('([-a-zA-Z0-9()@:%_+.~#?&//=]){1,}')]]
+        resourceBasePath: ["", Validators.required],
+        resourcePath: ["", [Validators.required, this.customVal.noProtocol, Validators.pattern('([-a-zA-Z0-9()@:%_+.~#?&//=]){1,}')]]
     })
 
     resourceBasePaths: Array<string> = [];

@@ -1,5 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { WadlRepresentation } from "@shared/models/odps/wadl/WadlRepresentation";
+import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { cValFns } from "../../utils/validators";
 
 @Component({
@@ -9,13 +11,13 @@ import { cValFns } from "../../utils/validators";
 })
 export class RepresentationComponent {
 
+    @Input("parentIri") parentIri: string;
+
     // Custom validator
     customVal = new cValFns();
 
     // MediaType of the new body rep
     newBodyRepresentationMediaType: string;
-
-
 
     bodyRepresentations = this.fb.array<FormGroup<{
         mediaType: FormControl<string | null>,
@@ -28,7 +30,8 @@ export class RepresentationComponent {
     }>>([])
 
     constructor(
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private wadlService: WadlModelService
     ) {
         console.log("construct rep");
     }
@@ -42,7 +45,6 @@ export class RepresentationComponent {
 
     addRepresentation(): void{
         const newMediaType = this.newBodyRepresentationMediaType;
-        console.log(newMediaType);
 
         this.bodyRepresentations.push(this.fb.group({
             mediaType: [newMediaType, this.customVal.noSpecialCharacters()],
@@ -55,6 +57,10 @@ export class RepresentationComponent {
                 })
             ])
         }));
+
+        // TODO: Really add representation
+        const representation = new WadlRepresentation(this.parentIri, newMediaType);
+        this.wadlService.addRepresentation(representation);
     }
 
     deleteRepresentation(representationIndex: number): void {

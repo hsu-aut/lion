@@ -97,7 +97,7 @@ export class RequestComponent implements OnInit {
         return (this.requestForm.valid && this.existingRequest == undefined);
     }
 
-    deleteRequest() {
+    deleteRequest():void {
         if(this.requestForm.invalid || !this.existingRequest) {
             this.messageService.addMessage("warn", "False request info", "Form is invalid or this request doesn't exist");
         }
@@ -128,32 +128,6 @@ export class RequestComponent implements OnInit {
     //     }
     // }
 
-    getExistingParameters(): void {
-        // console.log("get params");
-        // // this method should get the existing parameter table
-        // const basePath = this.requestForm.controls["resourceBasePath"].value;
-        // const resourcePath = this.requestForm.controls['resourcePath'].value;
-        // const method = this.requestForm.controls['method'].value;
-        // const parameterType = this.requestForm.controls['parameterType'].value;
-        // this.requestForm.controls['parameterName'].reset();
-        // this.requestForm.controls['dataType'].reset();
-        // this.requestForm.controls['optionValue'].reset();
-        // if (parameterType == "none") {
-        //     // this.setRequestFormParameter([]);
-        // } else if (resourcePath && method && parameterType) {
-        //     const resource = this.getResource(basePath, resourcePath);
-        //     const methodTypeIri = this.prefixService.parseToIRI(method);
-        //     const parameterTypeIri = this.prefixService.parseToIRI(parameterType);
-        //     this.wadlService.getRequestParameters(resource.baseResourceIri, resource.resourceIri, methodTypeIri, parameterTypeIri)
-        //         .pipe(take(1), toSparqlTable())
-        //         .subscribe((data: any) => {
-        //             console.log("got data");
-        //             console.log(data);
-        //             this.requestParameterTable = data;
-        //             // this.setRequestFormParameter(this.requestParameterTable);
-        //         });
-        // }
-    }
 
     // TODO: THis one and the method "getExistingParameters" should be called on value changes and not on click
     getExistingRequestRepresentation() {
