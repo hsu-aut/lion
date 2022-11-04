@@ -1,16 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlResponse } from '../../models/sparql/SparqlResponse';
 import { WadlService } from './wadl.service';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { WadlRequestService } from './wadl-request.service';
-import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '@shared/models/odps/wadl/WadlRequest';
-import { WadlParameterDto } from '../../models/odps/wadl/WadlParameter';
+import { WadlCreateRequestDto, WadlRequestDto } from '@shared/models/odps/wadl/WadlRequest';
+import { WadlParameter, WadlParameterDto } from '@shared/models/odps/wadl/WadlParameter';
 import { WadlParameterService } from './wadl-parameter.service';
+import { WadlRepresentation } from '@shared/models/odps/wadl/WadlRepresentation';
+import { WadlRepresentationService } from './wadl-representation.service';
 
-
-type ParamRequest = {parameter: WadlParameterDto} & {parentIri: string}
 
 @Controller('lion_BE/wadl')
 export class WadlController {
@@ -18,7 +18,8 @@ export class WadlController {
 	constructor(
 		private wadlService: WadlService,
 		private wadlParameterService: WadlParameterService,
-		private wadlRequestService: WadlRequestService
+		private wadlRequestService: WadlRequestService,
+		private wadlRepresentationService: WadlRepresentationService
 	) { }
 
 	@Get('base-resources') 
@@ -62,8 +63,9 @@ export class WadlController {
 	}
 
 	@Post('parameters')
-	addParameter(@Body() paramRequest: ParamRequest): Observable<void> {
-		return this.wadlParameterService.addParameters(paramRequest.parentIri, [paramRequest.parameter]);
+	addParameter(@Body() parameterDto: WadlParameterDto): Observable<void> {
+		const parameter = WadlParameter.fromDto(parameterDto);
+		return this.wadlParameterService.addParameters([parameter]);
 	}
 
 	@Delete('parameters/:parameterIri')
@@ -80,17 +82,27 @@ export class WadlController {
 
 	@Get('parameter-types')
 	getParameterTypes(): Observable<SparqlResponse> {
-		return this.wadlService.getParameterTypes();
+		return this.wadlParameterService.getParameterTypes();
 	}
 
 	@Get('parameters')
-	getRequestParametersOfType(@Query("parentIri") parentIri: string): Observable<SparqlResponse> {
-		return this.wadlService.getParameters(parentIri);
+	getParametersOfParent(@Query("parentIri") parentIri: string): Observable<SparqlResponse> {
+		return this.wadlParameterService.getParameters(parentIri);
 	}
 
 	@Get('/:resourceIri/:methodTypeIri/request-representation')
 	getRequestRepresentation(@Param('resourceIri') resourceIri: string, @Param('methodTypeIri') methodTypeIri: string){
 		return this.wadlService.getRequestRepresentation(resourceIri, methodTypeIri);
+	}
+
+	@Get('representations')
+	getRepresentationsOfParent(@Query("parentIri") parentIri: string) {
+		return this.wadlRepresentationService.getRepresentations(parentIri);
+	}
+
+	@Post('representations')
+	addRepresentation(@Body() rep: WadlRepresentation): Observable<void> {
+		return this.wadlRepresentationService.addRepresentation(rep);
 	}
 
 }
