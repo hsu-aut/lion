@@ -4,10 +4,10 @@ export class WadlRepresentation {
     public iri: string;
     
     constructor(
-        public requestIri: string,
+        public parentIri: string,
         public mediaType: string = "application/json",
         public parameters = new Array<WadlParameter>()
     ) {
-            this.iri = `${this.requestIri}_Representation`
+            this.iri = `${this.parentIri}_Representation`
     }
 }

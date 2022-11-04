@@ -1,4 +1,5 @@
 export class WadlParameterDto {
+	parentIri: string;
 	name: string;
 	type: WadlParameterTypes;
 	dataType: string;						// actual data type value (e.g. "string" or some IRI to an individual or class)
@@ -28,8 +29,8 @@ export class WadlParameter {
 		});
 	}
 
-	static fromDto(parentIri: string, paramDto: WadlParameterDto): WadlParameter {
-		return new WadlParameter(parentIri, paramDto.name, paramDto.type, paramDto.dataType, paramDto.typeOfDataType, 
+	static fromDto(paramDto: WadlParameterDto): WadlParameter {
+		return new WadlParameter(paramDto.parentIri, paramDto.name, paramDto.type, paramDto.dataType, paramDto.typeOfDataType, 
 			paramDto.defaultValue, paramDto.required, paramDto.options);
 	}
 
@@ -55,6 +56,14 @@ export class WadlOption {
 		this.iri = `${parentIri}_${this.value}`;
 	}	
 }
+
+export class TypeChangedEvent {
+	constructor(
+		public type: string,
+		public typeOfType: WadlTypesOfDataTypes
+	) {}
+}
+
 
 export enum WadlTypesOfDataTypes {
 	"NonOntological",

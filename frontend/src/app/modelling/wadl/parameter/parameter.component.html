@@ -17,8 +17,7 @@
         <label class="form-label">Data type</label>
         <div class="input-group">
             <input [formControl]="param.get('dataType')" class="form-control" name="dataType" type="text" placeholder="[the required data type]">
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER"
-                (click)="setOntologicalDataType('requestParameter')">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER">
                 <i class="fa-regular fa-square-plus"></i>
             </button>
         </div>
@@ -28,11 +27,13 @@
         <input [formControl]="param.get('optionValues')" class="form-control" name="optionValue" type="text" placeholder="[Possible options]">
     </div>
     <div class="col-sm-2">
-        <button *ngIf="!param.disabled" class="btn btn-success float-end" (click)="addParameter()">
+        <button *ngIf="!param.disabled" [class]="this.parameterForm.invalid ? 'disabled' : ''" class="btn btn-success float-end" (click)="addParameter()">
             Add parameter
         </button>
         <button *ngIf="param.disabled" class="btn btn-danger float-end" (click)="deleteParameter(i)">
             <i class="fa fa-trash"></i> Delete
         </button>
     </div>
+    <onto-helper-modal (onTypeSelected)="setOntologicalDataType($event)" (onTypeRemoved)="removeDataType()"></onto-helper-modal>
 </div>
+

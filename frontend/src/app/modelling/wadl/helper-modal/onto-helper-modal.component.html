@@ -11,19 +11,19 @@
                 <p class="card-text"> There are three options for adding a data type to a parameter, which are shown
                     above. The first option is to define the data type manually. This is suitable for xsd data types for instance. It is
                     also possible to type the parameter with TBox classes, or to set their data type in the context of an ABox individual. </p>
-                <div class="row" (click)="changeTypeOfOntologicalDataType()">
+                <div class="row">
                     <div class="form-group col-sm">
                         <div class="form-check form-check-inline">
                             <input [(ngModel)]="ontologicalDataTypeRadio" [value]="TypesOfDataTypes.TBox" type="radio"
-                                id="ontologicalDataTypeTBox" name="ontologicalDataType" class="custom-control-input" checked>
-                            <label class="custom-control-label" for="ontologicalDataTypeTBox"> Include TBox data type</label>
+                                id="ontologicalDataTypeTBox" name="ontologicalDataType" class="custom-control-input">
+                            <label class="custom-control-label" for="ontologicalDataTypeTBox">Include TBox data type</label>
                         </div>
                     </div>
                     <div class="form-group col-sm">
                         <div class="form-check form-check-inline">
                             <input [(ngModel)]="ontologicalDataTypeRadio" [value]="TypesOfDataTypes.ABox" type="radio"
                                 id="ontologicalDataTypeABox" name="ontologicalDataType" class="custom-control-input">
-                            <label class="custom-control-label" for="ontologicalDataTypeABox"> Include ABox data type</label>
+                            <label class="custom-control-label" for="ontologicalDataTypeABox">Include ABox data type</label>
                         </div>
                     </div>
                 </div>
@@ -31,29 +31,28 @@
                 <div [formGroup]="dataTypeForm" class="row" *ngIf="ontologicalDataTypeRadio">
                     <div class="form-group col-sm">
                         <label>Select a TBox</label>
-                        <select formControlName="namespace" name="TBox" class="form-control" (click)="getExistingClassesOfPrefix()">
-                            <option value=null selected hidden></option>
-                            <option *ngFor='let prefix of this.prefixes'>
+                        <select formControlName="namespace" class="form-control">
+                            <option [value]=null selected hidden></option>
+                            <option *ngFor='let prefix of this.prefixes' [ngValue]="prefix">
                                 {{prefix.prefix}}
                             </option>
                         </select>
                     </div>
                     <div class="form-group col-sm">
                         <label> Select a class </label>
-                        <select formControlName="namespace" name="type" class="form-control"
-                            (click)="getExistingIndividuals()">
+                        <select formControlName="class" class="form-control">
                             <option value=null selected hidden></option>
-                            <option *ngFor='let x of classes'>
-                                {{x}}
+                            <option *ngFor='let class of classes'>
+                                {{class}}
                             </option>
                         </select>
                     </div>
                     <div class="form-group col-sm" *ngIf="ontologicalDataTypeRadio === TypesOfDataTypes.ABox">
                         <label> Select the individual </label>
-                        <select formControlName="individual" name="individual" class="form-control">
+                        <select formControlName="individual" class="form-control">
                             <option value=null selected hidden></option>
-                            <option *ngFor='let x of individuals'>
-                                {{x}}
+                            <option *ngFor='let individual of this.individuals'>
+                                {{individual}}
                             </option>
                         </select>
                     </div>
@@ -61,11 +60,11 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Revert changes</button>
-                <button *ngIf="ontologicalDataTypeRadio === TypesOfDataTypes.ABox" type="button" class="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    (click)="setParameterType()">
-                    Use this IRI as a data type </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="setNormalDataType()">Revert changes</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="setParameterType()">
+                    <p *ngIf="ontologicalDataTypeRadio === TypesOfDataTypes.TBox">Use this class</p>
+                    <p *ngIf="ontologicalDataTypeRadio === TypesOfDataTypes.ABox">Use this individual</p>
+                </button>
             </div>
         </div>
     </div>

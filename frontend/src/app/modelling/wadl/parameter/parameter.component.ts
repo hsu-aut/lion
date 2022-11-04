@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
-import { WadlOption, WadlParameter, WadlParameterDto, WadlParameterTypes } from "@shared/models/odps/wadl/WadlParameter";
+import { TypeChangedEvent, WadlOption, WadlParameter, WadlParameterDto, WadlParameterTypes, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
@@ -24,6 +24,7 @@ export class ParameterComponent {
     parameterTypes: Array<string> = [];
 
     parameterForm = this.fb.array(new Array<FormGroup<ParameterFormGroup>>())
+    newParamTypeOfType = WadlTypesOfDataTypes.NonOntological;
 
     constructor(
         private fb: FormBuilder,
@@ -34,10 +35,6 @@ export class ParameterComponent {
         this.wadlService.getParameterTypes().pipe(take(1), toSparqlVariableList()).subscribe(data => {
             this.parameterTypes = data;
         });
-
-        console.log("existing param");
-        console.log(this.parameters);
-
 
         // Fill form with existing parameters
         this.parameters.forEach(parameter => {
@@ -51,8 +48,18 @@ export class ParameterComponent {
         this.parameterForm.push(this.createNewParameterFormEntry());
     }
 
-    setOntologicalDataType(asd: string): void {
-        // TODO: Should only be in modal
+    setOntologicalDataType(typeChangedEvent: TypeChangedEvent): void {
+        const fE = this.getLastFormEntry();
+        fE.get("dataType").setValue(typeChangedEvent.type);
+        this.newParamTypeOfType = typeChangedEvent.typeOfType;
+    }
+
+    removeDataType(): void {
+        console.log("resetting");
+
+        const fE = this.getLastFormEntry();
+        fE.get("dataType").reset();
+        this.newParamTypeOfType = WadlTypesOfDataTypes.NonOntological;
     }
 
     createNewParameterFormEntry(param?: WadlParameter): FormGroup<ParameterFormGroup> {
@@ -66,25 +73,27 @@ export class ParameterComponent {
             name: this.fb.control(paramName, [this.customVal.noSpecialCharacters()]),
             type: this.fb.control(paramType, [Validators.required]),
             dataType: this.fb.control(paramDataType, [Validators.required]),
-            ontologicalDataType: this.fb.control(param?.dataType ?? ""),
             required: this.fb.control(false),
             optionValues: this.fb.control(optionValues),
             defaultValue: this.fb.control(defaultValue),
         });
     }
 
-    addParameter() {
-        // TODO: Send request to really add the parameter
+    getLastFormEntry(): FormGroup<ParameterFormGroup> {
+        const formLength = this.parameterForm.controls.length;
+        return this.parameterForm.at(formLength-1);
+    }
 
+    addParameter() {
         // Disable entered value
         const formLength = this.parameterForm.controls.length;
         this.parameterForm.controls[formLength-1].disable();
 
-        const fE = this.parameterForm.at(formLength-1).value;
-        console.log(fE);
-
+        const fE = this.getLastFormEntry().value;
         const options = fE.optionValues.map(optionValue => new WadlOption(optionValue));
-        const parameter = new WadlParameter(this.parentIri, fE.name, fE.type, fE.dataType, null, fE.defaultValue, fE.required, options);
+        const parameter = new WadlParameter(this.parentIri, fE.name, fE.type, fE.dataType, this.newParamTypeOfType, fE.defaultValue, fE.required, options);
+        console.log(parameter);
+
         this.wadlService.addParameter(parameter).pipe(take(1)).subscribe(res => {
             // Create a new empty entry so that another param can be added
             const newEntry = this.createNewParameterFormEntry();
@@ -109,7 +118,6 @@ interface ParameterFormGroup {
     name: FormControl<string | null>,
     type: FormControl<WadlParameterTypes | null>,
     dataType: FormControl<string | null>,
-    ontologicalDataType: FormControl<string | null>,
     required: FormControl<boolean>,
     optionValues: FormControl<(number | string) [] | null>,
     defaultValue: FormControl<string | null>
