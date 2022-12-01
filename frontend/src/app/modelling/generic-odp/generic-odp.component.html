@@ -1,0 +1,14 @@
+<!-- header card with general info, instructions and controls -->
+<app-header-card></app-header-card>
+
+<!-- multiple configurable generic odp cards  -->
+<app-generic-card 
+    *ngFor="let config of configs"
+    [config]="config"
+    (onRemoveCard)="removeCard($event)"
+></app-generic-card>
+
+<!-- controls to add a new card at the bottom -->
+<app-new-card
+    (onNewCard)="newCard($event)">
+></app-new-card>
