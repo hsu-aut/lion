@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { GenericOdpController } from './generic-odp.controller';
 import { GenericOdpService } from './generic-odp.service';
-import { SparqlTemplateService } from './sparql-template.service';
 
 @Module({
 	imports: [
@@ -12,7 +11,6 @@ import { SparqlTemplateService } from './sparql-template.service';
     ],
 	providers: [
 		GenericOdpService,
-		SparqlTemplateService,
 	],
 })
 export class GenericOdpModule {}
