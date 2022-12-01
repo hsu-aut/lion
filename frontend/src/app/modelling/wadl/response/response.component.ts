@@ -3,13 +3,14 @@ import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { PrefixesService } from "../../../shared/services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { WadlMethod } from "@shared/models/odps/wadl/WadlMethod";
-import { WadlResponse } from "@shared/models/odps/wadl/WadlResponse";
+import { WadlCreateResponseDto, WadlResponse } from "@shared/models/odps/wadl/WadlResponse";
 import { cValFns } from "../../utils/validators";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
 import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
+import { MessagesService } from "../../../shared/services/messages.service";
+import { plainToClass } from "class-transformer";
 
 @Component({
     selector: 'wadl-response',
@@ -41,10 +42,12 @@ export class ResponseComponent {
         private fb: FormBuilder,
         private prefixService: PrefixesService,
         private wadlService: WadlModelService,
+        private messageService: MessagesService
     ) {}
 
     ngOnInit(): void {
         this.loadBaseResources();
+        this.wadlService.getResponseCodes().pipe(toSparqlVariableList()).subscribe(responseCodes => this.responseCodes = responseCodes);
         this.wadlService.getMethods().pipe(take(1), toSparqlVariableList()).subscribe(data => this.methods = data);
         this.responseForm.valueChanges.subscribe(data => {
             if (this.responseForm.valid) {
@@ -77,10 +80,6 @@ export class ResponseComponent {
         }
     }
 
-    responseCanBeCreated(): boolean {
-        return (this.responseForm.valid && this.existingResponse == undefined);
-    }
-
     getSparqlInsert(): void {
 
     }
@@ -90,20 +89,36 @@ export class ResponseComponent {
     }
 
     addResponse(): void {
-        const serviceIri = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
-        const methodTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
-        const methodIri = serviceIri + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
-        const method = new WadlMethod(serviceIri, methodTypeIri);
+        if(!this.responseCanBeCreated) {
+            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request already exists");
+        } else {
+            const {resource, methodType, responseCode} = this.responseForm.value;
+            const request = new WadlCreateResponseDto(resource.resourceIri, methodType, responseCode);
+            this.wadlService.addResponse(request).subscribe(data => {
+                console.log(data);
+                this.existingResponse = plainToClass(WadlResponse, data);
+            });
+        }
 
-        const responseTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
-        const responseIri = methodIri + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
-        const response = new WadlResponse(responseIri, responseTypeIri);
+        // const serviceIri = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
+        // const methodTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
+        // const methodIri = serviceIri + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
+        // const method = new WadlMethod(serviceIri, methodTypeIri);
 
-        // TODO: Pass proper data object instead of null and instead of modify, create separate methods in service
-        this.wadlService.addResponse(method, response).pipe(take(1)).subscribe((data: any) => {
-            // this.modelVariables = new WADLVARIABLES();
-        });
+        // const responseTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
+        // const responseIri = methodIri + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
+        // const response = new WadlResponse(responseIri, responseTypeIri);
+
+        // // TODO: Pass proper data object instead of null and instead of modify, create separate methods in service
+        // this.wadlService.addResponse(method, response).pipe(take(1)).subscribe((data: any) => {
+        //     // this.modelVariables = new WADLVARIABLES();
+        // });
     }
+
+    get responseCanBeCreated(): boolean {
+        return (this.responseForm.valid && this.existingResponse == undefined);
+    }
+
 
     addResponseRepresentationParameter(): void {
 
