@@ -10,6 +10,8 @@ import { WadlParameter, WadlParameterDto } from '@shared/models/odps/wadl/WadlPa
 import { WadlParameterService } from './wadl-parameter.service';
 import { WadlRepresentation } from '@shared/models/odps/wadl/WadlRepresentation';
 import { WadlRepresentationService } from './wadl-representation.service';
+import { WadlResponseService } from './wadl-response.service';
+import { WadlCreateResponseDto, WadlResponseDto } from '@shared/models/odps/wadl/WadlResponse';
 
 
 @Controller('lion_BE/wadl')
@@ -19,6 +21,7 @@ export class WadlController {
 		private wadlService: WadlService,
 		private wadlParameterService: WadlParameterService,
 		private wadlRequestService: WadlRequestService,
+		private wadlResponseService: WadlResponseService,
 		private wadlRepresentationService: WadlRepresentationService
 	) { }
 
@@ -53,12 +56,22 @@ export class WadlController {
 	}
 
 	@Post('requests')
-	addMethod(@Body() createRequestDto: WadlCreateRequestDto): Promise<WadlRequestDto> {
+	addRequest(@Body() createRequestDto: WadlCreateRequestDto): Promise<WadlRequestDto> {
 		return this.wadlRequestService.addRequest(createRequestDto);
 	}
 
 	@Get('requests')
 	getRequest(@Query('resourceIri') resourceIri: string, @Query('methodTypeIri') methodTypeIri: string): Promise<WadlRequestDto> {
+		return this.wadlRequestService.getRequest(resourceIri, methodTypeIri);
+	}
+
+	@Post('responses')
+	addResponse(@Body() createResponseDto: WadlCreateResponseDto): Promise<WadlResponseDto> {
+		return this.wadlResponseService.addResponse(createResponseDto);
+	}
+
+	@Get('responses')
+	getResponses(@Query('resourceIri') resourceIri: string, @Query('methodTypeIri') methodTypeIri: string): Promise<WadlRequestDto> {
 		return this.wadlRequestService.getRequest(resourceIri, methodTypeIri);
 	}
 
