@@ -1,0 +1,18 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <!-- header and general controls  -->
+    <div class="row">
+        <div class="col">
+            <h5 class="card-header">{{config.title}}</h5>
+        </div>
+        <div class="col">
+            <button class="btn btn-outline-danger" 
+                (click)="removeCard()">
+                Remove card
+            </button>
+        </div>
+    </div>
+    <!-- specific content -->
+    <div class="card-body">
+        <ng-template genericCardContent></ng-template>
+    </div>
+</div>
