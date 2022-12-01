@@ -14,6 +14,7 @@ import { ISO224002Module } from './routes/iso224002/iso224002.module';
 import { OdpModule } from './routes/odps/odp.module';
 import { WadlModule } from './routes/wadl/wadl.module';
 import { ISA88Module } from './routes/isa88/isa88.module';
+import { GenericOdpModule } from './routes/generic-odp/generic-odp.module';
 
 
 @Module({
@@ -30,7 +31,8 @@ import { ISA88Module } from './routes/isa88/isa88.module';
 		DINEN61360Module,
 		ISO224002Module,
 		WadlModule,
-		ISA88Module
+		ISA88Module,
+		GenericOdpModule
 	],
 	controllers: [AppController],
 	providers: [AppService],
