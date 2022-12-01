@@ -1,0 +1,16 @@
+<div class="card text-center mb-sm-4 shadow p-3 mb-5 bg-light rounded">
+    <div class="card-body">
+        <div class="dropdown">
+            <button class="btn btn-outline-success btn-lg dropdown-toggle" type="button" id="dropdownMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Add new card
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+                <button class="dropdown-item" type="button" 
+                    *ngFor="let dropdownOption of dropdownOptions"
+                    (click)="addNewCard(dropdownOption)">
+                    {{dropdownOption}}
+                </button>
+            </div>
+        </div>
+    </div> 
+</div>
