@@ -1,0 +1,11 @@
+<h5 class="card-title"> simple individual</h5>
+<p class="card-text"> {{data}} </p>
+<div class="form-group col-lg-3">
+    <label>Select class of new individual</label>
+    <select formControlName="type" name="type" class="form-control">
+        <option value=null selected hidden></option>
+        <option *ngFor='let x of allClasses'>
+            {{x}}
+        </option>
+    </select>
+</div>
