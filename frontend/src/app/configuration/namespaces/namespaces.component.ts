@@ -27,12 +27,12 @@ export class NamespacesComponent implements OnInit {
   // forms
   namespaceOption = this.fb.control('', Validators.required);
   namespaceFormEditDelete = this.fb.group({
-      prefix: [undefined, [Validators.required, Validators.pattern('^[a-z|A-Z|0-9]+[^:]?:{1}$')]],
-      namespace: [undefined, [Validators.required, Validators.pattern('(\w*(http:\/\/)\w*)|(\w*(urn:)\w*)')]],
+      prefix: ["", [Validators.required, Validators.pattern('^[a-z|A-Z|0-9]+[^:]?:{1}$')]],
+      namespace: ["", [Validators.required, Validators.pattern('(\w*(http:\/\/)\w*)|(\w*(urn:)\w*)')]],
   })
   namespaceFormCreate = this.fb.group({
-      prefix: [undefined, [Validators.required, Validators.pattern('^[a-z|A-Z|0-9]+[^:]?:{1}$')]],
-      namespace: [undefined, [Validators.required, Validators.pattern('(\w*(http:\/\/)\w*)|(\w*(urn:)\w*)')]],
+      prefix: ["", [Validators.required, Validators.pattern('^[a-z|A-Z|0-9]+[^:]?:{1}$')]],
+      namespace: ["", [Validators.required, Validators.pattern('(\w*(http:\/\/)\w*)|(\w*(urn:)\w*)')]],
   })
 
   constructor(
@@ -45,7 +45,7 @@ export class NamespacesComponent implements OnInit {
   ngOnInit() {
       this.PREFIXES = this.prefixService.getPrefixes();
       this.namespaceCount = this.prefixService.getPrefixes().length;
-      this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()].namespace;
+      this.activeNamespace = this.prefixService.getActiveNamespace().namespace;
   }
 
   setActiveNamespace(namespace: string) {
@@ -59,7 +59,7 @@ export class NamespacesComponent implements OnInit {
           }
 
           this.prefixService.setActiveNamespace(namespaceKey);
-          this.activeNamespace = this.PREFIXES[this.prefixService.getActiveNamespace()].namespace;
+          this.activeNamespace = this.prefixService.getActiveNamespace().namespace;
       } else if (this.namespaceOption.invalid) {
           this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
       }

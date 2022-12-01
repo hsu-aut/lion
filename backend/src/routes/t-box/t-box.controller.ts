@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { TBoxService } from './t-box.service';
@@ -17,6 +17,11 @@ export class TBoxController {
 	@Get("classes-of-individual")
 	getClassOfIndividual(@Query("individual") individual:string, @Query("namespace") namespace?: string): Observable<SparqlResponse> {
 		return this.tboxService.getClassesOfIndividual(individual, namespace);
+	}
+
+	@Get("classes-in-namespace/:namespace")
+	getClassesInNamespace(@Param("namespace") namespace: string): Observable<SparqlResponse>{
+		return this.tboxService.getClassesInNamespace(namespace);
 	}
 
 	@Get("range-classes")

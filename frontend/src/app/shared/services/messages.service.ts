@@ -8,15 +8,19 @@ export class MessagesService {
 
     constructor() { }
 
-messages: Subject<object> = new Subject();
+    messages: Subject<Message> = new Subject();
 
-addMessage(type, head, body){
-    const newMessage = {
-        type: type,
-        head: head,
-        body: body
-    };
-    this.messages.next(newMessage);
+    addMessage(type, head, body): void {
+        const newMessage = new Message(type, head, body);
+        this.messages.next(newMessage);
+    }
+
 }
 
+class Message {
+    constructor(
+        public type: string,
+        public head: string,
+        public body: string
+    ) {}
 }

@@ -1,9 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { take } from "rxjs";
-import { PrefixesService } from "../../../shared/services/prefixes.service";
+import { TypeChangedEvent, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
+import { PrefixesService, Prefix } from "../../../shared/services/prefixes.service";
 import { TboxService } from "../../rdf-models/tbox.service";
-import { WadlModelService } from "../../rdf-models/wadlModel.service";
 
 @Component({
     selector: 'onto-helper-modal',
@@ -12,85 +11,80 @@ import { WadlModelService } from "../../rdf-models/wadlModel.service";
 })
 export class OntoHelperModalComponent {
 
-    requestBodyRepresentationCheck;
-    requestBodyRepresentationRadio;
-    ontologicalDataTypeRadio;
-    _OntologicalDataType: string;
+    @Output("onTypeSelected") onTypeSelected = new EventEmitter<TypeChangedEvent>();
+    @Output("onTypeRemoved") onTypeRemoved = new EventEmitter<void>();
 
-    ontologicalDataType = this.fb.group({
-        TBox: ["", Validators.required],
-        type: ["", Validators.required],
-        individual: [""]
-    })
+    TypesOfDataTypes = WadlTypesOfDataTypes;                                            // Helper to use enum in HTML
+    ontologicalDataTypeRadio: WadlTypesOfDataTypes = WadlTypesOfDataTypes.TBox;         // Radio selector
 
-    tboxes: Array<string> = [];
+    prefixes: Prefix[]
+    selectedPrefix = this.prefixService.getPrefixes().find(pD => pD.prefix == "wadl");
     classes: Array<string> = [];
     individuals: Array<string> = [];
 
+    dataTypeForm = this.fb.group({
+        namespace: [this.selectedPrefix , Validators.required],
+        class: ["", Validators.required],
+        individual: [""]
+    })
+
     constructor(
         private fb: FormBuilder,
-        private wadlService: WadlModelService,
         private tBoxService: TboxService,
         private prefixService: PrefixesService
-    ) {
+    ) {}
 
+    ngOnInit(): void {
+        this.prefixes = this.prefixService.getPrefixes();
+        this.dataTypeForm.controls.namespace.valueChanges.subscribe(pD => {
+            this.selectedPrefix = pD;
+            this.getClassesOfNamespace(pD);
+        });
+
+        this.dataTypeForm.controls.class.valueChanges.subscribe(cls => {
+            this.getExistingIndividuals(cls);
+        });
     }
 
-    getExistingClasses(owlEntity) {
-        if (owlEntity) {
-            this.wadlService.loadLIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity).pipe(take(1)).subscribe((data: any) => {
-                this.classes = data;
-            });
-        }
+    /**
+     * Loads all classes defined in a certain namespace
+     * @param selectedPrefix
+     */
+    private getClassesOfNamespace(selectedPrefix: Prefix): void {
+        const namespace = selectedPrefix.namespace;
+        this.tBoxService.getClassesWithinNamespace(namespace).subscribe(classes => this.classes = classes);
     }
 
-    getExistingIndividuals(owlClass: string) {
-        owlClass = this.prefixService.parseToIRI(owlClass);
-        this.tBoxService.getListOfIndividualsByClass(owlClass, "http://www.hsu-ifa.de/ontologies/WADL#").pipe(take(1))
-            .subscribe((data: any) => {
-                this.individuals = data;
-            });
+    /**
+     * Gets all individuals of a certain class defined in a certain namespace
+     * @param cls Class to get individuals of
+     */
+    private getExistingIndividuals(cls: string): void {
+        // TODO: This namespace should be the currently active modeling namespace and not the same of the class...
+        this.tBoxService.getListOfIndividualsByClass(cls, this.selectedPrefix.namespace).subscribe(individuals => this.individuals = individuals);
     }
 
-    setOntologicalDataType(context: string) {
-        this._OntologicalDataType = context;
+    /**
+     * On clicking the modal's "confirm" button, the selected value should be emitted to the parent element
+     */
+    setParameterType(): void {
+        let typeChangedEvent: TypeChangedEvent;
+
+        let selectedType = "";
+        if(this.ontologicalDataTypeRadio == WadlTypesOfDataTypes.TBox) {
+            selectedType = this.dataTypeForm.controls.class.value;
+            typeChangedEvent = new TypeChangedEvent(selectedType, WadlTypesOfDataTypes.TBox);
+        }
+        if(this.ontologicalDataTypeRadio == WadlTypesOfDataTypes.ABox) {
+            selectedType = this.dataTypeForm.controls.individual.value;
+            typeChangedEvent = new TypeChangedEvent(selectedType, WadlTypesOfDataTypes.ABox);
+        }
+        this.onTypeSelected.emit(typeChangedEvent);
     }
 
-    setDataType(IRI, type) {
-        switch (this._OntologicalDataType) {
-        case "requestParameter": {
-            // TODO: Set types to request form. This is better done via a service or other inter-component communication
-            // if (IRI) {
-            //     this.requestForm.controls['dataType'].setValue(IRI);
-            //     this.requestForm.controls['ontologicalDataType'].setValue(type);
-            // } else {
-            //     this.requestForm.controls['dataType'].setValue(IRI);
-            //     this.requestForm.controls['ontologicalDataType'].setValue(IRI);
-            // }
-            break;
-        }
-        case "requestBodyParameter": {
-            // TODO: Set body types to request form. This is better done via a service or other inter-component communication
-            // if (IRI) {
-            //     this.requestForm.controls['bodyDataType'].setValue(IRI);
-            //     this.requestForm.controls['ontologicalBodyDataType'].setValue(type);
-            // } else {
-            //     this.requestForm.controls['bodyDataType'].setValue(IRI);
-            //     this.requestForm.controls['ontologicalBodyDataType'].setValue(IRI);
-            // }
-            break;
-        }
-        case "responseBodyParameter": {
-            // TODO: Set response body types to request form. This is better done via a service or other inter-component communication
-            // if (IRI) {
-            //     this.responseForm.controls['bodyDataType'].setValue(IRI);
-            //     this.responseForm.controls['ontologicalBodyDataType'].setValue(type);
-            // } else {
-            //     this.responseForm.controls['bodyDataType'].setValue(IRI);
-            //     this.responseForm.controls['ontologicalBodyDataType'].setValue(IRI);
-            // }
-            break;
-        }
-        }
+    setNormalDataType(): void {
+        this.onTypeRemoved.emit();
     }
+
+
 }

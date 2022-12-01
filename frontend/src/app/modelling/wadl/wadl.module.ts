@@ -9,6 +9,8 @@ import { ResponseComponent } from "./response/response.component";
 import { ResourceComponent } from "./resource/resource.component";
 import { WadlRoutingModule } from "./wadl-routing.module";
 import { WadlComponent } from "./wadl.component";
+import { RepresentationComponent } from "./representation/representation.component";
+import { ParameterComponent } from "./parameter/parameter.component";
 
 @NgModule({
     imports: [
@@ -24,6 +26,8 @@ import { WadlComponent } from "./wadl.component";
         ResourceComponent,
         RequestComponent,
         ResponseComponent,
+        RepresentationComponent,
+        ParameterComponent,
         OntoHelperModalComponent
     ]
 })

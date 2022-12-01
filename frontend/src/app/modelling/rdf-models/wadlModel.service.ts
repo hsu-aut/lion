@@ -3,12 +3,16 @@ import { QueriesService } from '../../shared/services/backEnd/queries.service';
 import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
 import { DownloadService } from '../../shared/services/backEnd/download.service';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
-import { WadlResponse } from '@shared/models/odps/wadl/WadlResponse';
+import { WadlCreateResponseDto, WadlResponse, WadlResponseDto } from '@shared/models/odps/wadl/WadlResponse';
+import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '../../../../models/odps/wadl/WadlRequest';
+import { ResourceComponent } from '../wadl/resource/resource.component';
+import { WadlParameter } from '../../../../models/odps/wadl/WadlParameter';
+import { WadlRepresentation } from '../../../../models/odps/wadl/WadlRepresentation';
 
 
 @Injectable({
@@ -16,21 +20,7 @@ import { WadlResponse } from '@shared/models/odps/wadl/WadlResponse';
 })
 export class WadlModelService {
 
-    wadlBasePath = "lion_BE/wadl"
-
-    wadlData = new WADLDATA();
-    wadlInsert = new WADLINSERT();
-
-    public TABLE_BASE_RESOURCES: Array<Record<string, any>> = [];
-    public TABLE_SERVICES: Array<Record<string, any>> = [];
-    public TABLE_OF_REQUEST_PARAMETERS: Array<Record<string, any>> = [];
-
-    public LIST_BASE_RESOURCES: Array<string> = [];
-    public LIST_SERVICES: Array<string> = [];
-    public LIST_OF_METHODS: Array<string> = [];
-    public LIST_OF_PARAMETER_TYPES: Array<string> = [];
-    public LIST_OF_RESPONSE_CODES: Array<string> = [];
-    public LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE: Array<string> = [];
+    baseUrl = "lion_BE/wadl"
 
     constructor(
         private http: HttpClient,
@@ -44,7 +34,7 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all base resources, their base paths and the entity providing the base path
      */
     getBaseResources(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/base-resources`;
+        const url = `${this.baseUrl}/base-resources`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -53,7 +43,7 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all existing services with their base resource, base path and service path
      */
     getResources(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/resources`;
+        const url = `${this.baseUrl}/resources`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -61,15 +51,16 @@ export class WadlModelService {
         const queryParam = {
             baseResource: baseIri
         };
-        const url = `${this.wadlBasePath}/resources`;
+        const url = `${this.baseUrl}/resources`;
         return this.http.get<SparqlResponse>(url, {params: queryParam});
     }
+
     /**
      * Get all existing methods
      * @returns A SparqlResponse object with all existing methods with their base resource, base path and service path
      */
     getMethods(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/methods`;
+        const url = `${this.baseUrl}/methods`;
         return this.http.get<SparqlResponse>(url);
     }
 
@@ -78,8 +69,22 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all response codes that may be retrieved as a reponse
      */
     getResponseCodes(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/response-codes`;
+        const url = `${this.baseUrl}/response-codes`;
         return this.http.get<SparqlResponse>(url);
+    }
+
+    addRequest(request: WadlCreateRequestDto): Observable<WadlRequestDto> {
+        const url = `${this.baseUrl}/requests`;
+        return this.http.post<WadlRequestDto>(url, request);
+    }
+
+    getRequest(resourceIri: string, methodTypeIri: string): Observable<WadlRequest> {
+        const url = `${this.baseUrl}/requests`;
+        const queryParams = {
+            resourceIri: resourceIri,
+            methodTypeIri: methodTypeIri,
+        };
+        return this.http.get<WadlRequest>(url, {params: queryParams});
     }
 
     /**
@@ -87,35 +92,27 @@ export class WadlModelService {
      * @returns A SparqlResponse object with all parameter types that can be used to send parameters via HTTP
      */
     getParameterTypes(): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/parameter-types`;
+        const url = `${this.baseUrl}/parameter-types`;
         return this.http.get<SparqlResponse>(url);
     }
 
-
-    getRequestParameters(baseResourceIri: string, resourceIri: string, methodTypeIri: string, parameterTypeIri:string): Observable<SparqlResponse> {
-        const url = `${this.wadlBasePath}/request-parameters`;
+    /**
+     * Returns all existing parameters of a parent element (either a request or response)
+     * @param parentIri IRI of the parent element (request or response)
+     * @returns
+     */
+    getExistingParameters(parentIri: string): Observable<WadlParameter[]> {
+        const url = `${this.baseUrl}/parameters`;
         const queryParams = {
-            baseResourceIri: baseResourceIri,
-            resourceIri: resourceIri,
-            methodTypeIri: methodTypeIri,
-            parameterTypeIri: parameterTypeIri
+            parentIri: parentIri,
         };
-        return this.http.get<SparqlResponse>(url, {params: queryParams});
+        return this.http.get<WadlParameter[]>(url, {params: queryParams});
     }
 
-    getRequestRepresentation(resourceIri: string, methodTypeIri: string) {
-        const encodedResourceIri = encodeURIComponent(resourceIri);
-        const encodedMethodTypeIri = encodeURIComponent(methodTypeIri);
-        const url = `${this.wadlBasePath}/${encodedResourceIri}/${encodedMethodTypeIri}/request-representation`;
-        return this.http.get<SparqlResponse>(url);
-    }
-
-
-    public loadTABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI) {
-        return this.query.SPARQL_SELECT_TABLE(this.wadlData.SELECT_TABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI));
-    }
-    public loadLIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity) {
-        return this.query.SPARQL_SELECT_LIST(this.wadlData.SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(owlEntity), 0);
+    getRepresentations(parentIri: string) {
+        const url = `${this.baseUrl}/representations`;
+        const params = new HttpParams().append("parentIri", parentIri);
+        return this.http.get<SparqlResponse>(url, {params: params});
     }
 
 
@@ -141,23 +138,23 @@ export class WadlModelService {
     }
 
     public createBaseResource(baseResource: WadlBaseResource): Observable<void> {
-        const url = `${this.wadlBasePath}/base-resources`;
+        const url = `${this.baseUrl}/base-resources`;
         return this.http.post<void>(url, baseResource);
     }
 
 
     public deleteBaseResource(baseResourceIri: string): Observable<void> {
-        const url = `${this.wadlBasePath}/base-resources/${baseResourceIri}`;
+        const url = `${this.baseUrl}/base-resources/${baseResourceIri}`;
         return this.http.delete<void>(url);
     }
 
     public addResource(sD: WadlResource): Observable<void> {
-        const url = `${this.wadlBasePath}/resources`;
+        const url = `${this.baseUrl}/resources`;
         return this.http.post<void>(url, sD);
     }
 
     public deleteResource(resourceIri: string): Observable<void> {
-        const url = `${this.wadlBasePath}/resources/${resourceIri}`;
+        const url = `${this.baseUrl}/resources/${resourceIri}`;
         return this.http.delete<void>(url);
     }
 
@@ -175,127 +172,39 @@ export class WadlModelService {
     }
 
     public addMethod(request: WadlMethod): Observable<void> {
-        const url = `${this.wadlBasePath}/methods`;
+        const url = `${this.baseUrl}/methods`;
         return this.http.post<void>(url, request);
     }
 
-
-    // TODO: Pass proper variables object
-    // public modifyRequest(variables: any, action: string) {
-    //     const GRAPHS = this.graphs.getGraphs();
-    //     const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
-
-    //     switch (action) {
-    //     case "add": {
-    //         return this.query.executeUpdate(this.wadlInsert.createRequest(variables, activeGraph));
-    //     }
-    //     case "delete": {
-    //         return this.query.executeUpdate(this.wadlInsert.deleteRequest(variables));
-    //     }
-    //     case "build": {
-    //         const blobObserver = new Observable((observer) => {
-    //             const insertString = this.wadlInsert.createRequest(variables, activeGraph);
-    //             const blob = new Blob([insertString], { type: 'text/plain' });
-    //             const name = 'insert.txt';
-    //             this.downloadService.download(blob, name);
-    //             observer.next();
-    //             observer.complete();
-    //         });
-    //         return blobObserver;
-    //     }
-    //     }
-    // }
-
-    public createResponse(method: WadlMethod, response: WadlResponse) {
-        //     const optionals = {
-        //         representation: `
-        //             BIND(<${variables.bodyRepresentationIRI}> AS ?bodyRepresentation).
-        //             BIND(<${variables.bodyRepresentationParameterIRI}> AS ?bodyRepresentationParameter).`,
-        //         bodyParameterDataTypeNonOntological: `?bodyRepresentationParameter wadl:hasParameterType "${variables.bodyRepresentationParameterDataType}"^^xsd:string.`,
-        //         bodyParameterDataTypeOntologicalABox: `?bodyRepresentationParameter wadl:hasOntologicalParameterType <${variables.bodyRepresentationParameterDataTypeOntologicalABox}>.`,
-        //         bodyParameterDataTypeOntologicalTBox: `?bodyRepresentationParameter rdf:type <${variables.bodyRepresentationParameterDataTypeOntologicalTBox}>.`,
-        //         representationOption: `BIND(<${variables.bodyRepresentationParameterOptionIRI}> AS ?bodyRepresentationParameterOption).`
-
-        //     };
-
-        //     // add a check for empties and if one is found delete the string
-        //     for (const i in optionals) {
-        //         const element = optionals[i];
-        //         if (element.search(`undefined`) != -1) { optionals[i] = ""; }
-        //         // console.log(element);
-        //     }
-
-        //     const insertString = `
-        // PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        // PREFIX owl: <http://www.w3.org/2002/07/owl#>
-        // PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-        // PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-
-        // INSERT { GRAPH <${activeGraph}> {
-        //   ?service wadl:hasMethod ?method.
-
-        //   ?method rdf:type <${variables.methodTypeIRI}>;
-        //        a owl:NamedIndividual;
-        //               wadl:hasResponse ?response.
-
-        //   ?response rdf:type wadl:Response;
-        //     rdf:type <${variables.responseTypeIRI}>;
-        //     a owl:NamedIndividual.
-
-        //     # for representation
-        //     ?response wadl:hasRepresentation ?bodyRepresentation.
-        //     ?bodyRepresentation rdf:type wadl:Representation;
-        //      a owl:NamedIndividual;
-        //      wadl:hasMediaType "${variables.bodyRepresentationMediaType}";
-        //      wadl:hasParameter ?bodyRepresentationParameter.
-        //      ${optionals.bodyParameterDataTypeNonOntological}
-        //      ${optionals.bodyParameterDataTypeOntologicalTBox}
-        //      ${optionals.bodyParameterDataTypeOntologicalABox}
-
-        //     ?bodyRepresentationParameter rdf:type wadl:Parameter;
-        //      a owl:NamedIndividual;
-        //      wadl:hasParameterName "${variables.bodyRepresentationParameterKey}"^^xsd:NMTOKEN;
-        //      wadl:hasParameterOption ?bodyRepresentationParameterOption.
-
-
-        //     ?bodyRepresentationParameterOption rdf:type wadl:Option;
-        //      a owl:NamedIndividual;
-        //      wadl:hasOptionValue "${variables.bodyRepresentationParameterOptionValue}"^^xsd:string.
-        //     }
-
-        //   } WHERE {
-        //     BIND(<${variables.serviceIRI}> AS ?service).
-        //     BIND(<${variables.methodIRI}> AS ?method).
-        //     BIND(<${variables.responseIRI}> AS ?response).
-        //     ${optionals.representation}
-        //     ${optionals.representationOption}
-        //   }`;
-        //     console.log(insertString);
-        //     return insertString;
-        // }
-
-        // return this.query.executeUpdate(this.wadlInsert.createResponse(variables, activeGraph));
+    public addParameter(parameter: WadlParameter): Observable<void> {
+        const url = `${this.baseUrl}/parameters`;
+        return this.http.post<void>(url, parameter);
     }
 
-    addResponse(method: WadlMethod, response: WadlResponse): Observable<void> {
-        return this.http.post<void>(this.wadlBasePath, null);
+    public deleteParameter(parameterIri: string): Observable<void> {
+        const encodedIri = encodeURIComponent(parameterIri);
+        const url = `${this.baseUrl}/parameters/${encodedIri}`;
+        return this.http.delete<void>(url);
+    }
+
+    public addRepresentation(rep: WadlRepresentation): Observable<void> {
+        const url = `${this.baseUrl}/representations`;
+        return this.http.post<void>(url, rep);
+    }
+
+    public addResponse(response: WadlCreateResponseDto): Observable<WadlResponseDto> {
+        const url = `${this.baseUrl}/responses`;
+        return this.http.post<WadlResponseDto>(url, response);
     }
 
     deleteResponse(response: WadlResponse): Observable<void> {
-        return this.http.delete<void>(this.wadlBasePath);
+        return this.http.delete<void>(this.baseUrl);
     }
 
     createResponseInsertString(method: WadlMethod, response: WadlResponse): Observable<string> {
-        return this.http.get<string>(this.wadlBasePath);
+        return this.http.get<string>(this.baseUrl);
     }
 
-
-    public deleteOption(variables: WADLVARIABLES) {
-        return this.query.executeUpdate(this.wadlInsert.deleteOption(variables));
-    }
-    public deleteParameter(variables: WADLVARIABLES) {
-        return this.query.executeUpdate(this.wadlInsert.deleteParameter(variables));
-    }
 }
 
 

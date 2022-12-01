@@ -3,9 +3,14 @@ import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { PrefixesService } from "../../../shared/services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { WadlMethod } from "@shared/models/odps/wadl/WadlMethod";
-import { WadlResponse } from "@shared/models/odps/wadl/WadlResponse";
+import { WadlCreateResponseDto, WadlResponse } from "@shared/models/odps/wadl/WadlResponse";
 import { cValFns } from "../../utils/validators";
+import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
+import { WadlResource } from "@shared/models/odps/wadl/Resource";
+import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
+import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
+import { MessagesService } from "../../../shared/services/messages.service";
+import { plainToClass } from "class-transformer";
 
 @Component({
     selector: 'wadl-response',
@@ -17,25 +22,18 @@ export class ResponseComponent {
     // Custom validator
     customVal = new cValFns();
 
+    baseResources = new Array<WadlBaseResource>();
+    resources = new Array<WadlResource>();
+    methods: Array<string> = [];
+    responseCodes: Array<string>;
+    existingResponse: WadlResponse;
+
     responseForm = this.fb.group({
         resourceBasePath: ["", Validators.required],
-        servicePath: ["", Validators.required],
-        method: ["", Validators.required],
-        responseCode: ["", Validators.required],
-        responseFormRepresentationArray: this.fb.array([
-            this.fb.control('')
-        ]),
-        bodyMediaType: ["", this.customVal.noSpecialCharacters()],
-        bodyParameterKey: ["", this.customVal.noSpecialCharacters()],
-        bodyDataType: ["", this.customVal.noSpecialCharacters()],
-        ontologicalBodyDataType: [""],
-        bodyOptionValue: ["", this.customVal.noSpecialCharacters()],
+        resource: [this.resources[0], Validators.required],
+        methodType: ["", Validators.required],
+        responseCode: ["", Validators.required]
     })
-
-    resourceBasePaths: Array<string> = [];
-    servicePaths: Array<string> = [];
-    methods: Array<string> = [];
-    responseCodes: Array<string> = [];
 
     responseBodyRepresentationCheck;
     responseRepresentationTable: Array<Record<string, any>> = [];
@@ -44,28 +42,45 @@ export class ResponseComponent {
         private fb: FormBuilder,
         private prefixService: PrefixesService,
         private wadlService: WadlModelService,
+        private messageService: MessagesService
     ) {}
 
-
-    get responseFormRepresentationArray(): FormArray {
-        return this.responseForm.get('responseFormRepresentationArray') as FormArray;
+    ngOnInit(): void {
+        this.loadBaseResources();
+        this.wadlService.getResponseCodes().pipe(toSparqlVariableList()).subscribe(responseCodes => this.responseCodes = responseCodes);
+        this.wadlService.getMethods().pipe(take(1), toSparqlVariableList()).subscribe(data => this.methods = data);
+        this.responseForm.valueChanges.subscribe(data => {
+            if (this.responseForm.valid) {
+                this.updateExistingResponse();
+            }
+        });
     }
 
-    setResponseFormRepresentation(table) {
-        while (this.responseFormRepresentationArray.length !== 0) {
-            this.responseFormRepresentationArray.removeAt(0);
-        }
-        for (let i = 0; i < table.length; i++) {
-            this.responseFormRepresentationArray.push(this.fb.group({
-                bodyMediaType: [table[i].bodyMediaType],
-                bodyParameterKey: [table[i].bodyParameterKey],
-                bodyDataType: [table[i].bodyDataType],
-                bodyOptionValue: [table[i].bodyOptionValue],
-            }));
+    private loadBaseResources(): void {
+        this.wadlService.getResources().pipe(take(1)).subscribe((data: SparqlResponse) => {
+            this.baseResources = WadlBaseResource.fromSparqlResult(data);
+        });
+    }
+
+    updateExistingResponse() {
+        const {resource, methodType, } = this.responseForm.value;
+        this.wadlService.getRequest(resource.resourceIri, methodType).subscribe(data => {
+            console.log(data);
+
+            // TODO: Currently, a whole resource is returned. Make sure to only return request of it
+            // this.existingRequest = data;
+        });
+    }
+
+    getExistingResourcesOfBase(): void {
+        const selectedBasePath = this.responseForm.controls['resourceBasePath'].value;
+        if(selectedBasePath) {
+            const selectedBaseResource = this.baseResources.filter(elem => elem.baseResourcePath == selectedBasePath)[0];
+            this.resources = selectedBaseResource.resources;
         }
     }
 
-    createResponseInsertString(): void {
+    getSparqlInsert(): void {
 
     }
 
@@ -74,20 +89,36 @@ export class ResponseComponent {
     }
 
     addResponse(): void {
-        const serviceIri = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
-        const methodTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
-        const methodIri = serviceIri + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
-        const method = new WadlMethod(serviceIri, methodTypeIri);
+        if(!this.responseCanBeCreated) {
+            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request already exists");
+        } else {
+            const {resource, methodType, responseCode} = this.responseForm.value;
+            const request = new WadlCreateResponseDto(resource.resourceIri, methodType, responseCode);
+            this.wadlService.addResponse(request).subscribe(data => {
+                console.log(data);
+                this.existingResponse = plainToClass(WadlResponse, data);
+            });
+        }
 
-        const responseTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
-        const responseIri = methodIri + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
-        const response = new WadlResponse(responseIri, responseTypeIri);
+        // const serviceIri = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
+        // const methodTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
+        // const methodIri = serviceIri + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
+        // const method = new WadlMethod(serviceIri, methodTypeIri);
 
-        // TODO: Pass proper data object instead of null and instead of modify, create separate methods in service
-        this.wadlService.addResponse(method, response).pipe(take(1)).subscribe((data: any) => {
-            // this.modelVariables = new WADLVARIABLES();
-        });
+        // const responseTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
+        // const responseIri = methodIri + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
+        // const response = new WadlResponse(responseIri, responseTypeIri);
+
+        // // TODO: Pass proper data object instead of null and instead of modify, create separate methods in service
+        // this.wadlService.addResponse(method, response).pipe(take(1)).subscribe((data: any) => {
+        //     // this.modelVariables = new WADLVARIABLES();
+        // });
     }
+
+    get responseCanBeCreated(): boolean {
+        return (this.responseForm.valid && this.existingResponse == undefined);
+    }
+
 
     addResponseRepresentationParameter(): void {
 
@@ -129,15 +160,6 @@ export class ResponseComponent {
 
     getExistingServicesByBase(something: any) {
         // TODO: Check if inputs are needed and implement
-    }
-
-    getExistingResponseRepresentation() {
-        const serviceIRI = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
-        const methodIRI = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
-        this.wadlService.loadTABLE_OF_RESPONSE_REPRESENTATION(serviceIRI, methodIRI).pipe(take(1)).subscribe((data: any) => {
-            this.responseRepresentationTable = data;
-            this.setResponseFormRepresentation(this.responseRepresentationTable);
-        });
     }
 
     setOntologicalDataType(something: string): void {

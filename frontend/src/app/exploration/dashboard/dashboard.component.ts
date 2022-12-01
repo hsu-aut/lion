@@ -204,7 +204,6 @@ export class DashboardComponent implements OnInit {
     }
 
     getActiveNamespace() {
-        const PREFIXES = this.namespaceService.getPrefixes();
-        this.activeNamespace = PREFIXES[this.namespaceService.getActiveNamespace()].namespace;
+        this.activeNamespace = this.namespaceService.getActiveNamespace().namespace;
     }
 }

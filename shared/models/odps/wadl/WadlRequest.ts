@@ -1,32 +1,43 @@
 import { WadlOption, WadlParameter, WadlParameterTypes, WadlTypesOfDataTypes } from "./WadlParameter";
 import { WadlRepresentation } from "./WadlRepresentation";
 
-export class WadlRequest {
-    requestIri: string;
+export class WadlCreateRequestDto {
+    constructor(
+        public resourceIri: string,
+        public methodTypeIri: string,
+        public parameters = new Array<WadlParameter>(),
+        public representations = new Array<WadlRepresentation>()
+    ) {}
+}
+
+export class WadlRequestDto {
 
     constructor(
+        public requestIri: string,
         public methodIri: string,
-        public parameters = new Array<WadlParameter>(), // Requests can have both query or header parameters
-        public representation?: WadlRepresentation, // According to WADL, there may be more than one representation
-    ) {
-        this.requestIri = `${methodIri}_Req`;
+        public parameters = new Array<WadlParameter>(),
+        public representations = new Array<WadlRepresentation>()) {}
+}
+
+export class WadlRequest extends WadlRequestDto {
+    requestIri: string;
+
+    fromDto(reqDto: WadlRequestDto): WadlRequest {
+        this.requestIri = reqDto.requestIri;
+        this.methodIri = reqDto.methodIri;
+        this.parameters = reqDto.parameters;
+        this.representations = reqDto.representations;
+        return this;
     }
 
-    createParameter(name: string, paramType: WadlParameterTypes, typeOfDataType: WadlTypesOfDataTypes, datatype:string, defaultValue?: any, required?: boolean, options?: WadlOption[]) {
-        const param = new WadlParameter(this.requestIri, name, paramType, typeOfDataType, datatype, defaultValue, required, options)
-        return param;
-    }
-
-    addParameter(name: string, paramType: WadlParameterTypes, typeOfDataType: WadlTypesOfDataTypes, datatype:string, defaultValue?: any, required?: boolean, options?: WadlOption[]) {
-        const param = this.createParameter(name, paramType, typeOfDataType, datatype, defaultValue, required, options);
+    addParameter(param: WadlParameter) {
         this.parameters.push(param);
     }
 
-    addRepresentationParameter(name: string, paramType: WadlParameterTypes, typeOfDataType: WadlTypesOfDataTypes, datatype:string, defaultValue?: any, required?: boolean, options?: WadlOption[]) {
-        if(!this.representation) {
-            this.representation = new WadlRepresentation(this.requestIri)
-        }
-        const param = this.createParameter(name, paramType, typeOfDataType, datatype, defaultValue, required, options);
-        this.representation.parameters.push(param);
+    addRepresentationParameter(param: WadlParameter, representationIri: string) {
+        const representation = this.representations.find(rep => rep.iri === representationIri);
+        if(!representation) return;
+        
+        representation.parameters.push(param);
     }
 }

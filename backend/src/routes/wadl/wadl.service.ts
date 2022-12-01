@@ -403,8 +403,8 @@ export class WadlService {
 	addMethod(method: WadlMethod): Observable<void> {
 		const activeGraph = this.graphService.getCurrentGraph();
 		
-		const parameterString = this.wadlParamService.createParameterString(method.request.requestIri, method.request.parameters);
-		const repString = this.wadlRepService.createRepresentationString(method.request.requestIri, method.request.representation);
+		const parameterString = this.wadlParamService.createParameterString(method.request.parameters);
+		const repString = this.wadlRepService.createRepresentationString(method.request.representations);
 		const updateString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -436,54 +436,6 @@ export class WadlService {
 		SELECT DISTINCT ?responseCode WHERE {
 			?responseCode sesame:directSubClassOf wadl:Response.
 		}`;
-		return this.queryService.query(queryString);
-	}
-
-	/**
- * Gets all parameter types as a SparqlResponse object
- * @returns All different types of parameters that can be sent via HTTP
- */
-	getParameterTypes(): Observable<SparqlResponse> {
-		const queryString = `PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-		SELECT DISTINCT ?parameterType WHERE {
-			?parameterType sesame:directSubClassOf wadl:Parameter.
-		}`;
-		return this.queryService.query(queryString);
-	}
-
-	getRequestParameters(resourceIri: string, methodTypeIri: string, parameterTypeIri: string): Observable <SparqlResponse> {
-		const queryString = `
-		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-		PREFIX owl: <http://www.w3.org/2002/07/owl#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-
-		SELECT DISTINCT ?parameter ?parameterKey ?dataType ?optionValue WHERE {
-			<${resourceIri}> wadl:hasMethod ?method.
-			?method rdf:type <${methodTypeIri}>;
-				wadl:hasRequest ?request.
-			<${methodTypeIri}> rdfs:subClassOf wadl:Method.
-			?request wadl:hasParameter ?parameter.
-			?parameter rdf:type <${parameterTypeIri}>;
-				wadl:hasParameterName ?parameterKey.
-			<${parameterTypeIri}> rdfs:subClassOf wadl:Parameter.
-
-			{OPTIONAL {?parameter  wadl:hasParameterType ?dataType.}} UNION
-			{OPTIONAL {?parameter  wadl:hasOntologicalParameterType ?dataType.}} UNION
-			{OPTIONAL {
-				?parameter  rdf:type ?dataType. 
-				MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
-			}}
-		
-			FILTER(!ISBLANK(?dataType))
-
-			OPTIONAL{
-				?parameter wadl:hasParameterOption ?option.
-				?option rdf:type wadl:Option;
-				a owl:NamedIndividual;
-				wadl:hasOptionValue ?optionValue.
-			}
-		} `;
-
 		return this.queryService.query(queryString);
 	}
 

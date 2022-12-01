@@ -66,6 +66,22 @@ export class TBoxService {
 	}
 
 
+	public getClassesInNamespace(namespace: string): Observable<SparqlResponse> {
+		let filterString = "";
+		if (namespace) {
+			filterString = `FILTER(STRSTARTS(STR(?class), "${namespace}"))`;
+		}
+		const queryString = `
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            SELECT ?class WHERE {
+                ?class a owl:Class.
+                ${filterString}
+            }`;
+
+		return this.queryService.query(queryString);
+	}
+
+
 	/**
      * Get all classes of an individual within a given namespace
      * @param individualIri IRI of an individual to all get classes of

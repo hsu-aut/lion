@@ -29,8 +29,7 @@ export class Isa88ModelService {
 
         public buildISA88(SystemName: string, mode: string, action: string): Observable<void> {
 
-            const PREFIXES = this.nameService.getPrefixes();
-            const namespace: string = PREFIXES[this.nameService.getActiveNamespace()].namespace;
+            const namespace: string = this.nameService.getActiveNamespace().namespace;
 
             const GRAPHS: Array<string> = this.graphs.getGraphs();
             const activeGraph: string = GRAPHS[this.graphs.getActiveGraph()];
@@ -67,11 +66,11 @@ export class Isa88ModelService {
                 // TODO: request does not work yet
                 return this.http.get<string>("lion_BE/isa88/buildISA88", {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
                     const blob: Blob = new Blob([response], { type: 'text/plain' });
-                    const name: string = 'insert.txt';
+                    const name = 'insert.txt';
                     return this.dlService.download(blob, name);
                 }));
             }
-            }  
+            }
         }
 
 }
