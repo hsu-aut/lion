@@ -8,9 +8,18 @@ export class GenericOdpController {
 	
 	constructor(private genericOdpService: GenericOdpService) { }
 
+	// get routes
 	@Get('all-classes')
-	getTableOfAllEntityInfo(): Observable<SparqlResponse> {
+	getAllClasses(): Observable<SparqlResponse> {
 		return this.genericOdpService.getAllClasses();
+	}
+	@Get('all-ind-of-class')
+	getAllIndividualsOfClass(@Query('classIri') classIri: string): Observable<SparqlResponse> {
+		return this.genericOdpService.getAllIndividualsOfClass(classIri);
+	}
+	@Get('all-op-for-ind-dom')
+	getAllObjectPropertiesForDomainIndividual(@Query('classIri') individualIri: string): Observable<SparqlResponse> {
+		return this.genericOdpService.getAllObjectPropertiesForDomainIndividual(individualIri);
 	}
 
 }
