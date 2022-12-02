@@ -1,2 +1,40 @@
 <h5 class="card-title"> header </h5>
 <p class="card-text"> text </p>
+<div class="row align-items-end" [formGroup]="newObjectPropertyForm1">
+    <div class="form-group col-lg-4">
+        <label>Class of the domain individual</label>
+        <select formControlName="fc1" name="fc1" class="form-control" (click)="onClassSelection()">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of allClasses'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="col-lg-3"></div>
+    <div class="col-lg-3"></div>
+</div>
+<div class="row align-items-end" [formGroup]="newObjectPropertyForm2">
+    <div class="form-group col-lg-4">
+        <label>Domain individual</label>
+        <select formControlName="fc2" name="fc2" class="form-control">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of allIndividualsOfClass'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-lg-3">
+        <label>Predicate of the created statement </label>
+        <input class="form-control" type="text" placeholder="rdf:type" readonly>
+    </div>
+    <div class="form-group col-lg-3">
+        <label>Object of the created statement </label>
+        <select formControlName="fc4" name="fc4" class="form-control">
+            <option value=null selected hidden></option>
+            <option>"hello</option>
+            <!-- <option *ngFor='let x of allClasses'>
+                {{x}}
+            </option> -->
+        </select>
+    </div>
+</div>
