@@ -1,4 +1,5 @@
 import { Directive, Input } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { GenericOdpModelService } from '../../rdf-models/generic-odp-model.service';
 
 // empty directive decorator to enable angular functionalities
@@ -10,7 +11,8 @@ export class GenericCardContentComponent {
   @Input() data: any;
 
   constructor( 
-    protected genericOdpModelService: GenericOdpModelService 
+    protected genericOdpModelService: GenericOdpModelService,
+    protected formBuilder: FormBuilder
   ) { }
 
 }

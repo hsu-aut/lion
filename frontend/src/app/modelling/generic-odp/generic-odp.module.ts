@@ -8,7 +8,7 @@ import { GenericCardComponent } from './generic-card/generic-card.component';
 import { GenericCardContentDirective } from './generic-card/generic-card-content.directive';
 import { GenericCardImplementationsService } from './generic-card/generic-card-implementations/generic-card-implementations.service';
 import { GenericCardImplementationsModule } from './generic-card/generic-card-implementations/generic-card-implementations.module';
-
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
     declarations: [
