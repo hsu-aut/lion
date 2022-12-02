@@ -29,7 +29,7 @@ export class GenericOdpService {
             PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
             SELECT ?object_property
             WHERE {
-                ${individualIri} a ?rdf_type_of_subject .
+                <${individualIri}> a ?rdf_type_of_subject .
                 ?object_property a owl:ObjectProperty .
                 ?object_property rdfs:domain ?rdf_type_of_subject .
             }
@@ -39,7 +39,7 @@ export class GenericOdpService {
         return this.sparqlService.query(`
 			SELECT ?individual
 			WHERE {
-				?individual a ${classIri}
+				?individual a <${classIri}> .
 			}
         `);
     }
