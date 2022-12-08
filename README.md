@@ -1,54 +1,51 @@
-# Lightweight Industrial Ontology Support Tool
+<p align="center">
+    <img height="150px" src="https://github.com/hsu-aut/lion/blob/documentation/images/images/LiOn-Logo.png?raw=true">
+</p>
+<h1 align="center">LiOn</h1>
+<h2 align="center">A Lightweight Industrial Ontology Support Tool</h2>
+<br>
 
-This tool implements necessary functionalities to create and manipulate RDF/OWL data to describe manufacturing related knowledge like Products, Processes and Resources, as well as their properties. Whereby this tool offers two basic functionalities: Directly creating RDF/OWL data within a triple store owned by the user, or exporting of SPARQL INSERT templates that can be used by a Software developer to be executed by an application in a given event.
+Creating ontologies manually is complicated, tedious and error-prone. Especially the task of creating lots of individuals can become cumbersome very quickly. 
+This tool provides functionalities to create and manipulate RDF/OWL data according to Ontology Design Patterns (ODPs) based on industry standards (see links [here](https://github.com/hsu-aut/Industrial-Standard-Ontology-Design-Patterns)).
+Currently, the TBoxes according to the following industry standards are supported:
+- VDI 3682 (Formalized Process Descriptions) to model processes with their in- and output in a generic way.
+- VDI 2206 (Structures of Mechatronic Systems) to model systems and their components.
+- DIN EN 61360 (Data elements and data element types) to model properties in a generic way.
+- WADL (Web Application Description Language) to model web services and the requests and responses they can handle.
+- ISO 22400-2 (Key performance indicators for manufacturing operations management) to model KPIs for various aspects.
+- ISA 88 (State machines) to model state machines for all kinds of systems.
 
-As there is no release so far, only development mode is currently available. A more convenient set up will follow with the first release. Currently supported is the creation of RDF models with the following TBox (see also `https://github.com/ConstantinHildebrandt/Industrial-Standard-Ontology-Design-Patterns`):
-- VDI 3682 (Formalized Process Descriptions)
-- VDI 2206 (Structures of Mechatronic Systems)
-- DIN EN 61360 (Data elements and data element types)
-- WADL (Web Application Description Language)
-- ISO 22400-2 (Key performance indicators for manufacturing operations management)
-- ISA 88 (State machines)
+This tool offers two basic functionalities: 
+- Directly create RDF/OWL data within your triple store through a simple user interface 
+- Export SPARQL INSERT templates that can be used by a Software developer to be executed in another application.
 
-## How to set up LiOnS in development mode
+# Setup
 
-The set up includes setting up LiOnS (front and backend) in development mode in visual studio code, setting up GraphDB and a local SQL database for ecl@ss properties (optional).
+## Requirements
+In order to run LiOnS, you must have Node.js installed. Download it from https://nodejs.org/en/download/ and install it as per the instructions.
 
-### Clone/download the repository
+## Running LiOnS in development mode
 
-Clone/download the repository in the directory of your choice.
+1. Clone or download the repository in the directory of your choice.
+2. Start your own instance of [GraphDB](https://www.ontotext.com/products/graphdb/). Open your browser and go to `http://localhost:7200`. Go to `"Setup" -> "Repositories" -> "Create new repository"`. Create a new repository called `testdb`. You can change this later on.
+3. Optional: Start your own ECLASS database (deprecated, we recommend adding your own certificate to be able to access ECLASS's web service). If you really want to setup your own DB, see [this info](https://github.com/hsu-aut/lion#setup-custom-eclass-database).
+4. Open a terminal in both `backend` and `frontend` folder. Of course you can open a terminal in you IDE (e.g. VS Code) so that you have the code and the terminal in one place.
+5. In both terminal, execute `npm install` to install all npm dependencies
+6. As soon as `npm install` finished, execute `npm run start:dev` in both shells to start both backend and frontend in develoment mode. 
+7. Both backend and frontend should now be starting. They both run in an interactive mode, i.e., as soon as you save changes, they will recompile / restart.
+8. Open your browser at `localhost:4200` if it isn't opened automatically.
 
-### Install Visual Studio Code, nodeJS and AngularCLI
 
-Go to `https://code.visualstudio.com/` and download the IDE for your operating system. Afterwards, download the latest stable version of nodeJS from `https://nodejs.org/en/`. This should include the node package manager (npm). Now, open a terminal in Visual Studio Code and install the Angular CLI via:
-```
-npm install -g @angular/cli
-```
+## Running a release version
+:construction: Documentation coming soon :construction:
 
-### Install LiOnS dependencies
+## Using Docker
+:construction: Documentation coming soon :construction:
 
-For the back end, open a terminal in visual studio code. Then, run the following commands:
-```
-cd lion_backEnd
-npm install
-```
-For the front end, open a fresh terminal in visual studio code. Then, run the following commands:
-```
-cd lion_master
-npm install
-```
 
-### Install GraphDB
+# Additional infos:
 
-LiOnS requires a local (or remote) graph database. Currently, only GraphDB (see: `http://graphdb.ontotext.com/`) is supported. Get yourself a local (or remote) access, by installing GraphDB (e.g. GraphDB Free) on your (or remote) device.
-
-After having installed GraphDB, you will have to enable CORS, as the front end currently sends HTTP requests to the DB. This will be done by the back end in the future. However, in order to enable CORS, click on `Settings...` in your GraphDB instance (not the Workbench). By default, GraphDB should run on port `http://localhost:7200`. Set the port to `7200`. Write in the text area the following command in order to enable CORS:
-```
--Dgraphdb.workbench.cors.enable=true
-```
-Open your browser and go to `http://localhost:7200`. Go to `"Setup" -> "Repositories" -> "Create new repository"`. Create a new repository called `testdb`. You can change this later on.
-
-### Install MySQL database with ecl@ss properties (optional)
+## Setup custom ECLASS database
 
 LiOnS enables an RDF Designer to model DIN EN 61360 properties in RDF with an eased interface. In order to use ecl@ss properties for this purpose in an efficient way, you will have to get a license for the ecl@ss database. Install a MySQL (see: `https://dev.mysql.com/downloads/installer/`) server and the MySQL Workbench (see: `https://www.mysql.com/products/workbench/`).
 
@@ -60,19 +57,3 @@ Set up a database called `eclass_basic_9_1_properties`. Download the ecl@ss cont
     "database": "eclass_basic_9_1_properties"
 ```
 The IP `127.0.0.1` is equivalent to `localhost`. If you would like to change this, open the file `lion_backEnd/bin/databaseConfig.json` and fill in your options.
-
-### Start LiOnS
-
-To start LiOnS you will have to start the back end first. Open a terminal in the root folder and use the following commands:
-```
-cd lion_backEnd
-nodemon start
-``` 
-If you have not installed a MySQL server with a configuration known to the back end, you will receive an error message. That does only affect the ecl@ss property search.
-To start the front end, run the following commands in another terminal: 
-```
-cd lion_master
-npm run start-dev
-``` 
-
-
