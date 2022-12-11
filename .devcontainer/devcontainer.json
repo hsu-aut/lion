@@ -1,0 +1,51 @@
+{
+	"name": "lion",
+	"dockerFile": "Dockerfile",
+	// "workspaceFolder": "/workspaces/lion-docker",
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"dbaeumer.vscode-eslint",
+				"rangav.vscode-thunder-client",
+				"mhutchie.git-graph",
+			]
+		}
+	},
+	// forward ports of frontend, backend and graphdb
+	"forwardPorts": [3000, 4200, 7200],
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.profiles.linux": {
+			"bash": {
+				"path": "bash"
+			}
+		},
+		"terminal.integrated.defaultProfile.linux": "bash"
+	},
+	// mount several folders as volumes to improve performance
+	"mounts": [
+		"source=lion-backend-node_modules,target=${containerWorkspaceFolder}/backend/node_modules,type=volume",
+		"source=lion-backend-dist,target=${containerWorkspaceFolder}/backend/dist,type=volume",
+		"source=lion-frontend-node_modules,target=${containerWorkspaceFolder}/frontend/node_modules,type=volume",
+		"source=lion-frontend-angular,target=${containerWorkspaceFolder}/frontend/.angular,type=volume",
+		"source=lion-shared-dist,target=${containerWorkspaceFolder}/shared/dist,type=volume",
+		"source=lion-graphdb-data,target=/usr/lib/graphdb/data,type=volume",	
+	],
+	// post create command: assign rights to mounted folders to user lion
+	"postCreateCommand": [
+		"sudo", "chown", "lion", 
+		"/usr/lib/graphdb/data", 
+		"shared/dist",
+		"frontend/.angular", 
+		"backend/dist", 
+		"backend/node_modules", 
+		"frontend/node_modules"
+	],
+	// post start command: launch graphdb
+	"postStartCommand": ["sudo", "/usr/lib/graphdb/graphdb-10.0.0/bin/graphdb", "-Dgraphdb.home=/usr/lib/graphdb/data", "-d"],
+	// user: lion
+	"remoteUser": "lion"
+}
