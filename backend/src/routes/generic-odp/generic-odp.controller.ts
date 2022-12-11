@@ -13,13 +13,24 @@ export class GenericOdpController {
 	getAllClasses(): Observable<SparqlResponse> {
 		return this.genericOdpService.getAllClasses();
 	}
-	@Get('all-ind-of-class')
+	@Get('all-ind')
+	getAllIndividuals(): Observable<SparqlResponse> {
+		return this.genericOdpService.getAllIndividuals();
+	}
+	@Get('ind-of-class')
 	getAllIndividualsOfClass(@Query('classIri') classIri: string): Observable<SparqlResponse> {
 		return this.genericOdpService.getAllIndividualsOfClass(classIri);
 	}
-	@Get('all-op-for-ind-dom')
-	getAllObjectPropertiesForDomainIndividual(@Query('classIri') individualIri: string): Observable<SparqlResponse> {
+	@Get('op-for-dom-ind')
+	getAllObjectPropertiesForDomainIndividual(@Query('individualIri') individualIri: string): Observable<SparqlResponse> {
 		return this.genericOdpService.getAllObjectPropertiesForDomainIndividual(individualIri);
 	}
+	@Get('rng-ind-for-op')
+	getAllRangeIndividualsForObjectProperty(@Query('objectPropertyIri') objectPropertyIri: string): Observable<SparqlResponse> {
+		return this.genericOdpService.getAllRangeIndividualsForObjectProperty(objectPropertyIri);
+	}
+
+	// post route to create triple
+	//
 
 }

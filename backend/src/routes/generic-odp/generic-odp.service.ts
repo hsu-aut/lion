@@ -13,7 +13,7 @@ export class GenericOdpService {
 	){}
 
 	// get routes
-	// TODO figure out if grap has to be specified with SELECT x FROM <http://lionFacts> WHERE y
+	// TODO figure out if graph has to be specified with SELECT x FROM <http://lionFacts> WHERE y
     public getAllClasses(): Observable<SparqlResponse> {
         return this.sparqlService.query(`
 			PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -40,7 +40,29 @@ export class GenericOdpService {
 			SELECT ?individual
 			WHERE {
 				?individual a <${classIri}> .
+                ?individual a owl:NamedIndividual .
 			}
+        `);
+    }
+    public getAllIndividuals(): Observable<SparqlResponse> {
+        return this.sparqlService.query(`
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>	
+            SELECT ?individual
+            WHERE {
+                ?individual a owl:NamedIndividual .
+            }
+        `);
+    }
+    public getAllRangeIndividualsForObjectProperty(objectPropertyIri: string): Observable<SparqlResponse> {
+        return this.sparqlService.query(`
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>	
+            SELECT ?individual
+            WHERE {
+                <${objectPropertyIri}> rdfs:range ?rdf_type_of_object .
+                ?individual a ?rdf_type_of_object .
+                ?individual a owl:NamedIndividual .
+            }
         `);
     }
 
