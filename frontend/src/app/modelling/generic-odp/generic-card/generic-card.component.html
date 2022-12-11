@@ -1,18 +1,22 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
     <!-- header and general controls  -->
-    <div class="row">
-        <div class="col">
-            <h5 class="card-header">{{config.title}}</h5>
-        </div>
-        <div class="col">
-            <button class="btn btn-outline-danger" 
+    <h5 class="card-header" style="vertical-align: middle;">
+        <div style="float: left;">{{config.title}}</div>
+        <div style="float: right;">
+            <button class="btn btn-outline-danger btn-sm" 
                 (click)="removeCard()">
                 Remove card
             </button>
+            <button class="btn btn-outline-secondary btn-sm" 
+                >
+                Hide Controls
+            </button>
         </div>
-    </div>
+    </h5>
     <!-- specific content -->
     <div class="card-body">
+        <p class="card-text"> some description that can be can be changed </p>
+        <hr/>
         <ng-template genericCardContent></ng-template>
     </div>
 </div>
