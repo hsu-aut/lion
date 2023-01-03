@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { GenericCardContentComponent } from '../generic-card-content.component';
 import { CreateSimpleIndividualComponent } from './create-simple-individual/create-simple-individual.component';
 import { CreateSimpleObjectPropertyComponent } from './create-simple-object-property/create-simple-object-property.component';
-import { GenericCardConfig } from './generic-card-config.interface';
+import { GenericCardConfig } from '../../generic-odp-config.interface';
 
 @Injectable()
 export class GenericCardImplementationsService {
