@@ -1,14 +1,22 @@
 <!-- header card with general info, instructions and controls -->
-<app-header-card></app-header-card>
+<app-header-card
+    [title]="config.title"
+    [descriptionText]="config.descriptionText"
+    [editMode]="editMode"
+    (onToggleEditMode)="toggleEditMode()">
+</app-header-card>
 
 <!-- multiple configurable generic odp cards  -->
 <app-generic-card 
-    *ngFor="let config of configs"
+    *ngFor="let config of config.cardConfigs"
     [config]="config"
+    [editMode]="editMode"
     (onRemoveCard)="removeCard($event)"
+    (onMoveCardDown)="moveCardDown($event)"
+    (onMoveCardUp)="moveCardUp($event)"
 ></app-generic-card>
 
 <!-- controls to add a new card at the bottom -->
-<app-new-card
+<app-new-card *ngIf="editMode"
     (onNewCard)="newCard($event)">
 ></app-new-card>

@@ -1,23 +1,53 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-    <h5 class="card-header">Generic ODP Template</h5>
-    <div class="card-body">
-        <div class="row">
-            <div class="col">
-                <h5 class="card-title">How to use</h5>
-                <p class="card-text">Click on the Add new card button below</p>
+
+    <div class="row align-items-center">
+
+        <div class="col">
+
+            <!-- header -->
+            <h5 class="card-header" *ngIf="!editMode">{{title}}</h5>
+            <div class="card-header" *ngIf="editMode">
+                <input class="form-control" type="text" 
+                value={{title}}
+                (change)="title = $event.target.value">
             </div>
-            <div class="col">
-                <h5 class="card-title">Controls</h5>
-                <button class="btn btn-outline-success">
-                    A
-                </button>
-                <button class="btn btn-outline-warning">
-                    B
-                </button>
-                <button class="btn btn-outline-danger">
-                    C
-                </button>
+
+            <!-- body -->
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div *ngIf="!editMode">
+                            <p class="card-text" style="white-space: pre;">{{descriptionText}}</p>
+                        </div>
+                        <div *ngIf="editMode">
+                            <textarea class="form-control" rows="3" (change)="descriptionText = $event.target.value">{{descriptionText}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-auto">
+                        <button *ngIf="!editMode" class="btn btn-outline-secondary" (click)="toggleEditMode()"><i class="fa fa-wrench"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- controls, only shown in edit mode -->
+        <div class="col-md-auto" *ngIf="editMode">
+            <div class="card-body">
+                <div class="btn-group-vertical gap-3" >
+                    <div class="btn-group-vertical w-100">
+                        <button class="btn btn-outline-secondary" (click)="toggleEditMode()"><i class="fa fa-wrench"></i></button>
+                    </div>
+                    <div class="btn-group-vertical w-100">
+                        <button class="btn btn-success">A</button>
+                        <button class="btn btn-warning">B</button>
+                        <button class="btn btn-danger">C</button>
+                    </div>
+                </div>    
             </div>
         </div>
-    </div>  
+        
+    </div>
+
 </div>
+
