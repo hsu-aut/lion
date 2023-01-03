@@ -1,22 +1,48 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-    <!-- header and general controls  -->
-    <h5 class="card-header" style="vertical-align: middle;">
-        <div style="float: left;">{{config.title}}</div>
-        <div style="float: right;">
-            <button class="btn btn-outline-danger btn-sm" 
-                (click)="removeCard()">
-                Remove card
-            </button>
-            <button class="btn btn-outline-secondary btn-sm" 
-                >
-                Hide Controls
-            </button>
+
+    <div class="row align-items-center">
+
+        <div class="col">
+
+            <!-- header -->
+            <h5 class="card-header" *ngIf="!editMode">{{config.title}}</h5>
+            <div class="card-header" *ngIf="editMode">
+                <input class="form-control" type="text" 
+                    value={{config.title}}
+                    (change)="config.title = $event.target.value">
+            </div>
+
+            <!-- body -->
+            <div class="card-body">
+                <!-- generic body -->
+                <div *ngIf="!editMode">
+                    <p class="card-text" style="white-space: pre;">{{config.descriptionText}}</p>
+                </div>
+                <div *ngIf="editMode">
+                    <textarea class="form-control" rows="3" (change)="config.descriptionText = $event.target.value">{{config.descriptionText}}</textarea>
+                </div>
+                <hr/>
+                <!-- specific body -->
+                <ng-template genericCardContent></ng-template>
+            </div>
+
         </div>
-    </h5>
-    <!-- specific content -->
-    <div class="card-body">
-        <p class="card-text"> some description that can be can be changed </p>
-        <hr/>
-        <ng-template genericCardContent></ng-template>
+
+        <!-- controls, only shown in edit mode -->
+        <div class="col-md-auto" *ngIf="editMode">
+            <div class="card-body">
+                <div class="btn-group-vertical gap-3" >
+                    <div class="btn-group-vertical w-100">
+                        <button class="btn btn-block btn-outline-primary" (click)="moveCardUp()"><i class="fas fa-angle-up"></i></button>
+                        <button class="btn btn-block btn-outline-primary" (click)="moveCardDown()"><i class="fas fa-angle-down"></i></button>
+                    </div>
+                    <div class="btn-group-vertical w-100">
+                        <button class="btn btn-block btn-outline-danger" (click)="removeCard()"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        
     </div>
+
 </div>
