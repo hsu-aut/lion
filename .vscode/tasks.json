@@ -1,0 +1,41 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "frontend",
+            "type": "shell",
+            "command": "npm run start:dev",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "options": {
+                "cwd": "frontend"
+            }
+        },
+        {
+            "label": "backend",
+            "type": "shell",
+            "command": "npm run start:dev",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "options": {
+                "cwd": "backend"
+            }
+        },
+        {
+            "label": "0 - frontend and backend",
+            "dependsOn": [
+                "frontend",
+                "backend"
+            ],
+            "problemMatcher": []
+        }
+    ]
+  }
