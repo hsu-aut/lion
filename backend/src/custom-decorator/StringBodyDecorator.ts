@@ -5,21 +5,13 @@ import { createParamDecorator, ExecutionContext, BadRequestException } from '@ne
 
 
 export const StringBody = createParamDecorator(async (_, context: ExecutionContext) => {
-
 	const req = context.switchToHttp().getRequest<import("express").Request>();
 
 	if (!req.readable) {
-
 		console.log("Invalid Body");
-
 		throw new BadRequestException("Invalid body");
-
 	}
 
-
-
 	const body = (await rawbody(req)).toString("utf8").trim();
-
 	return body;
-
 });
