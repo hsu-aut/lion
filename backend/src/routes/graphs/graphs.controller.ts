@@ -12,17 +12,20 @@ import { GraphUpdate } from '../../models/graphs/GraphUpdate';
 export class GraphsController {
 	constructor(private readonly graphService: GraphOperationService) { }
 
+	// TODO: these two get('') are pretty bad
+	// /graphs should return all graphs
+	// something like /graphs?type=current should return current graph
+	// /graphs/:graphIri/triples should return all triples of one graph
+
+	// TODO: these two put('') are pretty bad
+	// something like PUT /graphs?type=current should set the current graph
+	// PUT /graphs/:graphIri/triples should set all triples of one graph
 
 	@Get('')
 	getCurrentGraph(@Query('type') type: string): string {
 		return this.graphService.getCurrentGraph();
 	}
-
-	@Put('')
-	setCurrentGraph(@Query('') type: string, @Body() graphUpdate: GraphUpdate): void {
-		this.graphService.setCurrentGraph(graphUpdate);
-	}
-
+	
 	/**
 	 * Get all triples of a named graph
 	 * @param graphName Name of the graph to get all triples from
@@ -33,6 +36,12 @@ export class GraphsController {
 	getTriplesOfNamedGraph(@Query('graph') graph: string, @Headers('accept') format: string): Observable<AxiosResponse<string>> {
 		return this.graphService.getAllTriples(decodeURIComponent(graph), format).pipe(map((data: AxiosResponse) => { return data.data;}));
 	}
+	
+	@Put('')
+	setCurrentGraph(@Query('') type: string, @Body() graphUpdate: GraphUpdate): void {
+		this.graphService.setCurrentGraph(graphUpdate);
+	}
+
 
 	/**
 	 * Sets the given triples to a graph overwriting (!) the current contents
