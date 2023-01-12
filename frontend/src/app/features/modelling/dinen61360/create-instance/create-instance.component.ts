@@ -8,9 +8,9 @@ import { Vdi3682ModelService } from '../../rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../rdf-models/vdi2206Model.service';
 import { Iso22400_2ModelService } from '../../rdf-models/iso22400_2Model.service';
 
-import { PrefixesService } from '../../../shared/services/prefixes.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
 
-import { MessagesService } from '../../../shared/services/messages.service';
+import { MessagesService } from '@shared-services/messages.service';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -22,7 +22,7 @@ import { take } from 'rxjs/operators';
 export class CreateInstanceComponent implements OnInit {
   @Output("onUpdate") onUpdate = new EventEmitter<void>();
 
-  /** 
+  /**
    * model variables without type variables
    */
   private modelVariables: DINEN61360Variables = {
@@ -51,7 +51,7 @@ export class CreateInstanceComponent implements OnInit {
   // filter option
   public filterOption: boolean = true;
 
-  // tables 
+  // tables
   public allInstances: Array<Record<string, any>> = [];
   public allTypes: Array<Record<string, any>> = [];
 
@@ -82,7 +82,7 @@ export class CreateInstanceComponent implements OnInit {
     private messageService: MessagesService,
     private vdi2206Service: Vdi2206ModelService,
     private isoService: Iso22400_2ModelService,
-  ) { 
+  ) {
 
   }
 
@@ -118,7 +118,7 @@ export class CreateInstanceComponent implements OnInit {
   /**
    * create a triple or download the equivalent sparql update strong
    * @param action
-   * @param form 
+   * @param form
    */
   public createTriple(action: string, form: any): void {
     if (form.valid) {
@@ -145,7 +145,7 @@ export class CreateInstanceComponent implements OnInit {
 
   /**
    * transfer data from type table to form
-   * @param row 
+   * @param row
    */
   public typeTableClick(row: any): void  {
     this.instanceDescriptionForm.controls['code'].setValue(row.code);
@@ -153,7 +153,7 @@ export class CreateInstanceComponent implements OnInit {
 
   /**
    * transfer data from other tables to form
-   * @param name 
+   * @param name
    */
   public anyTableClick(name: string): void  {
     this.instanceDescriptionForm.controls['individual'].setValue(name);

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { PrefixesService } from '../../../shared/services/prefixes.service';
-import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
-import { DownloadService } from '../../../shared/services/backEnd/download.service';
-import { MessagesService } from '../../../shared/services/messages.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { DownloadService } from '@shared-services/backEnd/download.service';
+import { MessagesService } from '@shared-services/messages.service';
 import { take } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSparqlTable, toSparqlVariableList } from '../utils/rxjs-custom-operators';

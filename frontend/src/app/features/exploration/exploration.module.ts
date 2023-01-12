@@ -12,7 +12,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { AboxExplorerComponent } from './abox-explorer/abox-explorer.component';
 
 // util modules
-import { TableModule } from '../shared/modules/table/table.module';
+import { TableModule } from '../../shared/modules/table/table.module';
 import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({

@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
-import { MessagesService } from '../../shared/services/messages.service';
+import { ConfigurationService } from '@shared-services/backEnd/configuration.service';
+import { MessagesService } from '@shared-services/messages.service';
 
 import { Vdi2206ModelService } from '../../modelling/rdf-models/vdi2206Model.service';
 
@@ -76,10 +76,10 @@ export class StepServiceService {
           fileName: fileName,
           repositoryName: this.config.getRepository()
       };
-    
+
 
       const headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
-    
+
 
 
       const insertObservable = new Observable((observer) => {

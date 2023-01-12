@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Observable, take } from "rxjs";
-import { MessagesService } from "../../../../shared/services/messages.service";
-import { PrefixesService } from "../../../../shared/services/prefixes.service";
+import { MessagesService } from "@shared-services/messages.service";
+import { PrefixesService } from "@shared-services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";

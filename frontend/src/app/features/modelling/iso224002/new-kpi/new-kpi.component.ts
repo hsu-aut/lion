@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MessagesService } from '../../../shared/services/messages.service';
-import { PrefixesService } from '../../../shared/services/prefixes.service';
+import { MessagesService } from '@shared-services/messages.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
 import { ISO224002Variables, Iso22400_2ModelService } from '../../rdf-models/iso22400_2Model.service';
 import { take } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ export class NewKpiComponent implements OnInit {
 
   //
   @Input() entityName: string;
-  
+
   //
   @Output("onNewTriple") onNewTriple = new EventEmitter<void>();
 
@@ -62,7 +62,7 @@ export class NewKpiComponent implements OnInit {
       // only update once
       if (this.updateBoolean) { this.getDropwDownInfo(); }
     }
-    // updates entity name in form when input variabel entityName is changed 
+    // updates entity name in form when input variabel entityName is changed
     if (changes['entityName']) {
       this.KPIForm.controls['entity'].setValue(this.entityName);
     }
@@ -105,7 +105,7 @@ export class NewKpiComponent implements OnInit {
 
   /**
    * TODO
-   * @param selectedKPIGroup 
+   * @param selectedKPIGroup
    */
   public loadClassesKPI(selectedKPIGroup) {
     if (selectedKPIGroup) {

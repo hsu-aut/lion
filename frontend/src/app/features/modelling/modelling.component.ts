@@ -1,21 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-modelling',
     templateUrl: './modelling.component.html',
     styleUrls: ['./modelling.component.scss']
 })
-export class ModellingComponent implements OnInit {
+export class ModellingComponent {
 
-  collapedSideBar: boolean;
+    collapedSideBar: boolean;
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  receiveCollapsed($event) {
-      this.collapedSideBar = $event;
-  }
+    receiveCollapsed($event): void {
+        this.collapedSideBar = $event;
+    }
 
 }

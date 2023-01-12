@@ -4,9 +4,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { ConfigurationService } from '../../shared/services/backEnd/configuration.service';
-import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
-import { MessagesService } from '../../shared/services/messages.service';
+import { ConfigurationService } from '@shared-services/backEnd/configuration.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { MessagesService } from '@shared-services/messages.service';
 
 import { Vdi3682ModelService } from '../../modelling/rdf-models/vdi3682Model.service';
 

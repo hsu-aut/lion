@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { QueriesService } from '../../shared/services/backEnd/queries.service';
+import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { take } from 'rxjs/operators';
 
-import { DataLoaderService } from '../../shared/services/dataLoader.service';
-import { PrefixesService } from '../../shared/services/prefixes.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
 
 @Component({
     selector: 'app-query-editor',
@@ -15,7 +15,7 @@ export class QueryEditorComponent implements OnInit {
 
 
     userQuery =
-        `select * where { 
+        `select * where {
     ?s ?p ?o .
   }limit 100`;
     queryResult: Array<Record<string, any>> = [];

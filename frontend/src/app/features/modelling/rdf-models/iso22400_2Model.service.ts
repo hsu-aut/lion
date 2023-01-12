@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PrefixesService } from '../../shared/services/prefixes.service';
-import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
-import { DownloadService } from '../../shared/services/backEnd/download.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { DownloadService } from '@shared-services/backEnd/download.service';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ISO224002ElementVariables, ISO224002KPIVariables } from '@shared/models/iso224002-variables.interface';

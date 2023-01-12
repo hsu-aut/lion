@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
-import { DownloadService } from '../../shared/services/backEnd/download.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { DownloadService } from '@shared-services/backEnd/download.service';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';

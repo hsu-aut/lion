@@ -11,9 +11,9 @@ import { ModellingRoutingModule } from './modelling-routing.module';
 //  child imports
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { Vdi2206Component } from './vdi2206/vdi2206.component';
+import { TableModule } from '../../shared/modules/table/table.module';
 
 // util components
-import { TableModule } from '../shared/modules/table/table.module';
 
 
 @NgModule({

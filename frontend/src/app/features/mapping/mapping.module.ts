@@ -17,11 +17,11 @@ import { FpbComponent } from './fpb/fpb.component';
 import { FpbStepComponent } from './connectors/fpb-step/fpb-step.component';
 
 // util modules
-import { UploadModule } from '../shared/modules/upload/upload.module';
-import { TableModule } from '../shared/modules/table/table.module';
 import { OpcVDI2206ConnectorComponent } from './connectors/opc-vdi2206/opc-vdi2206-connector.component';
 import { Opc61360ConnectorComponent } from './connectors/opc-61360/opc-61360-connector.component';
 import { OpcFpdConnectorComponent } from './connectors/opc-fpb/opc-fpb-connector.component';
+import { UploadModule } from '../../shared/modules/upload/upload.module';
+import { TableModule } from '../../shared/modules/table/table.module';
 
 @NgModule({
     imports: [

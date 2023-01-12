@@ -4,13 +4,13 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TableModule } from "../../../shared/modules/table/table.module";
 import { BaseResourceComponent } from "./base-resource/base-resource.component";
 import { OntoHelperModalComponent } from "./helper-modal/onto-helper-modal.component";
+import { ParameterComponent } from "./parameter/parameter.component";
+import { RepresentationComponent } from "./representation/representation.component";
 import { RequestComponent } from "./request/request.component";
-import { ResponseComponent } from "./response/response.component";
 import { ResourceComponent } from "./resource/resource.component";
+import { ResponseComponent } from "./response/response.component";
 import { WadlRoutingModule } from "./wadl-routing.module";
 import { WadlComponent } from "./wadl.component";
-import { RepresentationComponent } from "./representation/representation.component";
-import { ParameterComponent } from "./parameter/parameter.component";
 
 @NgModule({
     imports: [

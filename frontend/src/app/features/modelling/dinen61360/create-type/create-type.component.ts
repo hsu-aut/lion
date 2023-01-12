@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { DINEN61360Variables } from '@shared/models/dinen61360-variables.interface';
-import { EclassService } from '../../../shared/services/backEnd/eclass.service';
-import { MessagesService } from '../../../shared/services/messages.service';
-import { PrefixesService } from '../../../shared/services/prefixes.service';
+import { EclassService } from '@shared-services/backEnd/eclass.service';
+import { MessagesService } from '@shared-services/messages.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
 import { Dinen61360Service } from '../../rdf-models/dinen61360Model.service';
 import { take } from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 export class CreateTypeComponent implements OnInit {
   @Output("onUpdate") onUpdate = new EventEmitter<void>();
 
-  /** 
+  /**
    * model variables without type variables
    */
   private modelVariables: DINEN61360Variables = {
@@ -30,7 +30,7 @@ export class CreateTypeComponent implements OnInit {
       definition: undefined,
       dataTypeIRI: undefined,
       unitOfMeasure: undefined
-    },  
+    },
     instanceVariables: undefined
   }
 
@@ -57,8 +57,8 @@ export class CreateTypeComponent implements OnInit {
 
   // filter option
   public filterOption: boolean = true;
-  
-  // tables 
+
+  // tables
   allTypes: Array<Record<string, any>> = [];
 
   // dropdowns
@@ -81,8 +81,8 @@ export class CreateTypeComponent implements OnInit {
 
   /**
    * create new triples in graph bd / download equivalent sparql update string
-   * @param action 
-   * @param form 
+   * @param action
+   * @param form
    */
   public createTriple(action: string, form) {
     if (form.valid) {
@@ -118,8 +118,8 @@ export class CreateTypeComponent implements OnInit {
   }
 
   /**
-   * transfer data from existing type table to form 
-   * @param row 
+   * transfer data from existing type table to form
+   * @param row
    */
   public typeTableClick(row): void {
     this.typeDescriptionForm.controls['code'].setValue(row.code);
@@ -134,7 +134,7 @@ export class CreateTypeComponent implements OnInit {
 
   /**
    * transfer data from eclass table to form
-   * @param row 
+   * @param row
    */
   public eclassTableClick(row): void {
     this.typeDescriptionForm.controls['code'].setValue(row.code);
@@ -161,8 +161,8 @@ export class CreateTypeComponent implements OnInit {
 
   /**
    * trigger search in eclass db / on eclass webservice
-   * @param searchForm 
-   * @param via 
+   * @param searchForm
+   * @param via
    */
   public eclassSearch(searchForm: FormGroup, via: string): void {
     this.eclass.getPropertyList(searchForm.controls['searchTerm'].value, via).pipe(take(1)).subscribe((rawlist: any) => {

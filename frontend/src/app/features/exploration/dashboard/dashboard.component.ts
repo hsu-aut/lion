@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { PrefixesService } from '../../shared/services/prefixes.service';
-import { QueriesService } from '../../shared/services/backEnd/queries.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
+import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { Vdi3682ModelService } from '../../modelling/rdf-models/vdi3682Model.service';
 import { Vdi2206ModelService } from '../../modelling/rdf-models/vdi2206Model.service';
 import { Dinen61360Service } from '../../modelling/rdf-models/dinen61360Model.service';
 import { Isa88ModelService } from '../../modelling/rdf-models/isa88Model.service';
 import { WadlModelService } from '../../modelling/rdf-models/wadlModel.service';
 
-import { DashboardService } from '../../shared/services/dashboard.service';
+import { DashboardService } from '@shared-services/dashboard.service';
 
-import { DataLoaderService } from '../../shared/services/dataLoader.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
 
 import { take } from 'rxjs/operators';
 import { toSparqlTable } from '../../modelling/utils/rxjs-custom-operators';

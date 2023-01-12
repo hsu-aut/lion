@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
 import { FpbStepService } from './fpb-step.service';
-import { DataLoaderService } from '../../../shared/services/dataLoader.service';
-import { MessagesService } from '../../../shared/services/messages.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
+import { MessagesService } from '@shared-services/messages.service';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -67,7 +67,7 @@ export class FpbStepComponent implements OnInit {
               subject: form.controls['subject'].value,
               object: form.controls['object'].value
           };
-      
+
           this.dataService.modifyTripel(variables, action).pipe(take(1)).subscribe((data: any) => {
               this.loadingScreenService.stopLoading();
               this.loadOverview();

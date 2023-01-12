@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, take } from 'rxjs';
-import { SparqlResponse } from '../../../../models/sparql/SparqlResponse';
-import { PrefixesService } from '../../shared/services/prefixes.service';
+import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
+import { PrefixesService } from '@shared-services/prefixes.service';
 import { toSparqlVariableList } from '../utils/rxjs-custom-operators';
 
 /**
