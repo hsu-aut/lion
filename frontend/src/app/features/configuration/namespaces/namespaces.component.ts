@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 
-import { PrefixesService, Prefix } from '../../shared/services/prefixes.service';
-import { MessagesService } from '../../shared/services/messages.service';
+import { PrefixesService, Prefix } from '@shared-services/prefixes.service';
+import { MessagesService } from '@shared-services/messages.service';
 
 @Component({
     selector: 'app-namespaces',

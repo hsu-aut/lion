@@ -7,25 +7,25 @@ import { NewSimpleElementComponent } from './new-simple-element/new-simple-eleme
 import { NewKpiComponent } from './new-kpi/new-kpi.component';
 import { ExistingDataComponent } from './existing-data/existing-data.component';
 import { HelperModalComponent } from './helper-modal/helper-modal.component';
-import { StatsTableModule } from '../../shared/modules/stats-table/stats-table.module';
-import { TableModule } from '../../shared/modules/table/table.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { StatsTableModule } from '../../../shared/modules/stats-table/stats-table.module';
+import { TableModule } from '../../../shared/modules/table/table.module';
 
 
 @NgModule({
-  declarations: [
-    Iso224002Component,
-    NewSimpleElementComponent,
-    NewKpiComponent,
-    ExistingDataComponent,
-    HelperModalComponent,
-  ],
-  imports: [
-    CommonModule,
-    Iso224002RoutingModule,
-    StatsTableModule,
-    TableModule,
-    ReactiveFormsModule
-  ]
+    declarations: [
+        Iso224002Component,
+        NewSimpleElementComponent,
+        NewKpiComponent,
+        ExistingDataComponent,
+        HelperModalComponent,
+    ],
+    imports: [
+        CommonModule,
+        Iso224002RoutingModule,
+        StatsTableModule,
+        TableModule,
+        ReactiveFormsModule
+    ]
 })
 export class Iso224002Module { }

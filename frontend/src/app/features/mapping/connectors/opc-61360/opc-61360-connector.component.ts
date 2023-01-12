@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Vdi2206ModelService } from 'src/app/modelling/rdf-models/vdi2206Model.service';
 import { take } from 'rxjs/operators';
-import { DataLoaderService } from 'src/app/shared/services/dataLoader.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { QueriesService } from 'src/app/shared/services/backEnd/queries.service';
+import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { OpcService } from '../opc-vdi2206/opc.service';
-import { Dinen61360Service } from 'src/app/modelling/rdf-models/dinen61360Model.service';
-import { MessagesService } from 'src/app/shared/services/messages.service';
+import { Dinen61360Service } from '../../../modelling/rdf-models/dinen61360Model.service';
+import { MessagesService } from '@shared-services/messages.service';
 
 @Component({
     selector: 'opc-61360-connector',
@@ -43,8 +42,8 @@ export class Opc61360ConnectorComponent implements OnInit {
 
 
     ngOnInit() {
-        
-        // exchanged with new method which fires request to backend: 
+
+        // exchanged with new method which fires request to backend:
         this.dinEn61360Service.getTableOfAllInstanceInfo().pipe(take(1)).subscribe((data: any) => this.instanceDescriptionTable  =  data);
         // old code
         // this.dinEn61360Service.loadTABLE_ALL_INSTANCE_INFO().pipe(take(1)).subscribe((data: []) => {

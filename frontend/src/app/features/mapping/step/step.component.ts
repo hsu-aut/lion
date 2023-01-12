@@ -3,7 +3,7 @@ import { StepServiceService } from './step-service.service';
 import { take } from 'rxjs/operators';
 
 import { FpbStepService } from '../connectors/fpb-step/fpb-step.service';
-import { MessagesService } from '../../shared/services/messages.service';
+import { MessagesService } from '@shared-services/messages.service';
 
 @Component({
     selector: 'app-step',

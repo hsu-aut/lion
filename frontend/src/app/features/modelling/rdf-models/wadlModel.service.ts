@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { QueriesService } from '../../../shared/services/backEnd/queries.service';
-import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
-import { DownloadService } from '../../../shared/services/backEnd/download.service';
+import { QueriesService } from '@shared-services/backEnd/queries.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { DownloadService } from '@shared-services/backEnd/download.service';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';

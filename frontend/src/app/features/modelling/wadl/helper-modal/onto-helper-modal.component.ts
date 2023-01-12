@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { TypeChangedEvent, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
-import { PrefixesService, Prefix } from "../../../../shared/services/prefixes.service";
+import { PrefixesService, Prefix } from "@shared-services/prefixes.service";
 import { TboxService } from "../../rdf-models/tbox.service";
 
 @Component({

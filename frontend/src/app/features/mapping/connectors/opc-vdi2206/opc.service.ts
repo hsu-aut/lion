@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { QueriesService } from 'src/app/shared/services/backEnd/queries.service';
-import { take } from 'rxjs/operators';
-import { PrefixesService } from 'src/app/shared/services/prefixes.service';
-import { GraphOperationsService } from 'src/app/shared/services/backEnd/graphOperations.service';
+import { QueriesService } from '@shared-services/backEnd/queries.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 
 @Injectable({
     providedIn: 'root'

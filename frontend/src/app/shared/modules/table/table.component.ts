@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { Tables } from '../../../modelling/utils/tables';
+import { Tables } from '../../../features/modelling/utils/tables';
 
 @Component({
     selector: 'app-table',
@@ -32,11 +32,6 @@ export class TableComponent {
     originalTableArray: Array<Record<string, any>> = [];
     filteredElements: Array<Record<string, any>> = [];
 
-
-    // TODO: This variable was used in .html but missing here and lead to problems with stricter template checks
-    // What's its purpose?
-
-    constructor() {}
 
 
     // TODO: Check what this is actually used for

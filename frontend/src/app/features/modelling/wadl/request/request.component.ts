@@ -8,7 +8,7 @@ import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
 import { WadlCreateRequestDto, WadlRequest } from "@shared/models/odps/wadl/WadlRequest";
-import { MessagesService } from "../../../../shared/services/messages.service";
+import { MessagesService } from "@shared-services/messages.service";
 import { plainToClass } from "class-transformer";
 
 @Component({

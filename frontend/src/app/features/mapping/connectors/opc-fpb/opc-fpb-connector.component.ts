@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Vdi2206ModelService } from 'src/app/modelling/rdf-models/vdi2206Model.service';
 import { take } from 'rxjs/operators';
-import { DataLoaderService } from 'src/app/shared/services/dataLoader.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
 import { OpcService } from '../opc.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { QueriesService } from 'src/app/shared/services/backEnd/queries.service';
-import { combineLatest } from 'rxjs';
-import { MessagesService } from 'src/app/shared/services/messages.service';
-import { Vdi3682ModelService } from 'src/app/modelling/rdf-models/vdi3682Model.service';
+import { MessagesService } from '@shared-services/messages.service';
+import { Vdi3682ModelService } from '../../../modelling/rdf-models/vdi3682Model.service';
 
 @Component({
     selector: 'opc-fpb-connector',

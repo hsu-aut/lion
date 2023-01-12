@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { QueriesService } from '../../shared/services/backEnd/queries.service';
+import { QueriesService } from '@shared-services/backEnd/queries.service';
 
 /**
  * A service allowing basic interaction on the basis of triples (such as adding or deleting triples)

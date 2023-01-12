@@ -4,9 +4,9 @@ import { Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
 
 import { DataDescription, FormatDescription } from '../../modelling/utils/formats';
-import { MessagesService } from '../../shared/services/messages.service';
+import { MessagesService } from '@shared-services/messages.service';
 
-import { GraphOperationsService } from '../../shared/services/backEnd/graphOperations.service';
+import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 
 
 @Component({

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { take } from 'rxjs';
-import { MessagesService } from '../../../../shared/services/messages.service';
-import { PrefixesService } from '../../../../shared/services/prefixes.service';
+import { MessagesService } from '@shared-services/messages.service';
+import { PrefixesService } from '@shared-services/prefixes.service';
 import { Triple } from '../../rdf-models/triple.service';
 import { Vdi3682ModelService } from '../../rdf-models/vdi3682Model.service';
 import { cValFns } from '../../utils/validators';

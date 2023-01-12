@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
-import { PrefixesService } from "../../../../shared/services/prefixes.service";
+import { PrefixesService } from "@shared-services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { WadlCreateResponseDto, WadlResponse } from "@shared/models/odps/wadl/WadlResponse";
 import { cValFns } from "../../utils/validators";
@@ -9,7 +9,7 @@ import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
 import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
-import { MessagesService } from "../../../../shared/services/messages.service";
+import { MessagesService } from "@shared-services/messages.service";
 import { plainToClass } from "class-transformer";
 
 @Component({

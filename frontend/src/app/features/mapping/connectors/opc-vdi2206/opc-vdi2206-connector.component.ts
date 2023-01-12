@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Vdi2206ModelService } from 'src/app/modelling/rdf-models/vdi2206Model.service';
 import { take } from 'rxjs/operators';
-import { DataLoaderService } from 'src/app/shared/services/dataLoader.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
 import { OpcService } from './opc.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { QueriesService } from 'src/app/shared/services/backEnd/queries.service';
-import { combineLatest } from 'rxjs';
-import { MessagesService } from 'src/app/shared/services/messages.service';
+import { MessagesService } from '@shared-services/messages.service';
+import { Vdi2206ModelService } from '../../../modelling/rdf-models/vdi2206Model.service';
 
 @Component({
     selector: 'opc-vdi2206-connector',
@@ -17,13 +15,13 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
 
     // table var
     systemModuleTable = [{}];
-    systemModuleTableSubTitle: string = "VDI 2206 Systems and Components";
-    filterOption: boolean = true;
+    systemModuleTableSubTitle = "VDI 2206 Systems and Components";
+    filterOption = true;
 
     opcUaServerTable = [];
-    opcUaServerSubtitle: string = "OPC UA Servers";
+    opcUaServerSubtitle = "OPC UA Servers";
 
-    overviewSubTitle: string = "Connected individuals";
+    overviewSubTitle = "Connected individuals";
     overviewTable = [];
 
     // connection form
@@ -46,7 +44,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
         this.vdi2206Service.loadTABLE_OF_SYSTEMS_AND_MODULES().pipe(take(1)).subscribe(data => {
             this.systemModuleTable = data;
             this.loadingScreenService.stopLoading();
-        })
+        });
 
         this.opcService.loadAllOpcUaServers().pipe(take(1)).subscribe((servers: [{}]) => {
             this.loadingScreenService.stopLoading();
@@ -89,10 +87,10 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
             this.opcService.createOpcVdi2206Connection(systemOrModule, opcUaServer).pipe(take(1)).subscribe(data => {
                 this.loadingScreenService.stopLoading();
                 this.loadExistingConnections();
-            })
+            });
 
         } else if (form.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...')
+            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
         }
     }
 
@@ -102,7 +100,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
     loadExistingConnections() {
         this.opcService.loadServerAndVdi2206Connections().pipe(take(1)).subscribe((data: []) => {
             this.overviewTable = data;
-        })
+        });
     }
 
 }
