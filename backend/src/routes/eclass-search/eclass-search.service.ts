@@ -57,8 +57,8 @@ export class EclassSearchService {
 			const queryString =
 				`SELECT p.Identifier, p.VersionNumber, p.RevisionNumber, p.PreferredName, \
 				p.Definition, p.ShortName, p.DataType, u.ShortName as unitShortName
-      			FROM eclass11_1_pr_de AS p
-      			LEFT OUTER JOIN eclass11_1_un_de AS u 
+      			FROM eclass_pr AS p
+      			LEFT OUTER JOIN eclass_un AS u 
 				ON p.IrdiUN = u.IrdiUN
       			WHERE p.PreferredName LIKE '%${propName}%'`;
 			
@@ -106,7 +106,7 @@ export class EclassSearchService {
 				},
 				//still testing - todo: find solution for certificate handling
 				httpsAgent: new Agent({
-					pfx: readFileSync("./certificates/35-HSU_Webservice.full.pfx"),
+					pfx: readFileSync("./certificates/eclass-webservice.pfx"),
 				}),
 			};
 		} catch (err) {

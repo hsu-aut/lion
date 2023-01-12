@@ -45,15 +45,27 @@ In order to run LiOnS, you must have Node.js installed. Download it from https:/
 
 # Additional infos:
 
-## Setup custom ECLASS database
+## Setup ECLASS
 
-LiOnS enables an RDF Designer to model DIN EN 61360 properties in RDF with an eased interface. In order to use ecl@ss properties for this purpose in an efficient way, you will have to get a license for the ecl@ss database. Install a MySQL (see: `https://dev.mysql.com/downloads/installer/`) server and the MySQL Workbench (see: `https://www.mysql.com/products/workbench/`).
+LiOnS enables an RDF Designer to model DIN EN 61360 properties in RDF with an eased interface. ECLASS offers two options: Downloading full releases that can be hosted on your own SQL database or retrieving data from an webservice. Both options are supported by LiOnS and both options require some [license](https://eclass.eu/en/eclass-standard/licenses).
 
-Set up a database called `eclass_basic_9_1_properties`. Download the ecl@ss content from `https://www.eclassdownload.com/catalog/index.php`. Get the table `eclass9_1_pr_en` for properties and `eclass9_1_un_en` for units of measures. Import them in the database with the names above. The SQL data base configuration should be as follows:
+### Setup ECLASS Webservice
+
+In order to retrieve data from the ECLASS webservice, you need a valid certificate. Visit the [ECLASS website](https://eclass.eu/en/eclass-standard/licenses) to find out how to get one. The certificate file (for example `xx-xx_Webservice.full.pfx`) has to be renamed to `eclass-webservice.pfx` and be placed inside the folder `backend/certificates`. 
+
+### Setup CLASS MySQL database
+
+Download an [ECLASS release](https://eclass.eu/shop/en/my-downloads). You will need the properties and units table from a basic release. The filenames of those should look like this: `eClassxx_x_PR_xx.csv` and `eClassxx_x_UN_xx.csv`, depending on the release and the language. 
+
+Install [MySQL](https://dev.mysql.com/downloads/installer/). MySQL Server is the minimum, but additionally installing MySQL Workbench will make the setup easier.
+
+Set up a database called `eclass`. Create the tables `eclass_pr` for properties and `eclass_un` for units of measures from the `.csv` files you just downloaded. The SQL data base configuration should be as follows:
+
 ```
     "host": "127.0.0.1",
     "user": "root",
-    "password": "123456",
-    "database": "eclass_basic_9_1_properties"
+    "password": "root",
+    "database": "eclass"
 ```
-The IP `127.0.0.1` is equivalent to `localhost`. If you would like to change this, open the file `lion_backEnd/bin/databaseConfig.json` and fill in your options.
+
+You can change this by editing the file `backend/eclass-db-config.json`.
