@@ -10,6 +10,9 @@
             ],
             "@shared/*": [
                 "../shared/*"
+            ],
+            "@shared-services/*": [
+                "./src/app/shared/services/*"
             ]
         }
     },
