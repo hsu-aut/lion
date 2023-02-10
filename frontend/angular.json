@@ -31,6 +31,18 @@
                         ]
                     },
                     "configurations": {
+                        "development": {
+                            "optimization": false,
+                            "outputHashing": "none",
+                            "sourceMap": true,
+                            "namedChunks": false,
+                            "aot": true,
+                            "extractLicenses": false,
+                            "statsJson": false,
+                            "progress": true,
+                            "vendorChunk": true,
+                            "buildOptimizer": false
+                        },
                         "production": {
                             "fileReplacements": [
                                 {
@@ -41,7 +53,6 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
                             "aot": true,
                             "extractLicenses": true,
@@ -65,6 +76,9 @@
                     "configurations": {
                         "production": {
                             "browserTarget": "test-ng7:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "test-ng7:build:development"
                         }
                     }
                 },
