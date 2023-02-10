@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
-
+import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { RepositoryOperationsService } from '@shared-services/backEnd/repositoryOperations.service';
 import { MessagesService } from '@shared-services/messages.service';
 import { OdpInfo, OdpName } from '@shared/models/odps/odp';
@@ -23,15 +23,15 @@ export class RepositoryComponent implements OnInit {
     repoCount: number;
 
     // repository config
-    repositoryList: Array<string>;
-    activeRepository: string;
+    repositoryList: Array<RepositoryDto>;
+    activeRepository: RepositoryDto;
 
     // ODPs
     odpInfos = new Array<OdpInfo>();
     odpFormGroup = this.fb.group({});
 
     // forms
-    repositoryOption = this.fb.control('', Validators.required);
+    repositoryToChangeTo = this.fb.control(new RepositoryDto(), Validators.required);    // Selected repository in list
     repositoryCreate = this.fb.control('', Validators.required);
     repositoryClear = this.fb.control('', Validators.required);
     repositoryDelete = this.fb.control('', Validators.required);
@@ -43,20 +43,22 @@ export class RepositoryComponent implements OnInit {
         private fb: FormBuilder
     ) {}
 
-    ngOnInit() {
-        this.repoService.getWorkingRepository().pipe(take(1)).subscribe(data => this.activeRepository = data);
+    ngOnInit(): void {
+        this.repoService.getCurrentRepository().pipe(take(1)).subscribe(data => {
+            this.activeRepository = data;
+        });
         this.odpService.getAllOdps().pipe(take(1)).subscribe(odps => {
             this.odpInfos = odps;
             odps.forEach(odp => {
                 this.odpFormGroup.addControl(odp.name, new FormControl(odp.versions[0]));
             });
         });
-        this.getListOfRepos();
+        this.loadListOfRepos();
     }
 
 
-    getListOfRepos() {
-        this.repoService.getListOfRepositories().pipe(take(1)).subscribe((data: any) => {
+    loadListOfRepos(): void {
+        this.repoService.getListOfRepositories().pipe(take(1)).subscribe(data => {
             this.repositoryList = data;
             this.repoCount = this.repositoryList.length;
         });
@@ -66,14 +68,15 @@ export class RepositoryComponent implements OnInit {
      * Selects a repository to be the working repo
      * @param repositoryName Name of the repository to select
      */
-    setRepository(repositoryName: string): void {
-        if (this.repositoryOption.valid) {
-            console.log("setting repo");
-            this.repoService.setWorkingRepository(repositoryName).pipe(take(1)).subscribe();
-
-        } else if (this.repositoryOption.invalid) {
+    setRepository(): void {
+        if (this.repositoryToChangeTo.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
+        console.log(this.repositoryToChangeTo);
+
+        const repoIdToChangeTo = this.repositoryToChangeTo.value.id;
+        this.repoService.setWorkingRepository(repoIdToChangeTo).pipe(take(1)).subscribe(newRepo => this.activeRepository = newRepo);
     }
 
     /**
@@ -83,7 +86,7 @@ export class RepositoryComponent implements OnInit {
     createRepository(repositoryName: string): void {
         if (this.repositoryCreate.valid) {
             this.repoService.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-                this.getListOfRepos();
+                this.loadListOfRepos();
             });
         } else if (this.repositoryCreate.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
@@ -110,7 +113,7 @@ export class RepositoryComponent implements OnInit {
     deleteRepository(repositoryName: string): void {
         if (this.repositoryDelete.valid) {
             this.repoService.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-                this.getListOfRepos();
+                this.loadListOfRepos();
             });
         } else if (this.repositoryDelete.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
-
+import { map, Observable, take } from 'rxjs';
+import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { ConfigurationService } from './configuration.service';
-import { OdpName } from "@shared/models/odps/odp";
 import { MessagesService } from '../messages.service';
 
 
@@ -16,7 +14,6 @@ import { MessagesService } from '../messages.service';
     providedIn: 'root'
 })
 export class RepositoryOperationsService {
-    private repository: string;
 
     constructor(
         private http: HttpClient,
@@ -24,28 +21,36 @@ export class RepositoryOperationsService {
         private messageService: MessagesService
     ) {}
 
-    public getWorkingRepository(): Observable<string> {
-        const url = this.getRepositoryURL();
-        const params = {
-            type: "current"
-        };
-        return this.http.get<string>(url, {params: params});
-    }
-
-    public setWorkingRepository(repositoryName): Observable<void> {
-        const url = this.getRepositoryURL();
-        const repoData = {
-            repositoryName: repositoryName
-        };
-        const params = {
-            type: "current"
-        };
-        return this.http.put<void>(url, repoData, {params: params});
-    }
-
     private getRepositoryURL() {
         return this.config.getHost() + '/repositories';
     }
+
+    getListOfRepositories(): Observable<RepositoryDto[]> {
+        return this.http.get<RepositoryDto[]>(this.getRepositoryURL());
+    }
+
+    public getCurrentRepository(): Observable<RepositoryDto> {
+        const url = this.getRepositoryURL();
+        const params = {
+            type: "current"
+        };
+        return this.http.get<RepositoryDto[]>(url, {params: params}).pipe(map(repos => repos[0]));
+    }
+
+    public setWorkingRepository(repositoryId: string): Observable<RepositoryDto> {
+        console.log(repositoryId);
+
+        const url = this.getRepositoryURL();
+        const repoData = {
+            repositoryId: repositoryId
+        };
+        const params = {
+            type: "current"
+        };
+        return this.http.put<RepositoryDto>(url, repoData, {params: params});
+    }
+
+
 
 
     createRepository(repositoryName: string) {
@@ -67,26 +72,7 @@ export class RepositoryOperationsService {
         return dbObservale;
     }
 
-    getListOfRepositories() {
-        const currentList: Array<string> = [];
 
-        const listObservable = new Observable((observer) => {
-            this.http.get(this.getRepositoryURL()).subscribe((data: any) => {
-
-                for (let i = 0; i < data.results.bindings.length; i++) {
-
-                    currentList.push(data.results.bindings[i].id.value);
-
-                    if (i == (data.results.bindings.length - 1)) {
-                        observer.next(currentList);
-                        observer.complete();
-                    }
-                }
-            });
-        });
-
-        return listObservable;
-    }
 
     deleteRepository(repositoryName) {
         const httpOptions = {

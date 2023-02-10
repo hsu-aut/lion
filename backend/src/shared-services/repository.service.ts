@@ -1,17 +1,25 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
+import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
+import { Observable, of, throwError } from 'rxjs';
 import {map} from 'rxjs/operators';
 import * as fs from 'fs';
 import * as FormData from 'form-data';
+import { SparqlResponse } from '../models/sparql/SparqlResponse';
 /**
  * A service that provides functionality to interact with GraphDB repositories
  */
 @Injectable()
 export class RepositoryService {
 
-	workingRepository = "testdb";
+	workingRepository: Observable<RepositoryDto> = of({
+		id: "testdb",
+		title: "testdb",
+		uri: "localhost:7200/repositories/testdb",
+		readable: true,
+		writable: true
+	})
 
 	constructor(private http: HttpService) {}
 
@@ -19,7 +27,7 @@ export class RepositoryService {
      * Get a list of all repositories
      * @returns List of the currently existing repositories
      */
-	getAllRepositories(): Observable<AxiosResponse<any>> {
+	getAllRepositories(): Observable<RepositoryDto[]> {
 		const reqConfig: AxiosRequestConfig = {
 			method: 'GET',
 			headers: {
@@ -29,19 +37,30 @@ export class RepositoryService {
 			url: `/repositories`
 		};
 
-		// TODO: Add proper response type
-		return this.http.request<any>(reqConfig).pipe(map(res => res.data));
+		return this.http.request<SparqlResponse>(reqConfig).pipe(
+			map(axiosResponse => {
+				const sparqlResult = axiosResponse.data;
+				const bindings = sparqlResult.results.bindings;
+				return bindings.map(binding => {
+					const bindingEntries = Object.entries(binding);
+					const a = new RepositoryDto();
+					bindingEntries.forEach(bindingEntry => a[bindingEntry[0]] = bindingEntry[1].value);
+					return a;
+				});
+			})
+		);
 	}
 
-	setWorkingRepository(repositoryName: string): void {
-		this.workingRepository = repositoryName;
-		console.log("set repo");
-		console.log("new repo");
-		console.log(this.getWorkingRepository());
-		
+	setWorkingRepository(repositoryId: string): Observable<RepositoryDto> {
+		const repos = this.getAllRepositories();
+		const repoToSet = repos.pipe(
+			map(repos => repos.find(repo => repo.id === repositoryId)),
+		);
+		this.workingRepository = repoToSet;
+		return this.workingRepository;
 	}
 	
-	getWorkingRepository(): string {
+	getWorkingRepository(): Observable<RepositoryDto> {
 		return this.workingRepository;
 	}
 
