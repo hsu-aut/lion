@@ -3,6 +3,7 @@ import { FormBuilder, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
+import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
 import { RepositoryOperationsService } from '@shared-services/backEnd/repositoryOperations.service';
 import { MessagesService } from '@shared-services/messages.service';
 import { OdpInfo, OdpName } from '@shared/models/odps/odp';
@@ -32,9 +33,18 @@ export class RepositoryComponent implements OnInit {
 
     // forms
     repositoryToChangeTo = this.fb.control(new RepositoryDto(), Validators.required);    // Selected repository in list
-    repositoryCreate = this.fb.control('', Validators.required);
-    repositoryClear = this.fb.control('', Validators.required);
-    repositoryDelete = this.fb.control('', Validators.required);
+    newRepositoryForm = this.fb.group({
+        repositoryId: this.fb.control('', Validators.required),
+        repositoryName: this.fb.control('', Validators.required)
+    });
+    repositoryClearForm = this.fb.group({
+        selectedRepository: this.fb.control(new RepositoryDto(), Validators.required),
+        confirmId: this.fb.control('', Validators.required),
+    })
+    repositoryDeleteForm = this.fb.group({
+        selectedRepository: this.fb.control(new RepositoryDto(), Validators.required),
+        confirmId: this.fb.control('', Validators.required),
+    })
 
     constructor(
         private repoService: RepositoryOperationsService,
@@ -44,7 +54,7 @@ export class RepositoryComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.repoService.getCurrentRepository().pipe(take(1)).subscribe(data => {
+        this.repoService.getWorkingRepository().pipe(take(1)).subscribe(data => {
             this.activeRepository = data;
         });
         this.odpService.getAllOdps().pipe(take(1)).subscribe(odps => {
@@ -81,44 +91,58 @@ export class RepositoryComponent implements OnInit {
 
     /**
      * Creates a new repository with the given repository name
-     * @param repositoryName Name of the repo to create
      */
-    createRepository(repositoryName: string): void {
-        if (this.repositoryCreate.valid) {
-            this.repoService.createRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-                this.loadListOfRepos();
-            });
-        } else if (this.repositoryCreate.invalid) {
+    createRepository(): void {
+        if (this.newRepositoryForm.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
+        const {repositoryId, repositoryName} = this.newRepositoryForm.value;
+        const newRepositoryRequest = new NewRepositoryRequestDto(repositoryId, repositoryName);
+        this.repoService.createRepository(newRepositoryRequest).pipe(take(1)).subscribe(() => {
+            this.loadListOfRepos();
+        });
     }
 
     /**
-     * Clears a repository with a given repository name
-     * @param repositoryName Name of the repository to clear
+     * Clears a repository with a given repository ID
      */
-    clearRepository(repositoryName: string): void {
-        if (this.repositoryClear.valid) {
-            this.repoService.clearRepository(repositoryName).pipe(take(1)).subscribe();
-        } else if (this.repositoryClear.invalid) {
+    clearRepository(): void {
+        if (this.repositoryClearForm.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
-        this.repositoryClear.reset();
+
+        const {selectedRepository, confirmId} = this.repositoryClearForm.value;
+
+        if (selectedRepository.id != confirmId) {
+            this.messageService.addMessage('error', 'Error', 'Selected repository ID and confirmed ID do not match. Repository was not cleared.');
+            return;
+        }
+
+        this.repoService.clearRepository(selectedRepository.id).pipe(take(1)).subscribe();
+        this.repositoryClearForm.reset();
     }
 
     /**
      * Deletes a repository with a given repository name
-     * @param repositoryName Name of the repository to delete
      */
-    deleteRepository(repositoryName: string): void {
-        if (this.repositoryDelete.valid) {
-            this.repoService.deleteRepository(repositoryName).pipe(take(1)).subscribe((data: any) => {
-                this.loadListOfRepos();
-            });
-        } else if (this.repositoryDelete.invalid) {
+    deleteRepository(): void {
+        if (this.repositoryDeleteForm.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
-        this.repositoryDelete.reset();
+
+        const {selectedRepository, confirmId} = this.repositoryDeleteForm.value;
+        console.log(this.repositoryDeleteForm.value);
+
+        if (selectedRepository.id != confirmId) {
+            this.messageService.addMessage('error', 'Error', 'Selected repository ID and confirmed ID do not match. Repository was not deleted.');
+            return;
+        }
+
+        this.repoService.deleteRepository(selectedRepository.id).pipe(take(1)).subscribe();
+        this.repositoryDeleteForm.reset();
     }
 
 
