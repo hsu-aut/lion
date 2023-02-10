@@ -56,7 +56,7 @@
                         <div class="border border-secondary bg-light rounded p-2">
                             <div class="row">
                                 <div class="col-3">
-                                    <span class="font-weight-bold">ID:</span>
+                                    <span class="fw-bold">ID:</span>
                                 </div>
                                 <div class="col-9">
                                     <span> {{this.activeRepository?.id}}</span>
@@ -64,7 +64,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-3">
-                                    <span class="font-weight-bold">Title:</span>
+                                    <span class="fw-bold">Title:</span>
                                 </div>
                                 <div class="col-9">
                                     <span>{{this.activeRepository?.title}}</span>
@@ -72,7 +72,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-3">
-                                    <span class="font-weight-bold">URI:</span>
+                                    <span class="fw-bold">URI:</span>
                                 </div>
                                 <div class="col-9">
                                     <span>{{this.activeRepository?.uri}}</span>
@@ -90,52 +90,84 @@
                                 </option>
                             </select>
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button" id="button-addon2"
+                                <button class="btn btn-primary" type="button"
                                     (click)="setRepository()">Change Repository</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h5 class="mt-4">Manage Repositories</h5>
+                <h5 class="mt-5">Manage Repositories</h5>
                 <p class="text-sm-left"> You can create, clear and delete repositories here. Please be aware that
                     deleted repositories or data cannot be restored.</p>
 
-                <div class="row mb-3">
-                    <label for="createRepo" class="col-sm-3 col-form-label">Create new repository:</label>
-                    <div class="col-sm-6">
-                        <input [formControl]="repositoryCreate" id="createRepo" type="text" class="form-control"
-                            aria-label="Text input with dropdown button" placeholder="Enter repository name">
-                    </div>
-                    <div class="col-sm-2">
-                        <button class="btn btn-secondary" type="button" id="button-addon2"
-                            (click)="createRepository(repositoryCreate.value)">Create</button>
-                    </div>
-                </div>
+                <h6 class="col-sm-5 mt-3">Create new repository:</h6>
+                <form [formGroup]="this.newRepositoryForm">
+                    <div class="row">
+                        <label for="newRepoId" class="col-sm-2 col-form-label">Repo ID:</label>
+                        <div class="col-sm-3">
+                            <input formControlName="repositoryId" id="newRepoId" type="text" class="form-control"
+                            aria-label="Text input with dropdown button" placeholder="Enter repository ID">
+                        </div>
 
-                <div class="row mb-3">
-                    <label for="clearRepo" class="col-sm-3 col-form-label">Clear repository:</label>
-                    <div class="col-sm-6">
-                        <input [formControl]="repositoryClear" id="clearRepo" type="text" class="form-control"
+                        <label for="newRepoName" class="col-sm-2 col-form-label">Repo Name:</label>
+                        <div class="col-sm-3">
+                            <input formControlName="repositoryName" id="newRepoName" type="text" class="form-control"
                             aria-label="Text input with dropdown button" placeholder="Enter repository name">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-primary" type="button"
+                                (click)="createRepository()">Create</button>
+                        </div>
                     </div>
-                    <div class="col-sm-2">
-                        <button class="btn btn-warning" type="button" id="button-addon2"
-                            (click)="clearRepository(repositoryClear.value)">Clear</button>
-                    </div>
-                </div>
+                </form>
 
-                <div class="row mb-3">
-                    <label for="deleteRepo" class="col-sm-3 col-form-label">Delete repository:</label>
-                    <div class="col-sm-6">
-                        <input [formControl]="repositoryDelete" id="deleteRepo" type="text" class="form-control"
-                            aria-label="Text input with dropdown button" placeholder="Enter repository name">
+                <h6 class="col-sm-5 mt-3">Clear repository:</h6>
+                <form class="row" [formGroup]="repositoryClearForm">
+                    <label for="repoList" class="col-sm-2 col-form-label">Repo to clear:</label>
+                    <div class="col-sm-3">
+                        <select formControlName="selectedRepository" id="repoList" class="form-select">
+                            <option value=null selected hidden></option>
+                            <option *ngFor='let repository of repositoryList' [ngValue]="repository">
+                                {{repository?.title}} ({{repository?.id}})
+                            </option>
+                        </select>
                     </div>
+
+                    <label for="clearConfirmation" class="col-sm-2 col-form-label">Confirmation:</label>
+                    <div class="col-sm-3">
+                        <input formControlName="confirmId" id="clearConfirmation" type="text" class="form-control"
+                        aria-label="Text input with dropdown button" placeholder="Repeat repository ID">
+                    </div>
+
                     <div class="col-sm-2">
-                        <button class="btn btn-danger" type="button" id="button-addon2"
-                            (click)="deleteRepository(repositoryDelete.value)">Delete</button>
+                        <button class="btn btn-warning" type="button" (click)="clearRepository()">Clear</button>
                     </div>
-                </div>
+                </form>
+
+                <h6 class="col-sm-5 mt-3">Delete repository:</h6>
+                <form class="row" [formGroup]="repositoryDeleteForm">
+                    <label for="repoList" class="col-sm-2 col-form-label">Repo to delete:</label>
+                    <div class="col-sm-3">
+                        <select formControlName="selectedRepository" id="repoList" class="form-select">
+                            <option value=null selected hidden></option>
+                            <option *ngFor='let repository of repositoryList' [ngValue]="repository">
+                                {{repository?.title}} ({{repository?.id}})
+                            </option>
+                        </select>
+                    </div>
+
+                    <label for="deleteConfirmation" class="col-sm-2 col-form-label">Confirmation:</label>
+                    <div class="col-sm-3">
+                        <input formControlName="confirmId" id="deleteConfirmation" type="text" class="form-control"
+                        aria-label="Text input with dropdown button" placeholder="Repeat repository ID">
+                    </div>
+
+                    <div class="col-sm-2">
+                        <button class="btn btn-danger" type="button" (click)="deleteRepository()">Delete</button>
+                    </div>
+                </form>
+
             </div>
 
             <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
