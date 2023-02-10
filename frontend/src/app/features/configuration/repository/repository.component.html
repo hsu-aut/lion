@@ -49,30 +49,55 @@
                 aria-labelledby="RepoManagement-tab">
                 <h5>Select Repository</h5>
                 <p class="text-sm-left"> You can set a new repository here. This will trigger an execution of all
-                    queries relevant to LiOnS and may take a while, depending on the size of you ABox.</p>
+                    queries relevant to LiOnS and may take a while, depending on the size of your ABox.</p>
                 <div class="row">
                     <div class="form-group col-sm">
                         <label> The current repository is: </label>
-                        <input class="form-control" type="text" [placeholder]="activeRepository" readonly>
+                        <div class="border border-secondary bg-light rounded p-2">
+                            <div class="row">
+                                <div class="col-3">
+                                    <span class="font-weight-bold">ID:</span>
+                                </div>
+                                <div class="col-9">
+                                    <span> {{this.activeRepository?.id}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span class="font-weight-bold">Title:</span>
+                                </div>
+                                <div class="col-9">
+                                    <span>{{this.activeRepository?.title}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3">
+                                    <span class="font-weight-bold">URI:</span>
+                                </div>
+                                <div class="col-9">
+                                    <span>{{this.activeRepository?.uri}}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group col-sm">
                         <label> Existing repositories </label>
                         <div class="input-group mb-3">
-                            <select [formControl]="repositoryOption" name="activeRepository" class="form-control">
+                            <select [formControl]="repositoryToChangeTo" name="activeRepository" class="form-select">
                                 <option value=null selected hidden></option>
-                                <option *ngFor='let x of repositoryList'>
-                                    {{x}}
+                                <option *ngFor='let repository of repositoryList' [ngValue]="repository">
+                                    {{repository?.title}} ({{repository?.id}})
                                 </option>
                             </select>
                             <div class="input-group-append">
-                                <button class="btn btn-secondary" type="button" id="button-addon2"
-                                    (click)="setRepository(repositoryOption.value)">Change Repository</button>
+                                <button class="btn btn-primary" type="button" id="button-addon2"
+                                    (click)="setRepository()">Change Repository</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h5 class="mt-3">Manage Repositories</h5>
+                <h5 class="mt-4">Manage Repositories</h5>
                 <p class="text-sm-left"> You can create, clear and delete repositories here. Please be aware that
                     deleted repositories or data cannot be restored.</p>
 
