@@ -23,8 +23,7 @@
                         <p class="card-text">Please be aware, that clearing or removed any repoistory will lead to a
                             loss of data.
                         </p>
-                        <p class="card-text"><small class="text-muted">Current number of repositories:
-                                {{repoCount}}</small></p>
+                        <p class="card-text"><small class="text-muted">Current number of repositories:{{repoCount}}</small></p>
                     </div>
                 </div>
             </div>
@@ -34,8 +33,7 @@
             <li class="nav-item">
                 <a class="nav-link active" id="RepoManagement-tab" data-bs-toggle="tab" type="button"
                     data-bs-target="#RepoManagement" role="tab" aria-controls="RepoManagement" aria-selected="true">
-                    Manage
-                    Repositories</a>
+                    Manage Repositories</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="TBoxes-tab" data-bs-toggle="tab" type="button" data-bs-target="#TBoxes"
@@ -45,158 +43,13 @@
 
         <!-- tab content -->
         <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active py-4" id="RepoManagement" role="tabpanel"
-                aria-labelledby="RepoManagement-tab">
-                <h5>Select Repository</h5>
-                <p class="text-sm-left"> You can set a new repository here. This will trigger an execution of all
-                    queries relevant to LiOnS and may take a while, depending on the size of your ABox.</p>
-                <div class="row">
-                    <div class="form-group col-sm">
-                        <label> The current repository is: </label>
-                        <div class="border border-secondary bg-light rounded p-2">
-                            <div class="row">
-                                <div class="col-3">
-                                    <span class="fw-bold">ID:</span>
-                                </div>
-                                <div class="col-9">
-                                    <span> {{this.activeRepository?.id}}</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">
-                                    <span class="fw-bold">Title:</span>
-                                </div>
-                                <div class="col-9">
-                                    <span>{{this.activeRepository?.title}}</span>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-3">
-                                    <span class="fw-bold">URI:</span>
-                                </div>
-                                <div class="col-9">
-                                    <span>{{this.activeRepository?.uri}}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-sm">
-                        <label> Existing repositories </label>
-                        <div class="input-group mb-3">
-                            <select [formControl]="repositoryToChangeTo" name="activeRepository" class="form-select">
-                                <option value=null selected hidden></option>
-                                <option *ngFor='let repository of repositoryList' [ngValue]="repository">
-                                    {{repository?.title}} ({{repository?.id}})
-                                </option>
-                            </select>
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button"
-                                    (click)="setRepository()">Change Repository</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <h5 class="mt-5">Manage Repositories</h5>
-                <p class="text-sm-left"> You can create, clear and delete repositories here. Please be aware that
-                    deleted repositories or data cannot be restored.</p>
-
-                <h6 class="col-sm-5 mt-3">Create new repository:</h6>
-                <form [formGroup]="this.newRepositoryForm">
-                    <div class="row">
-                        <label for="newRepoId" class="col-sm-2 col-form-label">Repo ID:</label>
-                        <div class="col-sm-3">
-                            <input formControlName="repositoryId" id="newRepoId" type="text" class="form-control"
-                            aria-label="Text input with dropdown button" placeholder="Enter repository ID">
-                        </div>
-
-                        <label for="newRepoName" class="col-sm-2 col-form-label">Repo Name:</label>
-                        <div class="col-sm-3">
-                            <input formControlName="repositoryName" id="newRepoName" type="text" class="form-control"
-                            aria-label="Text input with dropdown button" placeholder="Enter repository name">
-                        </div>
-                        <div class="col-sm-2">
-                            <button class="btn btn-primary" type="button"
-                                (click)="createRepository()">Create</button>
-                        </div>
-                    </div>
-                </form>
-
-                <h6 class="col-sm-5 mt-3">Clear repository:</h6>
-                <form class="row" [formGroup]="repositoryClearForm">
-                    <label for="repoList" class="col-sm-2 col-form-label">Repo to clear:</label>
-                    <div class="col-sm-3">
-                        <select formControlName="selectedRepository" id="repoList" class="form-select">
-                            <option value=null selected hidden></option>
-                            <option *ngFor='let repository of repositoryList' [ngValue]="repository">
-                                {{repository?.title}} ({{repository?.id}})
-                            </option>
-                        </select>
-                    </div>
-
-                    <label for="clearConfirmation" class="col-sm-2 col-form-label">Confirmation:</label>
-                    <div class="col-sm-3">
-                        <input formControlName="confirmId" id="clearConfirmation" type="text" class="form-control"
-                        aria-label="Text input with dropdown button" placeholder="Repeat repository ID">
-                    </div>
-
-                    <div class="col-sm-2">
-                        <button class="btn btn-warning" type="button" (click)="clearRepository()">Clear</button>
-                    </div>
-                </form>
-
-                <h6 class="col-sm-5 mt-3">Delete repository:</h6>
-                <form class="row" [formGroup]="repositoryDeleteForm">
-                    <label for="repoList" class="col-sm-2 col-form-label">Repo to delete:</label>
-                    <div class="col-sm-3">
-                        <select formControlName="selectedRepository" id="repoList" class="form-select">
-                            <option value=null selected hidden></option>
-                            <option *ngFor='let repository of repositoryList' [ngValue]="repository">
-                                {{repository?.title}} ({{repository?.id}})
-                            </option>
-                        </select>
-                    </div>
-
-                    <label for="deleteConfirmation" class="col-sm-2 col-form-label">Confirmation:</label>
-                    <div class="col-sm-3">
-                        <input formControlName="confirmId" id="deleteConfirmation" type="text" class="form-control"
-                        aria-label="Text input with dropdown button" placeholder="Repeat repository ID">
-                    </div>
-
-                    <div class="col-sm-2">
-                        <button class="btn btn-danger" type="button" (click)="deleteRepository()">Delete</button>
-                    </div>
-                </form>
-
+            <div class="tab-pane fade show active py-4" id="RepoManagement" role="tabpanel" aria-labelledby="RepoManagement-tab">
+                <repository-management></repository-management>
             </div>
 
+
             <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
-                <ul class="list-group">
-                    <li *ngFor="let odp of this.odpInfos" class="list-group-item pb-3">
-                        <h6>{{odp.name}}</h6>
-                        <div class="d-flex flex-row">
-                            <form class="flex-fill row" [formGroup]="this.odpFormGroup">
-                                <label for="selectVersion" class="col-sm-3 col-md-3 col-lg-2 col-form-label">Version</label>
-                                <div class="col-sm-8">
-                                    <select class="m-2" class="form-select" id="selectVersion"
-                                        [formControlName]="odp.name">
-                                        <option *ngFor="let version of odp.versions" [ngValue]="version">{{version}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <button type="button" class="col-lg-2 col-sm-12 btn btn-success"
-                                    (click)="loadOdp(odp.name)">Load ODP</button>
-                            </form>
-                        </div>
-                    </li>
-                </ul>
-                <div class="row mt-3">
-                    <div class="col d-flex justify-content-end">
-                        <button type="button" class="btn btn-secondary me-3" (click)="setAllVersionsToLatest()">Set
-                            all to latest</button>
-                        <button type="button" class="btn btn-success" (click)="loadAllOdps()">Load all ODPs</button>
-                    </div>
-                </div>
+                <odp-management></odp-management>
             </div>
 
         </div>
