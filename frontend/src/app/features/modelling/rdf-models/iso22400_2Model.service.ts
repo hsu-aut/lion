@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PrefixesService } from '@shared-services/prefixes.service';
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 import { DownloadService } from '@shared-services/backEnd/download.service';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ISO224002ElementVariables, ISO224002KPIVariables } from '@shared/models/iso224002-variables.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -19,7 +19,7 @@ export class Iso22400_2ModelService {
     private http: HttpClient,
     private dlService: DownloadService,
     private nameService: PrefixesService,
-    private graphs: GraphOperationsService
+    private graphService: GraphOperationsService
 
     ) { }
 
@@ -67,56 +67,56 @@ export class Iso22400_2ModelService {
 
     // builders
     public createElement(variables: ISO224002ElementVariables, action: string): Observable<void> {
-        const GRAPHS: Array<string> = this.graphs.getGraphs();
-        const activeGraph: string = GRAPHS[this.graphs.getActiveGraph()];
-        switch (action) {
-        case "add": {
-            const params = new HttpParams()
-                .append("action", "add")
-                .append("activeGraph", activeGraph);
-            return this.http.post<void>("lion_BE/iso224002/createElement", variables, {params: params});
-        }
-        case "delete": {
-            console.log("not implemented yet");
-            break;
-        }
-        case "build": {
-            const params = new HttpParams()
-                .append("action", "build")
-                .append("activeGraph", activeGraph);
-            return this.http.post<string>("lion_BE/iso224002/createElement", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
-                const blob = new Blob([response], { type: 'text/plain' });
-                const name = 'insert.txt';
-                return this.dlService.download(blob, name);
-            }));
-        }
-        }
+        return this.graphService.getActiveGraph().pipe(switchMap(activeGraph => {
+            switch (action) {
+            case "add": {
+                const params = new HttpParams()
+                    .append("action", "add")
+                    .append("activeGraph", activeGraph);
+                return this.http.post<void>("lion_BE/iso224002/createElement", variables, {params: params});
+            }
+            case "delete": {
+                console.log("not implemented yet");
+                break;
+            }
+            case "build": {
+                const params = new HttpParams()
+                    .append("action", "build")
+                    .append("activeGraph", activeGraph);
+                return this.http.post<string>("lion_BE/iso224002/createElement", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
+                    const blob = new Blob([response], { type: 'text/plain' });
+                    const name = 'insert.txt';
+                    return this.dlService.download(blob, name);
+                }));
+            }}
+        }));
+
     }
     public createKPI(variables: ISO224002KPIVariables, action: string): Observable<void> {
-        const GRAPHS: Array<string> = this.graphs.getGraphs();
-        const activeGraph: string = GRAPHS[this.graphs.getActiveGraph()];
-        switch (action) {
-        case "add": {
-            const params = new HttpParams()
-                .append("action", "add")
-                .append("activeGraph", activeGraph);
-            return this.http.post<void>("lion_BE/iso224002/createKPI", variables, {params: params});
-        }
-        case "delete": {
-            console.log("not implemented yet");
-            break;
-        }
-        case "build": {
-            const params = new HttpParams()
-                .append("action", "build")
-                .append("activeGraph", activeGraph);
-            return this.http.post<string>("lion_BE/iso224002/createKPI", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
-                const blob = new Blob([response], { type: 'text/plain' });
-                const name = 'insert.txt';
-                return this.dlService.download(blob, name);
-            }));
-        }
-        }
+        return this.graphService.getActiveGraph().pipe(switchMap(activeGraph=> {
+            switch (action) {
+            case "add": {
+                const params = new HttpParams()
+                    .append("action", "add")
+                    .append("activeGraph", activeGraph);
+                return this.http.post<void>("lion_BE/iso224002/createKPI", variables, {params: params});
+            }
+            case "delete": {
+                console.log("not implemented yet");
+                break;
+            }
+            case "build": {
+                const params = new HttpParams()
+                    .append("action", "build")
+                    .append("activeGraph", activeGraph);
+                return this.http.post<string>("lion_BE/iso224002/createKPI", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
+                    const blob = new Blob([response], { type: 'text/plain' });
+                    const name = 'insert.txt';
+                    return this.dlService.download(blob, name);
+                }));
+            }
+            }
+        }));
     }
 
 }

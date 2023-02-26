@@ -3,6 +3,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { Observable } from 'rxjs';
+import { GraphDto } from '@shared/models/graphs/GraphDto';
 
 @Component({
     selector: 'app-sidebar',
@@ -18,8 +20,8 @@ export class SidebarComponent implements OnInit {
     @Output() collapsedEvent = new EventEmitter<boolean>();
 
     // for setting active graph
-    graphList;
-    currentGraph: string;
+    $graphs: Observable<GraphDto[]>;
+    $currentGraph: Observable<GraphDto>;
     newGraph: string;
 
     constructor(
@@ -87,18 +89,13 @@ export class SidebarComponent implements OnInit {
         localStorage.removeItem('isLoggedin');
     }
 
-    getCurrentGraphConfig() {
-        this.graphList = this.graphs.getGraphs();
-        this.currentGraph = this.graphList[this.graphs.getActiveGraph()];
+    getCurrentGraphConfig(): void {
+        this.$graphs = this.graphs.getAllGraphsOfWorkingRepository();
+        this.$currentGraph = this.graphs.getActiveGraph();
     }
 
-    setActiveGraph(graph: string) {
-        for (let i = 0; i < this.graphList.length; i++) {
-            if (this.graphList[i].search(graph) !== -1) {
-                this.graphs.setActiveGraph(i);
-                this.getCurrentGraphConfig();
-            }
-        }
+    setActiveGraph(graphIri: string): void {
+        this.graphs.setActiveGraph(graphIri);
     }
 
 }

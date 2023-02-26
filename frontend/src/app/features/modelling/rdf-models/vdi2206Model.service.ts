@@ -205,44 +205,38 @@ export class Vdi2206ModelService {
         return this.TABLE_STRUCTUAL_INFO_BY_INHERITANCE_BY_COM;
     }
 
-    public insertTripel(graph: tripel) {
+    public insertTripel(triple: tripel) {
         const PREFIXES = this.prefixService.getPrefixes();
         const activeNamespace = this.prefixService.getActiveNamespace().namespace;
 
-        const GRAPHS = this.graphs.getGraphs();
-        const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
-
-        if (graph.subject.search("http://") != -1) {
-            graph.subject = graph.subject;
-        } else if (graph.subject.search(":") != -1) {
-            graph.subject = this.prefixService.parseToIRI(graph.subject);
+        if (triple.subject.search("http://") != -1) {
+            triple.subject = triple.subject;
+        } else if (triple.subject.search(":") != -1) {
+            triple.subject = this.prefixService.parseToIRI(triple.subject);
         } else {
-            graph.subject = activeNamespace + this.prefixService.parseToIRI(graph.subject);
+            triple.subject = activeNamespace + this.prefixService.parseToIRI(triple.subject);
         }
-        graph.predicate = this.prefixService.parseToIRI(graph.predicate);
-        graph.object = this.prefixService.parseToIRI(graph.object);
+        triple.predicate = this.prefixService.parseToIRI(triple.predicate);
+        triple.object = this.prefixService.parseToIRI(triple.object);
 
-        return this.query.executeUpdate(this.vdi2206Insert.createEntity(graph, activeGraph));
+        return this.query.executeUpdate(this.vdi2206Insert.createEntity(triple));
     }
 
-    public buildTripel(graph: tripel) {
+    public buildTripel(triple: tripel) {
         const PREFIXES = this.prefixService.getPrefixes();
         const activeNamespace = this.prefixService.getActiveNamespace().namespace;
 
-        const GRAPHS = this.graphs.getGraphs();
-        const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
-
-        if (graph.subject.search("http://") != -1) {
-            graph.subject = graph.subject;
-        } else if (graph.subject.search(":") != -1) {
-            graph.subject = this.prefixService.parseToIRI(graph.subject);
+        if (triple.subject.search("http://") != -1) {
+            triple.subject = triple.subject;
+        } else if (triple.subject.search(":") != -1) {
+            triple.subject = this.prefixService.parseToIRI(triple.subject);
         } else {
-            graph.subject = activeNamespace + this.prefixService.parseToIRI(graph.subject);
+            triple.subject = activeNamespace + this.prefixService.parseToIRI(triple.subject);
         }
-        graph.predicate = this.prefixService.parseToIRI(graph.predicate);
-        graph.object = this.prefixService.parseToIRI(graph.object);
+        triple.predicate = this.prefixService.parseToIRI(triple.predicate);
+        triple.object = this.prefixService.parseToIRI(triple.object);
 
-        return this.vdi2206Insert.createEntity(graph, activeGraph);
+        return this.vdi2206Insert.createEntity(triple);
     }
 
 }
@@ -443,13 +437,12 @@ export class VDI2206VARIABLES {
 
 export class VDI2206INSERT {
 
-    public createEntity(graph: tripel, activeGraph) {
+    public createEntity(graph: tripel) {
 
         const insertString = `
       INSERT {
-        GRAPH <${activeGraph}>{
           ?subject ?predicate ?object;
-          a owl:NamedIndividual.}
+          a owl:NamedIndividual.
       } WHERE {
           BIND(IRI(STR("${graph.subject}")) AS ?subject).
           BIND(IRI(STR("${graph.predicate}")) AS ?predicate).

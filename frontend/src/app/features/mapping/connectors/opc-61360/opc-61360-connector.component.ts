@@ -88,12 +88,13 @@ export class Opc61360ConnectorComponent implements OnInit {
             const instanceDescription = form.controls['subject'].value;
             const opcNode = form.controls['object'].value;
 
-            this.opcService.createOpcDin61360Connection(instanceDescription, opcNode).pipe(take(1)).subscribe(data => {
-                this.loadingScreenService.stopLoading();
+            // TODO: A lot wrong here that needs to be fixed
+            // this.opcService.createOpcDin61360Connection(instanceDescription, opcNode).pipe(take(1)).subscribe(data => {
+            //     this.loadingScreenService.stopLoading();
 
-                // After adding, refresh existing connections
-                this.loadExistingConnections();
-            });
+            //     // After adding, refresh existing connections
+            //     this.loadExistingConnections();
+            // });
 
         } else if (form.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
