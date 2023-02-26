@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ConfigurationComponent } from './configuration.component';
 
-import { RepositoryComponent } from './repository/repository.component';
 import { NamespacesComponent } from './namespaces/namespaces.component';
 import { GraphsComponent } from './graphs/graphs.component';
 
@@ -12,7 +11,7 @@ const routes: Routes = [
         component: ConfigurationComponent,
         children: [
             { path: '', redirectTo: 'repository', pathMatch: 'prefix' },
-            { path: 'repository', component: RepositoryComponent },
+            { path: 'repository', loadChildren:() => import('./repository/repository.module').then(m => m.RepositoryModule)},
             { path: 'namespaces', component: NamespacesComponent },
             { path: 'graphs', component: GraphsComponent },
         ]

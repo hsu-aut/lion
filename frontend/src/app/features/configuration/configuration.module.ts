@@ -28,7 +28,6 @@ import { TableModule } from '../../shared/modules/table/table.module';
     declarations: [
         ConfigurationComponent,
         SidebarComponent,
-        RepositoryComponent,
         NamespacesComponent,
         GraphsComponent
     ]

@@ -37,18 +37,22 @@ export class OpcService {
 
 
     createOpcDin61360Connection(instanceDescription: string, opcVariable: string) {
-        const graphs = this.graphService.getGraphs();
-        const graphIndex = this.graphService.getActiveGraph();
-        const activeGraph = graphs[graphIndex];
-        const query = `PREFIX lf: <http://lionFacts#>
-                PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-                PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
-                INSERT DATA {
-                    GRAPH <${activeGraph}> {
-                        <${this.prefixService.parseToIRI(instanceDescription)}> DINEN61360:hasOntologicalValue <${opcVariable}>.
-                    }
-            }`;
-        return this.queryService.executeUpdate(query);
+        // TODO: This was commented out as there is a lot wrong here.
+        // 1: activeGraph should not be handled here
+        // 2: The whole query should be moved to the backend
+
+        // const graphs = this.graphService.getAllGraphsOfWorkingRepository();
+        // const graphIndex = this.graphService.getActiveGraph();
+        // const activeGraph = graphs[graphIndex];
+        // const query = `PREFIX lf: <http://lionFacts#>
+        //         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+        //         PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+        //         INSERT DATA {
+        //             GRAPH <${activeGraph}> {
+        //                 <${this.prefixService.parseToIRI(instanceDescription)}> DINEN61360:hasOntologicalValue <${opcVariable}>.
+        //             }
+        //     }`;
+        // return this.queryService.executeUpdate(query);
     }
 
     loadVariableAnd61360Connections() {
@@ -70,18 +74,22 @@ export class OpcService {
 
 
     createOpcVdi2206Connection(systemOrModule: string, opcUaServer: string) {
-        const graphs = this.graphService.getGraphs();
-        const graphIndex = this.graphService.getActiveGraph();
-        const activeGraph = graphs[graphIndex];
-        const query = `PREFIX lf: <http://lionFacts#>
-        PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-        INSERT DATA {
-            GRAPH <${activeGraph}> {
-                <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
-            }
-        }`;
-        return this.queryService.executeUpdate(query);
+        // TODO: This was commented out as there is a lot wrong here.
+        // 1: activeGraph should not be handled here
+        // 2: The whole query should be moved to the backend
+
+        // const graphs = this.graphService.getAllGraphsOfWorkingRepository();
+        // const graphIndex = this.graphService.getActiveGraph();
+        // const activeGraph = graphs[graphIndex];
+        // const query = `PREFIX lf: <http://lionFacts#>
+        // PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+        // PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        // INSERT DATA {
+        //     GRAPH <${activeGraph}> {
+        //         <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
+        //     }
+        // }`;
+        // return this.queryService.executeUpdate(query);
     }
 
 

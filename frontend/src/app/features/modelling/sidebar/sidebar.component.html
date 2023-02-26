@@ -52,7 +52,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>The active graph is "{{currentGraph}}". You can set the active graph below. The active graph is the
+                <p>The active graph is "<span class="fw-bold">{{$currentGraph | async}}</span>". You can set the active graph below. The active graph is the
                     graph where your next inserted triples
                     are located.</p>
                 <div class="row">
@@ -60,7 +60,7 @@
                         <label> Existing Graph IRIs </label>
                         <select [(ngModel)]="newGraph" name="newGraph" class="form-control">
                             <option value=null selected hidden></option>
-                            <option *ngFor='let x of graphList'>
+                            <option *ngFor='let x of ($graphs | async)'>
                                 {{x}}
                             </option>
                         </select>
