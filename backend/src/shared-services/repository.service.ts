@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as FormData from 'form-data';
 import { SparqlResponse } from '../models/sparql/SparqlResponse';
 import { GraphDbRequestException } from '../custom-exceptions/GraphDbRequestException';
+import { GraphOperationService } from './graph-operation.service';
 /**
  * A service that provides functionality to interact with GraphDB repositories
  */
@@ -23,7 +24,11 @@ export class RepositoryService {
 		writable: true
 	})
 
-	constructor(private http: HttpService) {}
+	constructor(
+		private http: HttpService,
+		@Inject(forwardRef(() => GraphOperationService))
+		private graphService: GraphOperationService
+	) {}
 
 	/**
      * Get a list of all repositories
@@ -62,6 +67,10 @@ export class RepositoryService {
 		return this.workingRepository;
 	}
 	
+	/**
+	 * Get the currently activated working repository
+	 * @returns Observable of the current working repository
+	 */
 	getWorkingRepository(): Observable<RepositoryDto> {
 		return this.workingRepository;
 	}
@@ -152,7 +161,10 @@ export class RepositoryService {
 		return this.http.request<void>(reqConfig).pipe(
 			map(res => res.data),
 			catchError(error => {throw new GraphDbRequestException(error.message);}),
-			tap(res => fs.unlinkSync("./temp/repo-config.ttl"))
+			tap(res => {
+				fs.unlinkSync("./temp/repo-config.ttl");
+				this.graphService.addNewGraph("http://lionFacts");
+			})
 		);	
 	}
 
