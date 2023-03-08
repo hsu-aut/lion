@@ -10,24 +10,22 @@ export class DINEN61360Controller {
 	constructor(private dinen61360Service: DINEN61360Service) { }
 
 	@Post('modifyType')
-	modifyType(@Query('action') action: string, @Query('activeGraph') activeGraph: string, 
-		@Body() variables: DINEN61360Variables): Observable<void> | string {
+	modifyType(@Query('action') action: string, @Body() variables: DINEN61360Variables): Observable<void | string> {
 		if (action == 'add') {
-			return this.dinen61360Service.buildDINEN61360T(variables, activeGraph);
+			return this.dinen61360Service.buildDINEN61360T(variables);
 		} else if (action == 'build') {
-			return this.dinen61360Service.getTypeBuildString(variables, activeGraph);
+			return this.dinen61360Service.getTypeBuildString(variables);
 		} else {
 			return null;
 		}
 	}
 
 	@Post('modifyInstance')
-	modifyInstance(@Query('action') action: string, @Query('activeGraph') activeGraph: string, 
-		@Body() variables: DINEN61360Variables): Observable<void> | string {
+	modifyInstance(@Query('action') action: string, @Body() variables: DINEN61360Variables): Observable<void | string> {
 		if (action == 'add') {
-			return this.dinen61360Service.buildDINEN61360I(variables, activeGraph);
+			return this.dinen61360Service.buildDINEN61360I(variables);
 		} else if (action == 'build') {
-			return this.dinen61360Service.getInstanceBuildString(variables, activeGraph);
+			return this.dinen61360Service.getInstanceBuildString(variables);
 		} else {
 			return null;
 		}
