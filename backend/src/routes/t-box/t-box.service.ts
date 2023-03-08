@@ -81,6 +81,36 @@ export class TBoxService {
 		return this.queryService.query(queryString);
 	}
 
+	public getObjectPropertiesInNamespace(namespace: string): Observable<SparqlResponse> {
+		let filterString = "";
+		if (namespace) {
+			filterString = `FILTER(STRSTARTS(STR(?objprops), "${namespace}"))`;
+		}
+		const queryString = `
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            SELECT ?objprops WHERE {
+                ?objprops a owl:ObjectProperty.
+                ${filterString}
+            }`;
+
+		return this.queryService.query(queryString); 
+	}
+
+
+	public getDataPropertiesInNamespace(namespace: string): Observable<SparqlResponse> {
+		let filterString = "";
+		if (namespace) {
+			filterString = `FILTER(STRSTARTS(STR(?dataprops), "${namespace}"))`;
+		}
+		const queryString = `
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            SELECT ?dataprops WHERE {
+                ?dataprops a owl:DatatypeProperty.
+                ${filterString}
+            }`;
+
+		return this.queryService.query(queryString); 
+	}
 
 	/**
      * Get all classes of an individual within a given namespace

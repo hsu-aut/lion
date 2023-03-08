@@ -26,6 +26,17 @@ export class TboxService {
         return this.http.get(url).pipe(toSparqlVariableList("class"));
     }
 
+    public getObjectPropertiesWithinNamespace(namespace: string): Observable<Array<string>> {
+        const encodedNs = encodeURIComponent(namespace);
+        const url = `${this.baseUrl}/objectproperties-in-namespace/${encodedNs}`;
+        return this.http.get(url).pipe(toSparqlVariableList("objprops"));
+    }
+
+    public getDataPropertiesWithinNamespace(namespace: string): Observable<Array<string>> {
+        const encodedNs = encodeURIComponent(namespace);
+        const url = `${this.baseUrl}/dataproperties-in-namespace/${encodedNs}`;
+        return this.http.get(url).pipe(toSparqlVariableList("dataprops"));
+    }
 
     /**
      * Get a list of all individuals of a class within a certain namespace

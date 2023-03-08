@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { take } from 'rxjs/operators';
 
-import { DataLoaderService } from '@shared-services/dataLoader.service';
 import { PrefixesService } from '@shared-services/prefixes.service';
 
 @Component({
@@ -27,7 +26,6 @@ export class QueryEditorComponent implements OnInit {
 
     constructor(
         private query: QueriesService,
-        private loadingScreenService: DataLoaderService,
         private namespaceService: PrefixesService
     ) { }
 
@@ -38,7 +36,6 @@ export class QueryEditorComponent implements OnInit {
         this.tableTitle = "Query results";
         this.tableSubTitle = "The results to your query are shown below. Click on a cell to query for related triples.";
         this.query.SPARQL_SELECT_TABLE(query).pipe(take(1)).subscribe((data: any) => {
-            this.loadingScreenService.stopLoading();
             // console.log(data)
             this.queryResult = data;
         });

@@ -33,7 +33,7 @@ export class DashboardService {
   }
 
   loadChartData() {
-      this.loadingScreenService.startLoading();
+      //   this.loadingScreenService.startLoading();
       const prefixes = this.nameService.getPrefixes();
 
       const freshDoughnutChart: doughnutChart = {
