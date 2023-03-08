@@ -54,10 +54,7 @@ export class FpbService {
 		} catch (error) {
 			console.error(error);
 		}
-
 	}
-
-
 
 	/**
 	 * Removes whitespaces and slashes from file name in order to get valid IRI

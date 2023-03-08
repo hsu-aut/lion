@@ -27,7 +27,7 @@ export class SidebarComponent implements OnInit {
     constructor(
         private translate: TranslateService,
         public router: Router,
-        private graphs: GraphOperationsService
+        private graphService: GraphOperationsService
     ) {
         this.router.events.subscribe(val => {
             if (
@@ -90,12 +90,12 @@ export class SidebarComponent implements OnInit {
     }
 
     getCurrentGraphConfig(): void {
-        this.$graphs = this.graphs.getAllGraphsOfWorkingRepository();
-        this.$currentGraph = this.graphs.getActiveGraph();
+        this.$graphs = this.graphService.getAllGraphsOfWorkingRepository();
+        this.$currentGraph = this.graphService.getActiveGraph();
     }
 
     setActiveGraph(graphIri: string): void {
-        this.graphs.setActiveGraph(graphIri);
+        this.graphService.setActiveGraph(graphIri);
     }
 
 }
