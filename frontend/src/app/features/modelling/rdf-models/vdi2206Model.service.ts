@@ -29,7 +29,6 @@ export class Vdi2206ModelService {
         private query: QueriesService,
         private prefixService: PrefixesService,
         private loadingScreenService: DataLoaderService,
-        private graphs: GraphOperationsService
     ) {
 
         this.initializeVDI2206();
@@ -302,9 +301,13 @@ PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 SELECT ?System ?systemLabel ?consistsOfEntity ?EntityType WHERE {
-?System a VDI2206:System;
+    ?System a VDI2206:System;
     rdfs:label ?systemLabel.
-  OPTIONAL {?System VDI2206:consistsOf ?consistsOfEntity. ?consistsOfEntity rdf:type ?EntityType. VALUES ?EntityType {VDI2206:System VDI2206:Module VDI2206:Component}}
+    OPTIONAL {
+        ?System VDI2206:consistsOf ?consistsOfEntity.
+        ?consistsOfEntity rdf:type ?EntityType.
+        VALUES ?EntityType {VDI2206:System VDI2206:Module VDI2206:Component}
+    }
 }
 `;
 
