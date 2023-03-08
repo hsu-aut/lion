@@ -1,4 +1,5 @@
-import { HttpModule, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
 import { DINEN61360Controller } from './dinen61360.controller';
 import { DINEN61360Service } from './dinen61360.service';
 
