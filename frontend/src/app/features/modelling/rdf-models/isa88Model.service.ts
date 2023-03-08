@@ -19,7 +19,6 @@ export class Isa88ModelService {
             private dlService: DownloadService,
             private http: HttpClient,
             private nameService: PrefixesService,
-            private graphService: GraphOperationsService
 
         ) { }
 
@@ -31,46 +30,41 @@ export class Isa88ModelService {
 
             const namespace: string = this.nameService.getActiveNamespace().namespace;
 
-            return this.graphService.getActiveGraph().pipe(switchMap(activeGraph => {
+            const parsedSystemName: string  = this.nameService.parseToName(SystemName);
+            const parsedSystemIRI: string  = this.nameService.parseToIRI(SystemName);
 
-                const parsedSystemName: string  = this.nameService.parseToName(SystemName);
-                const parsedSystemIRI: string  = this.nameService.parseToIRI(SystemName);
-
-                switch (action) {
-                case "add": {
-                    const params = new HttpParams()
-                        .append("activeNameSpace", namespace)
-                        .append("activeGraph", activeGraph)
-                        .append("SystemName", parsedSystemName)
-                        .append("mode", mode)
-                        .append("SystemIRI", parsedSystemIRI)
-                        .append("action", "add");
+            switch (action) {
+            case "add": {
+                const params = new HttpParams()
+                    .append("activeNameSpace", namespace)
+                    .append("SystemName", parsedSystemName)
+                    .append("mode", mode)
+                    .append("SystemIRI", parsedSystemIRI)
+                    .append("action", "add");
                     // console.log(params);
                     // TODO: request does not work yet
-                    return this.http.get<void>("lion_BE/isa88/buildISA88", {params: params});
-                }
-                case "delete": {
-                    console.log("not implemented yet");
-                    break;
-                }
-                case "build": {
-                    const params = new HttpParams()
-                        .append("activeNameSpace", namespace)
-                        .append("activeGraph", activeGraph)
-                        .append("SystemName", parsedSystemName)
-                        .append("mode", mode)
-                        .append("SystemIRI", parsedSystemIRI)
-                        .append("action", "build");
+                return this.http.get<void>("lion_BE/isa88/buildISA88", {params: params});
+            }
+            case "delete": {
+                console.log("not implemented yet");
+                break;
+            }
+            case "build": {
+                const params = new HttpParams()
+                    .append("activeNameSpace", namespace)
+                    .append("SystemName", parsedSystemName)
+                    .append("mode", mode)
+                    .append("SystemIRI", parsedSystemIRI)
+                    .append("action", "build");
                     // console.log(params);
                     // TODO: request does not work yet
-                    return this.http.get<string>("lion_BE/isa88/buildISA88", {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
-                        const blob: Blob = new Blob([response], { type: 'text/plain' });
-                        const name = 'insert.txt';
-                        return this.dlService.download(blob, name);
-                    }));
-                }
-                }
-            }));
+                return this.http.get<string>("lion_BE/isa88/buildISA88", {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
+                    const blob: Blob = new Blob([response], { type: 'text/plain' });
+                    const name = 'insert.txt';
+                    return this.dlService.download(blob, name);
+                }));
+            }
+            }
         }
 
 }

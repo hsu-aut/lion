@@ -49,58 +49,52 @@ export class Dinen61360Service {
 
     // builders
     public modifyInstance(action: string, variables: DINEN61360Variables): Observable<void> {
-        return this.graphs.getActiveGraph().pipe(switchMap(activeGraph => {
-            switch (action) {
-            case "add": {
-                const params = new HttpParams()
-                    .append("action", "add")
-                    .append("activeGraph", activeGraph);
-                return this.http.post<void>("lion_BE/dinen61360/modifyInstance", variables, {params: params});
-            }
-            case "delete": {
-                console.log("not implemented yet");
-                break;
-            }
-            case "build": {
-                const params = new HttpParams()
-                    .append("action", "build")
-                    .append("activeGraph", activeGraph);
-                return this.http.post<string>("lion_BE/dinen61360/modifyInstance", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
+        switch (action) {
+        case "add": {
+            const params = new HttpParams()
+                .append("action", "add");
+            return this.http.post<void>("lion_BE/dinen61360/modifyInstance", variables, {params: params});
+        }
+        case "delete": {
+            console.log("not implemented yet");
+            break;
+        }
+        case "build": {
+            const params = new HttpParams()
+                .append("action", "build");
+            return this.http.post<string>("lion_BE/dinen61360/modifyInstance", variables, {params: params, responseType: 'text' as 'json'})
+                .pipe(map((response: string) => {
                     const blob = new Blob([response], { type: 'text/plain' });
                     const name = 'insert.txt';
                     return this.dlService.download(blob, name);
                 }));
-            }
-            }
-        }));
+        }
+        }
     }
 
 
     public modifyType(action: string, variables: DINEN61360Variables): Observable<void> {
-        return this.graphs.getActiveGraph().pipe(switchMap(activeGraph => {
-            switch (action) {
-            case "add": {
-                const params = new HttpParams()
-                    .append("action", "add")
-                    .append("activeGraph", activeGraph);
-                return this.http.post<void>("lion_BE/dinen61360/modifyType", variables, {params: params});
-            }
-            case "delete": {
-                console.log("not implemented yet");
-                break;
-            }
-            case "build": {
-                const params = new HttpParams()
-                    .append("action", "build")
-                    .append("activeGraph", activeGraph);
-                return this.http.post<string>("lion_BE/dinen61360/modifyType", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
+        switch (action) {
+        case "add": {
+            const params = new HttpParams()
+                .append("action", "add");
+            return this.http.post<void>("lion_BE/dinen61360/modifyType", variables, {params: params});
+        }
+        case "delete": {
+            console.log("not implemented yet");
+            break;
+        }
+        case "build": {
+            const params = new HttpParams()
+                .append("action", "build");
+            return this.http.post<string>("lion_BE/dinen61360/modifyType", variables, {params: params, responseType: 'text' as 'json'})
+                .pipe(map((response: string) => {
                     const blob = new Blob([response], { type: 'text/plain' });
                     const name = 'insert.txt';
                     return this.dlService.download(blob, name);
                 }));
-            }
-            }
-        }));
+        }
+        }
     }
 
 }

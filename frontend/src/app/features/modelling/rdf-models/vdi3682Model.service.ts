@@ -118,30 +118,26 @@ export class Vdi3682ModelService {
 
 
     public modifyTripel(triple: Triple, action: string) {
-        return this.graphService.getActiveGraph().pipe(switchMap(activeGraph => {
-            switch (action) {
-            case "add": {
-                return this.tripleService.addTriple(triple, activeGraph);
-            }
-            case "delete": {
-                this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
-                break;
-            }
-            case "build": {
-                const blobObserver = new Observable((observer) => {
-                    const insertString = this.tripleService.buildTripleInsertString(triple, activeGraph);
-                    const blob = new Blob([insertString], { type: 'text/plain' });
-                    const name = 'insert.txt';
-                    this.downloadService.download(blob, name);
-                    observer.next();
-                    observer.complete();
-                });
-                return blobObserver;
+        switch (action) {
+        case "add": {
+            return this.tripleService.addTriple(triple);
+        }
+        case "delete": {
+            this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
+            break;
+        }
+        case "build": {
+            const blobObserver = new Observable((observer) => {
+                const insertString = this.tripleService.buildTripleInsertString(triple);
+                const blob = new Blob([insertString], { type: 'text/plain' });
+                const name = 'insert.txt';
+                this.downloadService.download(blob, name);
+                observer.next();
+                observer.complete();
+            });
+            return blobObserver;
 
-            }
-            }
-        }));
-
-
+        }
+        }
     }
 }
