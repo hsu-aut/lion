@@ -1,12 +1,13 @@
 import { HttpService } from '@nestjs/axios';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
+import { AxiosError, AxiosRequestConfig } from 'axios';
+import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { RepositoryService } from './repository.service';
 import { GraphUpdate} from '@shared/models/graphs/GraphUpdate';
 import { SparqlResponse } from '../models/sparql/SparqlResponse';
 import { GraphDbRequestException } from '../custom-exceptions/GraphDbRequestException';
 import { GraphDto } from '@shared/models/graphs/GraphDto';
+import { DataFormatHandler } from '@shared/models/DataFormats';
 
 @Injectable()
 export class GraphOperationService {
@@ -89,23 +90,25 @@ export class GraphOperationService {
 	 */
 	getAllTriples(graphName: string, format: string): Observable<string> {
 		// TODO: Format should be an enum
-		
-		const currentRepo = this.repoService.getWorkingRepository();
-		const reqConfig: AxiosRequestConfig = {
-			method: 'GET',
-			headers: {
-				'Accept': format
-			},
-			responseType: 'text',
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}/rdf-graphs/service?graph=${graphName}`
-		};
-
-		// TODO: Set correct type
-		return this.http.request<string>(reqConfig).pipe(
-			map(res => res.data),
-			catchError(error => {throw new Error(error);})
-		);
+		return this.repoService.getWorkingRepository().pipe(switchMap(currentRepo => {
+			const reqConfig: AxiosRequestConfig = {
+				method: 'GET',
+				headers: {
+					'Accept': format
+				},
+				responseType: 'text',
+				baseURL: 'http://localhost:7200/',
+				url: `/repositories/${currentRepo.id}/rdf-graphs/service?graph=${graphName}`
+			};
+	
+			// TODO: Set correct type
+			return this.http.request<string>(reqConfig).pipe(
+				map(res => res.data),
+				catchError(error => {
+					console.log(error);
+					throw new Error(error);})
+			);
+		}));
 	}
 
 
@@ -168,24 +171,30 @@ export class GraphOperationService {
 	/**
 	 * Add a set of triples to a given graph
 	 * @param ttlContent Triples in turtle format
-	 * @param graphName Name of the graph to insert triples into
+	 * @param graphIri Name of the graph to insert triples into
 	 * @returns 
 	 */
-	addTriplesToGraph(ttlContent: string, graphName: string): Observable<AxiosResponse<void>> {
-		const currentRepo = this.repoService.getWorkingRepository();
-		const reqConfig: AxiosRequestConfig = {
-			method: 'POST',
-			headers: {
-				'Content-Type': "text/turtle"
-			},
-			responseType: 'text',
-			data: ttlContent,
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}/rdf-graphs/service?graph=${graphName}`
-		};
-
-		// TODO: Check whether it really returns void
-		return this.http.request<void>(reqConfig);
+	importFileIntoGraph(file: Express.Multer.File, graphIri: string): Observable<void> {
+		const fileContent = file.buffer.toString();
+		const fileEnding = "." + file.originalname.split('.').pop();
+		console.log(fileEnding);
+		
+		const mimeType = DataFormatHandler.getMimeTypeByFileEnding(fileEnding);
+		console.log(mimeType);
+		
+		return this.repoService.getWorkingRepository().pipe(switchMap(currentRepo => {
+			const reqConfig: AxiosRequestConfig = {
+				method: 'POST',
+				headers: {
+					'Content-Type': `${mimeType}`
+				},
+				responseType: 'text',
+				data: fileContent,
+				baseURL: 'http://localhost:7200/',
+				url: `/repositories/${currentRepo.id}/rdf-graphs/service?graph=${graphIri}`
+			};
+	
+			return this.http.request<void>(reqConfig).pipe(map(res => res.data));
+		}));
 	}
-
 }

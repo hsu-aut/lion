@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Post, Put, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 import { GraphOperationService } from '../../shared-services/graph-operation.service';
 import { StringBody } from '../../custom-decorator/StringBodyDecorator';
 import { GraphUpdate } from '@shared/models/graphs/GraphUpdate';
 import { GraphDto } from '@shared/models/graphs/GraphDto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 
 @Controller('/lion_BE/graphs')
@@ -37,8 +38,22 @@ export class GraphsController {
 	 */
 	@Get(':graphIri/triples')
 	getTriplesOfNamedGraph(@Param('graphIri') graphIri: string, @Headers('accept') format: string): Observable<string> {
-		return this.graphService.getAllTriples(decodeURIComponent(graphIri), format);
+		return this.graphService.getAllTriples(graphIri, format);
 	}
+
+
+	/**
+	 * Import triples from a file into a named graph
+	 * @param graphName Name of the graph to get all triples from
+	 * @param format Return format of the triples (e.g. text/turtle, application/rdf+xml, etc.)
+	 * @returns String with all triples (+ Prefixes) included in the given graph
+	 */
+	@Post(':graphIri/triples')
+	@UseInterceptors(FileInterceptor('file'))
+	importTriplesIntoGraph(@UploadedFile() file: Express.Multer.File, @Param('graphIri') graphIri: string): Observable<void> {
+		return this.graphService.importFileIntoGraph(file, graphIri);
+	}
+
 
 	/**
 	 * Can be used to set the current graph. Currently, this only checks for type == current, there could be more in the future
@@ -48,7 +63,8 @@ export class GraphsController {
 	@Put('')
 	setCurrentGraph(@Query('type') type: string, @Body() graphUpdate: GraphUpdate): Observable<GraphDto> {
 		if(type === 'current') return this.graphService.setCurrentGraph(graphUpdate);
-		throw new BadRequestException('Missing or wrong type. Make sure to set a query parameter type to "current" in case you want to change the current graph');
+		throw new BadRequestException(`Missing or wrong type. 
+			Make sure to set a query parameter type to "current" in case you want to change the current graph`);
 	}
 
 
