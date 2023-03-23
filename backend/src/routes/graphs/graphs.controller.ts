@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { map, Observable } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import { GraphOperationService } from '../../shared-services/graph-operation.service';
 import { StringBody } from '../../custom-decorator/StringBodyDecorator';
 import { GraphUpdate } from '@shared/models/graphs/GraphUpdate';
@@ -98,6 +98,9 @@ export class GraphsController {
 	 */
 	@Delete(':graphIri')
 	deleteNamedGraph(@Param('graphIri') graphIri: string): Observable<void> {
-		return this.graphService.deleteGraph(decodeURIComponent(graphIri));
+		return this.graphService.getCurrentGraph().pipe(switchMap(currentGraph => {
+			if (currentGraph.graphIri === graphIri) throw new BadRequestException("Cannot delete active graph");
+			return this.graphService.deleteGraph(decodeURIComponent(graphIri));
+		}));
 	}
 }

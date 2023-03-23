@@ -3,7 +3,7 @@ import { FormBuilder} from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 
-import { DataFormatHandler, FormatDescription } from '@shared/models/DataFormats';
+import { DataFormat, DataFormatHandler, FormatDescription } from '@shared/models/DataFormats';
 import { MessagesService } from '@shared-services/messages.service';
 
 import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
@@ -36,7 +36,7 @@ export class GraphsComponent implements OnInit {
     newGraph = this.fb.control('', [Validators.required, Validators.pattern('http://.+')]);
     downloadOption = this.fb.group({
         graph: ["", Validators.required],
-        dataFormat: ["", Validators.required],
+        dataFormat: this.fb.control<FormatDescription>(null,  Validators.required),
     })
     uploadOption = this.fb.group({
         graph: ["", Validators.required],
@@ -117,26 +117,31 @@ export class GraphsComponent implements OnInit {
         this.fileToUpload = eventTarget.files.item(0);
     }
 
+    /**
+     *
+     */
     uploadGraph(): void {
         const graphIri = this.uploadOption.get('graph').value;
         this.graphService.addTriplesToNamedGraph(this.fileToUpload, graphIri).subscribe();
         this.messageService.addMessage('warning', 'Ups!', 'It seems like you discovered some WIP');
     }
 
-    downloadGraph(graph: string, dataFormatName: string) {
-        if (this.downloadOption.valid) {
-            let dataFormat: FormatDescription;
-            for (const i in this.dataFormats) {
-                // console.log(this.dataFormats[i].formatName)
-                if (this.dataFormats[i].formatName == dataFormatName) {
-                    dataFormat = this.dataFormats[i];
-                }
-            }
-            this.graphService.getTriplesOfNamedGraph(graph, dataFormat);
 
-        } else if (this.downloadOption.invalid) {
+    /**
+     * Download contents of a graph in a certain data format
+     * @param graph IRI of the graph to export content from
+     * @param dataFormatName  Data format used when exporting contents
+     */
+    downloadGraph(): void {
+        const graphIri = this.downloadOption.get('graph').value;
+        const dataFormat = this.downloadOption.get('dataFormat').value;
+
+        if (this.downloadOption.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
+
+        this.graphService.getTriplesOfNamedGraph(graphIri, dataFormat);
     }
 
     /**
