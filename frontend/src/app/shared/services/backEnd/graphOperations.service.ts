@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { take } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map, take } from 'rxjs/operators';
 import { GraphUpdate } from '@shared/models/graphs/GraphUpdate';
 import { Tables } from '../../../features/modelling/utils/tables';
 import { ConfigurationService } from './configuration.service';
-import { FormatDescription } from '../../../features/modelling/utils/formats';
+import { FormatDescription } from '@shared/models/DataFormats';
 import { DownloadService } from './download.service';
 import { Observable } from 'rxjs';
 import { GraphDto } from '@shared/models/graphs/GraphDto';
@@ -41,7 +41,7 @@ export class GraphOperationsService {
         const queryParam = {
             type: "current"
         };
-        return this.http.get<GraphDto>(url, {params: queryParam});
+        return this.http.get<GraphDto>(url, {params: queryParam}).pipe(map(graphs => graphs[0]));
     }
 
     public setActiveGraph(graphIri: string): Observable<GraphDto> {
@@ -59,6 +59,13 @@ export class GraphOperationsService {
         const url = this.getGraphBaseUrl();
         const newGraphRequest = new GraphUpdate(newGraphIri);
         return this.http.post<void>(url, newGraphRequest);
+    }
+
+    public addTriplesToNamedGraph(file: File, graphIri: string): Observable<void> {
+        const formData = new FormData();
+        formData.append("file", file, file.name);
+        const url = `${this.getGraphBaseUrl()}/${encodeURIComponent(graphIri)}/triples`;
+        return this.http.post<void>(url, formData);
     }
 
 

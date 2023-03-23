@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder} from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { take } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 
-import { DataDescription, FormatDescription } from '../../modelling/utils/formats';
+import { DataFormatHandler, FormatDescription } from '@shared/models/DataFormats';
 import { MessagesService } from '@shared-services/messages.service';
 
 import { GraphOperationsService } from '../../../shared/services/backEnd/graphOperations.service';
@@ -20,8 +20,7 @@ export class GraphsComponent implements OnInit {
 
     // util variables
     keys = Object.keys;
-    dataDescription = new DataDescription();
-    dataFormats = this.dataDescription.ContentTypes;
+    dataFormats = DataFormatHandler.getFormatDescriptions();
 
     // stats
     graphsCount: number;
@@ -34,15 +33,15 @@ export class GraphsComponent implements OnInit {
     graphSetOption = this.fb.control('', Validators.required);
     graphDeleteOption = this.fb.control('', Validators.required);
     graphDeleteTriplesOption = this.fb.control('', Validators.required);
-    newGraph = this.fb.control('', [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('([-a-zA-Z0-9()@:%_+.~#?&//=]){1,}')]);
+    newGraph = this.fb.control('', [Validators.required, Validators.pattern('http://.+')]);
     downloadOption = this.fb.group({
         graph: ["", Validators.required],
         dataFormat: ["", Validators.required],
     })
     uploadOption = this.fb.group({
         graph: ["", Validators.required],
-        dataFormat: ["", Validators.required],
     })
+    fileToUpload: File;
 
     constructor(
         private fb: FormBuilder,
@@ -55,11 +54,13 @@ export class GraphsComponent implements OnInit {
     ngOnInit(): void {
         this.loadGraphList();
         this.graphService.getActiveGraph().subscribe(activeGraph => this.activeGraph = activeGraph);
-        this.graphsCount = this.graphList.length;
     }
 
     private loadGraphList(): void {
-        this.graphService.getAllGraphsOfWorkingRepository().subscribe(graphs => this.graphList = graphs);
+        this.graphService.getAllGraphsOfWorkingRepository().subscribe(graphs => {
+            this.graphList = graphs;
+            this.graphsCount = this.graphList.length;
+        });
     }
 
     /**
@@ -67,7 +68,10 @@ export class GraphsComponent implements OnInit {
      */
     createNamedGraph(): void {
         if(this.newGraph.invalid) {
+            console.log(this.newGraph);
+
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
         const rawGraphIri = this.newGraph.value;
         const protocol = "http://";
@@ -109,11 +113,14 @@ export class GraphsComponent implements OnInit {
         });
     }
 
-    uploadGraph(graph: string, dataFormatName: string) {
-        console.log(graph);
-        console.log(dataFormatName);
-        this.messageService.addMessage('warning', 'Ups!', 'It seems like you discovered some WIP');
+    setUploadFile(eventTarget: HTMLInputElement) {
+        this.fileToUpload = eventTarget.files.item(0);
+    }
 
+    uploadGraph(): void {
+        const graphIri = this.uploadOption.get('graph').value;
+        this.graphService.addTriplesToNamedGraph(this.fileToUpload, graphIri).subscribe();
+        this.messageService.addMessage('warning', 'Ups!', 'It seems like you discovered some WIP');
     }
 
     downloadGraph(graph: string, dataFormatName: string) {
@@ -155,14 +162,21 @@ export class GraphsComponent implements OnInit {
     deleteNamedGraph(): void {
         if (this.graphDeleteOption.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            return;
         }
-        const graphIri = this.graphDeleteOption.value;
-        this.graphService.deleteNamedGraph(graphIri).subscribe({
+
+        const graphIriToDelete = this.graphDeleteOption.value;
+        if (this.activeGraph.graphIri == graphIriToDelete) {
+            this.messageService.addMessage('error', 'Error', 'You cannot delete the currently selected (active) graph.');
+            return;
+        }
+
+        this.graphService.deleteNamedGraph(graphIriToDelete).subscribe({
             next: () => {
-                this.messageService.addMessage("success", "Graph deleted", `Deleted named graph with IRI ${graphIri}`);
+                this.messageService.addMessage("success", "Graph deleted", `Deleted named graph with IRI ${graphIriToDelete}`);
                 this.loadGraphList();
             },
-            error: (error) => this.messageService.addMessage("error", "Error", `Error while deleting named graph ${graphIri}. ${error}`)
+            error: (error) => this.messageService.addMessage("error", "Error", `Error while deleting named graph ${graphIriToDelete}. ${error}`)
         });
     }
 
