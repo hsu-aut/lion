@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 import { PrefixesService } from '@shared-services/prefixes.service';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { toSparqlTable } from '../utils/rxjs-custom-operators';
@@ -19,7 +19,6 @@ export class Isa88ModelService {
             private dlService: DownloadService,
             private http: HttpClient,
             private nameService: PrefixesService,
-            private graphs: GraphOperationsService
 
         ) { }
 
@@ -31,9 +30,6 @@ export class Isa88ModelService {
 
             const namespace: string = this.nameService.getActiveNamespace().namespace;
 
-            const GRAPHS: Array<string> = this.graphs.getGraphs();
-            const activeGraph: string = GRAPHS[this.graphs.getActiveGraph()];
-
             const parsedSystemName: string  = this.nameService.parseToName(SystemName);
             const parsedSystemIRI: string  = this.nameService.parseToIRI(SystemName);
 
@@ -41,13 +37,12 @@ export class Isa88ModelService {
             case "add": {
                 const params = new HttpParams()
                     .append("activeNameSpace", namespace)
-                    .append("activeGraph", activeGraph)
                     .append("SystemName", parsedSystemName)
                     .append("mode", mode)
                     .append("SystemIRI", parsedSystemIRI)
                     .append("action", "add");
-                // console.log(params);
-                // TODO: request does not work yet
+                    // console.log(params);
+                    // TODO: request does not work yet
                 return this.http.get<void>("lion_BE/isa88/buildISA88", {params: params});
             }
             case "delete": {
@@ -57,13 +52,12 @@ export class Isa88ModelService {
             case "build": {
                 const params = new HttpParams()
                     .append("activeNameSpace", namespace)
-                    .append("activeGraph", activeGraph)
                     .append("SystemName", parsedSystemName)
                     .append("mode", mode)
                     .append("SystemIRI", parsedSystemIRI)
                     .append("action", "build");
-                // console.log(params);
-                // TODO: request does not work yet
+                    // console.log(params);
+                    // TODO: request does not work yet
                 return this.http.get<string>("lion_BE/isa88/buildISA88", {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
                     const blob: Blob = new Blob([response], { type: 'text/plain' });
                     const name = 'insert.txt';

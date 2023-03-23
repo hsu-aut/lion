@@ -1,3 +1,5 @@
-export interface GraphUpdate {
-    graphName: string;
+export class GraphUpdate {
+    constructor(
+        public graphIri: string
+    ){}
 }

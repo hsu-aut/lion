@@ -19,8 +19,8 @@ export class TripleService {
      * @param triple Triple to add
      * @param graph Graph to add the triple into
      */
-    addTriple(triple: Triple, graph: string): Observable<void> {
-        const insertString = this.buildTripleInsertString(triple, graph);
+    addTriple(triple: Triple): Observable<void> {
+        const insertString = this.buildTripleInsertString(triple);
         return this.queryService.executeUpdate(insertString);
     }
 
@@ -30,12 +30,11 @@ export class TripleService {
      * @param graph Graph to insert triples into
      * @returns A SPARQL INSERT string that adds the given triples into the given graph
      */
-    buildTripleInsertString(triple: Triple, graph: string): string {
+    buildTripleInsertString(triple: Triple): string {
         const insertString = `
             INSERT {
-                GRAPH <${graph}>{
-                    ?subject ?predicate ?object;
-                    a owl:NamedIndividual.}
+                ?subject ?predicate ?object;
+                a owl:NamedIndividual.
             } WHERE {
                 BIND(IRI(STR("${triple.subject}")) AS ?subject).
                 BIND(IRI(STR("${triple.predicate}")) AS ?predicate).

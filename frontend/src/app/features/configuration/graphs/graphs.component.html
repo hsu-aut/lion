@@ -1,191 +1,166 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <h4 class="card-header">Tool Configuration</h4>
-  <div class="card-body">
-    <h5 class="card-title"> Named Graph Configuration </h5>
+    <h4 class="card-header">Tool Configuration</h4>
+    <div class="card-body">
+        <h5 class="card-title"> Named Graph Configuration </h5>
 
-    <div class="row">
-      <div class="col-xl-8">
-        <p class="card-text">The named graphs declared below are used to build distinguished sets of triples in the
-          ABox. This allows for seperate export (see below), and seperate manipulation (e.g. delete all). The default
-          graph for LiOnS entities is "http://lionFacts#".</p>
+        <div class="row">
+            <div class="col-xl-8">
+                <p class="card-text">The named graphs declared below are used to build distinguished sets of triples in the
+                    ABox. This allows for seperate export (see below), and seperate manipulation (e.g. delete all). The default
+                    graph for LiOnS entities is "http://lionFacts#".</p>
 
-
-      </div>
-      <div class="col">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Important notice</h5>
-            <p class="card-text">Please be aware, that deleted named graphs or triples cannot be restored.
-            </p>
-            <p class="card-text"><small class="text-muted">Current number of named graphs: {{graphsCount}}</small></p>
-          </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Important notice</h5>
+                        <p class="card-text">Please be aware, that deleted named graphs or triples cannot be restored.
+                        </p>
+                        <p class="card-text"><small class="text-muted">Current number of named graphs: {{graphsCount}}</small></p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <!-- tabs -->
+        <div class="px-sm-2 py-sm-2">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="ManageGraphs-tab" data-bs-toggle="tab" data-bs-target="#ManageGraphs" role="tab" type="button"
+                        aria-controls="ManageGraphs" aria-selected="true">Manage Graphs</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="UpDown-tab" data-bs-toggle="tab" data-bs-target="#UpDown" role="tab" aria-controls="UpDown"
+                        type="button" aria-selected="false"> Up- and Downloads </a>
+                </li>
+            </ul>
+            <!-- tab content -->
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active py-4" id="ManageGraphs" role="tabpanel" aria-labelledby="ManageGraphs-tab">
+                    <p class="text-sm-left">
+                        Manage your named graphs here. You can select a named graph that your triples will be added to.
+                        And you can clear or delete named graphs. Warning: Clearing and deleting named graphs cannot be undone.
+                    </p>
+
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-2">
+                            <label for="activeGraph" class="col-form-label">Active graph:</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="text" disabled readonly id="activeGraph" class="form-control" [value]="activeGraph?.graphIri">
+                        </div>
+                        <div class="col-2">
+                            <label for="existingGraphs" class="col-form-label">Existing named graphs:</label>
+                        </div>
+                        <div class="col-4">
+                            <div class="input-group">
+                                <select id="existingGraphs" [formControl]="graphSetOption" name="activeNamespace" class="form-control">
+                                    <option value=null selected hidden></option>
+                                    <option *ngFor='let graph of graphList'>
+                                        {{graph.graphIri}}
+                                    </option>
+                                </select>
+                                <button class="btn btn-primary" type="button" id="button-addon2" (click)="setActiveGraph()">Change graph</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <h6>Create new named graph</h6>
+                        <label for="newGraphIri" class="col-sm-2 col-form-label">Graph IRI:</label>
+                        <div class="col-sm-4">
+                            <input [formControl]="newGraph" id="newGraphIri" type="text" class="form-control"
+                            aria-label="Text input with dropdown button" placeholder="Enter graph IRI">
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-success" type="button"
+                                (click)="createNamedGraph()">Create graph</button>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <h6>Clear Graph</h6>
+                        <label for="graphToClear" class="col-sm-2 col-form-label">Graph IRI:</label>
+                        <div class="col-sm-4">
+                            <select [formControl]="graphDeleteTriplesOption" id="graphToClear" class="form-select">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let graph of graphList'>
+                                    {{graph.graphIri}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-warning" type="button"
+                                (click)="clearTriplesOfNamedGraph">Clear graph triples</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <h6>Delete Graph</h6>
+                        <label for="graphToDelete" class="col-sm-2 col-form-label">Graph IRI:</label>
+                        <div class="col-sm-4">
+                            <select [formControl]="graphDeleteOption" id="graphToDelete" class="form-select">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let graph of graphList'>
+                                    {{graph.graphIri}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-danger" type="button"
+                                (click)="deleteNamedGraph()">Delete graph</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane py-4" id="UpDown" role="tabpanel" aria-labelledby="UpDown-tab">
+                    <p class="text-sm-left"> You can up- and download triples from a named graph here.</p>
+
+                    <div class="row" [formGroup]="downloadOption">
+                        <div class="form-group col">
+                            <label> Named Graph to download: </label>
+                            <select formControlName="graph" name="activeNamespace" class="form-control">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let graph of graphList'>
+                                    {{graph.graphIri}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm">
+                            <label> Data format to serialize: </label>
+                            <div class="input-group mb-3">
+                                <select formControlName="dataFormat" name="dataFormat" class="form-select">
+                                    <option value=null selected hidden></option>
+                                    <option *ngFor='let x of dataFormats' [ngValue]="x">
+                                        {{x.formatName}}
+                                    </option>
+                                </select>
+                                <button class="btn btn-secondary" type="button" id="button-addon2" (click)="downloadGraph()">Download</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" [formGroup]="uploadOption">
+                        <div class="form-group col">
+                            <label> Named Graph to upload to: </label>
+                            <select formControlName="graph" name="activeNamespace" class="form-control">
+                                <option value=null selected hidden></option>
+                                <option *ngFor='let graph of graphList'>
+                                    {{graph.graphIri}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-sm">
+                            <label>File to upload </label>
+                            <div class="input-group mb-3">
+                                <input class="form-control" type="file" (change)="setUploadFile($event.target)">
+                                <button class="btn btn-secondary" type="button" id="button-addon2" (click)="uploadGraph()">Upload</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
-    <!-- tabs -->
-    <div class="px-sm-2 py-sm-2">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="SetGraph-tab" data-bs-toggle="tab" data-bs-target="#SetGraph" role="tab" type="button"
-            aria-controls="SetGraph" aria-selected="true"> Set Graph </a>
-        </li>
-        <li class="nav-item"> 
-          <a class="nav-link" id="ManageGraph-tab" data-bs-toggle="tab" data-bs-target="#ManageGraph" role="tab" type="button"
-            aria-controls="ManageGraph" aria-selected="false"> Manage Graphs </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="UpDown-tab" data-bs-toggle="tab" data-bs-target="#UpDown" role="tab" aria-controls="UpDown" type="button"
-            aria-selected="false"> Up- and Downloads </a>
-        </li>
-      </ul>
-      <!-- tab content -->
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active py-4" id="SetGraph" role="tabpanel" aria-labelledby="SetGraph-tab">
-          <p class="text-sm-left"> You can set the named graph, that your triples will be added to, here.</p>
-
-
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> The current named graph is: </label>
-              <input class="form-control" type="text" [placeholder]="activeGraph" readonly>
-            </div>
-            <div class="form-group col-sm">
-              <label> Existing named graphs: </label>
-              <div class="input-group mb-3">
-                <select [formControl]="graphSetOption" name="activeNamespace" class="form-control">
-                  <option value=null selected hidden></option>
-                  <option *ngFor='let x of graphList'>
-                    {{x}}
-                  </option>
-                </select>
-                <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2"
-                    (click)="setActiveGraph(graphSetOption.value)">Set to Selection</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-
-
-        <div class="tab-pane py-4" id="ManageGraph" role="tabpanel" aria-labelledby="ManageGraph-tab">
-          <p class="text-sm-left"> Here, you can create or delete named graphs below. When deleting you can choose
-            between complete delete or just deleting the triples that are assigned to the graph.</p>
-
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> Name of the new named graph: </label>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">http://</span>
-                </div>
-                <input [formControl]="newGraph" class="form-control" type="text">
-                <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2"
-                    (click)="createNamedGraph(newGraph.value)">Create</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> Delete the following graph: </label>
-              <div class="input-group mb-3">
-                <select [formControl]="graphDeleteOption" name="activeNamespace" class="form-control">
-                  <option value=null selected hidden></option>
-                  <option *ngFor='let x of graphList'>
-                    {{x}}
-                  </option>
-                </select>
-                <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2"
-                    (click)="deleteNamedGraph(graphDeleteOption.value)">Delete Graph</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> Delete the triples from the following graph: </label>
-              <div class="input-group mb-3">
-                <select [formControl]="graphDeleteTriplesOption" name="activeNamespace" class="form-control">
-                  <option value=null selected hidden></option>
-                  <option *ngFor='let x of graphList'>
-                    {{x}}
-                  </option>
-                </select>
-                <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2"
-                    (click)="deleteTriplesOfNamedGraph(graphDeleteTriplesOption.value)">Delete Triples</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-
-        <div class="tab-pane py-4" id="UpDown" role="tabpanel" aria-labelledby="UpDown-tab">
-          <p class="text-sm-left"> You can up- and download triples from a named graph here.</p>
-
-          <div class="row" [formGroup]="downloadOption">
-            <div class="form-group col">
-              <label> Named Graph to download: </label>
-              <select formControlName="graph" name="activeNamespace" class="form-control">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of graphList'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> Data format to serialize: </label>
-              <div class="input-group mb-3">
-                <select formControlName="dataFormat" name="dataFormat" class="form-control">
-                  <option value=null selected hidden></option>
-                  <option *ngFor='let x of keys(dataFormats)'>
-                    {{dataFormats[x].formatName}}
-                  </option>
-                </select>
-                <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2"
-                    (click)="downloadGraph(downloadOption.controls['graph'].value, downloadOption.controls['dataFormat'].value)">Download</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row" [formGroup]="uploadOption">
-            <div class="form-group col">
-              <label> Named Graph to upload to: </label>
-              <select formControlName="graph" name="activeNamespace" class="form-control">
-                <option value=null selected hidden></option>
-                <option *ngFor='let x of graphList'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> Data format of the file: </label>
-              <div class="input-group mb-3">
-                <select formControlName="dataFormat" name="dataFormat" class="form-control">
-                  <option value=null selected hidden></option>
-                  <option *ngFor='let x of keys(dataFormats)'>
-                    {{dataFormats[x].formatName}}
-                  </option>
-                </select>
-                <div class="input-group-append">
-                  <button class="btn btn-secondary" type="button" id="button-addon2"
-                    (click)="uploadGraph(uploadOption.controls['graph'].value, uploadOption.controls['dataFormat'].value)">Upload</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-    </div>
-  </div>

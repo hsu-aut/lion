@@ -3,8 +3,8 @@ export interface SparqlResponse {
         vars: Array<string>
     },
     results: {
-        bindings:[
-            Record<string, {type: string, value: string, datatype?: string}>
-        ]
+        bindings:
+            Record<string, {type: string, value: string, datatype?: string}>[]
+        
     }
 }

@@ -84,10 +84,11 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
             const systemOrModule = form.controls['subject'].value;
             const opcUaServer = form.controls['object'].value;
 
-            this.opcService.createOpcVdi2206Connection(systemOrModule, opcUaServer).pipe(take(1)).subscribe(data => {
-                this.loadingScreenService.stopLoading();
-                this.loadExistingConnections();
-            });
+            // TODO: A lot wrong here that has to be fixed in a session
+            // this.opcService.createOpcVdi2206Connection(systemOrModule, opcUaServer).pipe(take(1)).subscribe(data => {
+            //     this.loadingScreenService.stopLoading();
+            //     this.loadExistingConnections();
+            // });
 
         } else if (form.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');

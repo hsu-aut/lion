@@ -1,4 +1,5 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { readFileSync } from 'fs';
 import { createPool, Pool } from 'mysql2/promise';
 import { ConnectionOptions } from 'mysql2';

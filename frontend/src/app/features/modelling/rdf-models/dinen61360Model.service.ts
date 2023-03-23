@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 import { DownloadService } from '@shared-services/backEnd/download.service';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
@@ -49,13 +49,10 @@ export class Dinen61360Service {
 
     // builders
     public modifyInstance(action: string, variables: DINEN61360Variables): Observable<void> {
-        const GRAPHS: Array<string> = this.graphs.getGraphs();
-        const activeGraph: string = GRAPHS[this.graphs.getActiveGraph()];
         switch (action) {
         case "add": {
             const params = new HttpParams()
-                .append("action", "add")
-                .append("activeGraph", activeGraph);
+                .append("action", "add");
             return this.http.post<void>("lion_BE/dinen61360/modifyInstance", variables, {params: params});
         }
         case "delete": {
@@ -64,24 +61,23 @@ export class Dinen61360Service {
         }
         case "build": {
             const params = new HttpParams()
-                .append("action", "build")
-                .append("activeGraph", activeGraph);
-            return this.http.post<string>("lion_BE/dinen61360/modifyInstance", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
-                const blob = new Blob([response], { type: 'text/plain' });
-                const name = 'insert.txt';
-                return this.dlService.download(blob, name);
-            }));
+                .append("action", "build");
+            return this.http.post<string>("lion_BE/dinen61360/modifyInstance", variables, {params: params, responseType: 'text' as 'json'})
+                .pipe(map((response: string) => {
+                    const blob = new Blob([response], { type: 'text/plain' });
+                    const name = 'insert.txt';
+                    return this.dlService.download(blob, name);
+                }));
         }
         }
     }
+
+
     public modifyType(action: string, variables: DINEN61360Variables): Observable<void> {
-        const GRAPHS: Array<string> = this.graphs.getGraphs();
-        const activeGraph: string = GRAPHS[this.graphs.getActiveGraph()];
         switch (action) {
         case "add": {
             const params = new HttpParams()
-                .append("action", "add")
-                .append("activeGraph", activeGraph);
+                .append("action", "add");
             return this.http.post<void>("lion_BE/dinen61360/modifyType", variables, {params: params});
         }
         case "delete": {
@@ -90,13 +86,13 @@ export class Dinen61360Service {
         }
         case "build": {
             const params = new HttpParams()
-                .append("action", "build")
-                .append("activeGraph", activeGraph);
-            return this.http.post<string>("lion_BE/dinen61360/modifyType", variables, {params: params, responseType: 'text' as 'json'}).pipe(map((response: string) => {
-                const blob = new Blob([response], { type: 'text/plain' });
-                const name = 'insert.txt';
-                return this.dlService.download(blob, name);
-            }));
+                .append("action", "build");
+            return this.http.post<string>("lion_BE/dinen61360/modifyType", variables, {params: params, responseType: 'text' as 'json'})
+                .pipe(map((response: string) => {
+                    const blob = new Blob([response], { type: 'text/plain' });
+                    const name = 'insert.txt';
+                    return this.dlService.download(blob, name);
+                }));
         }
         }
     }

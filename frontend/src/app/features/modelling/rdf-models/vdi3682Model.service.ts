@@ -4,7 +4,7 @@ import { PrefixesService } from '@shared-services/prefixes.service';
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 import { DownloadService } from '@shared-services/backEnd/download.service';
 import { MessagesService } from '@shared-services/messages.service';
-import { take } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { toSparqlTable, toSparqlVariableList } from '../utils/rxjs-custom-operators';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
@@ -21,7 +21,7 @@ export class Vdi3682ModelService {
         private nameService: PrefixesService,
         private messageService: MessagesService,
         private downloadService: DownloadService,
-        private graphs: GraphOperationsService
+        private graphService: GraphOperationsService
     ) {}
 
 
@@ -118,12 +118,9 @@ export class Vdi3682ModelService {
 
 
     public modifyTripel(triple: Triple, action: string) {
-        const GRAPHS = this.graphs.getGraphs();
-        const activeGraph = GRAPHS[this.graphs.getActiveGraph()];
-
         switch (action) {
         case "add": {
-            return this.tripleService.addTriple(triple, activeGraph);
+            return this.tripleService.addTriple(triple);
         }
         case "delete": {
             this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
@@ -131,7 +128,7 @@ export class Vdi3682ModelService {
         }
         case "build": {
             const blobObserver = new Observable((observer) => {
-                const insertString = this.tripleService.buildTripleInsertString(triple, activeGraph);
+                const insertString = this.tripleService.buildTripleInsertString(triple);
                 const blob = new Blob([insertString], { type: 'text/plain' });
                 const name = 'insert.txt';
                 this.downloadService.download(blob, name);

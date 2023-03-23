@@ -1,6 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { RepositoryService } from '../../shared-services/repository.service';
+import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
+import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
 import { ModelService } from '../../shared-services/model.service';
+import { map, Observable } from 'rxjs';
 
 @Controller('/lion_BE/repositories')
 export class RepositoriesController {
@@ -11,7 +14,10 @@ export class RepositoriesController {
 	 * @returns 
 	 */
 	@Get()
-	getListOfRepositories(): any {
+	getListOfRepositories(@Query('type') type: string): Observable<RepositoryDto[]> {
+		if (type === "current") {
+			return this.repoService.getWorkingRepository().pipe(map(repo => [repo]));
+		}
 		return this.repoService.getAllRepositories();
 	}
 
@@ -20,20 +26,20 @@ export class RepositoriesController {
 	 * @param repositoryName Name of the repository to create
 	 * @returns 
 	 */
-	@Get('/create')
-	createNewRepository(@Query('repositoryName') repositoryName: string): any {
-		return this.repoService.createRepository(repositoryName);
+	@Post('')
+	addNewRepository(@Body()newRepositoryRequets: NewRepositoryRequestDto): any {
+		return this.repoService.createRepository(newRepositoryRequets);
 	}
 
 	@Put('')
-	setWorkingRepository(@Query("type") type: string, @Body() repoData: {repositoryName: string}) {
+	setWorkingRepository(@Query("type") type: string, @Body() repoData: {repositoryId: string}): Observable<RepositoryDto> {
 		if(type == "current") {
-			this.repoService.setWorkingRepository(repoData.repositoryName);
+			return this.repoService.setWorkingRepository(repoData.repositoryId);
 		}
 	}
 
 	/**
-	 * GET all RDF triples
+	 * GET all RDF triples of one repository
 	 * @returns 
 	 */
 	@Get('/current/triples')

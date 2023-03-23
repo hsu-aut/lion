@@ -85,10 +85,11 @@ export class OpcFpdConnectorComponent implements OnInit {
             const process = form.controls['subject'].value;
             const opcUaNode = form.controls['object'].value;
 
-            this.opcService.createNodeAndProecssConnection(process, opcUaNode).pipe(take(1)).subscribe(data => {
-                this.loadingScreenService.stopLoading();
-                this.loadExistingConnections();
-            });
+            // TODO: A lot wrong here that needs to be fixed in one session
+            // this.opcService.createNodeAndProecssConnection(process, opcUaNode).pipe(take(1)).subscribe(data => {
+            //     this.loadingScreenService.stopLoading();
+            //     this.loadExistingConnections();
+            // });
 
         } else if (form.invalid) {
             this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');

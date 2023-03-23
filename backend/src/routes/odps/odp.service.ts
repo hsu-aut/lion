@@ -26,7 +26,7 @@ export class OdpService {
 	
 
 	async insertOdp(patternName: OdpName, version: string): Promise<AxiosResponse<void>> {
-		const currentRepo = this.repoService.getWorkingRepository();
+		const currentRepo =  await firstValueFrom(this.repoService.getWorkingRepository());
 		const odpUrl = this.odpStore.getOdpVersionUrl(patternName, version);
 		const odp = await firstValueFrom(this.http.get<any>(odpUrl));
 
@@ -39,7 +39,7 @@ export class OdpService {
 			responseType: 'text',
 			data: odp.data,
 			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}/statements`
+			url: `/repositories/${currentRepo.id}/statements`
 		};
 
 		// TODO: Check if this really returns void 
