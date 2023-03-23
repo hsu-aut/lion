@@ -131,12 +131,11 @@
                             <div class="input-group mb-3">
                                 <select formControlName="dataFormat" name="dataFormat" class="form-select">
                                     <option value=null selected hidden></option>
-                                    <option *ngFor='let x of dataFormats'>
+                                    <option *ngFor='let x of dataFormats' [ngValue]="x">
                                         {{x.formatName}}
                                     </option>
                                 </select>
-                                <button class="btn btn-secondary" type="button" id="button-addon2"
-                                    (click)="downloadGraph(downloadOption.controls['graph'].value, downloadOption.controls['dataFormat'].value)">Download</button>
+                                <button class="btn btn-secondary" type="button" id="button-addon2" (click)="downloadGraph()">Download</button>
                             </div>
                         </div>
                     </div>
