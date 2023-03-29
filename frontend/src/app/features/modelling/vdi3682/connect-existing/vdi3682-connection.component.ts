@@ -58,7 +58,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
             });
 
         } else {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...')
         }
     }
 

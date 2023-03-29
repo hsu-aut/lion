@@ -77,7 +77,7 @@ export class ResourceComponent implements OnInit {
      */
     getResourceDefinition(): WadlResource {
         if (this.resourceForm.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             throw new Error("Invalid Form");
         }
 

@@ -68,7 +68,7 @@ export class QueriesService {
                 observer.complete();
             },
             error => {
-                this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status}`);
+                this.messageService.warn('Ups!',`Seams like the Server responded with a ${error.status}`);
             });
         });
 
@@ -96,7 +96,7 @@ export class QueriesService {
                 observer.complete();
             },
             error => {
-                this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
+                this.messageService.warn('Ups!',`Seams like the Server responded with a ${error.status} code`);
             });
         });
 
@@ -122,12 +122,12 @@ export class QueriesService {
         // -> Check if this can be done using an interceptor
         const insertObservable = new Observable<void>((observer) => {
             this.http.post(urlPOST, updateString, { headers, params }).pipe(take(1)).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Added!', `Added triples to the active graph`);
+                this.messageService.success('Added!',`Added triples to the active graph`);
                 observer.next();
                 observer.complete();
             },
             error => {
-                this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
+                this.messageService.warn('Ups!',`Seams like the Server responded with a ${error.status} code`);
             });
         });
 

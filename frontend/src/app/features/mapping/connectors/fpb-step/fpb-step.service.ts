@@ -86,7 +86,7 @@ export class FpbStepService {
                 return this.query.executeUpdate(this.insert.createEntity(variables, activeGraph));
             }
             case "delete": {
-                this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
+                this.messageService.warn('Sorry!', 'This feature has not been implemented yet');
                 break;
             }
             case "build": {

@@ -94,7 +94,7 @@ export class NewSimpleElementComponent implements OnInit {
               this.onNewTriple.emit();
           });
       } else if (this.simpleElementForm.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+          this.messageService.warn('Ups!','It seems like you are missing some data here...')
       }
   }
 

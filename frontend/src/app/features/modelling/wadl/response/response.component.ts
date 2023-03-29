@@ -90,7 +90,7 @@ export class ResponseComponent {
 
     addResponse(): void {
         if(!this.responseCanBeCreated) {
-            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request already exists");
+            this.messageService.warn('False request info','Form is invalid or this request already exists')
         } else {
             const {resource, methodType, responseCode} = this.responseForm.value;
             const request = new WadlCreateResponseDto(resource.resourceIri, methodType, responseCode);

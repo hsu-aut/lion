@@ -61,7 +61,7 @@ export class NamespacesComponent implements OnInit {
           this.prefixService.setActiveNamespace(namespaceKey);
           this.activeNamespace = this.prefixService.getActiveNamespace().namespace;
       } else if (this.namespaceOption.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+          this.messageService.warn('Ups!','It seems like you are missing some data here...')
       }
 
   }
@@ -78,10 +78,10 @@ export class NamespacesComponent implements OnInit {
       if (this.namespaceFormEditDelete.valid) {
           this.prefixService.editNamespace(this.userKey, this.namespaceFormEditDelete.controls['prefix'].value, this.namespaceFormEditDelete.controls['namespace'].value);
           this.PREFIXES = this.prefixService.getPrefixes();
-          this.messageService.addMessage('success', 'Edited namespace', `The namespace ${this.namespaceFormEditDelete.controls['namespace'].value} has been edited.`);
+          this.messageService.success('Edited namespace',`The namespace ${this.namespaceFormEditDelete.controls['namespace'].value} has been edited.`)
 
       } else if (this.namespaceFormEditDelete.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+          this.messageService.warn('Ups!','It seems like you are missing some data here...')
       }
   }
   createNamespace() {
@@ -89,10 +89,10 @@ export class NamespacesComponent implements OnInit {
           this.prefixService.addNamespace(this.namespaceFormCreate.controls['prefix'].value, this.namespaceFormCreate.controls['namespace'].value);
           this.PREFIXES = this.prefixService.getPrefixes();
           this.namespaceCount = this.PREFIXES.length;
-          this.messageService.addMessage('success', 'Added namespace', `The namespace ${this.namespaceFormCreate.controls['namespace'].value} has been added.`);
+          this.messageService.success('Added namespace',`The namespace ${this.namespaceFormCreate.controls['namespace'].value} has been added.`)
 
       } else if (this.namespaceFormCreate.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+          this.messageService.warn('Ups!','It seems like you are missing some data here...')
       }
   }
 
@@ -101,10 +101,10 @@ export class NamespacesComponent implements OnInit {
           this.prefixService.deleteNamespace(this.userKey);
           this.PREFIXES = this.prefixService.getPrefixes();
           this.namespaceCount = this.PREFIXES.length;
-          this.messageService.addMessage('success', 'Deleted namespace', `The namespace ${this.namespaceFormEditDelete.controls['namespace'].value} has been deleted.`);
+          this.messageService.success('Deleted namespace',`The namespace ${this.namespaceFormEditDelete.controls['namespace'].value} has been deleted.`)
 
       } else if (this.namespaceFormEditDelete.invalid) {
-          this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+          this.messageService.warn('Ups!','It seems like you are missing some data here...')
       }
   }
 

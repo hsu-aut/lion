@@ -85,7 +85,7 @@ export class RequestComponent implements OnInit {
 
     addRequest(): void {
         if(!this.requestCanBeCreated) {
-            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request already exists");
+            this.messageService.warn('False request info','Form is invalid or this request already exists');
         } else {
             const {resource, methodType} = this.requestForm.value;
             const request = new WadlCreateRequestDto(resource.resourceIri, methodType);
@@ -99,13 +99,13 @@ export class RequestComponent implements OnInit {
 
     deleteRequest():void {
         if(this.requestForm.invalid || !this.existingRequest) {
-            this.messageService.addMessage("warn", "False request info", "Form is invalid or this request doesn't exist");
+            this.messageService.warn('False request info',"Form is invalid or this request doesn't exist");
         }
     }
 
     getSparqlInsert(){
         if(this.requestForm.invalid) {
-            this.messageService.addMessage("warn", "False request info", "Form is invalid");
+            this.messageService.warn('False request info','Form is invalid');
         }
     }
 

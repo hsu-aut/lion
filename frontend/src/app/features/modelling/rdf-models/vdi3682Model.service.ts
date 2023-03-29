@@ -123,7 +123,7 @@ export class Vdi3682ModelService {
             return this.tripleService.addTriple(triple);
         }
         case "delete": {
-            this.messageService.addMessage('warning', 'Sorry!', 'This feature has not been implemented yet');
+            this.messageService.warn('Sorry!', 'This feature has not been implemented yet');
             break;
         }
         case "build": {

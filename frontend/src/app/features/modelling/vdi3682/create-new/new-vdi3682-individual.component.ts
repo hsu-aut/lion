@@ -68,7 +68,7 @@ export class NewVdi3682IndividualComponent implements OnInit {
             });
             this.newIndividualForm.reset();
         } else {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...')
         }
     }
 
