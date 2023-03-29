@@ -153,7 +153,7 @@
                         <div class="form-group col-sm">
                             <label>File to upload </label>
                             <div class="input-group mb-3">
-                                <input class="form-control" type="file" (change)="setUploadFile($event.target)">
+                                <input class="form-control" type="file" onchange="() => setUploadFile($event.target)">
                                 <button class="btn btn-secondary" type="button" id="button-addon2" (click)="uploadGraph()">Upload</button>
                             </div>
                         </div>

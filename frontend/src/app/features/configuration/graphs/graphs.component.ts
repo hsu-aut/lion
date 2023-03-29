@@ -70,7 +70,7 @@ export class GraphsComponent implements OnInit {
         if(this.newGraph.invalid) {
             console.log(this.newGraph);
 
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
         const rawGraphIri = this.newGraph.value;
@@ -80,12 +80,12 @@ export class GraphsComponent implements OnInit {
         this.graphService.addGraph(graphIri).subscribe({
             next: () => {
                 this.newGraph.reset();
-                this.messageService.addMessage("success", "Graph addded", `Added a new graph with IRI ${graphIri}`);
+                this.messageService.warn('Graph addded',`Added a new graph with IRI ${graphIri}`);
                 this.loadGraphList();
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);
-                this.messageService.addMessage("error", "Error", `Error while adding new graph ${graphIri}. ${error}`);
+                this.messageService.warn("Error",`Error while adding new graph ${graphIri}. ${error}`);
             }
         });
     }
@@ -96,19 +96,19 @@ export class GraphsComponent implements OnInit {
      */
     setActiveGraph(): void {
         if (this.graphSetOption.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
         }
         const newActiveGraphIri = this.graphSetOption.value;
         console.log(newActiveGraphIri);
 
         this.graphService.setActiveGraph(newActiveGraphIri).subscribe({
             next: (newGraph) => {
-                this.messageService.addMessage("success", "Active graph changed", `Changed the active graph to ${newGraph.graphIri}`);
+                this.messageService.warn('Active graph changed',`Changed the active graph to ${newGraph.graphIri}`);
                 this.activeGraph = newGraph;
             },
             error: (error: HttpErrorResponse) => {
                 console.log(error);
-                this.messageService.addMessage("error", "Error", `Error while changing the active graph ${newActiveGraphIri}. ${error}`);
+                this.messageService.warn("Error",`Error while changing the active graph ${newActiveGraphIri}. ${error}`);
             }
         });
     }
@@ -123,7 +123,7 @@ export class GraphsComponent implements OnInit {
     uploadGraph(): void {
         const graphIri = this.uploadOption.get('graph').value;
         this.graphService.addTriplesToNamedGraph(this.fileToUpload, graphIri).subscribe();
-        this.messageService.addMessage('warning', 'Ups!', 'It seems like you discovered some WIP');
+        this.messageService.warn('Ups!', 'It seems like you discovered some WIP');
     }
 
 
@@ -137,7 +137,7 @@ export class GraphsComponent implements OnInit {
         const dataFormat = this.downloadOption.get('dataFormat').value;
 
         if (this.downloadOption.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
 
@@ -149,14 +149,14 @@ export class GraphsComponent implements OnInit {
      */
     clearTriplesOfNamedGraph(): void {
         if (this.graphDeleteTriplesOption.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
         }
         const graphIri = this.graphDeleteTriplesOption.value;
         this.graphService.deleteTriplesOfNamedGraph(graphIri).subscribe({
-            next: () => this.messageService.addMessage("success", "Graph clear", `Cleared triples of named graph with IRI ${graphIri}`),
+            next: () => this.messageService.success("Graph clear", `Cleared triples of named graph with IRI ${graphIri}`),
             error: (error: HttpErrorResponse) => {
                 console.log(error);
-                this.messageService.addMessage("error", "Error", `Error while clearing triples of named graph ${graphIri}. ${error}`);
+                this.messageService.warn("Error",`Error while clearing triples of named graph ${graphIri}. ${error}`);
             }
         });
     }
@@ -166,22 +166,22 @@ export class GraphsComponent implements OnInit {
      */
     deleteNamedGraph(): void {
         if (this.graphDeleteOption.invalid) {
-            this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
 
         const graphIriToDelete = this.graphDeleteOption.value;
         if (this.activeGraph.graphIri == graphIriToDelete) {
-            this.messageService.addMessage('error', 'Error', 'You cannot delete the currently selected (active) graph.');
+            this.messageService.warn('Error','You cannot delete the currently selected (active) graph.');
             return;
         }
 
         this.graphService.deleteNamedGraph(graphIriToDelete).subscribe({
             next: () => {
-                this.messageService.addMessage("success", "Graph deleted", `Deleted named graph with IRI ${graphIriToDelete}`);
+                this.messageService.warn('Graph deleted',`Deleted named graph with IRI ${graphIriToDelete}`);
                 this.loadGraphList();
             },
-            error: (error) => this.messageService.addMessage("error", "Error", `Error while deleting named graph ${graphIriToDelete}. ${error}`)
+            error: (error) => this.messageService.warn("Error", `Error while deleting named graph ${graphIriToDelete}. ${error}`)
         });
     }
 

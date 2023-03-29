@@ -31,6 +31,7 @@ export class ParameterComponent {
         private wadlService: WadlModelService,
     ) {}
 
+
     ngOnInit(): void {
         this.wadlService.getParameterTypes().pipe(take(1), toSparqlVariableList()).subscribe(data => {
             this.parameterTypes = data;
@@ -48,6 +49,11 @@ export class ParameterComponent {
             this.parameterForm.push(this.createNewParameterFormEntry());
         });
 
+    }
+
+    getParamControl(index: number, key: string) {
+        const paramGroup = this.parameterForm.at(index) as FormGroup<ParameterFormGroup>;
+        return paramGroup.get(key) as FormControl;
     }
 
     setOntologicalDataType(typeChangedEvent: TypeChangedEvent): void {

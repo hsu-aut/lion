@@ -34,7 +34,7 @@ export class StepComponent implements OnInit {
   }
 
   mapToRDF(file: string) {
-      this.messageService.addMessage('warning', 'Alright!', `The Backend started processing the file, that may take a while...`);
+      this.messageService.warn('Alright!', `The Backend started processing the file, that may take a while...`);
       this.step.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
           console.log(data);
           this.connector.initializeService();

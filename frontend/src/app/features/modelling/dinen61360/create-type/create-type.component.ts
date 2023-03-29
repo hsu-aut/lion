@@ -106,7 +106,7 @@ export class CreateTypeComponent implements OnInit {
       console.log(action);
       console.log(form);
     } else if (form.invalid) {
-        this.messageService.addMessage('error', 'Ups!', 'It seems like you are missing some data here...');
+        this.messageService.warn('Ups!','It seems like you are missing some data here...')
     }
   }
 

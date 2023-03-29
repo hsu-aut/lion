@@ -1,5 +1,5 @@
 <div class="row">
-  <!-- <div class="form-group col-sm">
+    <!-- <div class="form-group col-sm">
     <div class="input-group mb-3">
       <div class="custom-file">
         <label class="custom-file-label" for="customFile">{{fileName}}</label>
@@ -19,43 +19,43 @@
       <button type="button" class="btn btn-secondary" (click)="upload()">Upload</button>
     </div>
   </div> -->
-  <div class="input-group col">
-    <div class="custom-file">
-      <label class="custom-file-label" for="inputGroupFile04">{{lastFileName}}</label>
-      <input type="file" class="custom-file-input" id="inputGroupFile04" (change)="addFiles($event.target.files)">
+    <div class="input-group col">
+        <div class="custom-file">
+            <label class="custom-file-label" for="inputGroupFile04">{{lastFileName}}</label>
+            <input type="file" class="custom-file-input" id="inputGroupFile04" onchange="() => addFiles($event.target.files)">
+        </div>
+        <div class="input-group-append">
+            <button class="btn btn-secondary" type="button" (click)="upload()">Upload</button>
+        </div>
     </div>
-    <div class="input-group-append">
-      <button class="btn btn-secondary" type="button" (click)="upload()">Upload</button>
-    </div>
-  </div>
 </div>
 
 
 <div *ngIf="progress.length > 0; then uploadBlock else listBlock"></div>
 <ng-template #listBlock>
-  <div *ngFor="let file of files">
-    <div class="row mt-3">
-      {{file.name}}
+    <div *ngFor="let file of files">
+        <div class="row mt-3">
+            {{file.name}}
+        </div>
+        <div class="row">
+            <div class="progress col-sm" style="height: 1px;">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="row">
-      <div class="progress col-sm" style="height: 1px;">
-        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-          aria-valuemax="100"></div>
-      </div>
-    </div>
-  </div>
 </ng-template>
 
 <ng-template #uploadBlock>
-  <div *ngFor="let individualPro of progress">
-    <div class="row mt-3">
-      {{individualPro.id}}
+    <div *ngFor="let individualPro of progress">
+        <div class="row mt-3">
+            {{individualPro.id}}
+        </div>
+        <div class="row">
+            <div class="progress col-sm" style="height: 1px;">
+                <div class="progress-bar" role="progressbar" [style.width]="individualPro.percentDone + '%'" aria-valuenow="0"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
     </div>
-    <div class="row">
-      <div class="progress col-sm" style="height: 1px;">
-        <div class="progress-bar" role="progressbar" [style.width]="individualPro.percentDone + '%'" aria-valuenow="0" aria-valuemin="0"
-          aria-valuemax="100"></div>
-      </div>
-    </div>
-  </div>
 </ng-template>

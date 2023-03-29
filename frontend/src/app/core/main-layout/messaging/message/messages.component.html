@@ -1,3 +1,12 @@
+<section ng-show="alertDisplayed" class="message">
+    <div class="alert" [ngClass]="message.type" role="alert" >
+    <strong class="alert-heading">{{message.title}} </strong>
+    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close"></button>
+    <p>{{message.textbody}}</p>
+    </div>
+</section>
+
+<!--
 <div class="message-screen-wrapper">
     <div [formGroup]="messageForm">
         <div formArrayName="successFormArray">
@@ -32,4 +41,4 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->

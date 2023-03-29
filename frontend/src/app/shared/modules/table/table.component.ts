@@ -13,7 +13,7 @@ export class TableComponent {
     @Input() tableTitle: string;
     @Input() tableExplanation: string;
     @Input() filter: boolean;
-    @Output() tableClickedRow = new EventEmitter<Array<Record<string, any>>>();
+    @Output() tableClickedRow = new EventEmitter<Record<string, any>>();
     @Output() tableClickedCell = new EventEmitter<string>();
 
     // util variables
@@ -54,7 +54,9 @@ export class TableComponent {
         this.setPageArray();
     }
 
-    tableClickRow(clickedRow: Array<Record<string, any>>) {
+    tableClickRow(clickedRow: Record<string, any>) {
+        console.log(clickedRow);
+
         this.tableClickedRow.emit(clickedRow);
     }
     tableClickCell(cleckedCell: string) {

@@ -12,7 +12,8 @@ import { MainLayoutRoutingModule } from './main-layout-routing.module';
 // child components
 import { HeaderComponent } from './head-nav/header.component';
 import { LoaderComponent } from '../../shared/loader/loader.component';
-import { MessagesComponent } from '../../shared/messages/messages.component';
+import { MessageContainerComponent } from './messaging/message-container/message-container.component';
+import { MessageComponent } from './messaging/message/messages.component';
 
 @NgModule({
     imports: [
@@ -25,7 +26,8 @@ import { MessagesComponent } from '../../shared/messages/messages.component';
         MainLayoutComponent,
         HeaderComponent,
         LoaderComponent,
-        MessagesComponent
+        MessageContainerComponent,
+        MessageComponent
     ]
 })
 export class MainLayoutModule { }

@@ -34,7 +34,7 @@ export class FpbComponent implements OnInit {
     }
 
     mapToRDF(file: string) {
-        this.messageService.addMessage('warning', 'Alright!', `Backend is processing the file. This may take a while.`);
+        this.messageService.warn('Alright!', `Backend is processing the file. This may take a while.`);
         this.fpb.mapToRDF(file).pipe(take(1)).subscribe((data: any) => {
             console.log(data);
             this.connector.initializeService();
