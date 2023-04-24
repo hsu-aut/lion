@@ -42,4 +42,8 @@
         "source.fixAll.eslint": true
     },
     "eslint.alwaysShowStatus": true,
+    "conventionalCommits.scopes": [
+        "config",
+        "wadl"
+    ],
 }
