@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom, map } from 'rxjs';
 import { SparqlService } from '../../shared-services/sparql.service';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
@@ -8,9 +8,11 @@ import { GraphOperationService } from '../../shared-services/graph-operation.ser
 import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
 import { WadlParameterService } from './wadl-parameter.service';
 import { WadlRepresentationService } from './wadl-representation.service';
+import { MappingDefinition, SparqlResultConverter } from 'sparql-result-converter';
 
 @Injectable()
 export class WadlService {
+	converter = new SparqlResultConverter();
 
 	constructor(
 		private wadlParamService: WadlParameterService,
@@ -23,17 +25,24 @@ export class WadlService {
 	 * Get all base resources
 	 * @returns All currently existing base resources with their basePath and the entitiy providing the resource
 	 */
-	getBaseResources(): Observable<SparqlResponse> {
+	async getBaseResources(): Promise<WadlBaseResource[]> {
 		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-		SELECT ?baseResource ?basePath ?serviceProvider WHERE {
-			?baseResource rdf:type wadl:Resources;
+		SELECT ?baseResourceIri ?baseResourcePath ?serviceProviderIri WHERE {
+			?baseResourceIri rdf:type wadl:Resources;
 				a owl:NamedIndividual;
-				wadl:hasBase ?basePath;
-				wadl:RestResourcesAreProvidedByEntity ?serviceProvider.
+				wadl:hasBase ?baseResourcePath;
+				wadl:RestResourcesAreProvidedByEntity ?serviceProviderIri.
 		}`;
+		const rawResult = await firstValueFrom(this.queryService.query(queryString));
+		const baseResources = this.converter.convertToDefinition(rawResult.results.bindings, baseResourceMapping)
+			.getFirstRootElement() as Array<WadlBaseResource>;
 
-		return this.queryService.query(queryString);
+		for (const bR of baseResources) {
+			const resources = await firstValueFrom(this.getResources(bR.baseResourceIri));
+			bR.resources = resources;
+		}
+		return baseResources;
 	}
 
 	addBaseResource(baseResource: WadlBaseResource): Observable<void> {
@@ -227,26 +236,28 @@ export class WadlService {
 	 * Get all services as a SparqlResponse object. If a base resource IRI is passed, this IRI is taken as a filter criterium to return only services of this base
 	 * @returns All currently existing services with their base resource, base path and service path
 	 */
-	getResources(baseResource = ""): Observable<SparqlResponse> {
+	getResources(baseResourceIri = ""): Observable<WadlResource[]> {
 		let filterString = "";
-		if (baseResource) { filterString = `FILTER (?baseResource = <${baseResource}>)`; }
+		if (baseResourceIri) { filterString = `FILTER (?baseResourceIri = <${baseResourceIri}>)`; }
 		
 		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-		SELECT ?baseResource ?serviceProvider ?basePath ?resource ?resourcePath WHERE {
-			?baseResource wadl:hasBase ?basePath;
-				wadl:RestResourcesAreProvidedByEntity ?serviceProvider.
-				
-			OPTIONAL {
-				?baseResource wadl:hasResource ?resource.
+		SELECT ?baseResourceIri ?resourceIri ?resourcePath WHERE {
+			?baseResourceIri wadl:hasResource ?resourceIri;
+				wadl:hasBase ?basePath.
 
-				?resource rdf:type wadl:Resource;
-					a owl:NamedIndividual;
-					wadl:hasPath ?resourcePath.
-			}
+			?resourceIri rdf:type wadl:Resource;
+				a owl:NamedIndividual;
+				wadl:hasPath ?resourcePath.
 			${filterString}
 		}`;
-		return this.queryService.query(queryString);
+
+		return this.queryService.query(queryString).pipe(map(rawResult => {
+			const mappedResult = this.converter.convertToDefinition(rawResult.results.bindings, resourceMapping)
+				.getFirstRootElement() as Array<WadlResource>;
+			
+			return mappedResult;
+		}));
 	}
 
 	/**
@@ -438,3 +449,18 @@ export class WadlService {
 		return this.queryService.query(queryString);
 	}
 }
+
+
+const baseResourceMapping: MappingDefinition[] = [{
+	rootName: 'baseResource',
+	propertyToGroup: 'baseResourceIri',
+	name: 'baseResourceIri',
+	toCollect: ['baseResourcePath', 'serviceProviderIri'],
+}];
+
+const resourceMapping: MappingDefinition[] = [{
+	rootName: 'resource',
+	propertyToGroup: 'resourceIri',
+	name: 'resourceIri',
+	toCollect: ['baseResourceIri', 'basePath', 'resourcePath'],
+}];

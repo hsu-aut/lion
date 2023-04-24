@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { WadlParameter, WadlParameterDto, WadlParameterTypes, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
-import { Observable, lastValueFrom, map } from "rxjs";
+import { WadlParameter, WadlParameterDto, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
+import { Observable, map } from "rxjs";
 import { SparqlResponse } from "../../models/sparql/SparqlResponse";
 import { SparqlService } from "../../shared-services/sparql.service";
 import { MappingDefinition, SparqlResultConverter } from "sparql-result-converter";

@@ -50,9 +50,7 @@ export class ResponseComponent {
     }
 
     private loadBaseResources(): void {
-        this.wadlService.getResources().pipe(take(1)).subscribe((data: SparqlResponse) => {
-            this.baseResources = WadlBaseResource.fromSparqlResult(data);
-        });
+        this.wadlService.getBaseResources().subscribe(resources => this.baseResources = resources);
     }
 
     /**

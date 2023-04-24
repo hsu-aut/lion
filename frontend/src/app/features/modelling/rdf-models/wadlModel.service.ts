@@ -33,18 +33,18 @@ export class WadlModelService {
      * Get all existing base resources
      * @returns A SparqlResponse object with all base resources, their base paths and the entity providing the base path
      */
-    getBaseResources(): Observable<SparqlResponse> {
+    getBaseResources(): Observable<WadlBaseResource[]> {
         const url = `${this.baseUrl}/base-resources`;
-        return this.http.get<SparqlResponse>(url);
+        return this.http.get<WadlBaseResource[]>(url);
     }
 
     /**
      * Get all existing (sub) resources
      * @returns A SparqlResponse object with all existing services with their base resource, base path and service path
      */
-    getResources(): Observable<SparqlResponse> {
+    getResources(): Observable<WadlResource[]> {
         const url = `${this.baseUrl}/resources`;
-        return this.http.get<SparqlResponse>(url);
+        return this.http.get<WadlResource[]>(url);
     }
 
     getResourcesByBase(baseIri: string): Observable<SparqlResponse> {

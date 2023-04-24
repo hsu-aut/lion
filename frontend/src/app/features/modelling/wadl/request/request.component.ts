@@ -58,9 +58,7 @@ export class RequestComponent implements OnInit {
      * Loads base resources together with their sub resources and paths
      */
     private loadBaseResources(): void {
-        this.wadlService.getResources().pipe(take(1)).subscribe((data: SparqlResponse) => {
-            this.baseResources = WadlBaseResource.fromSparqlResult(data);
-        });
+        this.wadlService.getBaseResources().subscribe(baseResources => this.baseResources = baseResources);
     }
 
 

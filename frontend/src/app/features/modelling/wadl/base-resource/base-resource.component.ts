@@ -4,7 +4,6 @@ import { firstValueFrom, take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { PrefixesService } from "@shared-services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 import { Vdi3682ModelService } from "../../rdf-models/vdi3682Model.service";
 import { Iso22400_2ModelService } from "../../rdf-models/iso22400_2Model.service";
@@ -111,17 +110,17 @@ export class BaseResourceComponent implements OnInit {
 
 
     loadDynamicDropdowns() {
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlVariableList("baseResource")).subscribe((data: any) => {
-            this.resourceBasePaths = data;
-            this.NoOfResourceBasePaths = this.resourceBasePaths.length;
+        this.wadlService.getBaseResources().subscribe(baseResources => {
+            this.resourceBasePaths = baseResources.map(br => br.baseResourcePath);
+            this.NoOfResourceBasePaths = baseResources.length;
         });
-        this.wadlService.getResources().pipe(take(1), toSparqlVariableList("service")).subscribe((data: any) => {
+        this.wadlService.getResources().subscribe(data => {
             this.NoOfResourceBasePaths = this.resourceBasePaths.length;
         });
     }
 
     loadDynamicTables() {
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe((data: any) => {
+        this.wadlService.getBaseResources().subscribe(data => {
             this.baseResourcesTable = data;
         });
     }
@@ -161,7 +160,7 @@ export class BaseResourceComponent implements OnInit {
         //   this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
         this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.allIsoEntityInfo = data);
 
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe(data => this.baseResourcesTable = data);
+        this.wadlService.getBaseResources().subscribe(data => this.baseResourcesTable = data);
     }
 
 }

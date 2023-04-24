@@ -26,7 +26,7 @@ export class WadlController {
 	) { }
 
 	@Get('base-resources') 
-	getBaseResources(): Observable<SparqlResponse>{
+	getBaseResources(): Promise<WadlBaseResource[]>{
 		return this.wadlService.getBaseResources();
 	}
 
@@ -36,7 +36,7 @@ export class WadlController {
 	}
 
 	@Get('resources')
-	getResources(@Query('baseResource') baseResource: string): Observable<SparqlResponse> {
+	getResources(@Query('baseResource') baseResource: string): Observable<WadlResource[]> {
 		return this.wadlService.getResources(baseResource);
 	}
 

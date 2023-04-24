@@ -24,14 +24,14 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">No# base resources</th>
-                                    <th scope="col">No# services</th>
+                                    <th scope="col">No of base resources</th>
+                                    <th scope="col">No of services</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{NoOfResourceBasePaths}}</td>
-                                    <td>{{NoOfServices}}</td>
+                                    <td>{{(baseResources$ | async)?.length}}</td>
+                                    <td>{{(resources$ | async)?.length}}</td>
                                 </tr>
                             </tbody>
                         </table>
