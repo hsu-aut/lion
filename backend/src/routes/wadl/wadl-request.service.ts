@@ -98,7 +98,6 @@ export class WadlRequestService {
 		const rawResult = await lastValueFrom(this.queryService.query(queryString));
 		const mappedResult = this.converter.convertToDefinition(rawResult.results.bindings, requestMappingDefinition)
 			.getFirstRootElement() as Array<WadlRequestDto>;
-		console.log(mappedResult);
 		
 		return mappedResult[0];
 	}

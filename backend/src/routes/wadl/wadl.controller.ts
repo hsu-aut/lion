@@ -8,7 +8,7 @@ import { WadlRequestService } from './wadl-request.service';
 import { WadlCreateRequestDto, WadlRequestDto } from '@shared/models/odps/wadl/WadlRequest';
 import { WadlParameter, WadlParameterDto } from '@shared/models/odps/wadl/WadlParameter';
 import { WadlParameterService } from './wadl-parameter.service';
-import { WadlRepresentation } from '@shared/models/odps/wadl/WadlRepresentation';
+import { WadlRepresentation, WadlRepresentationDto } from '@shared/models/odps/wadl/WadlRepresentation';
 import { WadlRepresentationService } from './wadl-representation.service';
 import { WadlResponseService } from './wadl-response.service';
 import { WadlCreateResponseDto, WadlResponseDto } from '@shared/models/odps/wadl/WadlResponse';
@@ -83,8 +83,6 @@ export class WadlController {
 
 	@Delete('parameters/:parameterIri')
 	deleteParameter(@Param("parameterIri") parameterIri: string): Observable<void> {
-		console.log("deleting " + parameterIri);
-		
 		return this.wadlParameterService.deleteParameter(parameterIri);
 	}
 
@@ -99,7 +97,7 @@ export class WadlController {
 	}
 
 	@Get('parameters')
-	getParametersOfParent(@Query("parentIri") parentIri: string): Observable<SparqlResponse> {
+	getParametersOfParent(@Query("parentIri") parentIri: string): Observable<WadlParameterDto[]> {
 		return this.wadlParameterService.getParameters(parentIri);
 	}
 
@@ -109,13 +107,16 @@ export class WadlController {
 	}
 
 	@Get('representations')
-	getRepresentationsOfParent(@Query("parentIri") parentIri: string) {
+	getRepresentations(@Query("parentIri") parentIri: string): Promise<WadlRepresentationDto[]> {
+		console.log("controller rep");
+		
 		return this.wadlRepresentationService.getRepresentations(parentIri);
 	}
 
 	@Post('representations')
-	addRepresentation(@Body() rep: WadlRepresentation): Observable<void> {
-		return this.wadlRepresentationService.addRepresentation(rep);
+	addRepresentation(@Body() rep: WadlRepresentationDto): Observable<WadlRepresentationDto> {
+		const representation = WadlRepresentation.fromDto(rep);
+		return this.wadlRepresentationService.addRepresentation(representation);
 	}
 
 }

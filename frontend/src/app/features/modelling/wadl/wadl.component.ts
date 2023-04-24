@@ -1,16 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { FormArray } from '@angular/forms';
-import { Validators } from '@angular/forms';
-
-import { WadlModelService, WADLVARIABLES } from '../rdf-models/wadlModel.service';
-import { Iso22400_2ModelService } from '../rdf-models/iso22400_2Model.service';
-import { Vdi2206ModelService } from '../rdf-models/vdi2206Model.service';
-import { Vdi3682ModelService } from '../rdf-models/vdi3682Model.service';
-
+import { WadlModelService } from '../rdf-models/wadlModel.service';
 import { PrefixesService } from '@shared-services/prefixes.service';
 import { cValFns } from '../utils/validators';
-
 import { DataLoaderService } from '@shared-services/dataLoader.service';
 import { MessagesService } from '@shared-services/messages.service';
 import { Tables } from '../utils/tables';
@@ -33,9 +25,6 @@ export class WadlComponent implements OnInit {
     // checkboxes and radios
     // private requestBodyRepresentationCheck;
     // private requestBodyRepresentationRadio;
-
-    // model data
-    modelVariables = new WADLVARIABLES();
 
     // stats
     NoOfResourceBasePaths: number;

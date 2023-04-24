@@ -403,7 +403,7 @@ export class WadlService {
 	addMethod(method: WadlMethod): Observable<void> {
 		const activeGraph = this.graphService.getCurrentGraph();
 		
-		const parameterString = this.wadlParamService.createParameterString(method.request.parameters);
+		const parameterString = this.wadlParamService.createParameterInsertString(method.request.parameters);
 		const repString = this.wadlRepService.createRepresentationString(method.request.representations);
 		const updateString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -422,7 +422,6 @@ export class WadlService {
 				${repString}
 			}
 		}`;
-		console.log(updateString);
 		return this.queryService.update(updateString);
 	}
 
