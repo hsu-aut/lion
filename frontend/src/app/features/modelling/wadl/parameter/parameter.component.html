@@ -4,8 +4,8 @@
         <label class="form-label">Parameter type</label>
         <select [formControl]="getParamControl(i, 'type')" name="parameterType" class="form-select">
             <option value=null hidden></option>
-            <option *ngFor='let paramType of parameterTypes' [value]="ParamTypes[paramType]">
-                {{paramType}}
+            <option *ngFor='let paramType of paramTypeValues' [value]="ParamTypes[paramType]">
+                {{ParamTypes[paramType]}}
             </option>
         </select>
     </div>
