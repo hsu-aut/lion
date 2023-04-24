@@ -10,27 +10,30 @@
     </div>
 </div>
 
-<h5 *ngIf="this.bodyRepresentations.controls.length > 0" class="mt-3">Representations</h5>
-<div class="accordion" *ngFor="let control of this.bodyRepresentations.controls; let i=index">
-    <div class="accordion-item" [formGroup]="control">
-        <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Body Representation: {{control.get("mediaType").value}}
-        </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-        <div class="accordion-body">
-            <div class="row justify-content-end">
-                <div class="col-sm-3">
-                    <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(i)">
-                        Delete representation<i class="ml-3 fa-solid fa-trash-can"></i>
-                    </button>
+<ng-container *ngIf="(this.representations$ | async) as reps">
+
+    <h5 *ngIf="reps.length > 0" class="mt-3">Representations</h5>
+    <div class="accordion" *ngFor="let rep of reps; let i=index">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse_' + i" aria-expanded="true" aria-controls="collapseOne">
+                Body Representation: {{rep.mediaType}}
+            </button>
+            </h2>
+            <div [id]="'collapse_' + i" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <div class="row align-items-end">
+                    <wadl-parameter [parentIri]="rep.representationIri"></wadl-parameter>
+                </div>
+                <div class="row mt-3 justify-content-end">
+                    <div class="col-auto">
+                        <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(i)">
+                            Delete complete representation <i class="ml-3 fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="row align-items-end">
-                <wadl-parameter></wadl-parameter>
             </div>
         </div>
-        </div>
     </div>
-</div>
+</ng-container>

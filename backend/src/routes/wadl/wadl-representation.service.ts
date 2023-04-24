@@ -1,11 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { WadlRepresentation } from "@shared/models/odps/wadl/WadlRepresentation";
-import { Observable } from "rxjs";
+import { WadlRepresentation, WadlRepresentationDto } from "@shared/models/odps/wadl/WadlRepresentation";
+import { Observable, firstValueFrom, map, of} from "rxjs";
 import { SparqlService } from "../../shared-services/sparql.service";
 import { WadlParameterService } from "./wadl-parameter.service";
+import { MappingDefinition, SparqlResultConverter } from "sparql-result-converter";
 
 @Injectable()
 export class WadlRepresentationService {
+
+	converter = new SparqlResultConverter()
 
 	constructor(
         private wadlParamService: WadlParameterService,
@@ -13,15 +16,34 @@ export class WadlRepresentationService {
 	){}
 
 
-	getRepresentations(parentIri: string) {
+	async getRepresentations(parentIri: string): Promise<WadlRepresentationDto[]> {
+		console.log("get reüs");
+		
 		const queryString = `
-		SELECT ?representation ?mediaType WHERE {
-		<${parentIri}> wadl:hasRepresentation ?representation.
-			?representation a wadl:Representation;
-				a owl:NamedIndividual;
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		SELECT ?representationIri ?mediaType ?parentIri WHERE {
+			BIND(<${parentIri}> AS ?parentIri)
+			?parentIri wadl:hasRepresentation ?representationIri.
+			?representationIri a wadl:Representation;
 				wadl:hasMediaType ?mediaType.
 		}`;
-		return this.sparqlService.query(queryString);
+
+	
+		const rawResult = await firstValueFrom(this.sparqlService.query(queryString));
+		const mappedRepresentations = this.converter.convertToDefinition(rawResult.results.bindings, representationMapping)
+			.getFirstRootElement() as Array<WadlRepresentationDto>;
+		console.log(mappedRepresentations);
+		
+		for (const rep of mappedRepresentations) {
+			console.log("parent IRI");
+			console.log(rep.representationIri);
+			const repParameterDtos = await firstValueFrom(this.wadlParamService.getParameters(rep.representationIri));
+			console.log(repParameterDtos);
+			
+			rep.parameters = repParameterDtos;
+		}
+		
+		return mappedRepresentations;
 	}
 
 
@@ -35,20 +57,21 @@ export class WadlRepresentationService {
 		
 		representations.forEach(representation => {
 			repString += `
-			<${representation.parentIri}> wadl:hasRepresentation <${representation.iri}>.
-			<${representation.iri}> a wadl:Representation;
+			<${representation.parentIri}> wadl:hasRepresentation <${representation.representationIri}>.
+			<${representation.representationIri}> a wadl:Representation;
 				a owl:NamedIndividual;
 				wadl:hasMediaType "${representation.mediaType}".`;
 			
 			// Create and add representation parameters
-			const repParamString = this.wadlParamService.createParameterString(representation.parameters);
+			const repParamString = this.wadlParamService.createParameterInsertString(representation.parameters);
 			repString += repParamString;
 		});
-
+		
+		
 		return repString;
 	}
 
-	addRepresentation(rep: WadlRepresentation): Observable<void> {
+	addRepresentation(rep: WadlRepresentation): Observable<WadlRepresentation> {
 		const repString = this.createRepresentationString([rep]);
 		const updateQuery = `
 			PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -56,8 +79,15 @@ export class WadlRepresentationService {
 				${repString}
 			}
 		`;
-		
-		return this.sparqlService.update(updateQuery);
+		return this.sparqlService.update(updateQuery).pipe(map(res => rep));
 	}
 
 }
+
+
+const representationMapping : MappingDefinition[] = [{
+	rootName: 'representationIri',
+	propertyToGroup: 'representation',
+	name: 'iri',
+	toCollect: ['mediaType', 'parentIri'],
+}];

@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@ang
 import { WadlRepresentation } from "@shared/models/odps/wadl/WadlRepresentation";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { cValFns } from "../../utils/validators";
+import { Observable } from "rxjs";
 
 @Component({
     selector: 'wadl-representation',
@@ -11,7 +12,8 @@ import { cValFns } from "../../utils/validators";
 })
 export class RepresentationComponent {
 
-    @Input("parentIri") parentIri: string;
+    _parentIri: string;
+    representations$: Observable<WadlRepresentation[]>;
 
     // Custom validator
     customVal = new cValFns();
@@ -19,53 +21,31 @@ export class RepresentationComponent {
     // MediaType of the new body rep
     newBodyRepresentationMediaType: string;
 
-    bodyRepresentations = this.fb.array<FormGroup<{
-        mediaType: FormControl<string | null>,
-        parameters: FormArray<FormGroup<{
-            parameterName: FormControl<string | null>,
-            dataType: FormControl<string | null>,
-            ontologicalDataType: FormControl<string | null>,
-            optionValue: FormControl<string | null>,
-        }>>
-    }>>([])
-
     constructor(
         private fb: FormBuilder,
         private wadlService: WadlModelService
-    ) {
-        console.log("construct rep");
-    }
+    ) {}
 
-    ngOnInit(): void {
-        // Load representations of parent
-        this.wadlService.getRepresentations(this.parentIri).subscribe;
-        console.log("rep init");
 
+    @Input() set parentIri(value: string) {
+        this._parentIri = value;
+        this.representations$ = this.wadlService.getRepresentations(this._parentIri);
     }
 
     addRepresentation(): void{
         const newMediaType = this.newBodyRepresentationMediaType;
 
-        this.bodyRepresentations.push(this.fb.group({
-            mediaType: [newMediaType, this.customVal.noSpecialCharacters()],
-            parameters: this.fb.array([
-                this.fb.group({
-                    parameterName: ["", this.customVal.noSpecialCharacters()],
-                    dataType: ["", this.customVal.noSpecialCharacters()],
-                    ontologicalDataType: [""],
-                    optionValue: ["", this.customVal.noSpecialCharacters()],
-                })
-            ])
-        }));
-
         // TODO: Really add representation
-        const representation = new WadlRepresentation(this.parentIri, newMediaType);
+        console.log(this._parentIri);
+
+        const representation = new WadlRepresentation(this._parentIri, newMediaType);
+        console.log(representation);
+
         this.wadlService.addRepresentation(representation);
     }
 
     deleteRepresentation(representationIndex: number): void {
         // TODO: Delete via SPARQL
-        this.bodyRepresentations.removeAt(representationIndex);
 
     }
 }
