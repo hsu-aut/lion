@@ -17,8 +17,6 @@ export class WadlRepresentationService {
 
 
 	async getRepresentations(parentIri: string): Promise<WadlRepresentationDto[]> {
-		console.log("get reüs");
-		
 		const queryString = `
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 		SELECT ?representationIri ?mediaType ?parentIri WHERE {
@@ -28,18 +26,12 @@ export class WadlRepresentationService {
 				wadl:hasMediaType ?mediaType.
 		}`;
 
-	
 		const rawResult = await firstValueFrom(this.sparqlService.query(queryString));
 		const mappedRepresentations = this.converter.convertToDefinition(rawResult.results.bindings, representationMapping)
 			.getFirstRootElement() as Array<WadlRepresentationDto>;
-		console.log(mappedRepresentations);
 		
 		for (const rep of mappedRepresentations) {
-			console.log("parent IRI");
-			console.log(rep.representationIri);
 			const repParameterDtos = await firstValueFrom(this.wadlParamService.getParameters(rep.representationIri));
-			console.log(repParameterDtos);
-			
 			rep.parameters = repParameterDtos;
 		}
 		

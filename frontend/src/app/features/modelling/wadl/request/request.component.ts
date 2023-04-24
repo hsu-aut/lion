@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
+import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
@@ -72,7 +72,7 @@ export class RequestComponent implements OnInit {
         }
     }
 
-    updateExistingRequest() {
+    updateExistingRequest(): void {
         const {resource, methodType} = this.requestForm.value;
         this.wadlService.getRequest(resource.resourceIri, methodType).subscribe(data => {
             console.log(data);

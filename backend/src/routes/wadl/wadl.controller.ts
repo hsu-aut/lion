@@ -71,8 +71,12 @@ export class WadlController {
 	}
 
 	@Get('responses')
-	getResponses(@Query('resourceIri') resourceIri: string, @Query('methodTypeIri') methodTypeIri: string): Promise<WadlRequestDto> {
-		return this.wadlRequestService.getRequest(resourceIri, methodTypeIri);
+	getResponses(
+		@Query('resourceIri') resourceIri: string, 
+		@Query('methodTypeIri') methodTypeIri: string, 
+		@Query('statusCode') statusCode: string
+	): Promise<WadlResponseDto> {
+		return this.wadlResponseService.getResponse(resourceIri, methodTypeIri, statusCode);
 	}
 
 	@Post('parameters')
@@ -101,15 +105,8 @@ export class WadlController {
 		return this.wadlParameterService.getParameters(parentIri);
 	}
 
-	@Get('/:resourceIri/:methodTypeIri/request-representation')
-	getRequestRepresentation(@Param('resourceIri') resourceIri: string, @Param('methodTypeIri') methodTypeIri: string){
-		return this.wadlService.getRequestRepresentation(resourceIri, methodTypeIri);
-	}
-
 	@Get('representations')
 	getRepresentations(@Query("parentIri") parentIri: string): Promise<WadlRepresentationDto[]> {
-		console.log("controller rep");
-		
 		return this.wadlRepresentationService.getRepresentations(parentIri);
 	}
 

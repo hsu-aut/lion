@@ -126,18 +126,3 @@ const requestMappingDefinition: MappingDefinition[] = [{
 		}],
 	}]
 }];
-
-// {
-// 	rootName: 'responses',
-// 	childMappings: [{
-// 		rootName: 'parameter',
-// 		toCollect: ['parameterName', 'parameterType']
-// 	},
-// 	{
-// 		rootName: 'representation',
-// 		childMappings: [{
-// 			rootName: 'parameter',
-// 			toCollect: ['parameterName', 'parameterType']
-// 		}],
-// 	}]
-// }]

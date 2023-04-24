@@ -1,13 +1,11 @@
-import { WadlParameter } from "./WadlParameter";
-import { WadlRepresentation } from "./WadlRepresentation";
+import { WadlParameter, WadlParameterDto } from "./WadlParameter";
+import { WadlRepresentation, WadlRepresentationDto } from "./WadlRepresentation";
 
 export class WadlCreateResponseDto {
     constructor(
         public resourceIri: string,
         public methodTypeIri: string,
         public statusCode: string,
-        public parameters = new Array<WadlParameter>(),
-        public representations = new Array<WadlRepresentation>()
     ) {}
 }
 
@@ -16,20 +14,17 @@ export class WadlResponseDto {
     constructor(
         public responseIri: string,
         public methodIri: string,
-        public parameters = new Array<WadlParameter>(),
-        public representations = new Array<WadlRepresentation>()) {}
+        public parameters = new Array<WadlParameterDto>(),
+        public representations = new Array<WadlRepresentationDto>()) {}
 }
 
 export class WadlResponse extends WadlResponseDto {
 
     responseIri: string;
 
-    fromDto(reqDto: WadlResponseDto): WadlResponse{
-        this.responseIri = reqDto.responseIri;
-        this.methodIri = reqDto.methodIri;
-        this.parameters = reqDto.parameters;
-        this.representations = reqDto.representations;
-        return this;
+    static fromDto(resDto: WadlResponseDto): WadlResponse{
+        const response = new WadlResponse(resDto.responseIri, resDto.methodIri, resDto.parameters, resDto.representations)
+        return response;
     }
 
     addParameter(param: WadlParameter) {
@@ -37,7 +32,7 @@ export class WadlResponse extends WadlResponseDto {
     }
 
     addRepresentationParameter(param: WadlParameter, representationIri: string) {
-        const representation = this.representations.find(rep => rep.iri === representationIri);
+        const representation = this.representations.find(rep => rep.representationIri === representationIri);
         if(!representation) return;
         
         representation.parameters.push(param);

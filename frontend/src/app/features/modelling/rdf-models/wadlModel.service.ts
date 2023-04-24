@@ -202,6 +202,18 @@ export class WadlModelService {
         return this.http.delete<void>(url);
     }
 
+    public getResponse(wadlCreateResponse: WadlCreateResponseDto): Observable<WadlResponseDto> {
+        const url = `${this.baseUrl}/responses`;
+        const {resourceIri, methodTypeIri, statusCode} = wadlCreateResponse;
+        console.log(wadlCreateResponse);
+
+        const params = new HttpParams()
+            .append("resourceIri", resourceIri)
+            .append("methodTypeIri", methodTypeIri)
+            .append("statusCode", statusCode);
+        return this.http.get<WadlResponseDto>(url, {params: params});
+    }
+
     public addResponse(response: WadlCreateResponseDto): Observable<WadlResponseDto> {
         const url = `${this.baseUrl}/responses`;
         return this.http.post<WadlResponseDto>(url, response);
