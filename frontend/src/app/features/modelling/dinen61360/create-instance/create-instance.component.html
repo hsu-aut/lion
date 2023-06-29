@@ -99,7 +99,7 @@
         <app-table [currentTable]="allTypes"
             [tableTitle]="'Available type descriptions in database'"
             [tableExplanation]="'Click on a row to fill the form above.'"
-            (tableClickedRow)="typeTableClick($event)" [filter]="filterOption">
+            (tableClickedRow)="typeTableClick($event)" [showFilter]="filterOption">
         </app-table>
     </div>
     <!-- existing instances -->
@@ -107,7 +107,7 @@
         <app-table [currentTable]="allInstances"
             [tableTitle]="'Available instance descriptions in database'"
             [tableExplanation]="'Click on a row to fill the form above.'"
-            [filter]="filterOption">
+            [showFilter]="filterOption">
         </app-table>
     </div>
     <!-- existing vdi3682 content -->
@@ -115,7 +115,7 @@
         <app-table [currentTable]="allProcessInfo"
             [tableTitle]="'Available process descriptions in database'"
             [tableExplanation]="'Click on a row to asign a data element to it.'"
-            (tableClickedCell)="anyTableClick($event)" [filter]="filterOption">
+            (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption">
         </app-table>
     </div>
     <!-- existing vdi2206 content -->
@@ -147,21 +147,21 @@
                     <app-table [currentTable]="allStructureInfoContainmentbySys"
                         [tableTitle]="'Available structure descriptions in database'"
                         [tableExplanation]="'Click on a row to asign a data element to it.'"
-                        (tableClickedCell)="anyTableClick($event)" [filter]="filterOption"></app-table>
+                        (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
                 </div>
                 <!-- existing vdi 2206 modules -->
                 <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
                     <app-table [currentTable]="allStructureInfoContainmentbyMod"
                         [tableTitle]="'Available structure descriptions in database'"
                         [tableExplanation]="'Click on a row to asign a data element to it.'"
-                        (tableClickedCell)="anyTableClick($event)" [filter]="filterOption"></app-table>
+                        (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
                 </div>
                 <!-- existing vdi 2206 components -->
                 <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
                     <app-table [currentTable]="allStructureInfoContainmentbyCOM"
                         [tableTitle]="'Available structure descriptions in database'"
                         [tableExplanation]="'Click on a row to asign a data element to it.'"
-                        (tableClickedCell)="anyTableClick($event)" [filter]="filterOption"></app-table>
+                        (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
                 </div>
             </div>
         </div>

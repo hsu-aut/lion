@@ -45,7 +45,7 @@
                     <p class="text-sm-left"> You can see an overview on the already linked entities below. The table
                         indicates processes of VDI 3682 that can be executed via a OPC UA method call. </p>
 
-                    <app-table [currentTable]="overviewTable" [filter]="filterOption"
+                    <app-table [currentTable]="overviewTable" [showFilter]="filterOption"
                         [tableExplanation]="overviewSubTitle">
                     </app-table>
 
@@ -89,13 +89,13 @@
 
                     <div class="row">
                         <div class="col">
-                            <!-- <app-table [currentTable]="processTable" [filter]="filterOption"
+                            <!-- <app-table [currentTable]="processTable" [showFilter]="filterOption"
                                 [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
                                 (tableClickedRow)="processTableClick($event)">
                             </app-table> -->
                         </div>
                         <div class="col">
-                            <!-- <app-table [currentTable]="opcUaNodeTable" [filter]="filterOption"
+                            <!-- <app-table [currentTable]="opcUaNodeTable" [showFilter]="filterOption"
                                 [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
                                 (tableClickedRow)="opcUaNodeTableClick($event)">
                             </app-table> -->
