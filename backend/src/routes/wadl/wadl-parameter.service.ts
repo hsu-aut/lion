@@ -152,6 +152,30 @@ export class WadlParameterService {
 		return this.queryService.update(deleteString);
 	}
 
+	deleteAllParametersOfParent(parentIri: string): Observable<void> {
+		const deleteString = `
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		DELETE {
+			<${parentIri}> wadl:hasParameter ?parameterIri.
+			?parameterIri a ?paramType;
+				a owl:NamedIndividual;
+				wadl:hasParameterName ?name;
+				?typeProp ?type.
+		} WHERE {
+			VALUES ?typeProp {wadl:hasParameterType wadl:hasOntologicalParameterType }
+			OPTIONAL {
+				?parameterIri wadl:hasParameterDefault ?default.
+			}
+			OPTIONAL {
+				?parameterIri wadl:hasParameterOption ?option.
+				?option a wadl:Option;
+						a owl:NamedIndividual;
+						wadl:hasOptionValue ?optionValue.
+			}
+		}`;
+		return this.queryService.update(deleteString);
+	}
+
 }
 
 
