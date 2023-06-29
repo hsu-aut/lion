@@ -16,11 +16,14 @@ export class WadlRepresentationService {
 	){}
 
 
-	async getRepresentations(parentIri: string): Promise<WadlRepresentationDto[]> {
+	async getRepresentations(parentIri?: string): Promise<WadlRepresentationDto[]> {
+		let filterString = "";
+		if(parentIri) filterString = `BIND(<${parentIri}> AS ?parentIri)`; 
+
 		const queryString = `
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 		SELECT ?representationIri ?mediaType ?parentIri WHERE {
-			BIND(<${parentIri}> AS ?parentIri)
+			${filterString}
 			?parentIri wadl:hasRepresentation ?representationIri.
 			?representationIri a wadl:Representation;
 				wadl:hasMediaType ?mediaType.
@@ -72,6 +75,23 @@ export class WadlRepresentationService {
 			}
 		`;
 		return this.sparqlService.update(updateQuery).pipe(map(res => rep));
+	}
+
+	async deleteRepresentation(representationIri: string): Promise<void> {
+		// Delete all parameters of this representation first
+		await firstValueFrom(this.wadlParamService.deleteAllParametersOfParent(representationIri));
+		
+		const deleteQuery = `
+			PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+			PREFIX owl: <http://www.w3.org/2002/07/owl#>
+			DELETE WHERE {
+				?parentIri wadl:hasRepresentation <${representationIri}>.
+				<${representationIri}> a wadl:Representation, owl:NamedIndividual;
+					wadl:hasMediaType ?mediaType.
+			}
+		`;
+
+		return firstValueFrom(this.sparqlService.update(deleteQuery));
 	}
 
 }

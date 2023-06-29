@@ -48,6 +48,7 @@ export class RequestComponent implements OnInit {
         this.loadBaseResources();
         this.wadlService.getMethods().pipe(take(1), toSparqlVariableList()).subscribe(data => this.methods = data);
         this.requestForm.valueChanges.subscribe(data => {
+            this.existingRequest = null;
             if (this.requestForm.valid) {
                 this.updateExistingRequest();
             }
@@ -73,8 +74,6 @@ export class RequestComponent implements OnInit {
     updateExistingRequest(): void {
         const {resource, methodType} = this.requestForm.value;
         this.wadlService.getRequest(resource.resourceIri, methodType).subscribe(data => {
-            console.log(data);
-
             // TODO: Currently, a whole resource is returned. Make sure to only return request of it
             this.existingRequest = data;
         });

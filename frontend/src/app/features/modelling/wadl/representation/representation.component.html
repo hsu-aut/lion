@@ -3,7 +3,7 @@
 <div class="row align-items-end">
     <div class="form-group col-sm-4">
         <label for="" class="form-label">Media Type:</label>
-        <input [(ngModel)]="newBodyRepresentationMediaType" class="form-control" name="bodyMediaType" type="text">
+        <input [formControl]="mediaTypeInput" class="form-control" name="bodyMediaType" type="text">
     </div>
     <div class="col-sm-3">
         <button class="btn btn-primary" (click)="this.addRepresentation()">Add representation</button>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="row mt-3 justify-content-end">
                     <div class="col-auto">
-                        <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(i)">
+                        <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(rep.representationIri)">
                             Delete complete representation <i class="ml-3 fa-solid fa-trash-can"></i>
                         </button>
                     </div>

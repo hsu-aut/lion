@@ -56,14 +56,3 @@
 <wadl-parameter *ngIf="this.existingRequest" [parentIri]="this.existingRequest.requestIri"></wadl-parameter>
 
 <wadl-representation *ngIf="this.existingRequest" [parentIri]="this.existingRequest.requestIri"></wadl-representation>
-
-<!-- TODO: Is this still needed? Params are shown above -->
-<div class="row mt-3">
-    <div class="col-sm">
-        <app-table
-            [currentTable]="requestParameterTable"
-            [tableTitle]="'Existing parameters'"
-            [tableExplanation]="'This table shows all existing parameters of the request that belongs to this method'" >
-        </app-table>
-    </div>
-</div>

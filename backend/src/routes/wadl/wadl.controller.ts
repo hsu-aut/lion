@@ -116,4 +116,9 @@ export class WadlController {
 		return this.wadlRepresentationService.addRepresentation(representation);
 	}
 
+	@Delete('representations/:representationIri')
+	deleteRepresentation(@Param("representationIri") representationIri: string): Promise<void> {
+		return this.wadlRepresentationService.deleteRepresentation(representationIri);
+	}
+
 }

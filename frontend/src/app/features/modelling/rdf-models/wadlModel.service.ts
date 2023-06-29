@@ -123,9 +123,19 @@ export class WadlModelService {
 
     public addRepresentation(rep: WadlRepresentation): void {
         const url = `${this.baseUrl}/representations`;
-        this.http.post<WadlRepresentation>(url, rep).pipe(take(1)).subscribe((newRep) => {
-            console.log(newRep);
-            this.representation$.next([...this.representation$.value, newRep]);
+        this.http.post<WadlRepresentation>(url, rep).pipe(take(1)).subscribe(
+            {
+                next: (newRep) => this.representation$.next([...this.representation$.value, newRep]),
+                error: (err) => {throw new Error(err);}
+            });
+    }
+
+    public deleteRepresentation(representationIri: string): void {
+        const encodedRepresentationIri = encodeURIComponent(representationIri);
+        const url = `${this.baseUrl}/representations/${encodedRepresentationIri}`;
+        this.http.delete<void>(url).pipe(take(1)).subscribe(data => {
+            const representationsAfterDelete = this.representation$.value.filter(existingRep => existingRep.representationIri != representationIri);
+            this.representation$.next(representationsAfterDelete);
         });
     }
 

@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@ang
 import { WadlRepresentation } from "@shared/models/odps/wadl/WadlRepresentation";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { cValFns } from "../../utils/validators";
-import { Observable } from "rxjs";
+import { Observable, take, withLatestFrom } from "rxjs";
 
 @Component({
     selector: 'wadl-representation',
@@ -15,11 +15,8 @@ export class RepresentationComponent {
     _parentIri: string;
     representations$: Observable<WadlRepresentation[]>;
 
-    // Custom validator
-    customVal = new cValFns();
-
     // MediaType of the new body rep
-    newBodyRepresentationMediaType: string;
+    mediaTypeInput = this.fb.control("", Validators.required)
 
     constructor(
         private fb: FormBuilder,
@@ -32,20 +29,26 @@ export class RepresentationComponent {
         this.representations$ = this.wadlService.getRepresentations(this._parentIri);
     }
 
+    /**
+     * Adds a new representation with the given media type to the current parent element
+     */
     addRepresentation(): void{
-        const newMediaType = this.newBodyRepresentationMediaType;
-
-        // TODO: Really add representation
-        console.log(this._parentIri);
-
+        const newMediaType = this.mediaTypeInput.value;
         const representation = new WadlRepresentation(this._parentIri, newMediaType);
-        console.log(representation);
-
-        this.wadlService.addRepresentation(representation);
+        try {
+            this.wadlService.addRepresentation(representation);
+        } catch (error) {
+            console.log("Error while adding representation");
+        } finally {
+            this.mediaTypeInput.reset();
+        }
     }
 
-    deleteRepresentation(representationIndex: number): void {
-        // TODO: Delete via SPARQL
-
+    /**
+     * Deletes a representation specifiec by its representation IRI
+     * @param representationIri IRI of the representation to delete
+     */
+    deleteRepresentation(representationIri: string): void {
+        this.wadlService.deleteRepresentation(representationIri);
     }
 }
