@@ -20,16 +20,12 @@ export class WadlResponseService {
 
 
 	async addResponse(createResponseDto: WadlCreateResponseDto): Promise<WadlResponseDto> {
-		console.log("adding");
-		
 		const {resourceIri, methodTypeIri, statusCode} = createResponseDto;
-		console.log(resourceIri, methodTypeIri, statusCode);
 		const statusCodeNumber = statusCode.split('#')[1];		// TODO: This is pretty bad. IRIs should be objects of an IRI class that has this method
 		const methodType = methodTypeIri.split('#')[1];
 
 		const responseIri = `${resourceIri}_${methodType}_Res_${statusCodeNumber}`;
-		console.log(responseIri);
-		
+
 		const query = `
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 		INSERT {
@@ -47,8 +43,6 @@ export class WadlResponseService {
 
 
 	async getResponse(resourceIri: string, methodTypeIri: string, statusCode: string): Promise<WadlResponseDto> {
-		console.log(resourceIri, methodTypeIri, statusCode);
-		
 		const queryString = `
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
@@ -64,8 +58,6 @@ export class WadlResponseService {
 		const response = this.converter.convertToDefinition(rawResult.results.bindings, responseMappingDefinition)
 			.getFirstRootElement()[0] as WadlResponseDto;
 
-		console.log(rawResult);
-		console.log(response);
 		if(!response) return null;
 
 		const parameters = await lastValueFrom(this.parameterService.getParameters(response.responseIri));
