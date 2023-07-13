@@ -1,0 +1,43 @@
+<ng-container [formGroup]="connectTripleForm">
+    <div class="row">
+        <div class="form-group col-sm-6">
+            <label>Subject to connect</label>
+            <input formControlName="selectedSubject" class="form-select" type="text" placeholder="Select an Entity from Table"
+                readonly>
+        </div>
+        <div class="form-group col-sm-6">
+            <label>Property to use for connection</label>
+            <select formControlName="selectedPredicate" name="selectedPredicate" class="form-select">
+                <option *ngFor='let x of existingPredicates'>
+                    {{x}}
+                </option>
+            </select>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="form-group col-sm-6">
+            <label>Connect with individual of class</label>
+            <select formControlName="selectedObjectClass" name="selectedObjectClass" class="form-select">
+                <option *ngFor='let x of existingObjectClasses'>
+                    {{x}}
+                </option>
+            </select>
+        </div>
+        <div class="form-group col-sm-6">
+            <label>Select object of the connection</label>
+            <select formControlName="selectedObject" name="selectedObject" class="form-select">
+                <option *ngFor='let x of existingObjects'>
+                    {{x}}
+                </option>
+            </select>
+        </div>
+    </div>
+</ng-container>
+
+<div class="row mt-2 justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-secondary me-3" (click)="buildInsert()">Download SPARQL INSERT</button>
+        <button class="btn btn-secondary" (click)="executeInsert()">Add</button>
+    </div>
+</div>
+
