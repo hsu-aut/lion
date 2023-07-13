@@ -152,15 +152,16 @@ export class BaseResourceComponent implements OnInit {
         // });
 
         const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
-        const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi2206Service.getLIST_OF_MODULES(), tr];
+        const systems = await firstValueFrom(this.vdi2206Service.getSystems());
+        const modules= await firstValueFrom(this.vdi2206Service.getSystems());
         this.allVDIInfo = [
             {
                 header: "VDI2206:System",
-                entries: this.vdi2206Service.getLIST_OF_SYSTEMS()
+                entries: systems
             },
             {
                 header: "VDI2206:Module",
-                entries: this.vdi2206Service.getLIST_OF_MODULES()
+                entries: modules
             },
             {
                 header: "VDI3682:TechnicalResource",
