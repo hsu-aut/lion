@@ -9,6 +9,7 @@ import { Vdi3682ModelService } from "../../rdf-models/vdi3682Model.service";
 import { Iso22400_2ModelService } from "../../rdf-models/iso22400_2Model.service";
 import { Vdi2206ModelService } from "../../rdf-models/vdi2206Model.service";
 import { Tables } from "../../utils/tables";
+import { ListData } from "../../../../shared/modules/table/table.component";
 
 @Component({
     selector: 'wadl-base-resource',
@@ -34,7 +35,7 @@ export class BaseResourceComponent implements OnInit {
     })
 
     allIsoEntityInfo: Array<Record<string, any>> = [];
-    allVDIInfo: Array<Record<string, any>> = [];
+    allVDIInfo: ListData[];
 
     constructor(
         private fb: FormBuilder,
@@ -150,12 +151,22 @@ export class BaseResourceComponent implements OnInit {
         //     this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
         // });
 
-        const cols = ["VDI2206:System", "VDI2206:Module", "VDI3682:TechnicalResource"];
         const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
         const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi2206Service.getLIST_OF_MODULES(), tr];
-        console.log(data);
-
-        this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
+        this.allVDIInfo = [
+            {
+                header: "VDI2206:System",
+                entries: this.vdi2206Service.getLIST_OF_SYSTEMS()
+            },
+            {
+                header: "VDI2206:Module",
+                entries: this.vdi2206Service.getLIST_OF_MODULES()
+            },
+            {
+                header: "VDI3682:TechnicalResource",
+                entries: tr
+            }
+        ];
 
         //   this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
         this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.allIsoEntityInfo = data);

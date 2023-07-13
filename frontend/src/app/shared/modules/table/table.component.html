@@ -1,24 +1,47 @@
-<!-- Table card -->
-<ng-template>
 <div class="px-sm-3 py-sm-3 shadow p-3 bg-white rounded">
     <div class="card border-0">
         <div class="card-body ">
             <!-- titles -->
             <h5 class="card-title">{{tableTitle}}</h5>
 
-            <div class="row py-3">
-                <div class="col">
+            <div class="row py-2">
+                <div class="col-8">
                     <p class="card-text">{{tableExplanation}}</p>
                 </div>
-                <div class="col" *ngIf="showFilter">
-                    <div class="input-group mb-3" [formGroup]="filterForm">
-                        <select formControlName="columnName" class="custom-select" id="inputGroupSelect03">
-                            <option value=null selected hidden></option>
-                            <option *ngFor='let col of this.tableKeys'>
-                                {{col}}
-                            </option>
-                        </select>
-                        <input formControlName="filterCondition" class="form-control" type="text" placeholder="write a filter here">
+            </div>
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label class="form-label" for="inlineFormSelectPref">Show element type:</label>
+                </div>
+                <div class="col-auto" *ngIf="this._listData">
+                    <select [formControl]="listSelector" class="form-select d-inline" id="listSelector">
+                        <!-- <option value=null selected hidden>Select list type...</option> -->
+                        <option *ngFor='let listData of this._listData' [value]="listData">
+                            {{listData.header}}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-5" *ngIf="showFilter">
+                    <div class="row">
+                        <div class="col-auto">
+                            <label for="inputGroupSelect03" class="col-form-label">Filter</label>
+                        </div>
+                        <div class="col-8">
+                            <div class="input-group mb-3" [formGroup]="filterForm">
+                                <select formControlName="columnName" class="form-select" style="width:40%" id="inputGroupSelect03">
+                                    <option value=null selected hidden>Select column...</option>
+                                    <option *ngFor='let col of this.tableHeaders'>
+                                        {{col}}
+                                    </option>
+                                </select>
+                                <input formControlName="filterCondition" class="form-control" style="width: 40%;" type="text" placeholder="Filter condition">
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-outline-secondary" (click)="clearFilter()">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -29,16 +52,16 @@
                     <thead>
                         <tr>
                             <!-- take first result binding and iterate over keys, these keys are table columns -->
-                            <th *ngFor="let col of this.tableKeys" scope="col">{{col}} </th>
+                            <th *ngFor="let header of this.tableHeaders" scope="col">{{header}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- one row for each binding -->
-                        <tr *ngFor="let tableRow of pagedTable[currentPage]">
+                        <tr *ngFor="let tableRow of pagedTable">
                             <!-- one entry for each key in each binding -->
-                            <td *ngFor="let x of this.tableKeys" (click)="tableClickRow(tableRow)"
-                                (click)="tableClickCell(tableRow[x])">
-                                {{tableRow[x]}}</td>
+                            <td *ngFor="let key of this.tableHeaders" (click)="tableClickRow(tableRow)"
+                                (click)="tableClickCell(tableRow[key])">
+                                {{tableRow[key]}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -46,7 +69,6 @@
             <!-- pagination -->
             <div class="row float-end">
                 <div class="btn-toolbar" role="toolbar">
-
                         <div class="btn-group me-2" role="group">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -85,5 +107,3 @@
         </div>
     </div>
 </div>
-
-</ng-template>

@@ -96,7 +96,7 @@
     <!-- existing types -->
     <div class="tab-pane fade show active" id="exType2" role="tabpanel"
         aria-labelledby="exType2-tab">
-        <app-table [currentTable]="allTypes"
+        <app-table [tableData]="allTypes"
             [tableTitle]="'Available type descriptions in database'"
             [tableExplanation]="'Click on a row to fill the form above.'"
             (tableClickedRow)="typeTableClick($event)" [showFilter]="filterOption">
@@ -104,7 +104,7 @@
     </div>
     <!-- existing instances -->
     <div class="tab-pane " id="exInstance" role="tabpanel" aria-labelledby="exInstance-tab">
-        <app-table [currentTable]="allInstances"
+        <app-table [tableData]="allInstances"
             [tableTitle]="'Available instance descriptions in database'"
             [tableExplanation]="'Click on a row to fill the form above.'"
             [showFilter]="filterOption">
@@ -112,7 +112,7 @@
     </div>
     <!-- existing vdi3682 content -->
     <div class="tab-pane " id="VDI3682" role="tabpanel" aria-labelledby="VDI3682-tab">
-        <app-table [currentTable]="allProcessInfo"
+        <app-table [tableData]="allProcessInfo"
             [tableTitle]="'Available process descriptions in database'"
             [tableExplanation]="'Click on a row to asign a data element to it.'"
             (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption">
@@ -144,21 +144,21 @@
                 <!-- existing vdi2206 systems -->
                 <div class="tab-pane fade show active" id="sys" role="tabpanel"
                     aria-labelledby="sys-tab">
-                    <app-table [currentTable]="allStructureInfoContainmentbySys"
+                    <app-table [tableData]="allStructureInfoContainmentbySys"
                         [tableTitle]="'Available structure descriptions in database'"
                         [tableExplanation]="'Click on a row to asign a data element to it.'"
                         (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
                 </div>
                 <!-- existing vdi 2206 modules -->
                 <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
-                    <app-table [currentTable]="allStructureInfoContainmentbyMod"
+                    <app-table [tableData]="allStructureInfoContainmentbyMod"
                         [tableTitle]="'Available structure descriptions in database'"
                         [tableExplanation]="'Click on a row to asign a data element to it.'"
                         (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
                 </div>
                 <!-- existing vdi 2206 components -->
                 <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
-                    <app-table [currentTable]="allStructureInfoContainmentbyCOM"
+                    <app-table [tableData]="allStructureInfoContainmentbyCOM"
                         [tableTitle]="'Available structure descriptions in database'"
                         [tableExplanation]="'Click on a row to asign a data element to it.'"
                         (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
@@ -168,7 +168,7 @@
     </div>
     <!-- existing isa88 content -->
     <div class="tab-pane " id="ISA88" role="tabpanel" aria-labelledby="ISA88-tab">
-        <app-table [currentTable]="allBehaviorInfo"
+        <app-table [tableData]="allBehaviorInfo"
             [tableTitle]="'Available behavior descriptions in database'"
             [tableExplanation]="'Click on a row to asign a data element to it.'"
             (tableClickedCell)="anyTableClick($event)">
@@ -176,7 +176,7 @@
     </div>
     <!-- existing iso22400 content -->
     <div class="tab-pane " id="ISO22400" role="tabpanel" aria-labelledby="ISO22400-tab">
-        <app-table [currentTable]="isoInfo"
+        <app-table [tableData]="isoInfo"
             [tableTitle]="'Available structural descriptions in database'"
             [tableExplanation]="'Click on a row to asign a data element to it.'"
             (tableClickedCell)="anyTableClick($event)">

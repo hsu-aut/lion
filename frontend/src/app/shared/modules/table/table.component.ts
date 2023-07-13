@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { Tables } from '../../../features/modelling/utils/tables';
-import { FormBuilder, Validators } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 
-type TableData = {
-    headers: string[]
-    rows: Array<Record<string, any>>,
+export type ListData = {
+    header: string
+    entries: Array<string | number>,
 }
 
 @Component({
@@ -18,26 +16,35 @@ export class TableComponent {
     @Input() tableTitle: string;
     @Input() tableExplanation: string;
     @Input() showFilter: boolean;
-    // Table data can either be object which is rendered using its keys, or explicitly set headers and rows
+    // Table data can either be object which is rendered using its keys, or an array of separate lists that need to be shown individualy
 
-    _currentTable: Array<Record<string, any>> | TableData
+    originalTableData: Record<string, string | number>[];
+    _tableData: Record<string, string | number>[];
+    tableHeaders: string[];
+    _listData: ListData[];
+    listSelector = new FormControl<ListData>(null);
 
-    @Input() set currentTable(data: Array<Record<string, any>> | TableData) {
-        console.log(data);
+    @Input() set tableData(inputData: Array<Record<string, string | number>>) {
+        this._tableData = inputData;
+        this.originalTableData = this._tableData;
+        this.tableHeaders = Object.keys(inputData[0] as Record<string, any>);
+    }
 
-        const length = (data as TableData)?.rows?.length ?? (data as Record<string, any>[])?.length;
-        if(data == null || length == 0) return;
+    @Input() set listData(listData: ListData[]) {
+        if(listData.length > 1) {
+            this._listData = listData;
+        }
 
-        this._currentTable = data;
-        this.pagedTable = (this._currentTable as Array<Record<string, any>>).slice(0, this.itemsPerPageOptions[0])
-        ?? (this._currentTable as TableData).rows.slice(0, this.itemsPerPageOptions[0]);
+        // select first entry as default
+        const firstElement = listData[0];
+        this._tableData = firstElement.entries.map(entry => {return {[firstElement.header]: entry};});
+        this.tableHeaders = [firstElement.header];
+        this.listSelector.setValue(firstElement);
     }
 
     @Output() tableClickedRow = new EventEmitter<Record<string, unknown>>();
     @Output() tableClickedCell = new EventEmitter<string>();
 
-    // util variables
-    TableUtil = new Tables();
 
     filterForm = this.fb.group({
         columnName: this.fb.control("", Validators.required),
@@ -48,12 +55,9 @@ export class TableComponent {
     // layout variables
     itemsPerPageOptions = [10, 20, 50, 100]
     itemsPerPage = this.itemsPerPageOptions[0];
-    pagedTable: Array<Record<string, any>> | TableData
     numberOfPages: number;
     pages: Array<number> = [];
     currentPage = 0;
-    originalTableArray: Array<Record<string, unknown>> | TableData;
-    filteredTable: Array<Record<string, unknown>> | TableData;
 
     constructor(
         private fb: FormBuilder
@@ -61,7 +65,8 @@ export class TableComponent {
 
 
     ngOnInit(): void {
-        this.filterForm.get('filterCondition').valueChanges.pipe(debounceTime(100)).subscribe(() => this.applyFilter());
+        this.filterForm.valueChanges.subscribe((filterFormData) => this.applyFilter(filterFormData));
+        this.listSelector.valueChanges.subscribe(newListData => this._tableData = newListData.entries.map(entry => {return {[newListData.header]: entry};}));
     }
 
     // TODO: Check what this is actually used for
@@ -78,11 +83,13 @@ export class TableComponent {
     // }
 
     get numberOfRows(): number {
-        return (this._currentTable as TableData)?.rows?.length ?? (this._currentTable as Record<string, any>[])?.length;
+        return this._tableData.length;
     }
 
-    get tableKeys(): string[] {
-        return (this._currentTable as TableData)?.headers ?? Object.keys(this._currentTable[0] as Record<string, any>);
+    get pagedTable(): Array<Record<string, any>> {
+        const start = (this.currentPage) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this._tableData?.slice(start, end);
     }
 
     initializeTable() {
@@ -91,10 +98,13 @@ export class TableComponent {
     }
 
     tableClickRow(clickedRow: Record<string, any>): void {
+        console.log("click row");
+
         this.tableClickedRow.emit(clickedRow);
     }
 
     tableClickCell(clickedCell: string): void {
+        console.log("click cell");
         this.tableClickedCell.emit(clickedCell);
     }
 
@@ -144,84 +154,39 @@ export class TableComponent {
     }
 
     setPageArray(): void {
-        const newPagTable: Array<Array<Record<string, any>>> = [];
-        let row = 0;
+    //     const newPagTable: Array<Array<Record<string, any>>> = [];
+    //     let row = 0;
 
-        for (let i = 0; i < this.numberOfPages; i++) {
-            const pagedTableSlice: Array<Record<string, any>> = [];
-            for (let ii = 0; ii < this.itemsPerPage; ii++) {
-                if (this._currentTable[row] == undefined) { break; }
-                pagedTableSlice[ii] = this._currentTable[row];
-                row++;
-            }
-            newPagTable.push(pagedTableSlice);
-        }
-        this.pagedTable = newPagTable;
+    //     for (let i = 0; i < this.numberOfPages; i++) {
+    //         const pagedTableSlice: Array<Record<string, any>> = [];
+    //         for (let ii = 0; ii < this.itemsPerPage; ii++) {
+    //             if (this.tableData[row] == undefined) { break; }
+    //             pagedTableSlice[ii] = this.tableData[row];
+    //             row++;
+    //         }
+    //         newPagTable.push(pagedTableSlice);
+    //     }
+    //     this.pagedTable = newPagTable;
     }
 
     setCurrentPage(page: number): void {
         this.currentPage = page;
     }
 
-    applyFilter(): void {
-        const {columnName, filterCondition} = this.filterForm.value;
+    applyFilter(filterFormData: Partial<{columnName: string, filterCondition: string}>): void {
+        const {columnName, filterCondition} = filterFormData;
+        console.log("filter");
+
 
         if(!columnName) return;
+        if(filterCondition == "") this._tableData = this.originalTableData;
 
-        const tableEntries = ((this._currentTable as TableData).rows ?? this._currentTable) as Array<Record<string, unknown>>;
-
-        this.filteredTable = tableEntries.filter(entry => {
-            const filterTrue = eval(`${entry[columnName]} ${filterCondition}`);
-            return filterTrue;
-        });
-
-        // this._currentTable = this.originalTableArray;
-        // // filtered elements is empty on method call
-        // this.filteredElements = {};
-
-        // let colKey: number;
-        // const cols = Object.keys(this._currentTable[0]);
-
-        // // find key of searched column
-        // for (let i = 0; i < cols.length; i++) {
-        //     if (cols[i] == columnName) {
-        //         colKey = i;
-        //         break;
-        //     }
-        // }
-
-        // // create a filteredElements array with rows that have matching items
-        // for (let i = 0; i < this.numberOfRows; i++) {
-        //     const value: string = Object.values(this.currentTable[i])[colKey].toLowerCase();
-
-        //     if (value.search(filterString) != -1) {
-        //         // this.filteredElements.push(this._currentTable[i]);
-        //     }
-        // }
-
-        // //  if there are matching items, assign them to the current table, if there arent any, asign the emptyTable
-        // if (this.filteredElements.length != 0) {
-        //     this._currentTable = this.filteredElements;
-        // } else {
-        //     // this._currentTable = this.createEmptyTable();
-        // }
-        // this.initializeTable();
-
+        this._tableData = this.originalTableData.filter(entry => entry[columnName].toString().includes(filterCondition));
     }
 
-    // createEmptyTable(): Record<string, any> {
-    //     const cols = Object.keys(this._currentTable[0]);
-    //     const rowObject = {};
-    //     const emptyTable: Array<Record<string, any>> = [];
-
-    //     for (let i = 0; i < cols.length; i++) {
-    //         const colname = cols[i];
-    //         const cellEntry = "";
-    //         rowObject[colname] = cellEntry;
-    //     } emptyTable.push(rowObject);
-
-    //     return emptyTable;
-    // }
-
+    clearFilter(): void {
+        this.filterForm.get('filterCondition').reset();
+        this._tableData = this.originalTableData;
+    }
 
 }

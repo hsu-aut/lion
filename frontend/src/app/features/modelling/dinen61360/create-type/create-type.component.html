@@ -85,7 +85,7 @@
     <!-- existing types -->
     <div class="tab-pane fade show active" id="exType" role="tabpanel" aria-labelledby="type-tab">
         <app-table
-            [currentTable]="allTypes"
+            [tableData]="allTypes"
             [tableTitle]="'Available Type Descriptions in Database'"
             [tableExplanation]="'Click on a row to fill the form above.'"
             (tableClickedRow)="typeTableClick($event)"
@@ -106,7 +106,7 @@
             </div>
         </div>
         <div *ngIf="propertyList.length!==0">
-            <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)" [showFilter]="filterOption">
+            <app-table [tableData]="propertyList" (tableClickedRow)="eclassTableClick($event)" [showFilter]="filterOption">
             </app-table>
         </div>
     </div>

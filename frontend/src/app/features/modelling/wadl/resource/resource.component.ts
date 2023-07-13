@@ -6,6 +6,7 @@ import { PrefixesService } from "@shared-services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
 import { cValFns } from "../../utils/validators";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
+import { ListData } from "../../../../shared/modules/table/table.component";
 
 @Component({
     selector: 'wadl-resource',
@@ -24,7 +25,8 @@ export class ResourceComponent implements OnInit {
 
     resourceBasePaths: Array<string> = [];
     NoOfResourceBasePaths: number;
-    resourceTable: Array<Record<string, any>> = [];
+    resources: Array<Record<string, any>> = [];
+    tableData: ListData[]
 
 
     constructor(
@@ -55,14 +57,12 @@ export class ResourceComponent implements OnInit {
     loadResourceTable(): void {
         this.wadlService.getBaseResources().subscribe(baseResources => {
             // flatten resource paths
-            const flattenedResources = baseResources.map(br => br.resources.map(res => res.resourcePath));
-            this.resourceTable = flattenedResources;
+            const flattenedResources = baseResources.map(br => br.resources.map(res => res.resourcePath)).flat();
+            this.tableData = [{header:"resources", entries: flattenedResources}];
         });
     }
 
     public tableClick(event): void {
-        console.log(event);
-
         this.resourceForm.controls['resourceBasePath'].setValue(event.baseResource);
         this.resourceForm.controls['resourcePath'].setValue(event.resourcePath.slice(1));
     }

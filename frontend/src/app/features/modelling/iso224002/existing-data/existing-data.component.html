@@ -22,19 +22,19 @@
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="vdiEntity" role="tabpanel" aria-labelledby="vdiEntity-tab">
-    <app-table [currentTable]="allVDIInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+    <app-table [listData]="allVDIInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
         (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="isoEntity" role="tabpanel" aria-labelledby="isoEntity-tab">
-    <app-table [currentTable]="allIsoEntityInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+    <app-table [tableData]="allIsoEntityInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
         (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="isoElement" role="tabpanel" aria-labelledby="isoElement-tab">
-    <app-table [currentTable]="allIsoElementInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+    <app-table [tableData]="allIsoElementInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
         (tableClickedCell)="tableClick($event)"></app-table>
     </div>
     <div class="tab-pane " id="isoKPI" role="tabpanel" aria-labelledby="isoKPI-tab">
-    <app-table [currentTable]="allIsoKPIInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
+    <app-table [tableData]="allIsoKPIInfo" [tableTitle]="tableTitle" [tableExplanation]="tableSubTitle"
         (tableClickedCell)="tableClick($event)"></app-table>
     </div>
 </div>

@@ -41,7 +41,7 @@
           <p class="text-sm-left"> You can see an overview on the already linked entities below. The table indicates 3D
             CAD entities that are already some kind of Technical Resource. </p>
 
-          <app-table [currentTable]="overviewTable" [showFilter]="filterOption" [tableExplanation]="overviewSubTitle">
+          <app-table [tableData]="overviewTable" [showFilter]="filterOption" [tableExplanation]="overviewSubTitle">
           </app-table>
 
         </div>
@@ -83,10 +83,10 @@
 
           <div class="row">
             <div class="col">
-              <app-table [currentTable]="resourcesTable" [showFilter]="filterOption" [tableExplanation]="resourcesSubTitle" (tableClickedRow)="resourceTableClick($event)"></app-table>
+              <app-table [tableData]="resourcesTable" [showFilter]="filterOption" [tableExplanation]="resourcesSubTitle" (tableClickedRow)="resourceTableClick($event)"></app-table>
             </div>
             <div class="col">
-              <app-table [currentTable]="systemTable" [showFilter]="filterOption" [tableExplanation]="systemSubTitle" (tableClickedRow)="systemTableClick($event)"></app-table>
+              <app-table [tableData]="systemTable" [showFilter]="filterOption" [tableExplanation]="systemSubTitle" (tableClickedRow)="systemTableClick($event)"></app-table>
             </div>
           </div>
 

@@ -75,6 +75,8 @@ export class QueriesService {
         return tableObservable;
     }
 
+    // TODO: Replace this deprecated stuff
+
     /**
      * Executes a query and returns the results in a table-like structure
      * @param queryString SPARQL query that will be executed

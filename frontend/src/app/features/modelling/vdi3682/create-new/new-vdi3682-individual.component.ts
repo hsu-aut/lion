@@ -51,9 +51,9 @@ export class NewVdi3682IndividualComponent implements OnInit {
 
 
     /**
- * This method on "add" in the "create new individuals" tab
- * @param action
- */
+    * This method on "add" in the "create new individuals" tab
+    * @param action
+    */
     handleNewTriple(action: string): void {
         if (this.newIndividualForm.valid) {
             const subject = this.prefixService.addOrParseNamespace(this.newIndividualForm.controls['name'].value);
