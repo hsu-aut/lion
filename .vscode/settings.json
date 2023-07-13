@@ -44,6 +44,7 @@
     "eslint.alwaysShowStatus": true,
     "conventionalCommits.scopes": [
         "config",
-        "wadl"
+        "wadl",
+        "frontend"
     ],
 }
