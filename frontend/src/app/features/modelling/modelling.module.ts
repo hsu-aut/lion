@@ -27,7 +27,6 @@ import { TableModule } from '../../shared/modules/table/table.module';
     declarations: [
         ModellingComponent,
         SidebarComponent,
-        Vdi2206Component,
     ]
 })
 export class ModellingModule { }
