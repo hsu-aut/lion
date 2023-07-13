@@ -5,6 +5,7 @@ import { Iso22400_2ModelService } from '../../rdf-models/iso22400_2Model.service
 import { Vdi2206ModelService } from '../../rdf-models/vdi2206Model.service';
 import { Vdi3682ModelService } from '../../rdf-models/vdi3682Model.service';
 import { ListData } from '../../../../shared/modules/table/table.component';
+import { toSparqlVariableList } from '../../utils/rxjs-custom-operators';
 
 @Component({
     selector: 'app-existing-data',
@@ -54,12 +55,9 @@ export class ExistingDataComponent implements OnInit {
     getAllTableInfo(): void {
         // wrap vdi2206Service.getLIST_OF_SYSTEMS() as observable for now
         // TODO: exchange with real observable, as soon as vdi2206Service is updated
-        const vdi2206Observable: Observable<string[]> = new Observable(subscriber => {
-            subscriber.next(this.vdi2206Service.getLIST_OF_SYSTEMS());
-            subscriber.complete();
-        });
+        const vdi2206Systems = this.vdi2206Service.getSystems();
         // joined tabele (vdi 2206 & 3682) TODO: replace vdi2206Observable
-        combineLatest([vdi2206Observable.pipe(take(1)), this.vdi3682Service.getListOfTechnicalResources()]).subscribe(([vdi2206Systems, vdi3682Tr]) => {
+        combineLatest([vdi2206Systems.pipe(take(1), toSparqlVariableList('system')), this.vdi3682Service.getListOfTechnicalResources()]).subscribe(([vdi2206Systems, vdi3682Tr]) => {
             this.allVDIInfo = [
                 {
                     header: "VDI2206:System",

@@ -10,6 +10,7 @@ import { Iso22400_2ModelService } from "../../rdf-models/iso22400_2Model.service
 import { Vdi2206ModelService } from "../../rdf-models/vdi2206Model.service";
 import { Tables } from "../../utils/tables";
 import { ListData } from "../../../../shared/modules/table/table.component";
+import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 
 @Component({
     selector: 'wadl-base-resource',
@@ -72,10 +73,6 @@ export class BaseResourceComponent implements OnInit {
 
     addBaseResource(): void {
         if (this.baseResourceForm.invalid) {
-            console.log("errors");
-
-            this.baseResourceForm.errors;
-            console.log("Form invalid");
             return;
         }
         const basePath = this.baseResourceForm.get("resourceBasePath").value;
@@ -152,8 +149,8 @@ export class BaseResourceComponent implements OnInit {
         // });
 
         const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
-        const systems = await firstValueFrom(this.vdi2206Service.getSystems());
-        const modules= await firstValueFrom(this.vdi2206Service.getSystems());
+        const systems = await firstValueFrom(this.vdi2206Service.getSystems().pipe(toSparqlVariableList('system')));
+        const modules= await firstValueFrom(this.vdi2206Service.getModules().pipe(toSparqlVariableList('module')));
         this.allVDIInfo = [
             {
                 header: "VDI2206:System",

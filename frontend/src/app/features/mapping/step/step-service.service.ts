@@ -84,13 +84,12 @@ export class StepServiceService {
 
       const insertObservable = new Observable((observer) => {
           this.http.put(request, body, { headers }).pipe(take(1)).subscribe((data: any) => {
-              this.messageService.success('Alright!',`Backend processed the file.`)
-              this.vdi.initializeVDI2206();
+              this.messageService.success('Alright!',`Backend processed the file.`);
               observer.next();
               observer.complete();
           },
           error => {
-              this.messageService.warn('Ups!',`Seams like the Server responded with a ${error.status} code`)
+              this.messageService.warn('Ups!',`Seams like the Server responded with a ${error.status} code`);
           });
       });
 
