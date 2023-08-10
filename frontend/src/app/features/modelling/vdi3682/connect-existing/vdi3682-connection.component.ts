@@ -66,7 +66,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
     getObjectClasses(predicate: string): void {
         if (!predicate) return;
 
-        this.vdi3682Service.getRangeClasses(predicate).subscribe(data => {
+        this.tBoxService.getRangeClasses(predicate).subscribe(data => {
             this.existingObjectClasses = data;
         });
     }
@@ -85,10 +85,12 @@ export class Vdi3682ConnectionComponent implements OnInit {
         this.newConnectionForm.reset();
         this.newConnectionForm.controls['subject'].setValue(name);
 
-        this.vdi3682Service.getClassOfIndividualWithinNamespace(this.newConnectionForm.controls['subject'].value).pipe(take(1))
+        const individual = this.newConnectionForm.controls['subject'].value;
+        const namespace = "http://www.hsu-ifa.de/ontologies/VDI3682#";
+        this.tBoxService.getClassOfIndividualWithinNamespace(individual, namespace).pipe(take(1))
             .subscribe((data: any) => {
                 const owlClass = data[0];
-                this.vdi3682Service.getPropertiesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
+                this.tBoxService.getPropertiesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
                     this.existingPredicates = data;
                 });
             });

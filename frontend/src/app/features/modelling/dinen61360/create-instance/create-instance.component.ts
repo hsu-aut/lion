@@ -110,9 +110,9 @@ export class CreateInstanceComponent implements OnInit {
       this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
       this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
       // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
-      this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
-      this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
-      this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
+      //   this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
+      //   this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
+      //   this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
   }
 
   /**

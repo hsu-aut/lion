@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { QueriesService } from '@shared-services/backEnd/queries.service';
+import { PrefixesService } from '../../../shared/services/prefixes.service';
 
 /**
  * A service allowing basic interaction on the basis of triples (such as adding or deleting triples)
@@ -11,7 +12,8 @@ import { QueriesService } from '@shared-services/backEnd/queries.service';
 export class TripleService {
 
     constructor(
-        private queryService: QueriesService
+        private queryService: QueriesService,
+        private prefixService: PrefixesService
     ) { }
 
     /**
@@ -20,6 +22,7 @@ export class TripleService {
      * @param graph Graph to add the triple into
      */
     addTriple(triple: Triple): Observable<void> {
+        Object.keys(triple).forEach(key => triple[key] = this.prefixService.addOrParseNamespace(triple[key]));
         const insertString = this.buildTripleInsertString(triple);
         return this.queryService.executeUpdate(insertString);
     }

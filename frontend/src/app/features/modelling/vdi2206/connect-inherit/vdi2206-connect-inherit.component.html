@@ -1,0 +1,30 @@
+<div class="row" [formGroup]="connectTripleForm">
+    <div class="form-group col-sm">
+        <label> The Subject of the created statement </label>
+        <input formControlName="selectedSubject" class="form-control" type="text" placeholder="Select an Entity from Table"
+            readonly>
+    </div>
+    <div class="form-group col-sm">
+        <label> The Predicate of the created statement </label>
+        <select formControlName="selectedPredicate" name="selectedPredicate" class="form-control"
+            (click)="getExistingObjects()">
+            <option>VDI2206:hasChild</option>
+            <option>VDI2206:hasParent</option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label> The Object of the created statement </label>
+        <select formControlName="selectedObject" name="selectedObject" class="form-control">
+            <option *ngFor='let x of existingObjects'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+</div>
+
+<div class="row mt-2 justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-secondary me-3" (click)="buildInsert()">Download SPARQL INSERT</button>
+        <button class="btn btn-secondary" (click)="executeInsert()">Add</button>
+    </div>
+</div>

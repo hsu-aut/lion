@@ -25,16 +25,17 @@ export class TableComponent {
     listSelector = new FormControl<ListData>(null);
 
     @Input() set tableData(inputData: Array<Record<string, string | number>>) {
+        if(!inputData || inputData.length == 0) return;
+
         this._tableData = inputData;
         this.originalTableData = this._tableData;
         this.tableHeaders = Object.keys(inputData[0] as Record<string, any>);
     }
 
     @Input() set listData(listData: ListData[]) {
-        if(listData.length > 1) {
-            this._listData = listData;
-        }
+        if(!listData || listData.length == 0) return;
 
+        this._listData = listData;
         // select first entry as default
         const firstElement = listData[0];
         this._tableData = firstElement.entries.map(entry => {return {[firstElement.header]: entry};});
@@ -66,21 +67,11 @@ export class TableComponent {
 
     ngOnInit(): void {
         this.filterForm.valueChanges.subscribe((filterFormData) => this.applyFilter(filterFormData));
-        this.listSelector.valueChanges.subscribe(newListData => this._tableData = newListData.entries.map(entry => {return {[newListData.header]: entry};}));
+        this.listSelector.valueChanges.subscribe(newListData => {
+            console.log(newListData);
+            this.tableData = newListData.entries.map(entry => {return {[newListData.header]: entry};});
+        });
     }
-
-    // TODO: Check what this is actually used for
-    // ngOnChanges(changes: SimpleChanges) {
-    //     if (this.currentTable !== undefined) {
-
-    //         if (this.numberOfRows != 0) {
-
-    //             this.originalTableArray = this.currentTable;
-    //             this.initializeTable();
-    //         }
-    //     }
-
-    // }
 
     get numberOfRows(): number {
         return this._tableData.length;
@@ -92,7 +83,7 @@ export class TableComponent {
         return this._tableData?.slice(start, end);
     }
 
-    initializeTable() {
+    initializeTable(): void {
         this.setPageCount();
         this.setPageArray();
     }
@@ -108,7 +99,7 @@ export class TableComponent {
         this.tableClickedCell.emit(clickedCell);
     }
 
-    setItemsPerPage(selectedNumber: number) {
+    setItemsPerPage(selectedNumber: number): void {
         this.itemsPerPage = selectedNumber;
         this.setPageCount();
         this.setCurrentPage(0);

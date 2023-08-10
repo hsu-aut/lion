@@ -1,0 +1,26 @@
+<!-- content to create new individuals -->
+<div class="row" [formGroup]="newTripleForm">
+    <div class="form-group col-sm-4">
+        <label> New subject</label>
+        <input formControlName="subject" class="form-control" name="object" type="text" placeholder="http://namespace.de/some#Individual">
+    </div>
+    <div class="form-group col-sm-2">
+        <label>Predicate</label>
+        <input formControlName="predicate" class="form-control" type="text">
+    </div>
+    <div class="form-group col-sm-6">
+        <label>New object</label>
+        <select formControlName="object" class="form-select" id="inputGroupSelect01">
+            <option *ngFor='let x of allClasses'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+</div>
+
+<div class="row mt-2 justify-content-end">
+    <div class="col-auto">
+        <button class="btn btn-secondary me-3" (click)="buildInsert()" [disabled]="this.newTripleForm.invalid">Download SPARQL INSERT</button>
+        <button class="btn btn-secondary" (click)="executeInsert()" [disabled]="this.newTripleForm.invalid">Add</button>
+    </div>
+</div>

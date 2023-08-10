@@ -45,6 +45,8 @@
     "conventionalCommits.scopes": [
         "config",
         "wadl",
-        "frontend"
+        "frontend",
+        "backend",
+        "2206"
     ],
 }

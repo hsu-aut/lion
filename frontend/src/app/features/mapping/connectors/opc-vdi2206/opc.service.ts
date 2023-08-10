@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { PrefixesService } from '@shared-services/prefixes.service';
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
+import { toSparqlTable } from '../../../modelling/utils/rxjs-custom-operators';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +22,7 @@ export class OpcService {
 
         }`;
 
-        return this.queryService.SPARQL_SELECT_TABLE(query);
+        return this.queryService.executeSelect(query).pipe(toSparqlTable());
     }
 
 
@@ -32,7 +33,7 @@ export class OpcService {
             rdfs:label ?nodeLabel.
         }`;
 
-        return this.queryService.SPARQL_SELECT_TABLE(query);
+        return this.queryService.executeSelect(query).pipe(toSparqlTable());
     }
 
 
@@ -69,7 +70,7 @@ export class OpcService {
                 OPTIONAL {?instanceDescription rdfs:label ?instanceDescriptionLabel;}
                 OPTIONAL {?opcVariable rdfs:label ?opcVariableLabel.}
             }`;
-        return this.queryService.SPARQL_SELECT_TABLE(query);
+        return this.queryService.executeSelect(query).pipe(toSparqlTable());
     }
 
 
@@ -110,7 +111,7 @@ export class OpcService {
             OPTIONAL {?systemOrModule rdfs:label ?systemOrModuleLabel.}
             OPTIONAL {?opcUaServer rdfs:label ?opcUaServerLabel.}
         }`;
-        return this.queryService.SPARQL_SELECT_TABLE(query);
+        return this.queryService.executeSelect(query).pipe(toSparqlTable());
     }
 
 }

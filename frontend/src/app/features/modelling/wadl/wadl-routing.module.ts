@@ -11,10 +11,10 @@ const routes: Routes = [
         path: '',
         component: WadlComponent,
         children: [
-            {path: "base-resources", component: BaseResourceComponent},
-            {path: "services", component: ResourceComponent},
-            {path: "requests", component: RequestComponent},
-            {path: "responses", component: ResponseComponent}
+            {path: 'base-resources', component: BaseResourceComponent},
+            {path: 'services', component: ResourceComponent},
+            {path: 'requests', component: RequestComponent},
+            {path: 'responses', component: ResponseComponent}
         ]
     }
 ];

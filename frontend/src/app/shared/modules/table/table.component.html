@@ -9,14 +9,14 @@
                     <p class="card-text">{{tableExplanation}}</p>
                 </div>
             </div>
-            <div class="row align-items-center">
+            <div class="row align-items-center"  *ngIf="this._listData">
                 <div class="col-auto">
                     <label class="form-label" for="inlineFormSelectPref">Show element type:</label>
                 </div>
-                <div class="col-auto" *ngIf="this._listData">
+                <div class="col-auto">
                     <select [formControl]="listSelector" class="form-select d-inline" id="listSelector">
                         <!-- <option value=null selected hidden>Select list type...</option> -->
-                        <option *ngFor='let listData of this._listData' [value]="listData">
+                        <option *ngFor='let listData of this._listData' [ngValue]="listData">
                             {{listData.header}}
                         </option>
                     </select>
@@ -72,7 +72,7 @@
                         <div class="btn-group me-2" role="group">
                             <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Items per page: {{itemsPerPageOptions[0]}}
+                                Items per page: {{itemsPerPage}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" *ngFor='let option of itemsPerPageOptions'
