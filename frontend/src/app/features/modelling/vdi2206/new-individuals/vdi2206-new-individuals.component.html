@@ -11,7 +11,7 @@
     <div class="form-group col-sm-6">
         <label>New object</label>
         <select formControlName="object" class="form-select" id="inputGroupSelect01">
-            <option *ngFor='let x of (allClasses$ | async)'>
+            <option *ngFor='let x of allClasses'>
                 {{x}}
             </option>
         </select>
@@ -20,7 +20,7 @@
 
 <div class="row mt-2 justify-content-end">
     <div class="col-auto">
-        <button class="btn btn-secondary me-3" (click)="buildInsert()">Download SPARQL INSERT</button>
-        <button class="btn btn-secondary" (click)="executeInsert()">Add</button>
+        <button class="btn btn-secondary me-3" (click)="buildInsert()" [disabled]="this.newTripleForm.invalid">Download SPARQL INSERT</button>
+        <button class="btn btn-secondary" (click)="executeInsert()" [disabled]="this.newTripleForm.invalid">Add</button>
     </div>
 </div>

@@ -2,7 +2,6 @@
     <h5 class="card-header">VDI2206 Template</h5>
     <div class="card-body">
         <h5 class="card-title"> Mechatronic System Structure</h5>
-
         <div class="row" style="height: 200px;">
             <div class="col">
                 <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to
@@ -25,9 +24,9 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{(systems$ | async)?.length}}</td>
-                                    <td>{{(modules$ | async)?.length}}</td>
-                                    <td>{{(components$ | async)?.length}}</td>
+                                    <td>{{numberOfSystems}}</td>
+                                    <td>{{numberOfModules}}</td>
+                                    <td>{{numberOfComponents}}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -53,12 +52,12 @@
                 </li> -->
             </ul>
 
-            <div class="tab-content py-3" id="myTabContent">
+            <div class="tab-content mt-3" id="myTabContent">
                 <div class="tab-pane active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
                     <vdi2206-new-individuals></vdi2206-new-individuals>
                 </div>
                 <div class="tab-pane " id="existingIndiContain" role="tabpanel" aria-labelledby="existingIndiContain-tab">
-                    <vdi2206-connect-contain [selectedSubject]="this.selectedSubject"></vdi2206-connect-contain>
+                    <vdi2206-connect-contain [subject]="this.selectedSubject"></vdi2206-connect-contain>
                 </div>
                 <!-- <div class="tab-pane " id="existingIndiInheritance" role="tabpanel" aria-labelledby="existingIndiInheritance-tab">
                     <vdi2206-connect-inherit [selectedSubject]="this.selectedSubject" [selectedPredicate]="this.selectedPredicate"></vdi2206-connect-inherit>
@@ -81,7 +80,7 @@
                         aria-selected="false" (click)="setTableOption('component')"> Component </a>
                 </li>
             </ul>
-            <div class="tab-content" id="myTabContent">
+            <div class="tab-content" id="existingElementTable">
                 <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
                     <app-table [tableData]="(currentTable$ | async)" (tableClickedCell)="tableClick($event)"></app-table>
                 </div>
@@ -106,9 +105,7 @@
                     <div class="modal-body">
                         <img src="../../../../../../assets/images/vdi2206_grafical_notion.png" class="card-img-top rounded mx-auto d-block"
                             style="width: 60%">
-                        <p class="card-text"> The VDI 2206 (Design methodology for mechatronic systems) contains
-                            concepts for the description of mechatronic systems and their containment structure. Hereby, the guideline
-                            defines necessary constituents of a mechatronic ssystem as well as a description on how they are related.
+                        <p class="card-text">The VDI 2206 (Design methodology for mechatronic systems) contains concepts for the description of mechatronic systems and their containment structure. Hereby, the guideline defines necessary constituents of a mechatronic ssystem as well as a description on how they are related.
                         </p>
                     </div>
                     <div class="modal-footer">
