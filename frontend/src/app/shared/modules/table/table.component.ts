@@ -99,7 +99,7 @@ export class TableComponent {
         this.tableClickedCell.emit(clickedCell);
     }
 
-    setItemsPerPage(selectedNumber: number) {
+    setItemsPerPage(selectedNumber: number): void {
         this.itemsPerPage = selectedNumber;
         this.setPageCount();
         this.setCurrentPage(0);
