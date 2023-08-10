@@ -84,12 +84,12 @@
 <div class="tab-content py-3" id="myTabContent">
     <!-- existing types -->
     <div class="tab-pane fade show active" id="exType" role="tabpanel" aria-labelledby="type-tab">
-        <app-table 
-            [currentTable]="allTypes"
+        <app-table
+            [tableData]="allTypes"
             [tableTitle]="'Available Type Descriptions in Database'"
             [tableExplanation]="'Click on a row to fill the form above.'"
             (tableClickedRow)="typeTableClick($event)"
-            [filter]="filterOption"
+            [showFilter]="filterOption"
         ></app-table>
     </div>
     <!-- eclass -->
@@ -106,7 +106,7 @@
             </div>
         </div>
         <div *ngIf="propertyList.length!==0">
-            <app-table [currentTable]="propertyList" (tableClickedRow)="eclassTableClick($event)" [filter]="filterOption">
+            <app-table [tableData]="propertyList" (tableClickedRow)="eclassTableClick($event)" [showFilter]="filterOption">
             </app-table>
         </div>
     </div>

@@ -65,7 +65,6 @@ export class GraphOperationService {
 	 */
 	setCurrentGraph(graphUpdate: GraphUpdate): Observable<GraphDto> {
 		const graphToSet = this.getAllGraphs().pipe(map(graphs => graphs.find(graph => (graph.graphIri === graphUpdate.graphIri))));
-		graphToSet.subscribe(data => console.log(data));
 		if (!graphToSet) throw new GraphDbRequestException(`Graph with IRI ${graphUpdate.graphIri} does not exist`);
 		
 		this.currentGraph = graphToSet;

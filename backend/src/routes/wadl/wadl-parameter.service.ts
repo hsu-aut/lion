@@ -1,11 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { WadlParameter, WadlParameterTypes, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
-import { Observable } from "rxjs";
+import { WadlParameter, WadlParameterDto, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
+import { Observable, map } from "rxjs";
 import { SparqlResponse } from "../../models/sparql/SparqlResponse";
 import { SparqlService } from "../../shared-services/sparql.service";
+import { MappingDefinition, SparqlResultConverter } from "sparql-result-converter";
 
 @Injectable()
 export class WadlParameterService {
+
+	converter = new SparqlResultConverter();
 
 	constructor(
 		private queryService: SparqlService
@@ -24,36 +27,46 @@ export class WadlParameterService {
 		return this.queryService.query(queryString);
 	}
 
-	getParameters(parentIri: string): Observable <SparqlResponse> {
+
+	getParameters(parentIri: string): Observable<WadlParameterDto[]> {
 		const queryString = `
-	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	PREFIX owl: <http://www.w3.org/2002/07/owl#>
-	PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
 
-	SELECT DISTINCT ?parameter ?parameterKey ?dataType ?optionValue WHERE {
-		<${parentIri}> wadl:hasParameter ?parameter.
-		?parameter rdf:type ?parameterType;
-			wadl:hasParameterName ?parameterKey.
-		?parameterType rdfs:subClassOf wadl:Parameter.
+		SELECT DISTINCT ?parentIri ?parameterIri ?name ?type ?required ?default ?dataType ?value WHERE {
+			BIND(<${parentIri}> as ?parentIri)
+			?parentIri wadl:hasParameter ?parameterIri.
+			?parameterIri rdf:type ?type;
+				wadl:hasParameterName ?name.
+			?type rdfs:subClassOf wadl:Parameter.
 
-		{OPTIONAL {?parameter  wadl:hasParameterType ?dataType.}} UNION
-		{OPTIONAL {?parameter  wadl:hasOntologicalParameterType ?dataType.}} UNION
-		{OPTIONAL {
-			?parameter  rdf:type ?dataType. 
-			MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
-		}}
-	
-		FILTER(!ISBLANK(?dataType))
+			{OPTIONAL {?parameterIri wadl:hasParameterRequired ?required.}}
+			{OPTIONAL {?parameterIri wadl:hasParameterDefault ?default.}}
+			{OPTIONAL {?parameterIri  wadl:hasParameterType ?dataType.}} UNION
+			{OPTIONAL {?parameterIri  wadl:hasOntologicalParameterType ?dataType.}} UNION
+			{OPTIONAL {
+				?parameterIri  rdf:type ?dataType. 
+				MINUS {?ontologicalDataTypeTBox rdfs:subClassOf wadl:Parameter.}
+			}}
+		
+			FILTER(!ISBLANK(?dataType))
 
-		OPTIONAL{
-			?parameter wadl:hasParameterOption ?option.
-			?option rdf:type wadl:Option;
-			a owl:NamedIndividual;
-			wadl:hasOptionValue ?optionValue.
-		}
-	} `;
+			OPTIONAL{
+				?parameterIri wadl:hasParameterOption ?option.
+				?option rdf:type wadl:Option;
+				a owl:NamedIndividual;
+				wadl:hasOptionValue ?value.
+			}
+		} `;
 
-		return this.queryService.query(queryString);
+		return this.queryService.query(queryString).pipe(map(rawResult => {
+			const mappedResult = this.converter.convertToDefinition(rawResult.results.bindings, parameterMappingDefinition)
+				.getFirstRootElement() as Array<WadlParameterDto>;
+			
+			return mappedResult;
+		}));
+
 	}
 
 
@@ -63,11 +76,11 @@ export class WadlParameterService {
      * @param parameters Array of WADL parameters
      * @returns SPARQL insert
      */
-	createParameterString(parameters: WadlParameter[]): string{			
+	createParameterInsertString(parameters: WadlParameter[]): string{			
 		const parameterString = parameters.map(param => {
 			let paramString = `
 			<${param.parentIri}> wadl:hasParameter <${param.parameterIri}>.
-			<${param.parameterIri}> a <${WadlParameterTypes[param.parameterType]}>;
+			<${param.parameterIri}> a <${param.parameterType}>;
 					a owl:NamedIndividual;
 					wadl:hasParameterName "${param.name}"^^xsd:NMTOKEN;
 					`;
@@ -83,10 +96,9 @@ export class WadlParameterService {
 				paramString += `a "${param.dataType}"^^xsd:string.`;
 				break;
 			}
-
 			const optionString = param.options.map(option => {
 				const opString = `
-					wadl:hasParameterOption <${option.iri}>;
+				<${param.parameterIri}>	wadl:hasParameterOption <${option.iri}>.
 				<${option.iri}> a wadl:Option;
 					a owl:NamedIndividual;
 				wadl:hasOptionValue "${option.value}".`;
@@ -102,15 +114,13 @@ export class WadlParameterService {
 
 
 	addParameters(parameters: WadlParameter[]): Observable<void> {
-		const parameterString = this.createParameterString(parameters);
+		const parameterString = this.createParameterInsertString(parameters);
 		const updateString = `
 			PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>	
 			INSERT DATA {
 				${parameterString}
 			}
 		`;
-		console.log(updateString);
-		
 		return this.queryService.update(updateString);
 	}
 
@@ -142,4 +152,42 @@ export class WadlParameterService {
 		return this.queryService.update(deleteString);
 	}
 
+	deleteAllParametersOfParent(parentIri: string): Observable<void> {
+		const deleteString = `
+		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		DELETE {
+			<${parentIri}> wadl:hasParameter ?parameterIri.
+			?parameterIri a ?paramType;
+				a owl:NamedIndividual;
+				wadl:hasParameterName ?name;
+				?typeProp ?type.
+		} WHERE {
+			VALUES ?typeProp {wadl:hasParameterType wadl:hasOntologicalParameterType }
+			OPTIONAL {
+				?parameterIri wadl:hasParameterDefault ?default.
+			}
+			OPTIONAL {
+				?parameterIri wadl:hasParameterOption ?option.
+				?option a wadl:Option;
+						a owl:NamedIndividual;
+						wadl:hasOptionValue ?optionValue.
+			}
+		}`;
+		return this.queryService.update(deleteString);
+	}
+
 }
+
+
+
+
+const parameterMappingDefinition: MappingDefinition[] = [{
+	rootName: 'parameter',
+	propertyToGroup: 'parameterIri',
+	name: 'parameterIri',
+	toCollect: ['parameterIri', 'type', 'name', 'parentIri', 'dataType', 'required', 'default'],
+	childMappings: [{
+		rootName: 'options',
+		toCollect: ['value'],
+	}]
+}];

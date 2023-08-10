@@ -14,9 +14,9 @@ import { MessagesService } from '@shared-services/messages.service';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-create-instance',
-  templateUrl: './create-instance.component.html',
-  styleUrls: ['./create-instance.component.scss']
+    selector: 'app-create-instance',
+    templateUrl: './create-instance.component.html',
+    styleUrls: ['./create-instance.component.scss']
 })
 
 export class CreateInstanceComponent implements OnInit {
@@ -26,30 +26,30 @@ export class CreateInstanceComponent implements OnInit {
    * model variables without type variables
    */
   private modelVariables: DINEN61360Variables = {
-    optionalTypeVariables: undefined,
-    mandatoryTypeVariables: undefined,
-    instanceVariables: {
-        code: undefined,
-        expressionGoalString: undefined,
-        logicInterpretationString: undefined,
-        valueString: undefined,
-        describedIndividual: undefined
-    }
+      optionalTypeVariables: undefined,
+      mandatoryTypeVariables: undefined,
+      instanceVariables: {
+          code: undefined,
+          expressionGoalString: undefined,
+          logicInterpretationString: undefined,
+          valueString: undefined,
+          describedIndividual: undefined
+      }
   }
 
   /**
    * instance description form
    */
   public instanceDescriptionForm: FormGroup = this.formBuilder.group({
-    code: [undefined, [Validators.required, Validators.pattern('([A-Z]{3})([0-9]{3})')]],
-    individual: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('(^((?!://).)*$)')]],
-    expressionGoal: [undefined, Validators.required],
-    logicInterpretation: [undefined, Validators.required],
-    value: [undefined, Validators.required]
+      code: [undefined, [Validators.required, Validators.pattern('([A-Z]{3})([0-9]{3})')]],
+      individual: [undefined, [Validators.required, Validators.pattern('(^((?!http).)*$)'), Validators.pattern('(^((?!://).)*$)')]],
+      expressionGoal: [undefined, Validators.required],
+      logicInterpretation: [undefined, Validators.required],
+      value: [undefined, Validators.required]
   })
 
   // filter option
-  public filterOption: boolean = true;
+  public filterOption = true;
 
   // tables
   public allInstances: Array<Record<string, any>> = [];
@@ -87,32 +87,32 @@ export class CreateInstanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getDropdowns();
-    this.getTables();
+      this.getDropdowns();
+      this.getTables();
   }
 
   /**
    * update dropdown options
    */
   private getDropdowns(): void {
-    this.dinen61360Service.getListOfLogicInterpretations().subscribe((data: any) => this.logicInterpretations = data);
-    this.dinen61360Service.getListOfExpressionGoals().subscribe((data: any) => this.expressionGoals = data);
+      this.dinen61360Service.getListOfLogicInterpretations().subscribe((data: any) => this.logicInterpretations = data);
+      this.dinen61360Service.getListOfExpressionGoals().subscribe((data: any) => this.expressionGoals = data);
   }
 
   /**
    * update content of existing types/instances and content from other odps
    */
   private getTables(): void {
-    this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.allTypes = data);
-    this.dinen61360Service.getTableOfAllInstanceInfo().subscribe((data: any) => this.allInstances = data);
-    this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.isoInfo = data);
-    this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
-    this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
-    this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
-    // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
-    this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
-    this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
-    this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
+      this.dinen61360Service.getTableOfAllTypes().subscribe((data: any) => this.allTypes = data);
+      this.dinen61360Service.getTableOfAllInstanceInfo().subscribe((data: any) => this.allInstances = data);
+      this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.isoInfo = data);
+      this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
+      this.vdi3682Service.getCompleteProcessInfo().subscribe(data => this.allProcessInfo = data);
+      this.isa88Service.getISA88BehaviorInfoTable().subscribe((data: Record<string, string>[]) => this.allBehaviorInfo = data);
+      // TODO: replace the remaining code as soon as vdi2206 model service etc. is updated
+      this.allStructureInfoContainmentbySys = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_SYS();
+      this.allStructureInfoContainmentbyMod = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_MOD();
+      this.allStructureInfoContainmentbyCOM = this.vdi2206Service.getTABLE_STRUCTUAL_INFO_BY_CONTAINMENT_BY_COM();
   }
 
   /**
@@ -121,26 +121,26 @@ export class CreateInstanceComponent implements OnInit {
    * @param form
    */
   public createTriple(action: string, form: any): void {
-    if (form.valid) {
-      const instanceModelVariables = {
-        code: this.instanceDescriptionForm.controls['code'].value,
-        expressionGoalString: this.instanceDescriptionForm.controls['expressionGoal'].value,
-        logicInterpretationString: this.instanceDescriptionForm.controls['logicInterpretation'].value,
-        valueString: this.instanceDescriptionForm.controls['value'].value,
-        describedIndividual: this.nameService.addOrParseNamespace(this.instanceDescriptionForm.controls['individual'].value)
-      };
-      this.modelVariables.instanceVariables = instanceModelVariables;
-      console.log(this.modelVariables);
-      this.dinen61360Service.modifyInstance(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
-        this.getDropdowns();
-        this.getTables();
-        this.onUpdate.emit();
-      });
-      console.log(action);
-      console.log(form);
-    } else if (form.invalid) {
-        this.messageService.warn('Ups!','It seems like you are missing some data here...')
-    }
+      if (form.valid) {
+          const instanceModelVariables = {
+              code: this.instanceDescriptionForm.controls['code'].value,
+              expressionGoalString: this.instanceDescriptionForm.controls['expressionGoal'].value,
+              logicInterpretationString: this.instanceDescriptionForm.controls['logicInterpretation'].value,
+              valueString: this.instanceDescriptionForm.controls['value'].value,
+              describedIndividual: this.nameService.addOrParseNamespace(this.instanceDescriptionForm.controls['individual'].value)
+          };
+          this.modelVariables.instanceVariables = instanceModelVariables;
+          console.log(this.modelVariables);
+          this.dinen61360Service.modifyInstance(action, this.modelVariables).pipe(take(1)).subscribe((data: any) => {
+              this.getDropdowns();
+              this.getTables();
+              this.onUpdate.emit();
+          });
+          console.log(action);
+          console.log(form);
+      } else if (form.invalid) {
+          this.messageService.warn('Ups!','It seems like you are missing some data here...');
+      }
   }
 
   /**
@@ -148,7 +148,7 @@ export class CreateInstanceComponent implements OnInit {
    * @param row
    */
   public typeTableClick(row: any): void  {
-    this.instanceDescriptionForm.controls['code'].setValue(row.code);
+      this.instanceDescriptionForm.controls['code'].setValue(row.code);
   }
 
   /**
@@ -156,7 +156,7 @@ export class CreateInstanceComponent implements OnInit {
    * @param name
    */
   public anyTableClick(name: string): void  {
-    this.instanceDescriptionForm.controls['individual'].setValue(name);
+      this.instanceDescriptionForm.controls['individual'].setValue(name);
   }
 
 }

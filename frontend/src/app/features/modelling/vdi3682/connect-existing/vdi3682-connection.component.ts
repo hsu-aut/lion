@@ -58,7 +58,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
             });
 
         } else {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
         }
     }
 
@@ -81,7 +81,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
     }
 
 
-    async iriTableClick(name: string): Promise<void> {
+    iriTableClick(name: string): void {
         this.newConnectionForm.reset();
         this.newConnectionForm.controls['subject'].setValue(name);
 

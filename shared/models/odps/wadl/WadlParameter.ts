@@ -24,6 +24,7 @@ export class WadlParameter {
 	){
 		this.parameterType = type;
 		this.parameterIri = `${parentIri}_${name}`;
+		this.options = this.options.map(opt => new WadlOption(opt.value, opt.mediaType));
 		this.options.forEach(op => {
 			op.createIri(this.parameterIri);
 		});

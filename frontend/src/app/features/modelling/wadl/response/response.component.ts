@@ -19,35 +19,28 @@ import { plainToClass } from "class-transformer";
 })
 export class ResponseComponent {
 
-    // Custom validator
-    customVal = new cValFns();
-
     baseResources = new Array<WadlBaseResource>();
     resources = new Array<WadlResource>();
     methods: Array<string> = [];
-    responseCodes: Array<string>;
+    statusCodes: Array<string>;
     existingResponse: WadlResponse;
 
     responseForm = this.fb.group({
         resourceBasePath: ["", Validators.required],
         resource: [this.resources[0], Validators.required],
         methodType: ["", Validators.required],
-        responseCode: ["", Validators.required]
+        statusCode: ["", Validators.required]
     })
-
-    responseBodyRepresentationCheck;
-    responseRepresentationTable: Array<Record<string, any>> = [];
 
     constructor(
         private fb: FormBuilder,
-        private prefixService: PrefixesService,
         private wadlService: WadlModelService,
         private messageService: MessagesService
     ) {}
 
     ngOnInit(): void {
         this.loadBaseResources();
-        this.wadlService.getResponseCodes().pipe(toSparqlVariableList()).subscribe(responseCodes => this.responseCodes = responseCodes);
+        this.wadlService.getResponseCodes().pipe(toSparqlVariableList()).subscribe(responseCodes => this.statusCodes = responseCodes);
         this.wadlService.getMethods().pipe(take(1), toSparqlVariableList()).subscribe(data => this.methods = data);
         this.responseForm.valueChanges.subscribe(data => {
             if (this.responseForm.valid) {
@@ -57,23 +50,22 @@ export class ResponseComponent {
     }
 
     private loadBaseResources(): void {
-        this.wadlService.getResources().pipe(take(1)).subscribe((data: SparqlResponse) => {
-            this.baseResources = WadlBaseResource.fromSparqlResult(data);
-        });
+        this.wadlService.getBaseResources().subscribe(resources => this.baseResources = resources);
     }
 
-    updateExistingResponse() {
-        const {resource, methodType, } = this.responseForm.value;
-        this.wadlService.getRequest(resource.resourceIri, methodType).subscribe(data => {
-            console.log(data);
-
-            // TODO: Currently, a whole resource is returned. Make sure to only return request of it
-            // this.existingRequest = data;
+    /**
+     * On every change to the form, updates the existing response
+     */
+    updateExistingResponse(): void {
+        const {resource, methodType, statusCode: responseCode} = this.responseForm.value;
+        const wadlCreateResponse = new WadlCreateResponseDto(resource.resourceIri, methodType, responseCode);
+        this.wadlService.getResponse(wadlCreateResponse).subscribe(responseDto => {
+            this.existingResponse = WadlResponse.fromDto(responseDto);
         });
     }
 
     getExistingResourcesOfBase(): void {
-        const selectedBasePath = this.responseForm.controls['resourceBasePath'].value;
+        const selectedBasePath = this.responseForm.get('resourceBasePath').value;
         if(selectedBasePath) {
             const selectedBaseResource = this.baseResources.filter(elem => elem.baseResourcePath == selectedBasePath)[0];
             this.resources = selectedBaseResource.resources;
@@ -88,109 +80,27 @@ export class ResponseComponent {
 
     }
 
+    /**
+     * Adds a plain response for the selected form fields in case there is none. Note that this step is required before parameters and representations can be added
+     */
     addResponse(): void {
         if(!this.responseCanBeCreated) {
-            this.messageService.warn('False request info','Form is invalid or this request already exists')
+            this.messageService.warn('False request info','Form is invalid or this request already exists');
         } else {
-            const {resource, methodType, responseCode} = this.responseForm.value;
-            const request = new WadlCreateResponseDto(resource.resourceIri, methodType, responseCode);
-            this.wadlService.addResponse(request).subscribe(data => {
+            const {resource, methodType, statusCode: responseCode} = this.responseForm.value;
+            const response = new WadlCreateResponseDto(resource.resourceIri, methodType, responseCode);
+            this.wadlService.addResponse(response).subscribe(data => {
                 console.log(data);
                 this.existingResponse = plainToClass(WadlResponse, data);
             });
         }
-
-        // const serviceIri = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
-        // const methodTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
-        // const methodIri = serviceIri + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
-        // const method = new WadlMethod(serviceIri, methodTypeIri);
-
-        // const responseTypeIri = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
-        // const responseIri = methodIri + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
-        // const response = new WadlResponse(responseIri, responseTypeIri);
-
-        // // TODO: Pass proper data object instead of null and instead of modify, create separate methods in service
-        // this.wadlService.addResponse(method, response).pipe(take(1)).subscribe((data: any) => {
-        //     // this.modelVariables = new WADLVARIABLES();
-        // });
     }
 
+    /**
+     * Identifies whether or not a response can and must be created. If the form is invalid, no response can be created. If there is an existing form, none must be created.
+     */
     get responseCanBeCreated(): boolean {
         return (this.responseForm.valid && this.existingResponse == undefined);
-    }
-
-
-    addResponseRepresentationParameter(): void {
-
-    }
-
-    deleteResponseRepresentationParameter(): void {
-
-    }
-
-    createResponseRepresentationParameterInsertString(): void {
-        const serviceIRI = this.prefixService.parseToIRI(this.responseForm.controls['servicePath'].value);
-        const methodTypeIRI = this.prefixService.parseToIRI(this.responseForm.controls['method'].value);
-        const methodIRI = serviceIRI + "_" + this.prefixService.parseToName(this.responseForm.controls['method'].value);
-        const responseIRI = methodIRI + "_Res" + this.prefixService.parseToName(this.responseForm.controls['responseCode'].value);
-        const responseTypeIRI = this.prefixService.parseToIRI(this.responseForm.controls['responseCode'].value);
-        const bodyRepresentationMediaType = this.responseForm.controls['bodyMediaType'].value;
-        const bodyRepresentationIRI = responseIRI + "_BodyRep_" + bodyRepresentationMediaType;
-        const bodyRepresentationParameterKey = this.responseForm.controls['bodyParameterKey'].value;
-
-        if (this.responseForm.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeTBox") {
-            const bodyRepresentationParameterDataTypeOntologicalTBox = this.prefixService.parseToIRI(this.responseForm.controls['bodyDataType'].value);
-        } else if (this.responseForm.controls['ontologicalBodyDataType'].value == "ontologicalDataTypeABox") {
-            const bodyRepresentationParameterDataTypeOntologicalABox = this.prefixService.parseToIRI(this.responseForm.controls['bodyDataType'].value);
-        } else {
-            const bodyRepresentationParameterDataType = this.responseForm.controls['bodyDataType'].value;
-        }
-
-        const bodyRepresentationParameterDataType = this.responseForm.controls['bodyDataType'].value;
-        const bodyRepresentationParameterIRI = bodyRepresentationIRI + "_" + bodyRepresentationParameterKey;
-        const bodyRepresentationParameterOptionValue = this.responseForm.controls['bodyOptionValue'].value;
-        if (bodyRepresentationParameterOptionValue != "" && bodyRepresentationParameterOptionValue) {
-            const bodyRepresentationParameterOptionIRI = bodyRepresentationParameterIRI + "_Option";
-        }
-        // TODO: Pass proper data object instead of null and instead of modify, create separate methods in service
-        // this.wadlService.modifyResponse(null, null).pipe(take(1)).subscribe((data: any) => {
-        //     this.getExistingResponseRepresentation();
-        // });
-    }
-
-    getExistingServicesByBase(something: any) {
-        // TODO: Check if inputs are needed and implement
-    }
-
-    setOntologicalDataType(something: string): void {
-        // TODO: This should only be part of the modal
-    }
-
-    deleteParameter(context: string, parameterKey) {
-        // switch (context) {
-        // case "key": {
-        //     this.modelVariables.parameterKey = parameterKey;
-        //     this.wadlService.deleteParameter(this.modelVariables).pipe(take(1)).subscribe((data: any) => {
-        //         this.loadingScreenService.stopLoading();
-        //         this.modelVariables = new WADLVARIABLES();
-        //         this.getExistingParameter(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, this.requestForm.controls['parameterType'].value);
-        //         this.getExistingRepresentation(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, "request");
-        //         this.getExistingRepresentation(this.responseForm.controls['servicePath'].value, this.responseForm.controls['method'].value, "response");
-        //     });
-        //     break;
-        // }
-        // case "option": {
-        //     this.modelVariables.parameterKey = parameterKey;
-        //     this.wadlService.deleteOption(this.modelVariables).pipe(take(1)).subscribe((data: any) => {
-        //         this.loadingScreenService.stopLoading();
-        //         this.modelVariables = new WADLVARIABLES();
-        //         this.getExistingParameter(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, this.requestForm.controls['parameterType'].value);
-        //         this.getExistingRepresentation(this.requestForm.controls['servicePath'].value, this.requestForm.controls['method'].value, "request");
-        //         this.getExistingRepresentation(this.responseForm.controls['servicePath'].value, this.responseForm.controls['method'].value, "response");
-        //     });
-        //     break;
-        // }
-        // }
     }
 
 }

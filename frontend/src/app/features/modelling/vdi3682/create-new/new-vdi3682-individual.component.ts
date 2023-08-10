@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { MessagesService } from '@shared-services/messages.service';
 import { PrefixesService } from '@shared-services/prefixes.service';
 import { Triple } from '../../rdf-models/triple.service';
@@ -29,7 +29,7 @@ export class NewVdi3682IndividualComponent implements OnInit {
         type: ["", Validators.required],
     })
 
-    allProcessInfo = new Array<Record<string, string | number>>();
+    allProcessInfo$: Observable<Array<Record<string, string | number>>>;
     allClasses = new Array<string>();
 
     constructor(
@@ -46,16 +46,14 @@ export class NewVdi3682IndividualComponent implements OnInit {
 
 
     private getCompleteProcessInfo(): void {
-        this.vdi3682Service.getCompleteProcessInfo().subscribe(data => {
-            this.allProcessInfo = data;
-        });
+        this.allProcessInfo$ = this.vdi3682Service.getCompleteProcessInfo();
     }
 
 
     /**
- * This method on "add" in the "create new individuals" tab
- * @param action
- */
+    * This method on "add" in the "create new individuals" tab
+    * @param action
+    */
     handleNewTriple(action: string): void {
         if (this.newIndividualForm.valid) {
             const subject = this.prefixService.addOrParseNamespace(this.newIndividualForm.controls['name'].value);
@@ -68,7 +66,7 @@ export class NewVdi3682IndividualComponent implements OnInit {
             });
             this.newIndividualForm.reset();
         } else {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
         }
     }
 
