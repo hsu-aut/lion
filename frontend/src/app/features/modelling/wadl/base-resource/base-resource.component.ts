@@ -4,12 +4,13 @@ import { firstValueFrom, take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { PrefixesService } from "@shared-services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 import { Vdi3682ModelService } from "../../rdf-models/vdi3682Model.service";
 import { Iso22400_2ModelService } from "../../rdf-models/iso22400_2Model.service";
 import { Vdi2206ModelService } from "../../rdf-models/vdi2206Model.service";
 import { Tables } from "../../utils/tables";
+import { ListData } from "../../../../shared/modules/table/table.component";
+import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 
 @Component({
     selector: 'wadl-base-resource',
@@ -35,7 +36,7 @@ export class BaseResourceComponent implements OnInit {
     })
 
     allIsoEntityInfo: Array<Record<string, any>> = [];
-    allVDIInfo: Array<Record<string, any>> = [];
+    allVDIInfo: ListData[];
 
     constructor(
         private fb: FormBuilder,
@@ -72,10 +73,6 @@ export class BaseResourceComponent implements OnInit {
 
     addBaseResource(): void {
         if (this.baseResourceForm.invalid) {
-            console.log("errors");
-
-            this.baseResourceForm.errors;
-            console.log("Form invalid");
             return;
         }
         const basePath = this.baseResourceForm.get("resourceBasePath").value;
@@ -111,17 +108,17 @@ export class BaseResourceComponent implements OnInit {
 
 
     loadDynamicDropdowns() {
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlVariableList("baseResource")).subscribe((data: any) => {
-            this.resourceBasePaths = data;
-            this.NoOfResourceBasePaths = this.resourceBasePaths.length;
+        this.wadlService.getBaseResources().subscribe(baseResources => {
+            this.resourceBasePaths = baseResources.map(br => br.baseResourcePath);
+            this.NoOfResourceBasePaths = baseResources.length;
         });
-        this.wadlService.getResources().pipe(take(1), toSparqlVariableList("service")).subscribe((data: any) => {
+        this.wadlService.getResources().subscribe(data => {
             this.NoOfResourceBasePaths = this.resourceBasePaths.length;
         });
     }
 
     loadDynamicTables() {
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe((data: any) => {
+        this.wadlService.getBaseResources().subscribe(data => {
             this.baseResourcesTable = data;
         });
     }
@@ -151,17 +148,28 @@ export class BaseResourceComponent implements OnInit {
         //     this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
         // });
 
-        const cols = ["VDI2206:System", "VDI2206:Module", "VDI3682:TechnicalResource"];
         const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
-        const data = [this.vdi2206Service.getLIST_OF_SYSTEMS(), this.vdi2206Service.getLIST_OF_MODULES(), tr];
-        console.log(data);
-
-        this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
+        const systems = await firstValueFrom(this.vdi2206Service.getSystems().pipe(toSparqlVariableList('system')));
+        const modules= await firstValueFrom(this.vdi2206Service.getModules().pipe(toSparqlVariableList('module')));
+        this.allVDIInfo = [
+            {
+                header: "VDI2206:System",
+                entries: systems
+            },
+            {
+                header: "VDI2206:Module",
+                entries: modules
+            },
+            {
+                header: "VDI3682:TechnicalResource",
+                entries: tr
+            }
+        ];
 
         //   this.allIsoEntityInfo = this.isoService.getTABLE_ALL_ENTITY_INFO();
         this.isoService.getTableOfAllEntityInfo().subscribe((data: any) => this.allIsoEntityInfo = data);
 
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlTable()).subscribe(data => this.baseResourcesTable = data);
+        this.wadlService.getBaseResources().subscribe(data => this.baseResourcesTable = data);
     }
 
 }

@@ -46,7 +46,7 @@
                     <p class="text-sm-left">You can see an overview on the already linked entities below. The table
                         shows instance descriptions of DIN EN 61360 that have a value which can be retrieved from an OPC UA variable</p>
 
-                    <app-table [currentTable]="overviewTable" [filter]="filterOption"
+                    <app-table [tableData]="overviewTable" [showFilter]="filterOption"
                         [tableExplanation]="overviewSubTitle">
                     </app-table>
 
@@ -92,12 +92,12 @@
 
                     <div class="row">
                         <div class="col">
-                            <app-table [currentTable]="instanceDescriptionTable" [filter]="filterOption"
+                            <app-table [tableData]="instanceDescriptionTable" [showFilter]="filterOption"
                                 [tableExplanation]="instanceDescriptionSubTitle"
                                 (tableClickedRow)="iDTableClick($event)"></app-table>
                         </div>
                         <div class="col">
-                            <app-table [currentTable]="opcUaTable" [filter]="filterOption"
+                            <app-table [tableData]="opcUaTable" [showFilter]="filterOption"
                                 [tableExplanation]="opcUaSubtitle" (tableClickedRow)="opcUaTableClick($event)">
                             </app-table>
                         </div>

@@ -8,6 +8,7 @@ import { DataLoaderService } from '@shared-services/dataLoader.service';
 import { MessagesService } from '@shared-services/messages.service';
 import { switchMap, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { toSparqlTable } from '../../../modelling/utils/rxjs-custom-operators';
 
 @Injectable({
     providedIn: 'root'
@@ -49,16 +50,16 @@ export class FpbStepService {
 
     public loadTABLE_OF_TECHNICAL_RESOURCE_INFO() {
         this.loadingScreenService.startLoading();
-        return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OF_TECHNICAL_RESOURCE_INFO);
+        return this.query.executeSelect(this.data.SELECT_TABLE_OF_TECHNICAL_RESOURCE_INFO).pipe(toSparqlTable());
     }
 
     public loadTABLE_OF_SYSTEM_INFO() {
         this.loadingScreenService.startLoading();
-        return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OF_SYSTEM_INFO);
+        return this.query.executeSelect(this.data.SELECT_TABLE_OF_SYSTEM_INFO).pipe(toSparqlTable());
     }
     public loadTABLE_OVERVIEW() {
         this.loadingScreenService.startLoading();
-        return this.query.SPARQL_SELECT_TABLE(this.data.SELECT_TABLE_OVERVIEW);
+        return this.query.executeSelect(this.data.SELECT_TABLE_OVERVIEW).pipe(toSparqlTable());
     }
 
     public setTABLE_OVERVIEW(table) {

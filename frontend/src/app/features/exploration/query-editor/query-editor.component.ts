@@ -4,6 +4,7 @@ import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { take } from 'rxjs/operators';
 
 import { PrefixesService } from '@shared-services/prefixes.service';
+import { toSparqlTable } from '../../modelling/utils/rxjs-custom-operators';
 
 @Component({
     selector: 'app-query-editor',
@@ -35,7 +36,7 @@ export class QueryEditorComponent implements OnInit {
     executeQuery(query: string) {
         this.tableTitle = "Query results";
         this.tableSubTitle = "The results to your query are shown below. Click on a cell to query for related triples.";
-        this.query.SPARQL_SELECT_TABLE(query).pipe(take(1)).subscribe((data: any) => {
+        this.query.executeSelect(query).pipe(toSparqlTable(),take(1)).subscribe((data: any) => {
             // console.log(data)
             this.queryResult = data;
         });

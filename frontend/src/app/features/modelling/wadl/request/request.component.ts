@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { WadlBaseResource } from "@shared/models/odps/wadl/BaseResource";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
+import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
@@ -48,6 +48,7 @@ export class RequestComponent implements OnInit {
         this.loadBaseResources();
         this.wadlService.getMethods().pipe(take(1), toSparqlVariableList()).subscribe(data => this.methods = data);
         this.requestForm.valueChanges.subscribe(data => {
+            this.existingRequest = null;
             if (this.requestForm.valid) {
                 this.updateExistingRequest();
             }
@@ -58,9 +59,7 @@ export class RequestComponent implements OnInit {
      * Loads base resources together with their sub resources and paths
      */
     private loadBaseResources(): void {
-        this.wadlService.getResources().pipe(take(1)).subscribe((data: SparqlResponse) => {
-            this.baseResources = WadlBaseResource.fromSparqlResult(data);
-        });
+        this.wadlService.getBaseResources().subscribe(baseResources => this.baseResources = baseResources);
     }
 
 
@@ -72,11 +71,9 @@ export class RequestComponent implements OnInit {
         }
     }
 
-    updateExistingRequest() {
+    updateExistingRequest(): void {
         const {resource, methodType} = this.requestForm.value;
         this.wadlService.getRequest(resource.resourceIri, methodType).subscribe(data => {
-            console.log(data);
-
             // TODO: Currently, a whole resource is returned. Make sure to only return request of it
             this.existingRequest = data;
         });

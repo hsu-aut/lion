@@ -5,6 +5,7 @@ import { OpcService } from './opc.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MessagesService } from '@shared-services/messages.service';
 import { Vdi2206ModelService } from '../../../modelling/rdf-models/vdi2206Model.service';
+import { toSparqlTable } from '../../../modelling/utils/rxjs-custom-operators';
 
 @Component({
     selector: 'opc-vdi2206-connector',
@@ -41,7 +42,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
 
     ngOnInit() {
         // Load all opc servers and systems
-        this.vdi2206Service.loadTABLE_OF_SYSTEMS_AND_MODULES().pipe(take(1)).subscribe(data => {
+        this.vdi2206Service.getSystemsAndModules().pipe(take(1), toSparqlTable()).subscribe(data => {
             this.systemModuleTable = data;
             this.loadingScreenService.stopLoading();
         });
@@ -91,7 +92,7 @@ export class OpcVDI2206ConnectorComponent implements OnInit {
             // });
 
         } else if (form.invalid) {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
         }
     }
 

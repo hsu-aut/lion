@@ -4,7 +4,6 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { take } from "rxjs";
 import { TypeChangedEvent, WadlOption, WadlParameter, WadlParameterTypes, WadlTypesOfDataTypes } from "@shared/models/odps/wadl/WadlParameter";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 
 @Component({
@@ -15,13 +14,12 @@ import { cValFns } from "../../utils/validators";
 export class ParameterComponent {
 
     @Input() parameters = new Array<WadlParameter>();
-    @Input() parentIri = "";
+    private _parentIri = "";
 
     ParamTypes = WadlParameterTypes;
+    paramTypeValues = Object.values(WadlParameterTypes).filter(val => typeof val === 'number');
     // Custom validator
     customVal = new cValFns();
-
-    parameterTypes: Array<string> = [];
 
     parameterForm = this.fb.array(new Array<FormGroup<ParameterFormGroup>>())
     newParamTypeOfType = WadlTypesOfDataTypes.NonOntological;
@@ -32,14 +30,20 @@ export class ParameterComponent {
     ) {}
 
 
-    ngOnInit(): void {
-        this.wadlService.getParameterTypes().pipe(take(1), toSparqlVariableList()).subscribe(data => {
-            this.parameterTypes = data;
-        });
+    @Input() set parentIri(value: string) {
+        this._parentIri = value;
+        this.loadExistingParameters();
+    }
 
-        this.wadlService.getExistingParameters(this.parentIri).pipe(take(1)).subscribe(data => {
-        // Fill form with existing parameters
-            this.parameters.forEach(parameter => {
+    ngOnInit(): void {
+        this.loadExistingParameters();
+    }
+
+    loadExistingParameters() {
+        this.wadlService.getExistingParameters(this._parentIri).pipe(take(1)).subscribe(parameters => {
+            this.parameterForm = this.fb.array(new Array<FormGroup<ParameterFormGroup>>());
+            this.parameters = parameters;
+            parameters.forEach(parameter => {
                 const formEntry = this.createNewParameterFormEntry(parameter);
                 this.parameterForm.push(formEntry);
                 const lastAddedIndex = this.parameterForm.controls.length-1;
@@ -48,7 +52,11 @@ export class ParameterComponent {
             // Add one empty row
             this.parameterForm.push(this.createNewParameterFormEntry());
         });
+    }
 
+    getParamControl(index: number, key: string) {
+        const paramGroup = this.parameterForm.at(index) as FormGroup<ParameterFormGroup>;
+        return paramGroup.get(key) as FormControl;
     }
 
     getParamControl(index: number, key: string) {
@@ -63,10 +71,7 @@ export class ParameterComponent {
     }
 
     removeDataType(): void {
-        console.log("resetting");
-
         const fE = this.getLastFormEntry();
-        fE.get("dataType").reset();
         this.newParamTypeOfType = WadlTypesOfDataTypes.NonOntological;
     }
 
@@ -74,7 +79,8 @@ export class ParameterComponent {
         const paramName = param?.name ?? "";
         const paramDataType = param?.dataType ?? "";
         const paramType = param?.type ?? null;
-        const optionValues = param?.options?.map(opt=> opt?.value) ?? [];
+
+        const optionValues = param?.options?.map(option => option.value).join(',') ?? "";
         const defaultValue = param?.defaultValue ?? null;
 
         return this.fb.group<ParameterFormGroup>({
@@ -92,28 +98,32 @@ export class ParameterComponent {
         return this.parameterForm.at(formLength-1);
     }
 
-    addParameter() {
+    addParameter(): void {
         // Disable entered value
         const formLength = this.parameterForm.controls.length;
         this.parameterForm.controls[formLength-1].disable();
 
         const fE = this.getLastFormEntry().value;
-        const options = fE.optionValues.map(optionValue => new WadlOption(optionValue));
-        const parameter = new WadlParameter(this.parentIri, fE.name, fE.type, fE.dataType, this.newParamTypeOfType, fE.defaultValue, fE.required, options);
-        console.log(parameter);
+        // create option inputs as Array
+        const optionInput = fE.optionValues.split(",");
+        const options = optionInput.map(optionEntry => {
+            optionEntry = optionEntry.trim();
+            return new WadlOption(optionEntry);
+        });
+        const parameter = new WadlParameter(this._parentIri, fE.name, fE.type, fE.dataType, this.newParamTypeOfType, fE.defaultValue, fE.required, options);
 
         this.wadlService.addParameter(parameter).pipe(take(1)).subscribe(res => {
             // Create a new empty entry so that another param can be added
+            this.parameters.push(parameter);
             const newEntry = this.createNewParameterFormEntry();
             this.parameterForm.push(newEntry);
         });
-    // }
     }
 
-    deleteParameter(i: number){
+    deleteParameter(i: number): void {
         const iriToDelete = this.parameters[i].parameterIri;
         this.wadlService.deleteParameter(iriToDelete).pipe(take(1)).subscribe();
-        this.wadlService.getExistingParameters(this.parentIri).pipe(take(1)).subscribe(params => {
+        this.wadlService.getExistingParameters(this._parentIri).pipe(take(1)).subscribe(params => {
             // Reload parameters and remove form entry
             this.parameters = params;
             this.parameterForm.removeAt(i);
@@ -122,20 +132,11 @@ export class ParameterComponent {
 }
 
 
-interface ParameterFormGroup {
+type ParameterFormGroup = {
     name: FormControl<string | null>,
     type: FormControl<WadlParameterTypes | null>,
     dataType: FormControl<string | null>,
     required: FormControl<boolean>,
-    optionValues: FormControl<(number | string) [] | null>,
+    optionValues: FormControl<string | null>,
     defaultValue: FormControl<string | null>
 }
-
-
-// name: string;
-// 	type: string;
-// 	dataType: string;						// actual data type value (e.g. "string" or some IRI to an individual or class)
-// 	typeOfDataType: WadlTypesOfDataTypes;	// simple data type, T-Box or A-Box?
-// 	defaultValue?: any;
-// 	required: boolean = false;
-// 	options: WadlOption[] = new Array<WadlOption>()

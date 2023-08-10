@@ -4,9 +4,9 @@ import { Observable, take } from "rxjs";
 import { MessagesService } from "@shared-services/messages.service";
 import { PrefixesService } from "@shared-services/prefixes.service";
 import { WadlModelService } from "../../rdf-models/wadlModel.service";
-import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 import { cValFns } from "../../utils/validators";
 import { WadlResource } from "@shared/models/odps/wadl/Resource";
+import { ListData } from "../../../../shared/modules/table/table.component";
 
 @Component({
     selector: 'wadl-resource',
@@ -25,7 +25,8 @@ export class ResourceComponent implements OnInit {
 
     resourceBasePaths: Array<string> = [];
     NoOfResourceBasePaths: number;
-    resourceTable: Array<Record<string, any>> = [];
+    resources: Array<Record<string, any>> = [];
+    tableData: ListData[]
 
 
     constructor(
@@ -42,9 +43,22 @@ export class ResourceComponent implements OnInit {
 
 
     private loadBasePaths(): void {
-        this.wadlService.getBaseResources().pipe(take(1), toSparqlVariableList("baseResource")).subscribe((data: any) => {
-            this.resourceBasePaths = data;
-            this.NoOfResourceBasePaths = this.resourceBasePaths.length;
+        this.wadlService.getBaseResources().subscribe(baseResources => {
+            baseResources.forEach(bR =>
+                bR.resources.map(res => res.resourcePath)
+            );
+            this.NoOfResourceBasePaths = baseResources.length;
+        });
+    }
+
+    /**
+     * Loads all entries of the resource table
+     */
+    loadResourceTable(): void {
+        this.wadlService.getBaseResources().subscribe(baseResources => {
+            // flatten resource paths
+            const flattenedResources = baseResources.map(br => br.resources.map(res => res.resourcePath)).flat();
+            this.tableData = [{header:"resources", entries: flattenedResources}];
         });
     }
 
@@ -87,13 +101,5 @@ export class ResourceComponent implements OnInit {
         return new WadlResource(baseResourceIri, resourcePath, resourceIri);
     }
 
-    /**
-     * Loads all entries of the resource table
-     */
-    loadResourceTable(): void {
-        this.wadlService.getResources().pipe(take(1), toSparqlTable()).subscribe((data: any) => {
-            this.resourceTable = data;
-        });
-    }
 
 }

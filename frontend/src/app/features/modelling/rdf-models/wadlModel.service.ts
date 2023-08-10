@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 import { QueriesService } from '@shared-services/backEnd/queries.service';
 import { GraphOperationsService } from '@shared-services/backEnd/graphOperations.service';
 import { DownloadService } from '@shared-services/backEnd/download.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map, take } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
 import { WadlBaseResource } from '@shared/models/odps/wadl/BaseResource';
 import { WadlResource } from '@shared/models/odps/wadl/Resource';
 import { WadlMethod } from '@shared/models/odps/wadl/WadlMethod';
 import { WadlCreateResponseDto, WadlResponse, WadlResponseDto } from '@shared/models/odps/wadl/WadlResponse';
-import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '../../../../../models/odps/wadl/WadlRequest';
-import { WadlParameter } from '../../../../../models/odps/wadl/WadlParameter';
-import { WadlRepresentation } from '../../../../../models/odps/wadl/WadlRepresentation';
+import { WadlCreateRequestDto, WadlRequest, WadlRequestDto } from '@shared/models/odps/wadl/WadlRequest';
+import { WadlParameter } from '@shared/models/odps/wadl/WadlParameter';
+import { WadlRepresentation } from '@shared/models/odps/wadl/WadlRepresentation';
 
 
 @Injectable({
@@ -20,6 +20,7 @@ import { WadlRepresentation } from '../../../../../models/odps/wadl/WadlRepresen
 export class WadlModelService {
 
     baseUrl = "lion_BE/wadl"
+    representation$ = new BehaviorSubject<WadlRepresentation[]>([]);
 
     constructor(
         private http: HttpClient,
@@ -32,18 +33,18 @@ export class WadlModelService {
      * Get all existing base resources
      * @returns A SparqlResponse object with all base resources, their base paths and the entity providing the base path
      */
-    getBaseResources(): Observable<SparqlResponse> {
+    getBaseResources(): Observable<WadlBaseResource[]> {
         const url = `${this.baseUrl}/base-resources`;
-        return this.http.get<SparqlResponse>(url);
+        return this.http.get<WadlBaseResource[]>(url);
     }
 
     /**
      * Get all existing (sub) resources
      * @returns A SparqlResponse object with all existing services with their base resource, base path and service path
      */
-    getResources(): Observable<SparqlResponse> {
+    getResources(): Observable<WadlResource[]> {
         const url = `${this.baseUrl}/resources`;
-        return this.http.get<SparqlResponse>(url);
+        return this.http.get<WadlResource[]>(url);
     }
 
     getResourcesByBase(baseIri: string): Observable<SparqlResponse> {
@@ -108,11 +109,36 @@ export class WadlModelService {
         return this.http.get<WadlParameter[]>(url, {params: queryParams});
     }
 
-    getRepresentations(parentIri: string) {
+
+    getRepresentations(parentIri: string): Observable<WadlRepresentation[]> {
+        this.loadRepresentations(parentIri).pipe(take(1)).subscribe(reps => this.representation$.next(reps));
+        return this.representation$.asObservable();
+    }
+
+    private loadRepresentations(parentIri: string): Observable<WadlRepresentation[]> {
         const url = `${this.baseUrl}/representations`;
         const params = new HttpParams().append("parentIri", parentIri);
-        return this.http.get<SparqlResponse>(url, {params: params});
+        return this.http.get<WadlRepresentation[]>(url, {params: params});
     }
+
+    public addRepresentation(rep: WadlRepresentation): void {
+        const url = `${this.baseUrl}/representations`;
+        this.http.post<WadlRepresentation>(url, rep).pipe(take(1)).subscribe(
+            {
+                next: (newRep) => this.representation$.next([...this.representation$.value, newRep]),
+                error: (err) => {throw new Error(err);}
+            });
+    }
+
+    public deleteRepresentation(representationIri: string): void {
+        const encodedRepresentationIri = encodeURIComponent(representationIri);
+        const url = `${this.baseUrl}/representations/${encodedRepresentationIri}`;
+        this.http.delete<void>(url).pipe(take(1)).subscribe(data => {
+            const representationsAfterDelete = this.representation$.value.filter(existingRep => existingRep.representationIri != representationIri);
+            this.representation$.next(representationsAfterDelete);
+        });
+    }
+
 
 
     public async getBaseResourceInsertString(context: string) {
@@ -186,9 +212,16 @@ export class WadlModelService {
         return this.http.delete<void>(url);
     }
 
-    public addRepresentation(rep: WadlRepresentation): Observable<void> {
-        const url = `${this.baseUrl}/representations`;
-        return this.http.post<void>(url, rep);
+    public getResponse(wadlCreateResponse: WadlCreateResponseDto): Observable<WadlResponseDto> {
+        const url = `${this.baseUrl}/responses`;
+        const {resourceIri, methodTypeIri, statusCode} = wadlCreateResponse;
+        console.log(wadlCreateResponse);
+
+        const params = new HttpParams()
+            .append("resourceIri", resourceIri)
+            .append("methodTypeIri", methodTypeIri)
+            .append("statusCode", statusCode);
+        return this.http.get<WadlResponseDto>(url, {params: params});
     }
 
     public addResponse(response: WadlCreateResponseDto): Observable<WadlResponseDto> {
@@ -280,207 +313,179 @@ export class WADLDATA {
 
 
 }
-export class WADLVARIABLES {
-    serviceProviderIRI: string;
-    baseResourceIRI: string;
-    baseResourcePath: string;
-    serviceIRI: string;
-    servicePath: string;
-    methodTypeIRI: string;
-    methodIRI: string;
-    requestIRI: string;
-    parameterTypeIRI: string;
-    parameterIRI: string;
-    parameterKey: string;
-    parameterDataType: string;
-    parameterDataTypeABox: string;
-    parameterDataTypeTBox: string;
-    optionIRI: string;
-    optionValue: string;
-    bodyRepresentationIRI: string;
-    bodyRepresentationMediaType: string;
-    bodyRepresentationParameterIRI: string;
-    bodyRepresentationParameterKey: string;
-    bodyRepresentationParameterDataType: string;
-    bodyRepresentationParameterDataTypeOntologicalABox: string;
-    bodyRepresentationParameterDataTypeOntologicalTBox: string;
-    bodyRepresentationParameterOptionIRI: string;
-    bodyRepresentationParameterOptionValue: string;
-    responseIRI: string;
-    responseTypeIRI: string;
-}
 
 
-export class WADLINSERT {
 
-    public deleteOption(variables: WADLVARIABLES) {
+// export class WADLINSERT {
 
-        const deleteString = `
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    DELETE  {
-      ?parameter wadl:hasParameterOption ?option.
-      ?option rdf:type wadl:Option;
-          a owl:NamedIndividual.
-          ?option wadl:hasOptionValue ?optionVal.
+//     public deleteOption(variables: WADLVARIABLES) {
 
-    } WHERE {
-      ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
-      wadl:hasParameterOption ?option.
-      ?option rdf:type wadl:Option;
-      a owl:NamedIndividual.
-      ?option wadl:hasOptionValue ?optionVal.
-      }
-    `;
-        console.log(deleteString);
-        return deleteString;
+//         const deleteString = `
+//     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+//     PREFIX owl: <http://www.w3.org/2002/07/owl#>
+//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+//     DELETE  {
+//       ?parameter wadl:hasParameterOption ?option.
+//       ?option rdf:type wadl:Option;
+//           a owl:NamedIndividual.
+//           ?option wadl:hasOptionValue ?optionVal.
 
-    }
+//     } WHERE {
+//       ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+//       wadl:hasParameterOption ?option.
+//       ?option rdf:type wadl:Option;
+//       a owl:NamedIndividual.
+//       ?option wadl:hasOptionValue ?optionVal.
+//       }
+//     `;
+//         console.log(deleteString);
+//         return deleteString;
 
-    public deleteParameter(variables: WADLVARIABLES) {
+//     }
 
-        const deleteString = `
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    DELETE  {
-      ?option ?predicate ?object.
+//     public deleteParameter(variables: WADLVARIABLES) {
 
-    } WHERE {
-      ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
-      wadl:hasParameterOption ?option.
-      ?option ?predicate ?object.
-      };
+//         const deleteString = `
+//     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+//     PREFIX owl: <http://www.w3.org/2002/07/owl#>
+//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+//     DELETE  {
+//       ?option ?predicate ?object.
 
-      DELETE  {
-        ?parameter ?predicate ?object.
+//     } WHERE {
+//       ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+//       wadl:hasParameterOption ?option.
+//       ?option ?predicate ?object.
+//       };
 
-      } WHERE {
-        ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
-            ?predicate ?object.
-        }
-    `;
-        console.log(deleteString);
-        return deleteString;
-    }
+//       DELETE  {
+//         ?parameter ?predicate ?object.
 
-    deleteRequest(variables: WADLVARIABLES) {
-        const deleteString = `
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    DELETE {
+//       } WHERE {
+//         ?parameter wadl:hasParameterName "${variables.parameterKey}"^^xsd:NMTOKEN;
+//             ?predicate ?object.
+//         }
+//     `;
+//         console.log(deleteString);
+//         return deleteString;
+//     }
 
-      ?bodyRepresentationParameterOption ?predicate ?object.
+//     deleteRequest(variables: WADLVARIABLES) {
+//         const deleteString = `
+//     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+//     PREFIX owl: <http://www.w3.org/2002/07/owl#>
+//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+//     DELETE {
 
-      } WHERE {
-        <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
-        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
-        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+//       ?bodyRepresentationParameterOption ?predicate ?object.
 
-        ?bodyRepresentationParameterOption ?predicate ?object.
-      };
-    DELETE {
+//       } WHERE {
+//         <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
+//         ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+//         ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
 
-      ?bodyRepresentationParameter ?predicate ?object.
+//         ?bodyRepresentationParameterOption ?predicate ?object.
+//       };
+//     DELETE {
 
-      } WHERE {
+//       ?bodyRepresentationParameter ?predicate ?object.
 
-        <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
-        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+//       } WHERE {
 
-        ?bodyRepresentationParameter ?predicate ?object.
-      };
-    DELETE {
+//         <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
+//         ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
 
-      ?bodyRepresentation ?predicate ?object.
+//         ?bodyRepresentationParameter ?predicate ?object.
+//       };
+//     DELETE {
 
-      } WHERE {
+//       ?bodyRepresentation ?predicate ?object.
 
-        <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
+//       } WHERE {
 
-        ?bodyRepresentation ?predicate ?object.
-      };
-      DELETE {
+//         <${variables.requestIRI}> wadl:hasRepresentation ?bodyRepresentation.
 
-        ?option ?predicate ?object.
+//         ?bodyRepresentation ?predicate ?object.
+//       };
+//       DELETE {
 
-      } WHERE {
+//         ?option ?predicate ?object.
 
-        <${variables.requestIRI}> wadl:hasParameter ?parameter.
-          ?parameter wadl:hasParameterOption ?option.
+//       } WHERE {
 
-          ?option ?predicate ?object.
-        };
-    DELETE {
+//         <${variables.requestIRI}> wadl:hasParameter ?parameter.
+//           ?parameter wadl:hasParameterOption ?option.
 
-        ?parameter ?predicate ?object.
+//           ?option ?predicate ?object.
+//         };
+//     DELETE {
 
-      } WHERE {
-          <${variables.requestIRI}> wadl:hasParameter ?parameter.
+//         ?parameter ?predicate ?object.
 
-          ?parameter ?predicate ?object.
-        };
+//       } WHERE {
+//           <${variables.requestIRI}> wadl:hasParameter ?parameter.
 
-    DELETE WHERE {
-      <${variables.requestIRI}> ?predicate ?object.
-    }
-    `;
-        console.log(deleteString);
-        return deleteString;
-    }
+//           ?parameter ?predicate ?object.
+//         };
 
-    deleteResponse(variables: WADLVARIABLES) {
-        const deleteString = `
-    PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
-    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    DELETE {
+//     DELETE WHERE {
+//       <${variables.requestIRI}> ?predicate ?object.
+//     }
+//     `;
+//         console.log(deleteString);
+//         return deleteString;
+//     }
 
-      ?bodyRepresentationParameterOption ?predicate ?object.
+//     deleteResponse(variables: WADLVARIABLES) {
+//         const deleteString = `
+//     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+//     PREFIX owl: <http://www.w3.org/2002/07/owl#>
+//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+//     DELETE {
 
-      } WHERE {
+//       ?bodyRepresentationParameterOption ?predicate ?object.
 
-        <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
-        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
-        ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
+//       } WHERE {
 
-        ?bodyRepresentationParameterOption ?predicate ?object.
-      };
-    DELETE {
+//         <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
+//         ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+//         ?bodyRepresentationParameter wadl:hasParameterOption ?bodyRepresentationParameterOption.
 
-      ?bodyRepresentationParameter ?predicate ?object.
+//         ?bodyRepresentationParameterOption ?predicate ?object.
+//       };
+//     DELETE {
 
-      } WHERE {
+//       ?bodyRepresentationParameter ?predicate ?object.
 
-        <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
-        ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
+//       } WHERE {
 
-        ?bodyRepresentationParameter ?predicate ?object.
-      };
-    DELETE {
+//         <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
+//         ?bodyRepresentation wadl:hasParameter ?bodyRepresentationParameter.
 
-      ?bodyRepresentation ?predicate ?object.
+//         ?bodyRepresentationParameter ?predicate ?object.
+//       };
+//     DELETE {
 
-      } WHERE {
+//       ?bodyRepresentation ?predicate ?object.
 
-        <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
+//       } WHERE {
 
-        ?bodyRepresentation ?predicate ?object.
-      };
+//         <${variables.responseIRI}> wadl:hasRepresentation ?bodyRepresentation.
 
-    DELETE WHERE {
-      <${variables.responseIRI}> ?predicate ?object.
-    }
-    `;
-        console.log(deleteString);
-        return deleteString;
-    }
+//         ?bodyRepresentation ?predicate ?object.
+//       };
+
+//     DELETE WHERE {
+//       <${variables.responseIRI}> ?predicate ?object.
+//     }
+//     `;
+//         console.log(deleteString);
+//         return deleteString;
+//     }
 
 
-}
+// }

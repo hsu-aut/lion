@@ -35,7 +35,7 @@ export class WadlRequest extends WadlRequestDto {
     }
 
     addRepresentationParameter(param: WadlParameter, representationIri: string) {
-        const representation = this.representations.find(rep => rep.iri === representationIri);
+        const representation = this.representations.find(rep => rep.representationIri === representationIri);
         if(!representation) return;
         
         representation.parameters.push(param);

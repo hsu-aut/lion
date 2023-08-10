@@ -53,14 +53,14 @@
     </ul>
     <div class="tab-pane border border-top-0 fade show active" id="VDI" role="tabpanel" aria-labelledby="VDI-tab">
         <!-- table for VDI3682/2206 individuals -->
-        <app-table [currentTable]="allVDIInfo" (tableClickedCell)="tableClick('VDI',$event)"
+        <app-table [listData]="allVDIInfo" (tableClickedCell)="tableClick('VDI',$event)"
         [tableTitle]="'Existing structure components'"
         [tableExplanation]="'Select an existing element in order to model provision of a base resource by this element'">
         </app-table>
     </div>
     <div class="tab-pane fade" id="ISO" role="tabpanel" aria-labelledby="ISO-tab">
         <!-- table for ISO 22400-2 individuals -->
-        <app-table [currentTable]="allIsoEntityInfo" (tableClickedRow)="tableClick('ISO',$event)"
+        <app-table [tableData]="allIsoEntityInfo" (tableClickedRow)="tableClick('ISO',$event)"
         [tableTitle]="'Existing structure components'"
         [tableExplanation]="'Select an existing element in order to model provision of a base resource by this element'">>
         </app-table>
@@ -68,7 +68,7 @@
     <div class="tab-pane fade" id="WADL_BASE_RESOURCES" role="tabpanel"
         aria-labelledby="WADL_BASE_RESOURCES-tab">
         <!-- table for ISO 22400-2 individuals -->
-        <app-table [currentTable]="baseResourcesTable"
+        <app-table [tableData]="baseResourcesTable"
             (tableClickedRow)="tableClick('WADL',$event)"
             [tableTitle]="'Existing base resources'"
             [tableExplanation]="'Select an existing base resource in order to model sub resources of this resource'">>

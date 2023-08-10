@@ -1,5 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { Tables } from '../../../features/modelling/utils/tables';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
+
+export type ListData = {
+    header: string
+    entries: Array<string | number>,
+}
 
 @Component({
     selector: 'app-table',
@@ -8,62 +13,93 @@ import { Tables } from '../../../features/modelling/utils/tables';
 })
 export class TableComponent {
 
-    // get table
-    @Input() currentTable = new Array<Record<string, any>>();
     @Input() tableTitle: string;
     @Input() tableExplanation: string;
-    @Input() filter: boolean;
-    @Output() tableClickedRow = new EventEmitter<Record<string, any>>();
+    @Input() showFilter: boolean;
+    // Table data can either be object which is rendered using its keys, or an array of separate lists that need to be shown individualy
+
+    originalTableData: Record<string, string | number>[];
+    _tableData: Record<string, string | number>[];
+    tableHeaders: string[];
+    _listData: ListData[];
+    listSelector = new FormControl<ListData>(null);
+
+    @Input() set tableData(inputData: Array<Record<string, string | number>>) {
+        if(!inputData || inputData.length == 0) return;
+
+        this._tableData = inputData;
+        this.originalTableData = this._tableData;
+        this.tableHeaders = Object.keys(inputData[0] as Record<string, any>);
+    }
+
+    @Input() set listData(listData: ListData[]) {
+        if(!listData || listData.length == 0) return;
+
+        this._listData = listData;
+        // select first entry as default
+        const firstElement = listData[0];
+        this._tableData = firstElement.entries.map(entry => {return {[firstElement.header]: entry};});
+        this.tableHeaders = [firstElement.header];
+        this.listSelector.setValue(firstElement);
+    }
+
+    @Output() tableClickedRow = new EventEmitter<Record<string, unknown>>();
     @Output() tableClickedCell = new EventEmitter<string>();
 
-    // util variables
-    keys = Object.keys;
-    TableUtil = new Tables();
-    filterRow = "";
+
+    filterForm = this.fb.group({
+        columnName: this.fb.control("", Validators.required),
+        filterCondition: this.fb.control("", Validators.required)
+    })
+
 
     // layout variables
     itemsPerPageOptions = [10, 20, 50, 100]
     itemsPerPage = this.itemsPerPageOptions[0];
-    pagedTable: Array<Array<Record<string, any>>>;
-    numberOfRows: number;
     numberOfPages: number;
     pages: Array<number> = [];
     currentPage = 0;
-    originalTableArray: Array<Record<string, any>> = [];
-    filteredElements: Array<Record<string, any>> = [];
+
+    constructor(
+        private fb: FormBuilder
+    ){}
 
 
-
-    // TODO: Check what this is actually used for
-    ngOnChanges(changes: SimpleChanges) {
-        if (this.currentTable !== undefined) {
-
-            if (this.currentTable.length != 0) {
-
-                this.originalTableArray = this.currentTable;
-                this.initializeTable();
-            }
-        }
-
+    ngOnInit(): void {
+        this.filterForm.valueChanges.subscribe((filterFormData) => this.applyFilter(filterFormData));
+        this.listSelector.valueChanges.subscribe(newListData => {
+            console.log(newListData);
+            this.tableData = newListData.entries.map(entry => {return {[newListData.header]: entry};});
+        });
     }
 
+    get numberOfRows(): number {
+        return this._tableData.length;
+    }
 
-    initializeTable() {
-        this.numberOfRows = this.currentTable.length;
+    get pagedTable(): Array<Record<string, any>> {
+        const start = (this.currentPage) * this.itemsPerPage;
+        const end = start + this.itemsPerPage;
+        return this._tableData?.slice(start, end);
+    }
+
+    initializeTable(): void {
         this.setPageCount();
         this.setPageArray();
     }
 
-    tableClickRow(clickedRow: Record<string, any>) {
-        console.log(clickedRow);
+    tableClickRow(clickedRow: Record<string, any>): void {
+        console.log("click row");
 
         this.tableClickedRow.emit(clickedRow);
     }
-    tableClickCell(cleckedCell: string) {
-        this.tableClickedCell.emit(cleckedCell);
+
+    tableClickCell(clickedCell: string): void {
+        console.log("click cell");
+        this.tableClickedCell.emit(clickedCell);
     }
 
-    setItemsPerPage(selectedNumber: number) {
+    setItemsPerPage(selectedNumber: number): void {
         this.itemsPerPage = selectedNumber;
         this.setPageCount();
         this.setCurrentPage(0);
@@ -72,28 +108,28 @@ export class TableComponent {
 
 
     /**
-     * Go to the next page by increasing the page number if it's not at numberOfPages already
+     * Pagination: Go to the next page
      */
     nextPage(): void {
         if (this.currentPage < this.numberOfPages - 1) { this.currentPage++; }
     }
 
     /**
-     * Go to the previous page by decreasing the page number if it's not at 0 already
+     * Pagination: Go to the previous page
      */
     previousPage(): void {
         if (this.currentPage > 0) { this.currentPage--; }
     }
 
     /**
-     * Go to the first page by setting the page number to 0
+     * Pagination: Go to the first page by setting the page number to 0
      */
     firstPage(): void {
         this.currentPage = 0;
     }
 
     /**
-     * Go to the last page by setting the page number to the number of pages
+     * Pagination: Go to the last page by setting the page number to the number of pages
      */
     lastPage(): void {
         this.currentPage = this.numberOfPages - 1;
@@ -109,80 +145,39 @@ export class TableComponent {
     }
 
     setPageArray(): void {
-        const newPagTable: Array<Array<Record<string, any>>> = [];
-        let row = 0;
+    //     const newPagTable: Array<Array<Record<string, any>>> = [];
+    //     let row = 0;
 
-        for (let i = 0; i < this.numberOfPages; i++) {
-            const pagedTableSlice: Array<Record<string, any>> = [];
-            for (let ii = 0; ii < this.itemsPerPage; ii++) {
-                if (this.currentTable[row] == undefined) { break; }
-                pagedTableSlice[ii] = this.currentTable[row];
-                row++;
-            }
-            newPagTable.push(pagedTableSlice);
-        }
-        this.pagedTable = newPagTable;
-        // console.log(newPagTable)
+    //     for (let i = 0; i < this.numberOfPages; i++) {
+    //         const pagedTableSlice: Array<Record<string, any>> = [];
+    //         for (let ii = 0; ii < this.itemsPerPage; ii++) {
+    //             if (this.tableData[row] == undefined) { break; }
+    //             pagedTableSlice[ii] = this.tableData[row];
+    //             row++;
+    //         }
+    //         newPagTable.push(pagedTableSlice);
+    //     }
+    //     this.pagedTable = newPagTable;
     }
 
     setCurrentPage(page: number): void {
         this.currentPage = page;
     }
 
-    applyFilter(keyEvent, columnName: string) {
+    applyFilter(filterFormData: Partial<{columnName: string, filterCondition: string}>): void {
+        const {columnName, filterCondition} = filterFormData;
+        console.log("filter");
 
-        if (columnName) {    // use the original table
-            this.currentTable = this.originalTableArray;
-            // filtered elements is empty on method call
-            this.filteredElements = [];
 
-            // some helpers
-            let filterString: string = keyEvent.target.value;
-            filterString = filterString.toLowerCase();
-            let colKey: number;
-            const cols = Object.keys(this.currentTable[0]);
+        if(!columnName) return;
+        if(filterCondition == "") this._tableData = this.originalTableData;
 
-            // find key of searched column
-            for (let i = 0; i < cols.length; i++) {
-                if (cols[i] == columnName) {
-                    colKey = i;
-                    break;
-                }
-            }
-
-            // create a filteredElements array with rows that have matching items
-            for (let i = 0; i < this.currentTable.length; i++) {
-                const value: string = Object.values(this.currentTable[i])[colKey].toLowerCase();
-
-                if (value.search(filterString) != -1) {
-                    this.filteredElements.push(this.currentTable[i]);
-                }
-            }
-
-            //  if there are matching items, assign them to the current table, if there arent any, asign the emptyTable
-            if (this.filteredElements.length != 0) {
-                this.currentTable = this.filteredElements;
-            } else {
-                this.currentTable = this.createEmptyTable();
-            }
-            this.initializeTable();
-        }
-
+        this._tableData = this.originalTableData.filter(entry => entry[columnName].toString().includes(filterCondition));
     }
 
-    createEmptyTable(): Array<Record<string, any>> {
-        const cols = Object.keys(this.currentTable[0]);
-        const rowObject = {};
-        const emptyTable: Array<Record<string, any>> = [];
-
-        for (let i = 0; i < cols.length; i++) {
-            const colname = cols[i];
-            const cellEntry = "";
-            rowObject[colname] = cellEntry;
-        } emptyTable.push(rowObject);
-
-        return emptyTable;
+    clearFilter(): void {
+        this.filterForm.get('filterCondition').reset();
+        this._tableData = this.originalTableData;
     }
-
 
 }

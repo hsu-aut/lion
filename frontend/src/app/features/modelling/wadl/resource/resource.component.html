@@ -39,7 +39,7 @@
 
 <div class="row mt-3">
     <div class="col-sm">
-        <app-table [currentTable]="resourceTable" [tableTitle]="'Existing Resources'" [tableExplanation]="'The following table shows all base resources with their sub resources'" (tableClickedRow)="tableClick($event)">
+        <app-table [listData]="tableData" [tableTitle]="'Existing Resources'" [tableExplanation]="'The following table shows all base resources with their sub resources'" (tableClickedRow)="tableClick($event)">
         </app-table>
     </div>
 </div>

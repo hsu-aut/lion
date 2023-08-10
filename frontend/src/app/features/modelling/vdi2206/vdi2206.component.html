@@ -1,230 +1,118 @@
 <div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
-  <h5 class="card-header">VDI2206 Template</h5>
-  <div class="card-body">
-    <h5 class="card-title"> Mechatronic System Structure</h5>
-
-    <div class="row" style="height: 200px;">
-
-      <div class="col">
-        <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to
-          an
-          existing system structure or create a new system structure. <button type="button"
-            class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal" data-bs-target="#MCS_HELPER">?</button></p>
-
-      </div>
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-header">
-            Template Statistics
-          </div>
-          <div class="card-body">
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">No# Systems</th>
-                  <th scope="col">No# Modules</th>
-                  <th scope="col">No# Components</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{NoOfSystems}}</td>
-                  <td>{{NoOfModules}}</td>
-                  <td>{{NoOfComponents}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <h5 class="card-header">VDI2206 Template</h5>
+    <div class="card-body">
+        <h5 class="card-title"> Mechatronic System Structure</h5>
+        <div class="row" style="height: 200px;">
+            <div class="col">
+                <p class="card-text">The VDI2206 template uses a tabular approach for building a graph. One can add elements to
+                    an existing system structure or create a new system structure.
+                <button type="button" class="badge rounded-pill bg-light text-dark" data-bs-toggle="modal" data-bs-target="#MCS_HELPER">?</button></p>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Template Statistics
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No# Systems</th>
+                                    <th scope="col">No# Modules</th>
+                                    <th scope="col">No# Components</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{numberOfSystems}}</td>
+                                    <td>{{numberOfModules}}</td>
+                                    <td>{{numberOfComponents}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="px-sm-2 py-3">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="newIndi-tab" data-bs-toggle="tab" data-bs-target="#newIndi" role="tab" type="button"
+                        aria-controls="newIndi" aria-selected="true"> Create new individuals
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="existingIndiContain-tab" data-bs-toggle="tab" data-bs-target="#existingIndiContain" role="tab"
+                        type="button" aria-controls="existingIndiContain" aria-selected="false"> Connect by containment</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" id="existingIndiInheritance-tab" data-bs-toggle="tab" data-bs-target="#existingIndiInheritance"
+                        type="button" role="tab" aria-controls="existingIndiInheritance" aria-selected="false"> Connect by inheritance</a>
+                </li> -->
+            </ul>
+
+            <div class="tab-content mt-3" id="myTabContent">
+                <div class="tab-pane active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
+                    <vdi2206-new-individuals></vdi2206-new-individuals>
+                </div>
+                <div class="tab-pane " id="existingIndiContain" role="tabpanel" aria-labelledby="existingIndiContain-tab">
+                    <vdi2206-connect-contain [subject]="this.selectedSubject"></vdi2206-connect-contain>
+                </div>
+                <!-- <div class="tab-pane " id="existingIndiInheritance" role="tabpanel" aria-labelledby="existingIndiInheritance-tab">
+                    <vdi2206-connect-inherit [selectedSubject]="this.selectedSubject" [selectedPredicate]="this.selectedPredicate"></vdi2206-connect-inherit>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="px-sm-2 py-sm-2">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="sys-tab" data-bs-toggle="tab" type="button" data-bs-target="#sys" role="tab"
+                        aria-controls="sys" aria-selected="true" (click)="setTableOption('system')"> System </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="mod-tab" data-bs-toggle="tab" type="button" data-bs-target="#mod" role="tab" aria-controls="mod"
+                        aria-selected="false" (click)="setTableOption('module')"> Module </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="com-tab" data-bs-toggle="tab" type="button" data-bs-target="#com" role="tab" aria-controls="com"
+                        aria-selected="false" (click)="setTableOption('component')"> Component </a>
+                </li>
+            </ul>
+            <div class="tab-content" id="existingElementTable">
+                <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
+                    <app-table [tableData]="(currentTable$ | async)" (tableClickedCell)="tableClick($event)"></app-table>
+                </div>
+                <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
+                    <app-table [tableData]="(currentTable$ | async)" (tableClickedCell)="tableClick($event)"></app-table>
+                </div>
+                <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
+                    <app-table [tableData]="(currentTable$ | async)" (tableClickedCell)="tableClick($event)"></app-table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bd-example-modal-lg" id="MCS_HELPER" tabindex="-1" role="dialog" aria-labelledby="MCS_HELPER"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="MCS_HELPER"> The Structure of mechatronic Systems </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <img src="../../../../../../assets/images/vdi2206_grafical_notion.png" class="card-img-top rounded mx-auto d-block"
+                            style="width: 60%">
+                        <p class="card-text">The VDI 2206 (Design methodology for mechatronic systems) contains concepts for the description of mechatronic systems and their containment structure. Hereby, the guideline defines necessary constituents of a mechatronic ssystem as well as a description on how they are related.
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it! </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="px-sm-2 py-3">
-      <!-- tabs -->
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="newIndi-tab" data-bs-toggle="tab" data-bs-target="#newIndi" role="tab" type="button"
-            aria-controls="newIndi" aria-selected="true" (click)="setStructureOption('newIndi')"> Create new individuals
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="existingIndiContain-tab" data-bs-toggle="tab" data-bs-target="#existingIndiContain" role="tab" type="button"
-            aria-controls="existingIndiContain" aria-selected="false"
-            (click)="setStructureOption('existingIndiContain')"> Connect by containment</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="existingIndiInheritance-tab" data-bs-toggle="tab" data-bs-target="#existingIndiInheritance" type="button"
-            role="tab" aria-controls="existingIndiInheritance" aria-selected="false"
-            (click)="setStructureOption('existingIndiInheritance')"> Connect by inheritance</a>
-        </li>
-      </ul>
-
-      <div class="tab-content py-3" id="myTabContent">
-        <div class="tab-pane fade show active" id="newIndi" role="tabpanel" aria-labelledby="newIndi-tab">
-          <!-- content to create new individuals -->
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> The Subject of the created statement </label>
-              <input [(ngModel)]="newSubject" class="form-control" name="object" type="text" placeholder="[Subject]">
-            </div>
-            <div class="form-group col-sm">
-              <label> The Predicate of the created statement </label>
-              <input class="form-control" type="text" placeholder="rdf:type" readonly>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedClass" name="selectedClass" class="form-control" id="inputGroupSelect01">
-                <option *ngFor='let x of allClasses'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert('newIndi')">Download SPARQL INSERT</button>
-            </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsert('newIndi')">Add</button>
-            </div>
-          </div>
-
-        </div>
-        <div class="tab-pane " id="existingIndiContain" role="tabpanel" aria-labelledby="existingIndiContain-tab">
-          <!-- content to connect existing individuals -->
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> The Subject of the created statement </label>
-              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
-                placeholder="Select an Entity from Table" readonly>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Predicate of the created statement </label>
-              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
-                (click)="getObjectClasses()">
-                <option *ngFor='let x of existingPredicates'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Class of the Object of the created statement </label>
-              <select [(ngModel)]="selectedObjectClass" name="selectedObjectClass" class="form-control"
-                (click)="getExistingObjects()">
-                <option *ngFor='let x of existingObjectClasses'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
-                <option *ngFor='let x of existingObjects'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">Download SPARQL
-                INSERT</button>
-            </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsert('existingIndiContain')">Add</button>
-            </div>
-          </div>
-        </div>
-        <div class="tab-pane " id="existingIndiInheritance" role="tabpanel"
-          aria-labelledby="existingIndiInheritance-tab">
-          <!-- content to connect existing individuals -->
-          <div class="row">
-            <div class="form-group col-sm">
-              <label> The Subject of the created statement </label>
-              <input [(ngModel)]="selectedSubject" class="form-control" type="text"
-                placeholder="Select an Entity from Table" readonly>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Predicate of the created statement </label>
-              <select [(ngModel)]="selectedPredicate" name="selectedPredicate" class="form-control"
-                (click)="getExistingObjects()">
-                <option>VDI2206:hasChild</option>
-                <option>VDI2206:hasParent</option>
-              </select>
-            </div>
-            <div class="form-group col-sm">
-              <label> The Object of the created statement </label>
-              <select [(ngModel)]="selectedObject" name="selectedObject" class="form-control">
-                <option *ngFor='let x of existingObjects'>
-                  {{x}}
-                </option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="buildInsert('existingIndiContain')">Download SPARQL
-                INSERT</button>
-            </div>
-            <div class="form-group col-sm">
-              <button class="btn btn-secondary col m-3" (click)="executeInsert('existingIndiContain')">Add</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="px-sm-2 py-sm-2">
-      <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-          <a class="nav-link active" id="sys-tab" data-bs-toggle="tab" type="button" data-bs-target="#sys" role="tab" aria-controls="sys"
-            aria-selected="true" (click)="setTableOption('System_BUTTON')"> System </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="mod-tab" data-bs-toggle="tab" type="button" data-bs-target="#mod" role="tab" aria-controls="mod"
-            aria-selected="false" (click)="setTableOption('Module_BUTTON')"> Module </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" id="com-tab" data-bs-toggle="tab" type="button" data-bs-target="#com" role="tab" aria-controls="com"
-            aria-selected="false" (click)="setTableOption('Component_BUTTON')"> Component </a>
-        </li>
-      </ul>
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="sys" role="tabpanel" aria-labelledby="sys-tab">
-          <app-table [currentTable]="currentTable" (tableClickedCell)="tableClick($event)"></app-table>
-        </div>
-        <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
-          <app-table [currentTable]="currentTable" (tableClickedCell)="tableClick($event)"></app-table>
-        </div>
-        <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
-          <app-table [currentTable]="currentTable" (tableClickedCell)="tableClick($event)"></app-table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade bd-example-modal-lg" id="MCS_HELPER" tabindex="-1" role="dialog" aria-labelledby="MCS_HELPER"
-  aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="MCS_HELPER"> The Structure of mechatronic Systems </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-        </button>
-      </div>
-      <div class="modal-body">
-        <img src="../../../../../../assets/images/vdi2206_grafical_notion.png"
-          class="card-img-top rounded mx-auto d-block" style="width: 60%">
-        <p class="card-text"> The VDI 2206 (Design methodology for mechatronic systems) contains
-          concepts for the description of mechatronic systems and their containment structure. Hereby, the guideline
-          defines necessary constituents of a mechatronic ssystem as well as a description on how they are related.
-        </p>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-          Got it! </button>
-      </div>
-    </div>
-  </div>
 </div>

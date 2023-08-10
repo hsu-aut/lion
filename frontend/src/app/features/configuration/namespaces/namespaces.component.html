@@ -95,7 +95,7 @@
               </div>
             </div>
           </div>
-          <app-table [currentTable]="PREFIXES" [tableTitle]="'Namespaces and their prefixes'"
+          <app-table [listData]="prefixesList" [tableTitle]="'Namespaces and their prefixes'"
             [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
             (tableClickedRow)="prefixTableClick($event)"></app-table>
         </div>
@@ -143,7 +143,7 @@
               </div>
             </div>
           </div>
-          <app-table [currentTable]="PREFIXES" [tableTitle]="'Namespaces and their prefixes'"
+          <app-table [listData]="prefixesList" [tableTitle]="'Namespaces and their prefixes'"
             [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
             (tableClickedRow)="prefixTableClick($event)"></app-table>
 
