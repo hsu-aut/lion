@@ -1,0 +1,39 @@
+
+<h5 class="mt-5">Body representations:</h5>
+<div class="row align-items-end">
+    <div class="form-group col-sm-4">
+        <label for="" class="form-label">Media Type:</label>
+        <input [formControl]="mediaTypeInput" class="form-control" name="bodyMediaType" type="text">
+    </div>
+    <div class="col-sm-3">
+        <button class="btn btn-primary" (click)="this.addRepresentation()">Add representation</button>
+    </div>
+</div>
+
+<ng-container *ngIf="(this.representations$ | async) as reps">
+
+    <h5 *ngIf="reps.length > 0" class="mt-3">Representations</h5>
+    <div class="accordion" *ngFor="let rep of reps; let i=index">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse_' + i" aria-expanded="true" aria-controls="collapseOne">
+                Body Representation: {{rep.mediaType}}
+            </button>
+            </h2>
+            <div [id]="'collapse_' + i" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <div class="row align-items-end">
+                    <wadl-parameter [parentIri]="rep.representationIri"></wadl-parameter>
+                </div>
+                <div class="row mt-3 justify-content-end">
+                    <div class="col-auto">
+                        <button class="btn btn-small btn-danger float-end" type="button" title="Delete this representation" (click)="deleteRepresentation(rep.representationIri)">
+                            Delete complete representation <i class="ml-3 fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

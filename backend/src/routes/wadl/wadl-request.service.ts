@@ -98,7 +98,6 @@ export class WadlRequestService {
 		const rawResult = await lastValueFrom(this.queryService.query(queryString));
 		const mappedResult = this.converter.convertToDefinition(rawResult.results.bindings, requestMappingDefinition)
 			.getFirstRootElement() as Array<WadlRequestDto>;
-		console.log(mappedResult);
 		
 		return mappedResult[0];
 	}
@@ -127,18 +126,3 @@ const requestMappingDefinition: MappingDefinition[] = [{
 		}],
 	}]
 }];
-
-// {
-// 	rootName: 'responses',
-// 	childMappings: [{
-// 		rootName: 'parameter',
-// 		toCollect: ['parameterName', 'parameterType']
-// 	},
-// 	{
-// 		rootName: 'representation',
-// 		childMappings: [{
-// 			rootName: 'parameter',
-// 			toCollect: ['parameterName', 'parameterType']
-// 		}],
-// 	}]
-// }]

@@ -12,12 +12,15 @@
         "module": "es2020",
         "target": "ES2015",
         "lib": [
-            "es2018",
+            "es2022",
             "dom"
         ],
         "paths": {
             "@shared/*": [
                 "../shared/*"
+            ],
+            "@shared-services/*": [
+                "./src/app/shared/services/*"
             ]
         },
     },
@@ -28,5 +31,6 @@
     ],
     "angularCompilerOptions": {
         "fullTemplateTypeCheck": true,
+        "strictTemplates": true
     }
 }

@@ -1,0 +1,58 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <h4 class="card-header">Tool Configuration</h4>
+    <div class="card-body">
+        <h5 class="card-title"> Graph Database Configuration </h5>
+
+        <div class="row">
+            <div class="col-xl-8">
+                <p class="card-text">In order to build the ABox of your project, the LiOnS tool uses a GraphDB. Using
+                    LiOnS you can manage your repositories as well as the relevant TBoxes within those repositories.
+                    This enables you to effecitevely manage you projects. </p>
+                <p>Set Repositories: In case you already have created a repository, you can set it here is the current
+                    repository.</p>
+                <p>Define relevant TBoxes: You can set the relevant TBoxes for your modelling project. This will impact
+                    the
+                    size and modelling abilities of your ABox.</p>
+                <p>Managing repositories: You can create or delete repositories in order to manage you modelling
+                    projects.</p>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Important notice</h5>
+                        <p class="card-text">Please be aware, that clearing or removed any repoistory will lead to a
+                            loss of data.
+                        </p>
+                        <p class="card-text"><small class="text-muted">Current number of repositories:{{repoCount}}</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- tabs -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="RepoManagement-tab" data-bs-toggle="tab" type="button"
+                    data-bs-target="#RepoManagement" role="tab" aria-controls="RepoManagement" aria-selected="true">
+                    Manage Repositories</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="TBoxes-tab" data-bs-toggle="tab" type="button" data-bs-target="#TBoxes"
+                    role="tab" aria-controls="TBoxes" aria-selected="false"> Load ODP T-Boxes </a>
+            </li>
+        </ul>
+
+        <!-- tab content -->
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active py-4" id="RepoManagement" role="tabpanel" aria-labelledby="RepoManagement-tab">
+                <repository-management></repository-management>
+            </div>
+
+
+            <div class="tab-pane py-4" id="TBoxes" role="tabpanel" aria-labelledby="TBoxes-tab">
+                <odp-management></odp-management>
+            </div>
+
+        </div>
+    </div>
+</div>
+

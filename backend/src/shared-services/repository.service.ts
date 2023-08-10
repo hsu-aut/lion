@@ -1,25 +1,40 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
-import {map} from 'rxjs/operators';
+import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
+import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
+import { Observable, of } from 'rxjs';
+import {catchError, map, tap} from 'rxjs/operators';
 import * as fs from 'fs';
 import * as FormData from 'form-data';
+import { SparqlResponse } from '../models/sparql/SparqlResponse';
+import { GraphDbRequestException } from '../custom-exceptions/GraphDbRequestException';
+import { GraphOperationService } from './graph-operation.service';
 /**
  * A service that provides functionality to interact with GraphDB repositories
  */
 @Injectable()
 export class RepositoryService {
 
-	workingRepository = "testdb";
+	workingRepository: Observable<RepositoryDto> = of({
+		id: "testdb",
+		title: "testdb",
+		uri: "localhost:7200/repositories/testdb",
+		readable: true,
+		writable: true
+	})
 
-	constructor(private http: HttpService) {}
+	constructor(
+		private http: HttpService,
+		@Inject(forwardRef(() => GraphOperationService))
+		private graphService: GraphOperationService
+	) {}
 
 	/**
      * Get a list of all repositories
      * @returns List of the currently existing repositories
      */
-	getAllRepositories(): Observable<AxiosResponse<any>> {
+	getAllRepositories(): Observable<RepositoryDto[]> {
 		const reqConfig: AxiosRequestConfig = {
 			method: 'GET',
 			headers: {
@@ -29,19 +44,34 @@ export class RepositoryService {
 			url: `/repositories`
 		};
 
-		// TODO: Add proper response type
-		return this.http.request<any>(reqConfig).pipe(map(res => res.data));
+		return this.http.request<SparqlResponse>(reqConfig).pipe(
+			map(axiosResponse => {
+				const sparqlResult = axiosResponse.data;
+				const bindings = sparqlResult.results.bindings;
+				return bindings.map(binding => {
+					const bindingEntries = Object.entries(binding);
+					const a = new RepositoryDto();
+					bindingEntries.forEach(bindingEntry => a[bindingEntry[0]] = bindingEntry[1].value);
+					return a;
+				});
+			})
+		);
 	}
 
-	setWorkingRepository(repositoryName: string): void {
-		this.workingRepository = repositoryName;
-		console.log("set repo");
-		console.log("new repo");
-		console.log(this.getWorkingRepository());
-		
+	setWorkingRepository(repositoryId: string): Observable<RepositoryDto> {
+		const repos = this.getAllRepositories();
+		const repoToSet = repos.pipe(
+			map(repos => repos.find(repo => repo.id === repositoryId)),
+		);
+		this.workingRepository = repoToSet;
+		return this.workingRepository;
 	}
 	
-	getWorkingRepository(): string {
+	/**
+	 * Get the currently activated working repository
+	 * @returns Observable of the current working repository
+	 */
+	getWorkingRepository(): Observable<RepositoryDto> {
 		return this.workingRepository;
 	}
 
@@ -50,8 +80,8 @@ export class RepositoryService {
 	 * Creates a new repository with a given name
 	 * @param repositoryName Name of the repository that will be created
 	 */
-	createRepository(repositoryName:string): Observable<void> {
-		
+	createRepository(newRepositoryRequest: NewRepositoryRequestDto): Observable<void> {
+		const {repositoryId, repositoryName} = newRepositoryRequest;
 		const repoConfig = `
 		#
 		# Sesame configuration template for a GraphDB Free repository
@@ -63,7 +93,7 @@ export class RepositoryService {
 		@prefix owlim: <http://www.ontotext.com/trree/owlim#>.
 		
 		[] a rep:Repository ;
-			rep:repositoryID '${repositoryName}' ;
+			rep:repositoryID '${repositoryId}' ;
 			rdfs:label '${repositoryName}' ;
 			rep:repositoryImpl [
 				rep:repositoryType "graphdb:FreeSailRepository" ;
@@ -111,12 +141,12 @@ export class RepositoryService {
 			].`;
 
 		// Config has to be used as a file, so we store the config to file
-		fs.writeFileSync("./repo-config.ttl", repoConfig);
-
+		fs.writeFileSync("./temp/repo-config.ttl", repoConfig);
+		
 		// Create form data with the config file
 		const form = new FormData();
-		form.append('config', fs.createReadStream("./repo-config.ttl"));
-
+		form.append('config', fs.createReadStream("./temp/repo-config.ttl"));
+		
 		// Build the request. Note that headers have to be calculated from the form
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',
@@ -125,10 +155,17 @@ export class RepositoryService {
 			url: '/rest/repositories',
 			data: form
 		};
+		const buf = fs.readFileSync("./temp/repo-config.ttl");
 		
 		// Execute request, file can now be deleted
-		fs.unlink("./repo-config.ttl", () => {});
-		return this.http.request<void>(reqConfig).pipe(map(res => res.data));	
+		return this.http.request<void>(reqConfig).pipe(
+			map(res => res.data),
+			catchError(error => {throw new GraphDbRequestException(error.message);}),
+			tap(res => {
+				fs.unlinkSync("./temp/repo-config.ttl");
+				this.graphService.addNewGraph("http://lionFacts");
+			})
+		);	
 	}
 
 

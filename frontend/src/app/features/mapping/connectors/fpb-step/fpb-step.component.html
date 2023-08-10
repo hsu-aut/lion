@@ -1,0 +1,96 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header"> Engineering Artefact to RDF Mappings (Connections) </h4>
+  <div class="card-body">
+    <h5 class="card-title"> Formalized Process Description and STEP 3D CAD </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">By using the the mapping functionalities of LiOnS, one can create an ABox based on
+          artefacts. In case that there were no common identifiers used, one has to link the individual identifiers and
+          mark them to be the same. In case of the FPD and STEP, one has to identify which "Technical Resources" of the
+          FPD and which "Systems" of the step assembly are the same.
+        </p>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Important notice</h5>
+            <p class="card-text">Please be aware, that only the results of the mappings of FPD and STEP are shown. In
+              order to connect different mapping results, refer to the corresponding connection tab in the sidebar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="overview-tab" type="button" data-bs-toggle="tab" data-bs-target="#overview" role="tab"
+            aria-controls="overview" aria-selected="true"> Review Connections </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="connection-tab" type="button" data-bs-toggle="tab" data-bs-target="#connection" role="tab"
+            aria-controls="connection" aria-selected="false"> Create Connection </a>
+        </li>
+      </ul>
+      <!-- tab content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <p class="text-sm-left"> You can see an overview on the already linked entities below. The table indicates 3D
+            CAD entities that are already some kind of Technical Resource. </p>
+
+          <app-table [tableData]="overviewTable" [showFilter]="filterOption" [tableExplanation]="overviewSubTitle">
+          </app-table>
+
+        </div>
+
+
+        <div class="tab-pane py-4" id="connection" role="tabpanel" aria-labelledby="connection-tab">
+          <p class="text-sm-left"> You can create a connection between two entities by just selecting an ID from each table and add it to the current graph.</p>
+
+          <!-- content to create new individuals -->
+          <div class="row py-3" [formGroup]="newIndividualForm">
+            <div class="form-group col-sm">
+              <label> The Technical Resource to connect </label>
+              <input formControlName="subject" class="form-control" name="subject" type="text"
+                placeholder="[ID of Technical Resource]">
+            </div>
+            <div class="form-group col-sm">
+              <label> The STEP assembly to connect </label>
+              <input formControlName="object" class="form-control" name="subject" type="text"
+                placeholder="[ID of assembly]">
+            </div>
+            <div class="form-group col-sm-1 align-self-end">
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <button type="button" class="btn btn-secondary"
+                  (click)="modifyTripel('add', newIndividualForm)">Add</button>
+                <div class="btn-group" role="group">
+                  <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item" (click)="modifyTripel('delete', newIndividualForm)">Delete
+                      statement</a>
+                    <a class="dropdown-item" (click)="modifyTripel('build', newIndividualForm)">Download SPARQL
+                      INSERT</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <app-table [tableData]="resourcesTable" [showFilter]="filterOption" [tableExplanation]="resourcesSubTitle" (tableClickedRow)="resourceTableClick($event)"></app-table>
+            </div>
+            <div class="col">
+              <app-table [tableData]="systemTable" [showFilter]="filterOption" [tableExplanation]="systemSubTitle" (tableClickedRow)="systemTableClick($event)"></app-table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>

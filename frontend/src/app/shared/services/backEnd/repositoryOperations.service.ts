@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
-
+import { catchError, map, Observable } from 'rxjs';
+import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
+import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
 import { ConfigurationService } from './configuration.service';
-import { OdpName } from "@shared/models/odps/odp";
 import { MessagesService } from '../messages.service';
 
 
@@ -16,7 +15,6 @@ import { MessagesService } from '../messages.service';
     providedIn: 'root'
 })
 export class RepositoryOperationsService {
-    private repository: string;
 
     constructor(
         private http: HttpClient,
@@ -24,103 +22,65 @@ export class RepositoryOperationsService {
         private messageService: MessagesService
     ) {}
 
-    public getWorkingRepository(): Observable<string> {
-        const url = this.getRepositoryURL();
-        const params = {
-            type: "current"
-        };
-        return this.http.get<string>(url, {params: params});
-    }
-
-    public setWorkingRepository(repositoryName): Observable<void> {
-        const url = this.getRepositoryURL();
-        const repoData = {
-            repositoryName: repositoryName
-        };
-        const params = {
-            type: "current"
-        };
-        return this.http.put<void>(url, repoData, {params: params});
-    }
-
     private getRepositoryURL() {
         return this.config.getHost() + '/repositories';
     }
 
-
-    createRepository(repositoryName: string) {
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'none',
-                'responseType': 'text'
-            })
-        };
-
-        const request = this.getRepositoryURL() + `/create?repositoryName=${repositoryName}`;
-        const dbObservale = new Observable((observer) => {
-            this.http.get(request, httpOptions).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Done!', 'Created the repository ' + repositoryName + '. You may want to add TBoxes to it.');
-                observer.next(data);
-                observer.complete();
-            });
-        });
-        return dbObservale;
+    /**
+     * Loads a list of all currently existing repositories
+     * @returns A list of all repositories in the form of RepositoryDto
+     */
+    getListOfRepositories(): Observable<RepositoryDto[]> {
+        return this.http.get<RepositoryDto[]>(this.getRepositoryURL());
     }
 
-    getListOfRepositories() {
-        const currentList: Array<string> = [];
-
-        const listObservable = new Observable((observer) => {
-            this.http.get(this.getRepositoryURL()).subscribe((data: any) => {
-
-                for (let i = 0; i < data.results.bindings.length; i++) {
-
-                    currentList.push(data.results.bindings[i].id.value);
-
-                    if (i == (data.results.bindings.length - 1)) {
-                        observer.next(currentList);
-                        observer.complete();
-                    }
-                }
-            });
-        });
-
-        return listObservable;
+    public getWorkingRepository(): Observable<RepositoryDto> {
+        const url = this.getRepositoryURL();
+        const params = {
+            type: "current"
+        };
+        return this.http.get<RepositoryDto[]>(url, {params: params}).pipe(map(repos => repos[0]));
     }
 
-    deleteRepository(repositoryName) {
-        const httpOptions = {
-            headers: new HttpHeaders({
-                'Content-Type': 'none',
-                'responseType': 'text'
-            })
+    public setWorkingRepository(repositoryId: string): Observable<RepositoryDto> {
+        const url = this.getRepositoryURL();
+        const repoData = {
+            repositoryId: repositoryId
         };
-        const request = this.getRepositoryURL() + `/${repositoryName}`;
-        const dbObservale = new Observable((observer) => {
-            this.http.delete(request, httpOptions).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Done!', 'Deleted the repository ' + repositoryName);
-                observer.next(data);
-                observer.complete();
-            });
-        });
-        return dbObservale;
+        const params = {
+            type: "current"
+        };
+        return this.http.put<RepositoryDto>(url, repoData, {params: params});
     }
 
     /**
-     * Clears all content (i.e., all statements) from a repository
-     * @param repositoryName
-     * @returns
+     * Create a repository with a given ID and name
+     * @param newRepositoryRequest Object containing new repository ID and name
+     * @returns A void observable
      */
-    clearRepository(repositoryName: string) {
-        const request = this.getRepositoryURL() + `/${repositoryName}/statements`;
-        const dbObservale = new Observable((observer) => {
-            this.http.delete(request).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Done!', 'Cleared the repository ' + repositoryName + '. You may want to add TBoxes to it again.');
-                observer.next(data);
-                observer.complete();
-            });
-        });
-        return dbObservale;
+    createRepository(newRepositoryRequest: NewRepositoryRequestDto): Observable<void> {
+        const url = this.getRepositoryURL();
+        return this.http.post<void>(url, newRepositoryRequest);
+    }
+
+    /**
+     * Clear a repository with a given ID
+     * @param repositoryId ID of the repository to delete
+     * @returns A void obsersable
+     */
+    deleteRepository(repositoryId: string): Observable<void> {
+        const url = this.getRepositoryURL() + `/${repositoryId}`;
+        return this.http.delete<void>(url);
+    }
+
+    /**
+     * Clears all content (i.e., all statements) from a repository with a given ID
+     * @param repositoryId ID of the repository to clear
+     * @returns A void obsersable
+     */
+    clearRepository(repositoryId: string): Observable<void> {
+        const url = this.getRepositoryURL() + `/${repositoryId}/statements`;
+        return this.http.delete<void>(url);
     }
 
 }

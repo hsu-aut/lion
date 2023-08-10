@@ -1,0 +1,145 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+    <h4 class="card-header"> Engineering Artefact to RDF Mappings (Connections) </h4>
+    <div class="card-body">
+        <h5 class="card-title">OPC UA and Formalized Process Description</h5>
+
+        <div class="row">
+            <div class="col-xl-8">
+                <p class="card-text">By using the the mapping functionalities of LiOnS, one can create an ABox based on
+                    artefacts. If one wants to express relations between individuals that have been mapped from
+                    different
+                    artefacts, these relations have to be created manually.<br>
+                    With this Component, you can connect process of FPD with a OPC UA Node (most likely a Method). This
+                    connection can be used to express that a process is executable via a UA Method.
+                </p>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Important notice</h5>
+                        <p class="card-text">Please be aware that only individuals of FPD (VDI 3682) and OPC UA are
+                            shown. In order to connect different mapping results, refer to the corresponding connection
+                            tab in the sidebar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- tabs -->
+        <div class="px-sm-2 py-sm-2">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="overview-tab" type="button" data-bs-toggle="tab" data-bs-target="#overview" role="tab"
+                        aria-controls="overview" aria-selected="true">Review Connections</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="connection-tab" type="button" data-bs-toggle="tab" data-bs-target="#connection" role="tab"
+                        aria-controls="connection" aria-selected="false">Create Connection</a>
+                </li>
+            </ul>
+            <!-- tab content -->
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active py-4" id="overview" role="tabpanel"
+                    aria-labelledby="overview-tab">
+                    <p class="text-sm-left"> You can see an overview on the already linked entities below. The table
+                        indicates processes of VDI 3682 that can be executed via a OPC UA method call. </p>
+
+                    <app-table [tableData]="overviewTable" [showFilter]="filterOption"
+                        [tableExplanation]="overviewSubTitle">
+                    </app-table>
+
+                </div>
+
+
+                <div class="tab-pane py-4" id="connection" role="tabpanel" aria-labelledby="connection-tab">
+                    <p class="text-sm-left"> You can create a connection between two entities by just selecting an ID
+                        from each table and add it to the current graph.</p>
+
+                    <!-- content to create new individuals -->
+                    <div class="row py-3" [formGroup]="newIndividualForm">
+                        <div class="form-group col-sm">
+                            <label>The process to connect with an OPC UA node</label>
+                            <input formControlName="subject" class="form-control" name="subject" type="text"
+                                placeholder="[ID of a FPD process]">
+                        </div>
+                        <div class="form-group col-sm">
+                            <label>The OPC UA Node to connect </label>
+                            <input formControlName="object" class="form-control" name="subject" type="text"
+                                placeholder="[ID of OPC UA Node]">
+                        </div>
+                        <div class="form-group col-sm-1 align-self-end">
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                <button type="button" class="btn btn-secondary"
+                                    (click)="modifyTripel('add')">Add</button>
+                                <div class="btn-group" role="group">
+                                    <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="addButton">
+                                        <a class="dropdown-item" (click)="modifyTripel('delete')">Delete
+                                            statement</a>
+                                        <a class="dropdown-item" (click)="modifyTripel('build')">Download SPARQL
+                                            INSERT</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <!-- <app-table [tableData]="processTable" [showFilter]="filterOption"
+                                [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
+                                (tableClickedRow)="processTableClick($event)">
+                            </app-table> -->
+                        </div>
+                        <div class="col">
+                            <!-- <app-table [tableData]="opcUaNodeTable" [showFilter]="filterOption"
+                                [tableTitle]="opcUaNodeSubtitle" [tableExplanation]="opcUaNodeSubtitle"
+                                (tableClickedRow)="opcUaNodeTableClick($event)">
+                            </app-table> -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <form action="submit" (ngSubmit)="createConnection()" [formGroup]="opcVdiConnectionForm">
+    <div class="row">
+        <div class="form-group col-sm">
+            <label>The System to connect to an OPC UA Server</label>
+            <select formControlName="selectedSystem" name="selectedSystem" class="form-control">
+                <option *ngFor='let system of systems' value="{{system}}">{{system}}</option>
+            </select>
+        </div>
+        <div class="form-group col-sm">
+            <label>Predicate of the connection</label>
+            <input formControlName="connectingObjectProperty" class="form-control" type="text" readonly>
+        </div>
+        <div class="form-group col-sm">
+            <label>The OPC UA Server</label>
+            <select formControlName="selectedOpcUaServer" class="form-control" name="opcUaServer" type="text"
+                placeholder="[OPC UA Server]">
+                <option *ngFor="let server of opcUaServers" value="{{server.serverIri}}">{{server.serverLabel}}
+                    ({{server.serverIri}})</option>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="!opcVdiConnectionForm.valid">Create connection</button>
+</form> -->

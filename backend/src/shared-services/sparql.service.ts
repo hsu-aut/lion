@@ -1,7 +1,7 @@
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { catchError, map, Observable } from "rxjs";
+import { catchError, map, Observable, switchMap } from "rxjs";
 import { SparqlResponse } from "@shared/models/sparql/SparqlResponse";
 import { RepositoryService } from "./repository.service";
 import { GraphDbRequestException } from "../custom-exceptions/GraphDbRequestException";
@@ -21,28 +21,30 @@ export class SparqlService {
 	 * @throws GraphDbRequestException
 	 */
 	query(queryString: string): Observable<SparqlResponse> {
-		const currentRepo = this.repoService.getWorkingRepository();
+		return this.repoService.getWorkingRepository().pipe(switchMap(data => {
+			const currentRepoId = data.id;
         
-		const reqConfig: AxiosRequestConfig = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/sparql-query'
-			},
-			responseType: 'text',
-			data: queryString,
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}`
-		};
+			const reqConfig: AxiosRequestConfig = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/sparql-query'
+				},
+				responseType: 'text',
+				data: queryString,
+				baseURL: 'http://localhost:7200/',
+				url: `/repositories/${currentRepoId}`
+			};
 
-		// Return the response body (i.e. the full Sparql Response)
-		return this.http.request<SparqlResponse>(reqConfig)
-			.pipe(
-				map((data: AxiosResponse<SparqlResponse>) => data.data),
-				catchError((err:AxiosError) => {
-					console.log(err.response.data);
+			// Return the response body (i.e. the full Sparql Response)
+			return this.http.request<SparqlResponse>(reqConfig)
+				.pipe(
+					map((data: AxiosResponse<SparqlResponse>) => data.data),
+					catchError((err:AxiosError) => {
+						console.log(err.response.data);
 				
-					throw new GraphDbRequestException(err.response.data, err.response.status);
-				}));
+						throw new GraphDbRequestException(err.response.data, err.response.status);
+					}));
+		}));
 	}
 
 
@@ -52,29 +54,31 @@ export class SparqlService {
      * @returns 
      */
 	update(updateString: string): Observable<void> {
-		const currentRepo = this.repoService.getWorkingRepository();
+		return this.repoService.getWorkingRepository().pipe(switchMap(data => {
+			const currentRepoId = data.id;
+
+			const reqConfig: AxiosRequestConfig = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/sparql-update',
+					'Accept': 'application/rdf+xml, */*;q=0.5'
+				},
+				responseType: 'text',
+				data: updateString,
+				baseURL: 'http://localhost:7200/',
+				url: `/repositories/${currentRepoId}/statements`
+			};
         
-		const reqConfig: AxiosRequestConfig = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/sparql-update',
-				'Accept': 'application/rdf+xml, */*;q=0.5'
-			},
-			responseType: 'text',
-			data: updateString,
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${currentRepo}/statements`
-		};
-        
-		// Return the response body (i.e. the full Sparql Response) and catch errors should they occur
-		return this.http.request<void>(reqConfig)
-			.pipe(
-				map(data => data.data), 
-				catchError((err:AxiosError) => {
-					console.log(err.response.data);
+			// Return the response body (i.e. the full Sparql Response) and catch errors should they occur
+			return this.http.request<void>(reqConfig)
+				.pipe(
+					map(data => data.data), 
+					catchError((err:AxiosError) => {
+						console.log(err.response.data);
 					
-					throw new GraphDbRequestException(err.response.data, err.response.status);
-				}));
+						throw new GraphDbRequestException(err.response.data, err.response.status);
+					}));
+		}));
 	}
 
 }

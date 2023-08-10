@@ -1,0 +1,154 @@
+<div class="card mb-sm-4 shadow p-3 mb-5 bg-white rounded">
+  <h4 class="card-header">Tool Configuration</h4>
+  <div class="card-body">
+    <h5 class="card-title"> Namespace Configuration </h5>
+
+    <div class="row">
+      <div class="col-xl-8">
+        <p class="card-text">The namespaces declared below are used to build prefixes in LiOnS in order to keep things
+          readable. Besides the namepsaces of the W3C standardized ontologies, there are also the relevant namespaces of
+          the TBoxes used by LiOnS and the Abox namespace. The latter defaults on "http://lionFacts#"</p>
+
+
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Important notice</h5>
+            <p class="card-text">Please be aware, that you should not delete any prefixes or namespaces that you want to
+              model in. Furthermore, you may want to keep your prefixes as short and unique as possible.
+            </p>
+            <p class="card-text"><small class="text-muted">Current number of namespaces: {{namespaceCount}}</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- tabs -->
+    <div class="px-sm-2 py-sm-2">
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="SetName-tab" data-bs-toggle="tab" data-bs-target="#SetName" type="button" role="tab"
+            aria-controls="SetName" aria-selected="true"> Set Namespace </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="EditName-tab" data-bs-toggle="tab" data-bs-target="#EditName" type="button" role="tab" aria-controls="EditName"
+            aria-selected="false"> Edit Namespace </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="ManageName-tab" data-bs-toggle="tab" data-bs-target="#ManageName" type="button" role="tab"
+            aria-controls="ManageName" aria-selected="false"> Manage Namespaces </a>
+        </li>
+      </ul>
+      <!-- tab content -->
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active py-4" id="SetName" role="tabpanel" aria-labelledby="SetName-tab">
+          <p class="text-sm-left"> You can set the namespace, that your triples will be created in, here.</p>
+
+
+          <div class="row">
+            <div class="form-group col-sm">
+              <label> The current namespace is: </label>
+              <input class="form-control" type="text" [placeholder]="activeNamespace" readonly>
+            </div>
+            <div class="form-group col-sm">
+              <label> Existing namespaces </label>
+              <div class="input-group mb-3">
+                <select [formControl]="namespaceOption" name="activeNamespace" class="form-control">
+                  <option value=null selected hidden></option>
+                  <option *ngFor='let x of PREFIXES'>
+                    {{x.namespace}}
+                  </option>
+                </select>
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="setActiveNamespace(namespaceOption.value)">Set to Selection</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="tab-pane py-4" id="EditName" role="tabpanel" aria-labelledby="EditName-tab">
+          <p class="text-sm-left"> Here, you can edit existing namespaces and their prefixes. Just click on a row in the
+            table and the input fields will be filled so you can edit them. Any changes will not affect already modelled
+            triples.</p>
+
+          <div class="row" [formGroup]="namespaceFormEditDelete">
+            <div class="form-group col-1">
+              <label> No# </label>
+              <input class="form-control" type="text" [placeholder]="userKey" readonly>
+            </div>
+            <div class="form-group col-2">
+              <label> Prefix </label>
+              <input formControlName="prefix" class="form-control" type="text">
+            </div>
+            <div class="form-group col-sm">
+              <label> Namespace </label>
+              <div class="input-group mb-3">
+                <input formControlName="namespace" class="form-control" type="text">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="editNamespace()">Edit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <app-table [listData]="prefixesList" [tableTitle]="'Namespaces and their prefixes'"
+            [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
+            (tableClickedRow)="prefixTableClick($event)"></app-table>
+        </div>
+
+
+
+
+        <div class="tab-pane py-4" id="ManageName" role="tabpanel" aria-labelledby="ManageName-tab">
+          <p class="text-sm-left"> You can create or delete namespace here. Deleting namespaces will not affect any for
+            the already modelled triples.</p>
+
+          <div class="row" [formGroup]="namespaceFormCreate">
+            <div class="form-group col-2">
+              <label> Prefix </label>
+              <input formControlName="prefix" class="form-control" type="text">
+            </div>
+            <div class="form-group col-sm">
+              <label> Namespace </label>
+              <div class="input-group mb-3">
+                <input formControlName="namespace" class="form-control" type="text">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="createNamespace()">Create</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" [formGroup]="namespaceFormEditDelete">
+            <div class="form-group col-1">
+              <label> No# </label>
+              <input class="form-control" type="text" [placeholder]="userKey" readonly>
+            </div>
+            <div class="form-group col-2">
+              <label> Prefix </label>
+              <input formControlName="prefix" class="form-control" type="text">
+            </div>
+            <div class="form-group col-sm">
+              <label> Namespace </label>
+              <div class="input-group mb-3">
+                <input formControlName="namespace" class="form-control" type="text">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="button-addon2"
+                    (click)="deleteNamespace()">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <app-table [listData]="prefixesList" [tableTitle]="'Namespaces and their prefixes'"
+            [tableExplanation]="'Used namespaces and their prefixes are shown below. Click on the table to delete or edit existing namespaces.'"
+            (tableClickedRow)="prefixTableClick($event)"></app-table>
+
+        </div>
+      </div>
+
+    </div>
+  </div>

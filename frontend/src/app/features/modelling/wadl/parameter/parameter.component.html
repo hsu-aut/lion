@@ -1,0 +1,39 @@
+<h5 class="mt-3">Parameters</h5>
+<div class="row my-2 align-items-end" *ngFor="let param of this.parameterForm.controls; let i = index">
+    <div class="col-sm-3">
+        <label class="form-label">Parameter type</label>
+        <select [formControl]="getParamControl(i, 'type')" name="parameterType" class="form-select">
+            <option value=null hidden></option>
+            <option *ngFor='let paramType of paramTypeValues' [value]="ParamTypes[paramType]">
+                {{ParamTypes[paramType]}}
+            </option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <label for="newParamName" class="form-label">Parameter Name:</label>
+        <input class="form-control" id="newParamName" type="text" [formControl]="getParamControl(i, 'name')">
+    </div>
+    <div class="col-sm-3">
+        <label class="form-label">Data type</label>
+        <div class="input-group">
+            <input [formControl]="getParamControl(i, 'dataType')" class="form-control" name="dataType" type="text" placeholder="[the required data type]">
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#ONTO_HELPER">
+                <i class="fa-regular fa-square-plus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <label class="form-label">Option values</label>
+        <input [formControl]="getParamControl(i, 'optionValues')" class="form-control" name="optionValue" type="text" placeholder="[Possible options]">
+    </div>
+    <div class="col-sm-2">
+        <button *ngIf="!param.disabled" [class]="this.parameterForm.invalid ? 'disabled' : ''" class="btn btn-success float-end" (click)="addParameter()">
+            Add parameter
+        </button>
+        <button *ngIf="param.disabled" class="btn btn-danger float-end" (click)="deleteParameter(i)">
+            <i class="fa fa-trash"></i> Delete
+        </button>
+    </div>
+    <onto-helper-modal (onTypeSelected)="setOntologicalDataType($event)" (onTypeRemoved)="removeDataType()"></onto-helper-modal>
+</div>
+

@@ -24,6 +24,16 @@ export class TBoxController {
 		return this.tboxService.getClassesInNamespace(namespace);
 	}
 
+	@Get("objectproperties-in-namespace/:namespace")
+	getObjectPropertiesInNamespace(@Param("namespace") namespace: string): Observable<SparqlResponse>{
+		return this.tboxService.getObjectPropertiesInNamespace(namespace);
+	}
+
+	@Get("dataproperties-in-namespace/:namespace")
+	getDataPropertiesInNamespace(@Param("namespace") namespace: string): Observable<SparqlResponse>{
+		return this.tboxService.getDataPropertiesInNamespace(namespace);
+	}
+
 	@Get("range-classes")
 	getRangeClasses(@Query("property") property: string): Observable<SparqlResponse> {
 		return this.tboxService.getRangeClasses(property);

@@ -19,12 +19,6 @@ export class OpcUaMappingCreator {
 
 
 	createMapping(): string {
-		// console.log(`opc-prefix: ${this.opcPrefix}`);
-		// console.log(`nodesToMap: ${this.nodesToMap}`);
-		// console.log(`serverInfo: ${this.serverInfo}`);
-		// console.log(`serverIp: ${this.serverIp}`);
-
-
 		console.log('Create Mapping...');
 		let queryString = `PREFIX ${this.opcPrefix}: <http://www.hsu-ifa.de/ontologies/OpcUa#>
 		INSERT DATA{

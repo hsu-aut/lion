@@ -4,12 +4,12 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 
 import { PrefixesService } from '../prefixes.service';
-import { Tables } from '../../../modelling/utils/tables';
+import { Tables } from '../../../features/modelling/utils/tables';
 import { DataLoaderService } from "../dataLoader.service";
 import { MessagesService } from "../messages.service";
 import { ConfigurationService } from './configuration.service';
 import { SparqlResponse } from '@shared/models/sparql/SparqlResponse';
-import { toSparqlTable, toSparqlVariableList } from '../../../modelling/utils/rxjs-custom-operators';
+import { toSparqlTable, toSparqlVariableList } from '../../../features/modelling/utils/rxjs-custom-operators';
 
 
 
@@ -48,60 +48,6 @@ export class QueriesService {
         return response;
     }
 
-    /**
-     *
-     * @param SPARQL_Query
-     * @returns
-     * @deprecated This wil soon be deleted. Make sure to use the custom rxjs-pipe toSparqlTable() instead
-     */
-    SPARQL_SELECT_TABLE(SPARQL_Query: string) {
-        let currentTable: Array<Record<string, any>>;
-
-        const headers = new HttpHeaders().set('Accept', 'text/plain');
-        const params = new HttpParams().set('repositoryName', this.config.getRepository());
-
-        const tableObservable = new Observable((observer) => {
-            this.http.post(this.getQueryURL(), SPARQL_Query, { headers, params }).subscribe((data: any) => {
-                this.namespaceService.parseToPrefix(data);
-                currentTable = this.TableUtil.buildTable(data);
-                observer.next(currentTable);
-                observer.complete();
-            },
-            error => {
-                this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status}`);
-            });
-        });
-
-        return tableObservable;
-    }
-
-    /**
-     * Executes a query and returns the results in a table-like structure
-     * @param queryString SPARQL query that will be executed
-     * @param varPosition (optional) Can be used to pick just one element from the list
-     * @returns A list of a SPARQL result's binding values
-     * @deprecated This wil soon be deleted. Make sure to use the custom rxjs-pipe toSparqlVariableList() instead
-     */
-    SPARQL_SELECT_LIST(queryString, varPosition) {
-        let currentList: Array<string>;
-
-        const headers = new HttpHeaders().set('Accept', 'text/plain');
-        const params = new HttpParams().set('repositoryName', this.config.getRepository());
-
-        const tableObservable = new Observable((observer) => {
-            this.http.post(this.getQueryURL(), queryString, { headers, params }).subscribe((data: any) => {
-                this.namespaceService.parseToPrefix(data);
-                currentList = this.TableUtil.buildList(data, varPosition);
-                observer.next(currentList);
-                observer.complete();
-            },
-            error => {
-                this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
-            });
-        });
-
-        return tableObservable;
-    }
 
     /**
      * Executes an update statement against the current repository
@@ -122,12 +68,12 @@ export class QueriesService {
         // -> Check if this can be done using an interceptor
         const insertObservable = new Observable<void>((observer) => {
             this.http.post(urlPOST, updateString, { headers, params }).pipe(take(1)).subscribe((data: any) => {
-                this.messageService.addMessage('success', 'Added!', `Added triples to the active graph`);
+                this.messageService.success('Added!',`Added triples to the active graph`);
                 observer.next();
                 observer.complete();
             },
             error => {
-                this.messageService.addMessage('error', 'Ups!', `Seams like the Server responded with a ${error.status} code`);
+                this.messageService.warn('Ups!',`Seams like the Server responded with a ${error.status} code`);
             });
         });
 

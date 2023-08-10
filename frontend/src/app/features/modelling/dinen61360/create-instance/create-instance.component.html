@@ -1,0 +1,185 @@
+<!-- row 1/2 of form -->
+<div class="row" [formGroup]="instanceDescriptionForm">
+    <div class="form-group col-sm">
+        <label> Described Individual </label>
+        <input formControlName="individual" name="individual" type="text"
+            placeholder="[Input described Individual]" class="form-control">
+    </div>
+    <div class="form-group col-sm">
+        <label> Code </label>
+        <input formControlName="code" name="code" type="text" placeholder="[Code]"
+            class="form-control">
+    </div>
+</div>
+<!-- row 2/2 of form -->
+<div class="row" [formGroup]="instanceDescriptionForm">
+    <div class="form-group col-sm">
+        <label> Value </label>
+        <input formControlName="value" name="value" type="text" placeholder="[Input value]"
+            class="form-control">
+    </div>
+    <div class="form-group col-sm">
+        <label> Expression Goal </label>
+        <select formControlName="expressionGoal" name="expressionGoal" class="form-control">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of expressionGoals'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label> Logic Interpretation </label>
+        <select formControlName="logicInterpretation" name="logicInterpretation"
+            class="form-control">
+            <option value=null selected hidden></option>
+            <option *ngFor='let x of logicInterpretations'>
+                {{x}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm-1 align-self-end">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-secondary"
+                (click)="createTriple('add', instanceDescriptionForm)">Add</button>
+            <div class="btn-group" role="group">
+                <button id="addButton" type="button" class="btn btn-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu" aria-labelledby="addButton">
+                    <a class="dropdown-item"
+                        (click)="createTriple('delete', instanceDescriptionForm)">Delete
+                        instance description</a>
+                    <a class="dropdown-item"
+                        (click)="createTriple('build', instanceDescriptionForm)">Download
+                        SPARQL
+                        INSERT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- sub tab headers to chose source of existing data -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <!-- type tab -->
+    <li class="nav-item">
+        <a class="nav-link active" id="exType2-tab" data-bs-toggle="tab" data-bs-target="#exType2" type="button" role="tab"
+            aria-controls="exType2" aria-selected="true"> Existing type descriptions </a>
+    </li>
+    <!-- instance tab -->
+    <li class="nav-item">
+        <a class="nav-link" id="exInstance-tab" data-bs-toggle="tab" data-bs-target="#exInstance" type="button" role="tab"
+            aria-controls="exInstance" aria-selected="false"> Existing instance descriptions </a>
+    </li>
+    <!-- vdi 3682 tab -->
+    <li class="nav-item">
+        <a class="nav-link" id="VDI3682-tab" data-bs-toggle="tab" data-bs-target="#VDI3682" type="button" role="tab"
+            aria-controls="VDI3682" aria-selected="false"> VDI 3682 </a>
+    </li>
+    <!-- vdi 2206 tab -->
+    <li class="nav-item">
+        <a class="nav-link" id="VDI2206-tab" data-bs-toggle="tab" data-bs-target="#VDI2206" type="button" role="tab"
+            aria-controls="VDI2206" aria-selected="false"> VDI 2206 </a>
+    </li>
+    <!-- isa 88 tab -->
+    <li class="nav-item">
+        <a class="nav-link" id="ISA88-tab" data-bs-toggle="tab" data-bs-target="#ISA88" type="button" role="tab"
+            aria-controls="ISA88" aria-selected="false"> ISA 88 </a>
+    </li>
+    <!-- iso 224002 tab -->
+    <li class="nav-item">
+        <a class="nav-link" id="ISO22400-tab" data-bs-toggle="tab" data-bs-target="#ISO22400" type="button" role="tab"
+            aria-controls="ISO22400" aria-selected="false"> ISO22400-2 </a>
+    </li>
+</ul>
+<!-- content of sub tabs with existing data -->
+<div class="tab-content py-3" id="myTabContent">
+    <!-- existing types -->
+    <div class="tab-pane fade show active" id="exType2" role="tabpanel"
+        aria-labelledby="exType2-tab">
+        <app-table [tableData]="allTypes"
+            [tableTitle]="'Available type descriptions in database'"
+            [tableExplanation]="'Click on a row to fill the form above.'"
+            (tableClickedRow)="typeTableClick($event)" [showFilter]="filterOption">
+        </app-table>
+    </div>
+    <!-- existing instances -->
+    <div class="tab-pane " id="exInstance" role="tabpanel" aria-labelledby="exInstance-tab">
+        <app-table [tableData]="allInstances"
+            [tableTitle]="'Available instance descriptions in database'"
+            [tableExplanation]="'Click on a row to fill the form above.'"
+            [showFilter]="filterOption">
+        </app-table>
+    </div>
+    <!-- existing vdi3682 content -->
+    <div class="tab-pane " id="VDI3682" role="tabpanel" aria-labelledby="VDI3682-tab">
+        <app-table [tableData]="allProcessInfo"
+            [tableTitle]="'Available process descriptions in database'"
+            [tableExplanation]="'Click on a row to asign a data element to it.'"
+            (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption">
+        </app-table>
+    </div>
+    <!-- existing vdi2206 content -->
+    <div class="tab-pane " id="VDI2206" role="tabpanel" aria-labelledby="VDI2206-tab">
+        <div class="px-sm-2 py-sm-2">
+            <!-- sub tab headers to chose source of existing data -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <!-- vdi2206 system tab -->
+                <li class="nav-item">
+                    <a class="nav-link active" id="sys-tab" data-bs-toggle="tab" data-bs-target="#sys" type="button" role="tab"
+                        aria-controls="sys" aria-selected="true"> System </a>
+                </li>
+                <!-- vdi 2206 module tab -->
+                <li class="nav-item">
+                    <a class="nav-link" id="mod-tab" data-bs-toggle="tab" data-bs-target="#mod" type="button" role="tab"
+                        aria-controls="mod" aria-selected="false"> Module </a>
+                </li>
+                <!-- vdi 2206 component tab -->
+                <li class="nav-item">
+                    <a class="nav-link" id="com-tab" data-bs-toggle="tab" data-bs-target="#com" type="button" role="tab"
+                        aria-controls="com" aria-selected="false"> Component </a>
+                </li>
+            </ul>
+            <!-- sub tab headers to chose source of existing data -->
+            <div class="tab-content" id="myTabContent">
+                <!-- existing vdi2206 systems -->
+                <div class="tab-pane fade show active" id="sys" role="tabpanel"
+                    aria-labelledby="sys-tab">
+                    <app-table [tableData]="allStructureInfoContainmentbySys"
+                        [tableTitle]="'Available structure descriptions in database'"
+                        [tableExplanation]="'Click on a row to asign a data element to it.'"
+                        (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
+                </div>
+                <!-- existing vdi 2206 modules -->
+                <div class="tab-pane " id="mod" role="tabpanel" aria-labelledby="mod-tab">
+                    <app-table [tableData]="allStructureInfoContainmentbyMod"
+                        [tableTitle]="'Available structure descriptions in database'"
+                        [tableExplanation]="'Click on a row to asign a data element to it.'"
+                        (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
+                </div>
+                <!-- existing vdi 2206 components -->
+                <div class="tab-pane " id="com" role="tabpanel" aria-labelledby="com-tab">
+                    <app-table [tableData]="allStructureInfoContainmentbyCOM"
+                        [tableTitle]="'Available structure descriptions in database'"
+                        [tableExplanation]="'Click on a row to asign a data element to it.'"
+                        (tableClickedCell)="anyTableClick($event)" [showFilter]="filterOption"></app-table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- existing isa88 content -->
+    <div class="tab-pane " id="ISA88" role="tabpanel" aria-labelledby="ISA88-tab">
+        <app-table [tableData]="allBehaviorInfo"
+            [tableTitle]="'Available behavior descriptions in database'"
+            [tableExplanation]="'Click on a row to asign a data element to it.'"
+            (tableClickedCell)="anyTableClick($event)">
+        </app-table>
+    </div>
+    <!-- existing iso22400 content -->
+    <div class="tab-pane " id="ISO22400" role="tabpanel" aria-labelledby="ISO22400-tab">
+        <app-table [tableData]="isoInfo"
+            [tableTitle]="'Available structural descriptions in database'"
+            [tableExplanation]="'Click on a row to asign a data element to it.'"
+            (tableClickedCell)="anyTableClick($event)">
+        </app-table>
+    </div>
+</div>
