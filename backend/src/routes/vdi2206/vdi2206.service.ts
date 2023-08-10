@@ -22,12 +22,14 @@ export class Vdi2206Service {
 				?system a VDI2206:System.
 				OPTIONAL {
 					?system rdfs:label ?systemLabel.
+				}
+				OPTIONAL {
 					?System VDI2206:consistsOf ?consistsOfEntity.
 					?consistsOfEntity rdf:type ?EntityType.
 					VALUES ?EntityType {VDI2206:System VDI2206:Module VDI2206:Component}
 				}
 			}`;
-		return this.queryService.query(queryString).pipe(tap(data => console.log(data.results.bindings)));
+		return this.queryService.query(queryString);
 	} 
 
 
@@ -71,8 +73,8 @@ export class Vdi2206Service {
 			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
 			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 					
-			SELECT ?Component WHERE {
-				?Component a VDI2206:Component.
+			SELECT ?component WHERE {
+				?component a VDI2206:Component.
 			}`;
 
 		return this.queryService.query(queryString);
@@ -136,35 +138,35 @@ export class Vdi2206Service {
 	// 	return this.queryService.query(queryString);
 	// } 
 
-	public selectModuleInheritanceInformation() {
-		const queryString = 
-			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	// public selectModuleInheritanceInformation() {
+	// 	const queryString = 
+	// 		`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		
-			SELECT ?Module ?childEntity ?childEntityType WHERE {
-				?Module a VDI2206:Module.
-				OPTIONAL {
-					?Module VDI2206:hasChild ?childEntity.
-					?childEntity rdf:type ?childEntityType.
-					VALUES ?childEntityType {VDI2206:Module VDI2206:Component}
-				}
-			}`;
-		return this.queryService.query(queryString);
-	} 
+	// 		SELECT ?Module ?childEntity ?childEntityType WHERE {
+	// 			?Module a VDI2206:Module.
+	// 			OPTIONAL {
+	// 				?Module VDI2206:hasChild ?childEntity.
+	// 				?childEntity rdf:type ?childEntityType.
+	// 				VALUES ?childEntityType {VDI2206:Module VDI2206:Component}
+	// 			}
+	// 		}`;
+	// 	return this.queryService.query(queryString);
+	// } 
 
-	public selectComponentInheritanceInformation() {
-		const queryString = 
-			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
-			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	// public selectComponentInheritanceInformation() {
+	// 	const queryString = 
+	// 		`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			
-			SELECT ?Component ?childEntity ?childEntityType WHERE {
-			?Component a VDI2206:Component.
-				OPTIONAL {
-					?Component VDI2206:hasChild ?childEntity.
-					?childEntity rdf:type ?childEntityType.
-					VALUES ?childEntityType {VDI2206:Component}
-				}
-			}`;
-		return this.queryService.query(queryString);}
+	// 		SELECT ?Component ?childEntity ?childEntityType WHERE {
+	// 		?Component a VDI2206:Component.
+	// 			OPTIONAL {
+	// 				?Component VDI2206:hasChild ?childEntity.
+	// 				?childEntity rdf:type ?childEntityType.
+	// 				VALUES ?childEntityType {VDI2206:Component}
+	// 			}
+	// 		}`;
+	// 	return this.queryService.query(queryString);}
 	
 }
