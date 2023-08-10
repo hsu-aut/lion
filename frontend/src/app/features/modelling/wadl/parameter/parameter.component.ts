@@ -59,11 +59,6 @@ export class ParameterComponent {
         return paramGroup.get(key) as FormControl;
     }
 
-    getParamControl(index: number, key: string) {
-        const paramGroup = this.parameterForm.at(index) as FormGroup<ParameterFormGroup>;
-        return paramGroup.get(key) as FormControl;
-    }
-
     setOntologicalDataType(typeChangedEvent: TypeChangedEvent): void {
         const fE = this.getLastFormEntry();
         fE.get("dataType").setValue(typeChangedEvent.type);
