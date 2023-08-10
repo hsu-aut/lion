@@ -24,7 +24,7 @@ export class Vdi2206Service {
 					?system rdfs:label ?systemLabel.
 				}
 				OPTIONAL {
-					?System VDI2206:consistsOf ?consistsOfEntity.
+					?system VDI2206:consistsOf ?consistsOfEntity.
 					?consistsOfEntity rdf:type ?EntityType.
 					VALUES ?EntityType {VDI2206:System VDI2206:Module VDI2206:Component}
 				}
