@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { SignInDtoReq, SignInDtoRes } from "@shared/models/SignInDto";
+import { SignInDtoReq, SignInDtoRes } from "@shared/models/AuthDtos";
 import { Observable, catchError, firstValueFrom, map, of, take } from "rxjs";
 
 @Injectable()

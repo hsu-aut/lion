@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
+import { ChangeRepositoryRequestDto } from '@shared/models/repositories/ChangeRepositoryRequestDto'; 
 import { ConfigurationService } from './configuration.service';
 import { MessagesService } from '../messages.service';
 
@@ -44,13 +45,13 @@ export class RepositoryOperationsService {
 
     public setWorkingRepository(repositoryId: string): Observable<RepositoryDto> {
         const url = this.getRepositoryURL();
-        const repoData = {
-            repositoryId: repositoryId
+        const changeRepositoryRequest: ChangeRepositoryRequestDto = {
+            id: repositoryId
         };
         const params = {
             type: "current"
         };
-        return this.http.put<RepositoryDto>(url, repoData, {params: params});
+        return this.http.put<RepositoryDto>(url, changeRepositoryRequest, {params: params});
     }
 
     /**

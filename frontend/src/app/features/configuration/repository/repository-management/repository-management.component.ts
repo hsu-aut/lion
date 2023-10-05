@@ -65,7 +65,7 @@ export class RepositoryManagementComponent implements OnInit {
      */
     setRepository(): void {
         if (this.repositoryToChangeTo.invalid) {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
         console.log(this.repositoryToChangeTo);
@@ -76,14 +76,15 @@ export class RepositoryManagementComponent implements OnInit {
 
     /**
      * Creates a new repository with the given repository name
+     * TODO remove repo id, its generated automaticall now
      */
     createRepository(): void {
         if (this.newRepositoryForm.invalid) {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
         const {repositoryId, repositoryName} = this.newRepositoryForm.value;
-        const newRepositoryRequest = new NewRepositoryRequestDto(repositoryId, repositoryName);
+        const newRepositoryRequest: NewRepositoryRequestDto = { repositoryName: repositoryName };
         this.repoService.createRepository(newRepositoryRequest).pipe(take(1)).subscribe(() => {
             this.loadListOfRepos();
         });
@@ -94,14 +95,14 @@ export class RepositoryManagementComponent implements OnInit {
      */
     clearRepository(): void {
         if (this.repositoryClearForm.invalid) {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
 
         const {selectedRepository, confirmId} = this.repositoryClearForm.value;
 
         if (selectedRepository.id != confirmId) {
-            this.messageService.warn('Error','Selected repository ID and confirmed ID do not match. Repository was not cleared.')
+            this.messageService.warn('Error','Selected repository ID and confirmed ID do not match. Repository was not cleared.');
             return;
         }
 
@@ -114,7 +115,7 @@ export class RepositoryManagementComponent implements OnInit {
      */
     deleteRepository(): void {
         if (this.repositoryDeleteForm.invalid) {
-            this.messageService.warn('Ups!','It seems like you are missing some data here...')
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
 
@@ -122,7 +123,7 @@ export class RepositoryManagementComponent implements OnInit {
         console.log(this.repositoryDeleteForm.value);
 
         if (selectedRepository.id != confirmId) {
-            this.messageService.warn('Error','Selected repository ID and confirmed ID do not match. Repository was not deleted.')
+            this.messageService.warn('Error','Selected repository ID and confirmed ID do not match. Repository was not deleted.');
             return;
         }
 
