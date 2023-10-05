@@ -1,7 +1,8 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { SignInDtoReq, SignInDtoRes } from "@shared/models/AuthDtos";
-import { Observable, catchError, firstValueFrom, map, of, take } from "rxjs";
+import { SignInReqDto } from '@shared/models/auth/signInReqDto';
+import { SignInResDto } from '@shared/models/auth/signInResDto';
+import { Observable, catchError, map, of } from "rxjs";
 
 @Injectable()
 export class AuthService {
@@ -16,10 +17,10 @@ export class AuthService {
      * @param signInData the sign in data
      * @returns true if sign in sucessfull, false if not. catches 401/403 errors and returns false.
      */
-    signIn(signInData: SignInDtoReq): Observable<boolean> {
-        return this.http.post<SignInDtoRes>('/lion_BE/auth/signin', signInData).pipe(
+    signIn(signInData: SignInReqDto): Observable<boolean> {
+        return this.http.post<SignInResDto>('/lion_BE/auth/signin', signInData).pipe(
             // on success: save access token in local app storage
-            map( (response: SignInDtoRes) => {
+            map( (response: SignInResDto) => {
                 localStorage.setItem('access_token', response.access_token);
                 return true;
             }),

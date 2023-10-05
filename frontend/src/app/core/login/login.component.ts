@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { routerTransition } from '../../router.animations';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { SignInDtoReq } from '@shared/models/AuthDtos';
+import { SignInReqDto } from '@shared/models/auth/signInReqDto';
 import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
             return;
         }
 
-        const signinData: SignInDtoReq = {
+        const signinData: SignInReqDto = {
             username: formValues.inputEmail,
             password: formValues.inputPassword
         };

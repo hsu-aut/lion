@@ -1,7 +1,9 @@
 import { BadRequestException, ImATeapotException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDtoReq, SignInDtoRes, SignUpDto }  from '@shared/models/AuthDtos';
+import { SignInReqDto } from '@shared/models/auth/signInReqDto';
+import { SignInResDto } from '@shared/models/auth/signInResDto';
+import { SignUpDto } from '@shared/models/auth/signUpDto';
 import { Observable, from, map, mergeMap, of } from 'rxjs';
 import { CreateUserDto, User } from '../users/user.schema';
 
@@ -37,7 +39,7 @@ export class AuthService {
 	 * @param signInDto the sign in data
 	 * @returns a jwt token if sign in data is valid
 	 */
-	async signIn(signInDto: SignInDtoReq): Promise<SignInDtoRes> {
+	async signIn(signInDto: SignInReqDto): Promise<SignInResDto> {
 		console.log(signInDto);
 		const foundUser: User = await this.usersService.findUser(signInDto.username);
 		console.log(foundUser);
@@ -58,7 +60,7 @@ export class AuthService {
 	/**
 	 * TBD - function to return new jwt upon verify request
 	 */
-	refreshToken(): Observable<SignInDtoRes> {
+	refreshToken(): Observable<SignInResDto> {
 		return null;
 	} 
 	

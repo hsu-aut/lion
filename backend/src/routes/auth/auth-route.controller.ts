@@ -1,6 +1,8 @@
 import { Body, Controller, Post, Get } from '@nestjs/common';
 import { AuthService } from '../../auth/auth.service';
-import { SignInDtoReq, SignInDtoRes, SignUpDto }  from '@shared/models/AuthDtos';
+import { SignInReqDto } from '@shared/models/auth/signInReqDto';
+import { SignInResDto } from '@shared/models/auth/signInResDto';
+import { SignUpDto } from '@shared/models/auth/signUpDto';
 import { Observable } from 'rxjs';
 import { Public } from '../../auth/public.decorator';
 import { User } from '../../users/user.schema';
@@ -32,7 +34,7 @@ export class AuthRouteController {
 	 */
 	@Public()
 	@Post('signIn')
-	async signIn(@Body() signInDto: SignInDtoReq): Promise<SignInDtoRes> {
+	async signIn(@Body() signInDto: SignInReqDto): Promise<SignInResDto> {
 		return this.authService.signIn(signInDto);
 	}
 
