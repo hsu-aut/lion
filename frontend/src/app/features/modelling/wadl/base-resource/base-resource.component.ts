@@ -8,9 +8,8 @@ import { cValFns } from "../../utils/validators";
 import { Vdi3682ModelService } from "../../rdf-models/vdi3682Model.service";
 import { Iso22400_2ModelService } from "../../rdf-models/iso22400_2Model.service";
 import { Vdi2206ModelService } from "../../rdf-models/vdi2206Model.service";
-import { Tables } from "../../utils/tables";
 import { ListData } from "../../../../shared/modules/table/table.component";
-import { toSparqlTable, toSparqlVariableList } from "../../utils/rxjs-custom-operators";
+import { toSparqlVariableList } from "../../utils/rxjs-custom-operators";
 
 @Component({
     selector: 'wadl-base-resource',
@@ -21,9 +20,6 @@ export class BaseResourceComponent implements OnInit {
 
     // Custom validator
     customVal = new cValFns();
-
-    // Old table util. // TODO: Change to new operator
-    tableUtil = new Tables();
 
     baseResourcesTable: Array<Record<string, any>> = [];
     resourceBasePaths: Array<string> = [];
@@ -128,25 +124,6 @@ export class BaseResourceComponent implements OnInit {
 
         // This is pretty hacky. An alternative would be to get all observables into one and subscribe to the overall result for the data table
         // ------> see commented code below (solution from iso224002 component)
-
-        // // wrap vdi2206Service.getLIST_OF_SYSTEMS() as observable for now
-        // // TODO: exchange with real observable, as soon as vdi2206Service is updated
-        // const vdi2206Observable: Observable<string[]> = new Observable(subscriber => {
-        //     subscriber.next(this.vdi2206Service.getLIST_OF_SYSTEMS());
-        //     subscriber.complete();
-        // });
-
-        // // create new observable of two observables which completes when each observable returns 1st output
-        // const combinedObservable: Observable<[string[], string[]]> = forkJoin([
-        //     vdi2206Observable.pipe(take(1)),    // TODO: exchange this dummy with real observable
-        //     this.vdi3682Service.getListOfTechnicalResources().pipe(take(1))
-        // ]);
-
-        // // combine in one table as soon as combined observable completes
-        // combinedObservable.pipe(take(1)).subscribe((data: [string[], string[]]) => {
-        //     const cols: string[] = ["VDI2206:System", "VDI3682:TechnicalResource"];
-        //     this.allVDIInfo = this.tableUtil.concatListsToTable(cols, data);
-        // });
 
         const tr = await firstValueFrom(this.vdi3682Service.getListOfTechnicalResources());
         const systems = await firstValueFrom(this.vdi2206Service.getSystems().pipe(toSparqlVariableList('system')));

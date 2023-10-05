@@ -4,7 +4,6 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { take } from 'rxjs/operators';
 
 import { PrefixesService } from '../prefixes.service';
-import { Tables } from '../../../features/modelling/utils/tables';
 import { DataLoaderService } from "../dataLoader.service";
 import { MessagesService } from "../messages.service";
 import { ConfigurationService } from './configuration.service';
@@ -19,8 +18,6 @@ import { toSparqlTable, toSparqlVariableList } from '../../../features/modelling
     providedIn: 'root'
 })
 export class QueriesService {
-    // util
-    TableUtil = new Tables();
 
     constructor(
         private http: HttpClient,
