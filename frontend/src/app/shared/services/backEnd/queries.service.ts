@@ -68,7 +68,7 @@ export class QueriesService {
         // -> Check if this can be done using an interceptor
         const insertObservable = new Observable<void>((observer) => {
             this.http.post(urlPOST, updateString, { headers, params }).pipe(take(1)).subscribe((data: any) => {
-                this.messageService.success('Added!',`Added triples to the active graph`);
+                this.messageService.success('Done!',`Executed operation and updated the graph`);
                 observer.next();
                 observer.complete();
             },
