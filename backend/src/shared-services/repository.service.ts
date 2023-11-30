@@ -93,7 +93,7 @@ export class RepositoryService {
 			map((repository: GraphDbRepositoryDocument) => (
 				this.createRepoConfig(repository._id.toString(), repository.name)
 			)),
-			// execute request merge resulting  inner observable
+			// execute request and merge resulting inner observable
 			mergeMap((requestConfig: AxiosRequestConfig) => (
 				this.http.request<void>(requestConfig)
 			)),
