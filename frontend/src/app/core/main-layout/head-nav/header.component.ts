@@ -47,7 +47,6 @@ export class HeaderComponent implements OnInit {
             (userInfo: UserInfoDto) => userInfo.username
         )).subscribe({
             next: (userName: string) => { 
-                console.log("un");
                 this.userName = userName; 
             },
             error: (error: Error) => {
