@@ -17,13 +17,7 @@ export class UserService {
     }
 
     getCurrentUserInfo(): Observable<UserInfoDto> {
-        const uinfo: UserInfoDto ={
-            username: "username",
-            fistName: "fistName",
-            lastName: "lastName",
-            email: "email"
-        };
-        return of(uinfo);
+        return this.http.get<UserInfoDto>('lion_BE/user/getUserInfo');
     }
 
 }
