@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { routerTransition } from '../../router.animations';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { SignInDtoReq } from '@shared/models/SignInDto';
+import { SignInDtoReq } from '@shared/models/AuthDtos';
 import { AuthService } from '../../shared/auth/auth.service';
 
 @Component({
