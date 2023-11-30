@@ -5,26 +5,30 @@ import { GraphDbModelService } from './graphdb-model.service';
 import { RepositoryService } from './repository.service';
 import { SparqlService } from './sparql.service';
 import { ModelService } from './model.service';
+import { UsersModule } from '../users/users.module';
+import { CurrentUserService } from './current-user.service';
 
 @Global()
 @Module({
 	imports: [
-		HttpModule,
+	HttpModule,
+	UsersModule,
 	],
 	controllers: [],
 	providers: [
-		GraphOperationService,
-		GraphDbModelService,
-		RepositoryService,
-		SparqlService,
-		ModelService
+	GraphOperationService,
+	GraphDbModelService,
+	RepositoryService,
+	SparqlService,
+	ModelService,
+	CurrentUserService
 	],
 	exports: [
-		GraphOperationService,
-		GraphDbModelService,
-		RepositoryService,
-		SparqlService,
-		ModelService
+	GraphOperationService,
+	GraphDbModelService,
+	RepositoryService,
+	SparqlService,
+	ModelService
 	]
-})
+	})
 export class SharedServiceModule {}
