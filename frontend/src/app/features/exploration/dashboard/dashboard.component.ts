@@ -47,7 +47,7 @@ export class DashboardComponent implements OnInit {
     objPropertiesChart; 
     dataPropertiesChart; 
 
-    namespaces: string[] = ["VDI3682", "DINEN61360", "VDI2206", "WADL", "OpcUa", "ISA88", "ISO22400-2"];
+    namespaces: string[] = ["VDI3682", "DINEN61360", "VDI2206", "WADL", "OpcUa", "PackML", "ISO22400-2"];
 
     // component UI variables
     numberOfTriples = 0;
