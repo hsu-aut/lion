@@ -190,7 +190,7 @@ export class RepositoryService {
 				return from(oldWorkingRepo.save());
 			}),
 			// on completion, set new working repo and save
-			map(( ) => {
+			mergeMap(( ) => {
 				repo.workingDirectory = true;
 				return from(repo.save());
 			}),
