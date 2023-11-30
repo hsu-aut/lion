@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, forwardRef} from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { from, Observable, forkJoin  } from 'rxjs';
@@ -13,6 +13,7 @@ import { GraphDbRepository, GraphDbRepositoryDocument } from '../users/user-data
 import { User, UserDocument } from '../users/user.schema';
 import { CurrentUserService } from './current-user.service';
 import { MongoDbRequestException } from '../custom-exceptions/MongoDbRequestException';
+import { GraphOperationService } from './graph-operation.service';
 
 /**
  * A service that provides functionality to interact with GraphDB repositories
@@ -25,6 +26,8 @@ export class RepositoryService {
 		@InjectModel(User.name) private userModel: Model<User>,
 		@InjectModel(GraphDbRepository.name) private graphDbRepositoryModel: Model<GraphDbRepository>,
 		private currentUserService: CurrentUserService,
+		@Inject(forwardRef(() => GraphOperationService))
+		private graphOperationService: GraphOperationService
 	) {}
 
 	/**
@@ -105,6 +108,10 @@ export class RepositoryService {
 				// rethrow as graphdb error
 				throw new GraphDbRequestException("error creating repo: " + error.message); 
 			}),
+			// map(() => { return; }),
+			mergeMap(( ) => {
+				return this.graphOperationService.addNewGraph("http://lionFacts");
+			})
 		);
 
 		// join observables and return 
