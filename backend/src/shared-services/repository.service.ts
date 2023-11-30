@@ -97,8 +97,6 @@ export class RepositoryService {
 			mergeMap((requestConfig: AxiosRequestConfig) => (
 				this.http.request<void>(requestConfig)
 			)),
-			// map to void (not axios response)
-			map(( ) => { return; }),
 			// in case of errors 
 			catchError((error) => { 
 				// delete mongo db repo doc
