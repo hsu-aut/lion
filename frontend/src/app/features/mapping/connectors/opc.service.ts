@@ -84,7 +84,7 @@ export class OpcService {
         // const activeGraph = graphs[graphIndex];
         // const query = `PREFIX lf: <http://lionFacts#>
         // PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        // PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        // PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
         // INSERT DATA {
         //     GRAPH <${activeGraph}> {
         //         <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
@@ -97,7 +97,7 @@ export class OpcService {
     loadServerAndVdi2206Connections() {
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
         SELECT ?systemOrModule ?systemOrModuleLabel ?opcUaServer ?opcUaServerLabel{
             {
                 ?systemOrModule a VDI2206:System.
@@ -125,7 +125,7 @@ export class OpcService {
         // const activeGraph = graphs[graphIndex];
         // const query = `PREFIX lf: <http://lionFacts#>
         // PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        // PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        // PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
         // INSERT DATA {
         //     GRAPH <${activeGraph}> {
         //         <${this.prefixService.parseToIRI(process)}> OpcUa:isExecutableVia <${opcUaNode}>.
@@ -138,7 +138,7 @@ export class OpcService {
     loadNodeAndProcessConnections() {
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI2206#>
         SELECT ?process ?procesLabel ?opcUaNode ?opcUaNodeLabel {
             ?process OpcUa:isExecutableVia ?opcUaNode.
             OPTIONAL {?process rdfs:label ?processLabel.}
