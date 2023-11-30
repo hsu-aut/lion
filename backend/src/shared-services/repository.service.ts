@@ -183,6 +183,8 @@ export class RepositoryService {
 			map((oldWorkingRepo: GraphDbRepositoryDocument) => {
 				// if undefined, no working repo is set so just skip this 
 				if (oldWorkingRepo === undefined) return;
+				// if same repo is already set to working repo throw error
+				if (oldWorkingRepo.id === repo.id) throw new Error("this repo is already set as working repo");
 				// else, unset old working directory and save
 				oldWorkingRepo.workingDirectory = false;
 				return from(oldWorkingRepo.save());
