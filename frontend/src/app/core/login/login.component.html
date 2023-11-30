@@ -5,10 +5,17 @@
             <h1>Lightweight Industrial Ontology Design Support</h1>
             <p>RDF/OWL based Semantic Modelling accessable for Domain experts and Software developers in the Automation Domain</p>
             <form role="form">
-
                 <a class="btn rounded-btn" [routerLink]="['/main/lionStory']">What is this tool about?</a>
-                &nbsp;
+                <br><br>
                 <a class="btn rounded-btn" [routerLink]="['/main/configuration/repository']">Start modelling RDF!</a>
+            </form>
+            <br><br>
+            <form [formGroup]="signInForm">
+                <input type="email" class="input-underline input-lg" id="inputEmail" formControlName="inputEmail" aria-describedby="emailHelp" placeholder="Enter email (u1)">
+                <br><br>
+                <input type="password" class="input-underline input-lg" id="inputPassword" formControlName="inputPassword" placeholder="Enter password (u1)">
+                <br><br>
+                <a class="btn rounded-btn" (click)="onLogin()">Login!</a>
             </form>
         </div>
     </div>
