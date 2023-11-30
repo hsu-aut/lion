@@ -15,26 +15,28 @@ import { OdpModule } from './routes/odps/odp.module';
 import { WadlModule } from './routes/wadl/wadl.module';
 import { ISA88Module } from './routes/isa88/isa88.module';
 import { Vdi2206Module } from './routes/vdi2206/vdi2206.module';
+import { AuthRouteModule } from './routes/auth/auth-route.module';
 
 
 @Module({
 	imports: [
-		TBoxModule,
-		OdpModule,
-		FpbModule,
-		StepModule,
-		EclassSearchModule,
-		GraphsModule,
-		QueriesModule,
-		RepositoriesModule,
-		OpcUaModule,
-		DINEN61360Module,
-		ISO224002Module,
-		WadlModule,
-		ISA88Module,
-		Vdi2206Module
+	TBoxModule,
+	OdpModule,
+	FpbModule,
+	StepModule,
+	EclassSearchModule,
+	GraphsModule,
+	QueriesModule,
+	RepositoriesModule,
+	OpcUaModule,
+	DINEN61360Module,
+	ISO224002Module,
+	WadlModule,
+	ISA88Module,
+	Vdi2206Module,
+	AuthRouteModule
 	],
 	controllers: [AppController],
 	providers: [AppService],
-})
+	})
 export class AppModule {}
