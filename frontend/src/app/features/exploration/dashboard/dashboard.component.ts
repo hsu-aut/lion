@@ -107,9 +107,9 @@ export class DashboardComponent implements OnInit {
         const $namespaces = new Array<Observable<string[]>>(); 
 
         for (const entry of this.namespaces) {
-            $namespaces.push(this.tboxServie.getClassesWithinNamespace("http://www.hsu-ifa.de/ontologies/" + entry)); 
+            $namespaces.push(this.tboxServie.getClassesWithinNamespace("http://www.w3id.org/hsu-aut/" + entry)); 
 
-            // this.tboxServie.getClassesWithinNamespace("http://www.hsu-ifa.de/ontologies/" + entry).subscribe(data => {
+            // this.tboxServie.getClassesWithinNamespace("http://www.w3id.org/hsu-aut/" + entry).subscribe(data => {
             //     // this.namespacesNumberClasses.set(entry, data.length); 
             //     this.numberOfClasses += data.length;
             //     this.doughnutChartData.push(data.length); 
@@ -138,7 +138,7 @@ export class DashboardComponent implements OnInit {
         const $namespaces = new Array<Observable<string[]>>(); 
 
         for (const entry of this.namespaces) {
-            $namespaces.push(this.tboxServie.getObjectPropertiesWithinNamespace("http://www.hsu-ifa.de/ontologies/" + entry)); 
+            $namespaces.push(this.tboxServie.getObjectPropertiesWithinNamespace("http://www.w3id.org/hsu-aut/" + entry)); 
         }
         
         combineLatest($namespaces).subscribe(data => {
@@ -163,7 +163,7 @@ export class DashboardComponent implements OnInit {
         const $namespaces = new Array<Observable<string[]>>(); 
 
         for (const entry of this.namespaces) {
-            $namespaces.push(this.tboxServie.getDataPropertiesWithinNamespace("http://www.hsu-ifa.de/ontologies/" + entry)); 
+            $namespaces.push(this.tboxServie.getDataPropertiesWithinNamespace("http://www.w3id.org/hsu-aut/" + entry)); 
         }
         
         combineLatest($namespaces).subscribe(data => {
