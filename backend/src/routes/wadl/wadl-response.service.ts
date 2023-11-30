@@ -27,7 +27,7 @@ export class WadlResponseService {
 		const responseIri = `${resourceIri}_${methodType}_Res_${statusCodeNumber}`;
 
 		const query = `
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		INSERT {
 			<${createResponseDto.resourceIri}> wadl:hasMethod ?method.
 			?method wadl:hasResponse <${responseIri}>.
@@ -45,9 +45,9 @@ export class WadlResponseService {
 	async getResponse(resourceIri: string, methodTypeIri: string, statusCode: string): Promise<WadlResponseDto> {
 		const queryString = `
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT * WHERE {
-			BIND(<http://www.hsu-ifa.de/ontologies/WADL#201> AS ?statusCode)
+			BIND(<http://www.w3id.org/hsu-aut/WADL#201> AS ?statusCode)
 			<${resourceIri}> wadl:hasMethod ?methodIri.
 			?methodIri a <${methodTypeIri}>;
 					wadl:hasResponse ?responseIri.

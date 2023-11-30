@@ -13,7 +13,7 @@ export class PrefixesService {
         new Prefix("VDI2206:", "http://www.w3id.org/hsu-aut/VDI2206#"),
         new Prefix("DE6:",  "http://www.w3id.org/hsu-aut/DINEN61360#"),
         new Prefix("ISA88:",  "http://www.hsu-ifa.de/ontologies/ISA-TR88#"),
-        new Prefix("wadl:",  "http://www.hsu-ifa.de/ontologies/WADL#"),
+        new Prefix("wadl:",  "http://www.w3id.org/hsu-aut/WADL#"),
         new Prefix("OpcUa:",  "http://www.hsu-ifa.de/ontologies/OpcUa#"),
         new Prefix("iso:",  "http://www.w3id.org/hsu-aut/ISO22400-2#"),
         new Prefix("rdf:",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),

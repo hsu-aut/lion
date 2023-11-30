@@ -20,7 +20,7 @@ export class WadlRequestService {
 		const methodIri = `${resourceIri}_${httpMethod}`;
 		const requestIri = `${methodIri}_Req`;
 		const query = `
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		INSERT DATA {
 			<${createRequestDto.resourceIri}> wadl:hasMethod <${methodIri}>.
 			<${methodIri}> a <${methodTypeIri}>;
@@ -35,7 +35,7 @@ export class WadlRequestService {
 	async getRequest(resourceIri: string, methodTypeIri: string): Promise<WadlRequestDto> {
 		const queryString = `
 		PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT * WHERE {
 			<${resourceIri}> wadl:hasMethod ?methodIri.
 			?methodIri a <${methodTypeIri}>;
