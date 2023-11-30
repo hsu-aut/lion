@@ -7,13 +7,13 @@
  */
 function prependPrefixes(Triples) {
 
-    let prefixes = `
+	const prefixes = `
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
     @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-    @prefix VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>.
+    @prefix VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>.
     `;
 
-    return prefixes + "\n" +  Triples;
+	return prefixes + "\n" +  Triples;
 }
 
 /**
@@ -27,17 +27,17 @@ function prependPrefixes(Triples) {
  */
 function createSystemContainsSystem(System, SystemLabel, SubSystem, SubSystemLabel) {
 
-    System = '<urn:' + System + ">";
-    SubSystem = '<urn:' + SubSystem + ">";
+	System = '<urn:' + System + ">";
+	SubSystem = '<urn:' + SubSystem + ">";
 
-    var triples = `
+	var triples = `
     ${System} a VDI2206:System.
     ${System} rdfs:label "${SystemLabel}".
     ${System} VDI2206:SystemConsistsOfSystem ${SubSystem}.
     ${SubSystem} rdfs:label "${SubSystemLabel}".
     `;
 
-    return triples
+	return triples;
 }
 
 
@@ -52,10 +52,10 @@ function createSystemContainsSystem(System, SystemLabel, SubSystem, SubSystemLab
  */
 function createSystemContainsComponent(System, SystemLabel, Component, ComponentLabel) {
 
-    System = '<urn:' + System + ">";
-    Component = '<urn:' + Component + ">";
+	System = '<urn:' + System + ">";
+	Component = '<urn:' + Component + ">";
 
-    var triples = `
+	var triples = `
     ${System} a VDI2206:System.
     ${System} rdfs:label "${SystemLabel}".
     ${System} VDI2206:SystemConsistsOfComponent ${Component}.
@@ -63,7 +63,7 @@ function createSystemContainsComponent(System, SystemLabel, Component, Component
     ${Component} rdfs:label "${ComponentLabel}".
     `;
 
-    return triples
+	return triples;
 }
 
 
@@ -76,14 +76,14 @@ function createSystemContainsComponent(System, SystemLabel, Component, Component
  */
 function createComponent(Component, ComponentLabel) {
 
-    Component = '<urn:' + Component + ">";
+	Component = '<urn:' + Component + ">";
 
-    var triples = `
+	var triples = `
     ${Component} a VDI2206:Component.
     ${Component} rdfs:label "${ComponentLabel}".
     `;
 
-    return triples
+	return triples;
 
 }
 
@@ -96,15 +96,15 @@ function createComponent(Component, ComponentLabel) {
 function mapJsonToRDF(stepObject) {
 
 
-    let rdf = recursiveBuildRDF(stepObject);
+	let rdf = recursiveBuildRDF(stepObject);
 
-    rdf = removeDuplicates(rdf);
+	rdf = removeDuplicates(rdf);
 
-    rdf = prependPrefixes(rdf);
+	rdf = prependPrefixes(rdf);
 
 
-    // console.log(rdf)
-    return rdf
+	// console.log(rdf)
+	return rdf;
 
 }
 
@@ -116,52 +116,52 @@ function mapJsonToRDF(stepObject) {
  */
 function recursiveBuildRDF(stepObject) {
 
-    let rdf = "";
+	let rdf = "";
 
-    if (!stepObject.contains.length > 0) {
+	if (!stepObject.contains.length > 0) {
 
-        rdf = rdf + createComponent(stepObject.id, stepObject.name);
-    } else {
-        stepObject.contains.forEach(contained => {
+		rdf = rdf + createComponent(stepObject.id, stepObject.name);
+	} else {
+		stepObject.contains.forEach(contained => {
 
-            if (!contained.contains.length > 0) {
+			if (!contained.contains.length > 0) {
 
-                rdf = rdf + createSystemContainsComponent(stepObject.id, stepObject.name, contained.id, contained.name);
+				rdf = rdf + createSystemContainsComponent(stepObject.id, stepObject.name, contained.id, contained.name);
 
-            } else {
+			} else {
 
-                rdf = rdf + createSystemContainsSystem(stepObject.id, stepObject.name, contained.id, contained.name);
-                rdf = rdf + recursiveBuildRDF(contained);
-            }
-        });
-    }
+				rdf = rdf + createSystemContainsSystem(stepObject.id, stepObject.name, contained.id, contained.name);
+				rdf = rdf + recursiveBuildRDF(contained);
+			}
+		});
+	}
 
-    return rdf
+	return rdf;
 }
 
 module.exports.mapJsonToRDF = mapJsonToRDF;
 
 function removeDuplicates(turtleString) {
 
-    // split on punctuation and line ending
-    let triples = turtleString.toString().split(".\n");
+	// split on punctuation and line ending
+	let triples = turtleString.toString().split(".\n");
 
-    // remove all tabs, leading and trailing whitespaces as well as linebraeaks from each entry of array
-    for (let i = 0; i < triples.length; i++) {
-        triples[i] = triples[i].replace(/(\r\n|\n|\r|\t|^[ \t]+|[ \t]+$)/gm, "");
-    }
-    // remove duplicates
-    triples = Array.from(new Set(triples))
+	// remove all tabs, leading and trailing whitespaces as well as linebraeaks from each entry of array
+	for (let i = 0; i < triples.length; i++) {
+		triples[i] = triples[i].replace(/(\r\n|\n|\r|\t|^[ \t]+|[ \t]+$)/gm, "");
+	}
+	// remove duplicates
+	triples = Array.from(new Set(triples));
 
-    // add punctiation again and one line break
-    let rdf = "";
-    triples.forEach(element => {
-        let currentString = element;
-        if (currentString != "") {
-            currentString = element + ".";
-            rdf = rdf + currentString + "\n";
-        }
-    });
+	// add punctiation again and one line break
+	let rdf = "";
+	triples.forEach(element => {
+		let currentString = element;
+		if (currentString != "") {
+			currentString = element + ".";
+			rdf = rdf + currentString + "\n";
+		}
+	});
 
-    return rdf
+	return rdf;
 }

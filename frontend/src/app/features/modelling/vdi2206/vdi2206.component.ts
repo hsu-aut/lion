@@ -10,7 +10,7 @@ import { toSparqlTable, toSparqlVariableList } from '../utils/rxjs-custom-operat
 })
 export class Vdi2206Component implements OnInit {
 
-    private readonly namespace = "http://www.hsu-ifa.de/ontologies/VDI2206#";
+    private readonly namespace = "http://www.w3id.org/hsu-aut/VDI2206#";
 
     // util variables
     currentTable$: Observable<Array<Record<string, any>>>;

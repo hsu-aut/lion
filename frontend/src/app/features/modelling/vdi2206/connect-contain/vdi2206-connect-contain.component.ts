@@ -13,7 +13,7 @@ import { DownloadService } from '../../../../shared/services/backEnd/download.se
 })
 export class Vdi2206ConnectContainComponent implements OnInit {
 
-    private readonly namespace = "http://www.hsu-ifa.de/ontologies/VDI2206#";
+    private readonly namespace = "http://www.w3id.org/hsu-aut/VDI2206#";
 
     /**
      * subject is an input that is retrieved by clicking on the table
@@ -22,7 +22,7 @@ export class Vdi2206ConnectContainComponent implements OnInit {
         if(!subject) return;
 
         this.connectTripleForm.get('subject').setValue(subject);
-        this.tboxService.getClassOfIndividualWithinNamespace(subject, "http://www.hsu-ifa.de/ontologies/VDI2206#").pipe(take(1)).subscribe((data: any) => {
+        this.tboxService.getClassOfIndividualWithinNamespace(subject, "http://www.w3id.org/hsu-aut/VDI2206#").pipe(take(1)).subscribe((data: any) => {
             const owlClass = data[0];
             this.tboxService.getPropertiesByDomain(owlClass).pipe(take(1)).subscribe((data: any) => {
                 this.existingPredicates = data;

@@ -10,7 +10,7 @@ export class PrefixesService {
     // TODO: This should be stored in a config database / file
     defaultPrefixes: Array<Prefix> =[
         new Prefix("VDI3682:","http://www.w3id.org/hsu-aut/VDI3682#"),
-        new Prefix("VDI2206:", "http://www.hsu-ifa.de/ontologies/VDI2206#"),
+        new Prefix("VDI2206:", "http://www.w3id.org/hsu-aut/VDI2206#"),
         new Prefix("DE6:",  "http://www.w3id.org/hsu-aut/DINEN61360#"),
         new Prefix("ISA88:",  "http://www.hsu-ifa.de/ontologies/ISA-TR88#"),
         new Prefix("wadl:",  "http://www.hsu-ifa.de/ontologies/WADL#"),
