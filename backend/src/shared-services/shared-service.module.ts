@@ -28,7 +28,8 @@ import { CurrentUserService } from './current-user.service';
 	GraphDbModelService,
 	RepositoryService,
 	SparqlService,
-	ModelService
+	ModelService,
+	CurrentUserService
 	]
 	})
 export class SharedServiceModule {}
