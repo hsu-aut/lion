@@ -97,6 +97,8 @@ export class RepositoryService {
 			mergeMap((requestConfig: AxiosRequestConfig) => (
 				this.http.request<void>(requestConfig)
 			)),
+			//map to void
+			map(() => { return; }),
 			// in case of errors 
 			catchError((error) => { 
 				// delete mongo db repo doc
@@ -105,10 +107,6 @@ export class RepositoryService {
 				});
 				// rethrow as graphdb error
 				throw new GraphDbRequestException("error creating repo: " + error.message); 
-			}),
-			// map(() => { return; }),
-			mergeMap(( ) => {
-				return this.graphOperationService.addNewGraph("http://lionFacts");
 			})
 		);
 
@@ -117,14 +115,16 @@ export class RepositoryService {
 			mergeMap(([currentUser, newRepository, graphDbRequest]: [UserDocument, GraphDbRepositoryDocument, void]) => {
 				// add repo to user 
 				currentUser.graphDbRepositories.push(newRepository);
-				// currentUser.save();
 				// add mongodb document id as uri
 				newRepository.uri = "http://localhost:7200/repositories/" + newRepository._id.toString();
-				// newRepository.save();
 				return forkJoin([from(currentUser.save()), from(newRepository.save())]);
 			}),
 			mergeMap(([currentUser, newRepository]: [UserDocument, GraphDbRepositoryDocument]) => {
 				return this.setWorkingRepository(newRepository);
+			}),
+			// add new default graph
+			mergeMap(( ) => {
+				return this.graphOperationService.addNewGraph("http://lionFacts");
 			})
 		);
 
