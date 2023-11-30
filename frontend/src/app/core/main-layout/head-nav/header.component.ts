@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { UserService } from '../../../shared/services/backEnd/user.service';
+import { Observable, map } from 'rxjs';
+import { UserInfoDto } from '@shared/models/user/UserInfoDto';
 
 @Component({
     selector: 'app-header',
@@ -8,9 +11,12 @@ import { TranslateService } from '@ngx-translate/core';
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
     public pushRightClass: string;
+    public userName = "---";
 
     constructor(
+        private userService: UserService,
         // private translate: TranslateService, 
         // public router: Router
     ) {
@@ -27,7 +33,29 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getUserName();
         // this.pushRightClass = 'push-right';
+    }
+
+    signOut(): void {
+        console.error("not implemented yet");
+        return;
+    }
+
+    getUserName(): void { 
+        this.userService.getCurrentUserInfo().pipe(map(
+            (userInfo: UserInfoDto) => userInfo.username
+        )).subscribe({
+            next: (userName: string) => { 
+                console.log("un");
+                this.userName = userName; 
+            },
+            error: (error: Error) => {
+                this.userName = "---";
+                console.error('No username received: ' + error);
+            },
+            complete: () => { return; }
+        });
     }
 
     // isToggled(): boolean {
