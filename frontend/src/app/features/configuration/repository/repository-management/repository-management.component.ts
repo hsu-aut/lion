@@ -44,17 +44,16 @@ export class RepositoryManagementComponent implements OnInit {
         private repoService: RepositoryOperationsService) {}
 
     ngOnInit() {
-        this.repoService.getWorkingRepository().pipe(take(1)).subscribe(data => {
-            this.activeRepository = data;
-        });
-
-        this.loadListOfRepos();
+        this.loadRepoInfo();
     }
 
 
-    loadListOfRepos(): void {
+    loadRepoInfo(): void {
         this.repoService.getListOfRepositories().pipe(take(1)).subscribe(data => {
             this.repositoryList = data;
+        });
+        this.repoService.getWorkingRepository().pipe(take(1)).subscribe(data => {
+            this.activeRepository = data;
         });
     }
 
@@ -76,7 +75,7 @@ export class RepositoryManagementComponent implements OnInit {
 
     /**
      * Creates a new repository with the given repository name
-     * TODO remove repo id, its generated automaticall now
+     * TODO remove repo id, its generated automatically now
      */
     createRepository(): void {
         if (this.newRepositoryForm.invalid) {
@@ -86,7 +85,7 @@ export class RepositoryManagementComponent implements OnInit {
         const {repositoryId, repositoryName} = this.newRepositoryForm.value;
         const newRepositoryRequest: NewRepositoryRequestDto = { repositoryName: repositoryName };
         this.repoService.createRepository(newRepositoryRequest).pipe(take(1)).subscribe(() => {
-            this.loadListOfRepos();
+            this.loadRepoInfo();
         });
     }
 
