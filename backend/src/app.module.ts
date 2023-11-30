@@ -16,6 +16,8 @@ import { WadlModule } from './routes/wadl/wadl.module';
 import { ISA88Module } from './routes/isa88/isa88.module';
 import { Vdi2206Module } from './routes/vdi2206/vdi2206.module';
 import { AuthRouteModule } from './routes/auth/auth-route.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
@@ -34,7 +36,11 @@ import { AuthRouteModule } from './routes/auth/auth-route.module';
 	WadlModule,
 	ISA88Module,
 	Vdi2206Module,
-	AuthRouteModule
+	AuthRouteModule,
+	// uri schema: 'mongodb://username:password@host:port/database?options...'
+	// uri schema for testing with docker (no user / no pw / port set to standard 27017): mongodb://host:port/database'
+	MongooseModule.forRoot('mongodb://localhost/users'),
+	UsersModule
 	],
 	controllers: [AppController],
 	providers: [AppService],
