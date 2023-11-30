@@ -35,6 +35,15 @@ export class AuthService {
     }
 
     /**
+     * signs out user by deleting the access token
+     * TODO: should this call any action in the backend?
+     */
+    signOut(): void {
+        localStorage.removeItem('access_token');
+        return;
+    }
+
+    /**
      * check if user is signed in.
      * if user is signed in, the refreshed jwt from the answer is stored it in local app storage for later use.
      * @returns true if verified, false if not. catches 401/403 errors and returns false.

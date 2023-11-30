@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserService } from '../../../shared/services/backEnd/user.service';
 import { Observable, map } from 'rxjs';
 import { UserInfoDto } from '@shared/models/user/UserInfoDto';
+import { AuthService } from '../../../shared/auth/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -17,8 +18,8 @@ export class HeaderComponent implements OnInit {
 
     constructor(
         private userService: UserService,
-        // private translate: TranslateService, 
-        // public router: Router
+        public router: Router,
+        private authService: AuthService
     ) {
 
         // this.router.events.subscribe(val => {
@@ -38,7 +39,8 @@ export class HeaderComponent implements OnInit {
     }
 
     signOut(): void {
-        console.error("not implemented yet");
+        this.authService.signOut();
+        this.router.navigate(['']);
         return;
     }
 
