@@ -20,7 +20,7 @@ export class WadlParameterService {
  * @returns All different types of parameters that can be sent via HTTP
  */
 	getParameterTypes(): Observable<SparqlResponse> {
-		const queryString = `PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		const queryString = `PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 	SELECT DISTINCT ?parameterType WHERE {
 		?parameterType sesame:directSubClassOf wadl:Parameter.
 	}`;
@@ -32,7 +32,7 @@ export class WadlParameterService {
 		const queryString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 
 		SELECT DISTINCT ?parentIri ?parameterIri ?name ?type ?required ?default ?dataType ?value WHERE {
 			BIND(<${parentIri}> as ?parentIri)
@@ -116,7 +116,7 @@ export class WadlParameterService {
 	addParameters(parameters: WadlParameter[]): Observable<void> {
 		const parameterString = this.createParameterInsertString(parameters);
 		const updateString = `
-			PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>	
+			PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>	
 			INSERT DATA {
 				${parameterString}
 			}
@@ -126,7 +126,7 @@ export class WadlParameterService {
 
 	deleteParameter(parameterIri: string): Observable<void> {
 		const deleteString = `
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 
 		DELETE WHERE {
 			?parent wadl:hasParameter <${parameterIri}>.
@@ -154,7 +154,7 @@ export class WadlParameterService {
 
 	deleteAllParametersOfParent(parentIri: string): Observable<void> {
 		const deleteString = `
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		DELETE {
 			<${parentIri}> wadl:hasParameter ?parameterIri.
 			?parameterIri a ?paramType;
