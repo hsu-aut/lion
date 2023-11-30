@@ -2,8 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
-import { from, Observable, forkJoin,  } from 'rxjs';
-import { catchError, map, mergeMap, } from 'rxjs/operators';
+import { from, Observable, forkJoin  } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import * as fs from 'fs';
 import * as FormData from 'form-data';
 import { GraphDbRequestException } from '../custom-exceptions/GraphDbRequestException';
@@ -108,15 +108,18 @@ export class RepositoryService {
 		);
 
 		// join observables and return 
-		return forkJoin([currentUser, newRepository, graphDbRequest]).pipe(map(
-			([currentUser, newRepository, graphDbRequest]: [UserDocument, GraphDbRepositoryDocument, void]) => {
+		return forkJoin([currentUser, newRepository, graphDbRequest]).pipe(
+			mergeMap(([currentUser, newRepository, graphDbRequest]: [UserDocument, GraphDbRepositoryDocument, void]) => {
 				// add repo to user 
 				currentUser.graphDbRepositories.push(newRepository);
-				currentUser.save();
+				// currentUser.save();
 				// add mongodb document id as uri
 				newRepository.uri = "http://localhost:7200/repositories/" + newRepository._id.toString();
-				newRepository.save();
-				return;
+				// newRepository.save();
+				return forkJoin([from(currentUser.save()), from(newRepository.save())]);
+			}),
+			mergeMap(([currentUser, newRepository]: [UserDocument, GraphDbRepositoryDocument]) => {
+				return this.setWorkingRepository(newRepository);
 			})
 		);
 
@@ -144,7 +147,6 @@ export class RepositoryService {
 		));
 	}
 
-	
 	/**
 	 * get a repository by its id
 	 * @param repositoryId the id of the repository
@@ -172,7 +174,7 @@ export class RepositoryService {
 			mergeMap(() => this.getWorkingRepositoryDoc()),
 			// unset old working directory and save
 			map((oldWorkingRepo: GraphDbRepositoryDocument) => {
-				// if undefined, no working repo si setso just skip this 
+				// if undefined, no working repo is set so just skip this 
 				if (oldWorkingRepo === undefined) return;
 				// else, unset old working directory and save
 				oldWorkingRepo.workingDirectory = false;
