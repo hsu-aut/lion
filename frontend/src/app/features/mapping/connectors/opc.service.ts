@@ -47,7 +47,7 @@ export class OpcService {
         // const activeGraph = graphs[graphIndex];
         // const query = `PREFIX lf: <http://lionFacts#>
         //         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        //         PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+        //         PREFIX DINEN61360: <http://www.w3id.org/hsu-aut/DINEN61360#>
         //         INSERT DATA {
         //             GRAPH <${activeGraph}> {
         //                 ${this.prefixService.parseToIRI(instanceDescription)} DINEN61360:hasOntologicalValue <${opcVariable}>.
@@ -59,7 +59,7 @@ export class OpcService {
     loadVariableAnd61360Connections() {
         const query = `PREFIX lf: <http://lionFacts#>
         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+        PREFIX DINEN61360: <http://www.w3id.org/hsu-aut/DINEN61360#>
         SELECT ?instanceDescription ?instanceDescriptionLabel ?opcVariable ?opcVariableLabel{
             ?instanceDescription rdf:type DINEN61360:InstanceDescription;
                 DINEN61360:hasOntologicalValue ?opcVariable;
