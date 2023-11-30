@@ -1,15 +1,29 @@
 import { Body, Controller, Post, Get } from '@nestjs/common';
 import { AuthService } from '../../auth/auth.service';
-import { SignInDtoReq, SignInDtoRes }  from '@shared/models/SignInDto';
+import { SignInDtoReq, SignInDtoRes, SignUpDto }  from '@shared/models/AuthDtos';
 import { Observable } from 'rxjs';
 import { Public } from '../../auth/public.decorator';
+import { User } from '../../users/user.schema';
 
 @Controller("/lion_BE/auth")
 export class AuthRouteController {
 
 	constructor(
         private authService: AuthService
-	) {}
+	) {
+
+	}
+
+	/**
+	 * sign up route to create user
+	 * @param signInDto
+	 * @returns 
+	 */
+	@Public()
+	@Post('signUp')
+	signUp(@Body() signUpDto: SignUpDto): Promise<void> {
+		return this.authService.signUp(signUpDto);
+	}
 
 	/**
 	 * sign in route to get initial jwt
@@ -17,8 +31,8 @@ export class AuthRouteController {
 	 * @returns 
 	 */
 	@Public()
-	@Post("signin")
-	signIn(@Body() signInDto: SignInDtoReq): Observable<SignInDtoRes> {
+	@Post('signIn')
+	async signIn(@Body() signInDto: SignInDtoReq): Promise<SignInDtoRes> {
 		return this.authService.signIn(signInDto);
 	}
 
@@ -27,7 +41,7 @@ export class AuthRouteController {
 	 * TODO: instead of true return refresehd jwt token 
 	 * @returns true if authenticated / 401 error if not 
 	 */
-	@Get("verify")
+	@Get('verify')
 	verifySingedInStatus(): boolean {
 		return true;
 	}

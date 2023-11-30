@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { User, UsersService } from './users.service';
+import { BadRequestException, ImATeapotException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignInDtoReq, SignInDtoRes }  from '@shared/models/SignInDto';
-import { Observable, from, map, mergeMap } from 'rxjs';
+import { SignInDtoReq, SignInDtoRes, SignUpDto }  from '@shared/models/AuthDtos';
+import { Observable, from, map, mergeMap, of } from 'rxjs';
+import { CreateUserDto, User } from '../users/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -13,31 +14,45 @@ export class AuthService {
 	) {}
 
 	/**
+	 * 
+	 * @param signUpDto 
+	 * @returns 
+	 */
+	signUp(signUpDto: SignUpDto): Promise<void> {
+		if (!(this.checkSignUpDto(signUpDto))) {
+			// throw new BadRequestException();
+			throw new ImATeapotException();
+		}
+		const encryptedPassword: string = signUpDto.password;
+		const createUserDto: CreateUserDto = {
+			username: signUpDto.username,
+			password: encryptedPassword,
+			email: signUpDto.email
+		};
+		return this.usersService.addUser(createUserDto);
+	}
+
+	/**
 	 * checks username and password and returns a valid jwt token 
 	 * @param signInDto the sign in data
 	 * @returns a jwt token if sign in data is valid
 	 */
-	signIn(signInDto: SignInDtoReq): Observable<SignInDtoRes> {
-		// use mergeMap to avoid inner observable
-		return this.usersService.findUser(signInDto.username).pipe(mergeMap( (user: User | undefined) => {
-			// throw unauthorized exception 
-			// if user is undefined, i.e. does not exist
-			// or password is not correct 
-			if (user===undefined || !this.checkPassword(signInDto.password, user?.password)) {
-				throw new UnauthorizedException();
-			}
-			// create payload for jwt
-			const payload = { 
-				username: user.username, 
-				sub: user.userId 
-			};
-			// create jwt string as observable
-			const jwtStringObs: Observable<string> = from(this.jwtService.signAsync(payload));
-			// return sign in data as observable mapped from jwt string observable
-			return jwtStringObs.pipe(map( (jwtString: string) => {
-				return {access_token: jwtString};
-			}));
-		}));
+	async signIn(signInDto: SignInDtoReq): Promise<SignInDtoRes> {
+		console.log(signInDto);
+		const foundUser: User = await this.usersService.findUser(signInDto.username);
+		console.log(foundUser);
+		// throw unauthorized exception 
+		// if user is null/undefined, i.e. does not exist
+		// or password is not correct 
+		if ( foundUser === undefined || foundUser === null || !this.checkPassword(signInDto.password, foundUser?.password)) {
+			throw new UnauthorizedException();
+		}
+		// create payload for jwt
+		const payload = { 
+			username: foundUser.username 
+		};
+		const jwtString: string = await this.jwtService.signAsync(payload);
+		return {access_token: jwtString};
 	}
 
 	/**
@@ -58,6 +73,19 @@ export class AuthService {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * dummy, returns Observable<true> for now
+	 * TODO: implement this
+	 * check stuff:
+	 * - username not taken
+	 * - verify email
+	 * - pw policies
+	 * @param signUpDto 
+	 */
+	checkSignUpDto(signUpDto: SignUpDto): Observable<boolean> {
+		return of(true);
 	}
 
 }
