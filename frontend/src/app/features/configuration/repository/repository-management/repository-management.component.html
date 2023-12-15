@@ -7,18 +7,18 @@
             <h6> Current repository</h6>
             <div class="row">
                 <div class="col-3">
-                    <span class="fw-bold">ID:</span>
+                    <span class="fw-bold">Name:</span>
                 </div>
                 <div class="col-9">
-                    <span> {{this.activeRepository?.id}}</span>
+                    <span>{{this.activeRepository?.title}}</span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-3">
-                    <span class="fw-bold">Title:</span>
+                    <span class="fw-bold">ID:</span>
                 </div>
                 <div class="col-9">
-                    <span>{{this.activeRepository?.title}}</span>
+                    <span> {{this.activeRepository?.id}}</span>
                 </div>
             </div>
             <div class="row">
@@ -32,15 +32,17 @@
         </div>
     </div>
     <div class="form-group col-sm">
-        <label> Existing repositories </label>
-        <div class="input-group mb-3">
-            <select [formControl]="repositoryToChangeTo" name="activeRepository" class="form-select">
-                <option value=null selected hidden></option>
-                <option *ngFor='let repository of repositoryList' [ngValue]="repository">
-                    {{repository?.title}} ({{repository?.id}})
-                </option>
-            </select>
-            <button class="btn btn-primary" type="button" (click)="setRepository()">Change Repository</button>
+        <div class="border border-secondary bg-secondary bg-opacity-10 rounded p-2">
+            <h6> Existing repositories </h6>
+            <div class="input-group mb-3">
+                <select [formControl]="repositoryToChangeTo" name="activeRepository" class="form-select">
+                    <option value=null selected hidden></option>
+                    <option *ngFor='let repository of repositoryList' [ngValue]="repository">
+                        {{repository?.title}} ({{repository?.id}})
+                    </option>
+                </select>
+                <button class="btn btn-primary" type="button" (click)="setRepository()">Change Repository</button>
+            </div>
         </div>
     </div>
 </div>
@@ -50,19 +52,14 @@
     deleted repositories or data cannot be restored.</p>
 
 <h6 class="col-sm-5 mt-3">Create new repository:</h6>
-<form [formGroup]="this.newRepositoryForm">
+<form>
     <div class="row">
-        <label for="newRepoId" class="col-sm-2 col-form-label">Repo ID:</label>
-        <div class="col-sm-3">
-            <input formControlName="repositoryId" id="newRepoId" type="text" class="form-control"
-            aria-label="Text input with dropdown button" placeholder="Enter repository ID">
-        </div>
-
         <label for="newRepoName" class="col-sm-2 col-form-label">Repo Name:</label>
-        <div class="col-sm-3">
-            <input formControlName="repositoryName" id="newRepoName" type="text" class="form-control"
+        <div class="col-sm-4">
+            <input [formControl]="newRepositoryForm" id="newRepoName" type="text" class="form-control"
             aria-label="Text input with dropdown button" placeholder="Enter repository name">
         </div>
+
         <div class="col-sm-2">
             <button class="btn btn-primary" type="button"
                 (click)="createRepository()">Create</button>
@@ -71,10 +68,10 @@
 </form>
 
 <h6 class="col-sm-5 mt-3">Clear repository:</h6>
-<form class="row" [formGroup]="repositoryClearForm">
+<div class="row">
     <label for="repoList" class="col-sm-2 col-form-label">Repo to clear:</label>
-    <div class="col-sm-3">
-        <select formControlName="selectedRepository" id="repoList" class="form-select">
+    <div class="col-sm-4">
+        <select [formControl]="repositoryClearForm" id="repoList" class="form-select">
             <option value=null selected hidden></option>
             <option *ngFor='let repository of repositoryList' [ngValue]="repository">
                 {{repository?.title}} ({{repository?.id}})
@@ -82,22 +79,16 @@
         </select>
     </div>
 
-    <label for="clearConfirmation" class="col-sm-2 col-form-label">Confirmation:</label>
-    <div class="col-sm-3">
-        <input formControlName="confirmId" id="clearConfirmation" type="text" class="form-control"
-        aria-label="Text input with dropdown button" placeholder="Repeat repository ID">
-    </div>
-
     <div class="col-sm-2">
-        <button class="btn btn-warning" type="button" (click)="clearRepository()">Clear</button>
+        <button class="btn btn-warning" type="button" (click)="clickClearRepository()">Clear</button>
     </div>
-</form>
+</div>
 
 <h6 class="col-sm-5 mt-3">Delete repository:</h6>
-<form class="row" [formGroup]="repositoryDeleteForm">
+<div class="row">
     <label for="repoList" class="col-sm-2 col-form-label">Repo to delete:</label>
-    <div class="col-sm-3">
-        <select formControlName="selectedRepository" id="repoList" class="form-select">
+    <div class="col-sm-4">
+        <select [formControl]="repositoryDeleteForm" id="repoList" class="form-select">
             <option value=null selected hidden></option>
             <option *ngFor='let repository of repositoryList' [ngValue]="repository">
                 {{repository?.title}} ({{repository?.id}})
@@ -105,13 +96,9 @@
         </select>
     </div>
 
-    <label for="deleteConfirmation" class="col-sm-2 col-form-label">Confirmation:</label>
-    <div class="col-sm-3">
-        <input formControlName="confirmId" id="deleteConfirmation" type="text" class="form-control"
-        aria-label="Text input with dropdown button" placeholder="Repeat repository ID">
-    </div>
-
     <div class="col-sm-2">
-        <button class="btn btn-danger" type="button" (click)="deleteRepository()">Delete</button>
+        <button class="btn btn-danger" type="button" (click)="clickDeleteRepository()">Delete</button>
     </div>
-</form>
+</div>
+
+<app-confirmation-modal [operation]="operationToConfirm" [repository]="repoToConfirm" (onConfirm)="onConfirmation()"></app-confirmation-modal>
