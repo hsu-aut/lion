@@ -5,6 +5,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { OdpManagementComponent } from "./odp-management/odp-management.component";
 import { RepositoryManagementComponent } from "./repository-management/repository-management.component";
 import { RepositoryComponent } from "./repository.component";
+import { ConfirmationModalComponent } from './confirmation-modal/confirmation-modal.component';
 
 
 
@@ -25,7 +26,8 @@ const routes: Routes = [
     declarations: [
         RepositoryComponent,
         RepositoryManagementComponent,
-        OdpManagementComponent
+        OdpManagementComponent,
+        ConfirmationModalComponent
     ]
 })
 export class RepositoryModule { }
