@@ -5,6 +5,7 @@ import { NewRepositoryRequestDto } from '@shared/models/repositories/NewReposito
 import { take } from 'rxjs';
 import { MessagesService } from '../../../../shared/services/messages.service';
 import { RepositoryOperationsService } from '../../../../shared/services/backEnd/repositoryOperations.service';
+import { DataLoaderService } from '@shared-services/dataLoader.service';
 
 @Component({
     selector: 'repository-management',
@@ -34,7 +35,8 @@ export class RepositoryManagementComponent implements OnInit {
         private messageService: MessagesService,
         private fb: FormBuilder,
         private repoService: RepositoryOperationsService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private dataLoaderService: DataLoaderService
     ) {}
 
     ngOnInit() {
@@ -73,9 +75,13 @@ export class RepositoryManagementComponent implements OnInit {
             this.messageService.warn('Ups!','It seems like you are missing some data here...');
             return;
         }
+        this.dataLoaderService.startLoading();
         const repositoryName = this.newRepositoryForm.value.toString();
         const newRepositoryRequest: NewRepositoryRequestDto = { repositoryName: repositoryName };
         this.repoService.createRepository(newRepositoryRequest).pipe(take(1)).subscribe(() => {
+            // repo creation takes 5 - 10 seconds
+            this.dataLoaderService.stopLoading();
+            this.messageService.success('Repository created','Successfully created new repository: ' + repositoryName);
             this.loadRepoInfo();
         });
     }
@@ -109,10 +115,14 @@ export class RepositoryManagementComponent implements OnInit {
         this.repositoryDeleteForm.reset();
         this.repositoryClearForm.reset();
         if (this.operationToConfirm == "clear") {
-            this.repoService.clearRepository(this.repoToConfirm.id).pipe(take(1)).subscribe();
+            this.repoService.clearRepository(this.repoToConfirm.id).pipe(take(1)).subscribe( () => {
+                this.messageService.success('Repository cleared','Successfully cleared repository: ' + this.repoToConfirm.title);
+            });
         } else if (this.operationToConfirm == "delete") {
-            this.repoService.deleteRepository(this.repoToConfirm.id).pipe(take(1)).subscribe();
-            this.loadRepoInfo();
+            this.repoService.deleteRepository(this.repoToConfirm.id).pipe(take(1)).subscribe( () => {
+                this.loadRepoInfo();
+                this.messageService.success('Repository deleted','Successfully deleted repository: ' + this.repoToConfirm.title);
+            });
         }
         return;
     }
