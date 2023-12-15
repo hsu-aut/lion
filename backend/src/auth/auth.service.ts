@@ -40,9 +40,7 @@ export class AuthService {
 	 * @returns a jwt token if sign in data is valid
 	 */
 	async signIn(signInDto: SignInReqDto): Promise<SignInResDto> {
-		console.log(signInDto);
 		const foundUser: User = await this.usersService.findUser(signInDto.username);
-		console.log(foundUser);
 		// throw unauthorized exception 
 		// if user is null/undefined, i.e. does not exist
 		// or password is not correct 
