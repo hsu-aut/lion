@@ -19,6 +19,7 @@ export class ConfirmationModalComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
+      return;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -26,6 +27,7 @@ export class ConfirmationModalComponent implements OnInit, OnChanges {
           const modal = new Modal(this.confirmModal.nativeElement);
           modal.show();
       }
+      //   this.repoName = this.repository?.title;
       this.repoName = (this.repository) ? this.repository.title : "ERROR";
       return;
   }
