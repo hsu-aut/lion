@@ -1,1 +1,19 @@
-<p>confirmation-modal works!</p>
+<div class="modal fade bd-example-modal-md" id="confirm-graph-operation" tabindex="-1" role="dialog" aria-labelledby="confirm-graph-operation" aria-hidden="false" #confirmModal>
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirm-graph-operation">Confirm {{operation}} operation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text">You are about to {{operation}} the graph <strong>{{graph}}</strong><br/>Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="confirm()" data-bs-dismiss="modal">Yes, {{operation}} graph</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
