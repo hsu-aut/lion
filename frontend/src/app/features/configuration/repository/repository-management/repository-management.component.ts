@@ -92,7 +92,7 @@ export class RepositoryManagementComponent implements OnInit {
             return;
         }
         this.repoToConfirm = this.repositoryClearForm.value;
-        this.openModal("clear");
+        this.openConfirmModal("clear");
     }
 
     clickDeleteRepository(): void {
@@ -101,17 +101,17 @@ export class RepositoryManagementComponent implements OnInit {
             return;
         }
         this.repoToConfirm = this.repositoryDeleteForm.value;
-        this.openModal("delete");
+        this.openConfirmModal("delete");
     }
 
-    openModal(operation: string): void {
+    openConfirmModal(operation: string): void {
         this.operationToConfirm = "none";
         // this is required in order for the modal to be reactivated after first use
         this.changeDetectorRef.detectChanges();
         this.operationToConfirm = operation;
     }
 
-    onConfirmation(): void {
+    onConfirm(): void {
         this.repositoryDeleteForm.reset();
         this.repositoryClearForm.reset();
         if (this.operationToConfirm == "clear") {
