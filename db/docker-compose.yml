@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+
+  # graphdb for ontology data
+  graphdb:
+    image: ontotext/graphdb:10.5.1
+    ports: 
+      - 7200:7200
+    volumes:
+      - type: bind
+        source: ./graphdb-data
+        target: /opt/graphdb/data
+      - type: bind
+        source: ./graphdb-logs
+        target: /opt/graphdb/logs
+      - type: bind
+        source: ./graphdb-work
+        target: /opt/graphdb/work
+
+  # mysql for eclass
+  mysql:
+    image: mysql:8.0.33
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - type: bind
+        source: ./mysql-data
+        target: /var/lib/mysql
+    ports:
+      - 3306:3306
+
+  # admin webapp for mysql
+  adminer:
+    image: adminer:4.8.1
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    ports:
+      - 8080:8080
+
+  # mogo db for user mgmt
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - type: bind
+        source: ./mongodb-data
+        target: /data/db
+    ports: 
+      - 27017:27017
+
+  # admin webapp for mongodb
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
