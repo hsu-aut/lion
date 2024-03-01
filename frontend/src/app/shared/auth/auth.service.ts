@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { SignInReqDto } from '@shared/models/auth/signInReqDto';
-import { SignInResDto } from '@shared/models/auth/signInResDto';
+import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
+import { SignInResDto } from '@shared/models/auth/SignInResDto';
 import { Observable, catchError, map, of } from "rxjs";
 
 @Injectable()
