@@ -1,10 +1,10 @@
-import { BadRequestException, ImATeapotException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ImATeapotException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignInReqDto } from '@shared/models/auth/signInReqDto';
-import { SignInResDto } from '@shared/models/auth/signInResDto';
-import { SignUpDto } from '@shared/models/auth/signUpDto';
-import { Observable, from, map, mergeMap, of } from 'rxjs';
+import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
+import { SignInResDto } from '@shared/models/auth/SignInResDto';
+import { SignUpDto } from '@shared/models/auth/SignUpDto';
+import { Observable, of } from 'rxjs';
 import { CreateUserDto, User } from '../users/user.schema';
 
 @Injectable()

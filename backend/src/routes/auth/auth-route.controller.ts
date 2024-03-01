@@ -1,11 +1,9 @@
 import { Body, Controller, Post, Get } from '@nestjs/common';
 import { AuthService } from '../../auth/auth.service';
-import { SignInReqDto } from '@shared/models/auth/signInReqDto';
-import { SignInResDto } from '@shared/models/auth/signInResDto';
-import { SignUpDto } from '@shared/models/auth/signUpDto';
-import { Observable } from 'rxjs';
+import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
+import { SignInResDto } from '@shared/models/auth/SignInResDto';
+import { SignUpDto } from '@shared/models/auth/SignUpDto';
 import { Public } from '../../auth/public.decorator';
-import { User } from '../../users/user.schema';
 
 @Controller("/lion_BE/auth")
 export class AuthRouteController {
