@@ -26,7 +26,7 @@
                             "src/styles/app.scss"
                         ],
                         "scripts": [
-                            "node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+                            "node_modules/bootstrap/dist/js/bootstrap.esm.js",
                             "node_modules/chart.js/dist/chart.js"
                         ]
                     },
