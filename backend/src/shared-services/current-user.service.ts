@@ -5,6 +5,7 @@ import { Observable, catchError, from, take } from 'rxjs';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MongoDbRequestException } from '../custom-exceptions/MongoDbRequestException';
+import { Request } from 'express';
 
 @Injectable(
 	{ scope: Scope.REQUEST }
