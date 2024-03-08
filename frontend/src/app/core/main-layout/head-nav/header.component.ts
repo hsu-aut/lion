@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 import { UserService } from '../../../shared/services/backEnd/user.service';
-import { Observable, map } from 'rxjs';
+import { map } from 'rxjs';
 import { UserInfoDto } from '@shared/models/user/UserInfoDto';
 import { AuthService } from '../../../shared/auth/auth.service';
 
@@ -15,6 +14,7 @@ export class HeaderComponent implements OnInit {
 
     public pushRightClass: string;
     public userName = "---";
+    public $userName;
 
     constructor(
         private userService: UserService,
@@ -33,7 +33,7 @@ export class HeaderComponent implements OnInit {
         // });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.getUserName();
         // this.pushRightClass = 'push-right';
     }
@@ -44,19 +44,10 @@ export class HeaderComponent implements OnInit {
         return;
     }
 
-    getUserName(): void { 
-        this.userService.getCurrentUserInfo().pipe(map(
+    getUserName(): void {
+        this.$userName =  this.userService.getCurrentUserInfo().pipe(map(
             (userInfo: UserInfoDto) => userInfo.username
-        )).subscribe({
-            next: (userName: string) => { 
-                this.userName = userName; 
-            },
-            error: (error: Error) => {
-                this.userName = "---";
-                console.error('No username received: ' + error);
-            },
-            complete: () => { return; }
-        });
+        ));
     }
 
     // isToggled(): boolean {

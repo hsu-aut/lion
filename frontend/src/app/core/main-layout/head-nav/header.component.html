@@ -34,23 +34,35 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle header-button" data-bs-toggle="dropdown" role="button"
                         aria-haspopup="true" aria-expanded="false"><i class="fas fa-home"></i></a>
-                    <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                        <a class="dropdown-item" [routerLink]="['lionStory/about']"
-                            [routerLinkActive]="['router-link-active']">About LiOnS</a>
-                        <a class="dropdown-item" [routerLink]="['lionStory/modellingGuide']"
-                            [routerLinkActive]="['router-link-active']">Tutorial</a>
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['lionStory/about']"
+                                [routerLinkActive]="['router-link-active']">About LiOnS</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['lionStory/modellingGuide']"
+                                [routerLinkActive]="['router-link-active']">Tutorial</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle header-button" data-bs-toggle="dropdown" role="button"
-                        aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle"></i></a>
-                    <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
-                        <a class="dropdown-item disabled" href="#" tabindex="-1" aria-disabled="true">{{userName}}</a>
-                        <hr class="dropdown-divider">
-                        <button class="dropdown-item" type="button" (click)="signOut()">Sign Out</button>
-                        <a class="dropdown-item" [routerLink]="['configuration/account']"
-                            [routerLinkActive]="['router-link-active']">My Account</a>
-                    </div>
+                    <a class="nav-link dropdown-toggle header-button" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item disabled" href="#" aria-disabled="true">{{$userName | async}}</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button" (click)="signOut()">Sign Out</button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['configuration/account']">My Account</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
