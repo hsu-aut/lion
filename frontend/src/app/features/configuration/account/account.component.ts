@@ -21,24 +21,24 @@ export class AccountComponent implements OnInit {
 
     username: string = null;
 
-    userInfoForm = this.formBuilder.group({	
-        firstName: new FormControl(null, [Validators.pattern('^[a-zA-Z]+$')]),
-        lastName: new FormControl(null, [Validators.pattern('^[a-zA-Z]+$')]),
-        email: new FormControl(null, [Validators.email])
+    userInfoForm = this.formBuilder.group({
+        firstName: new FormControl("", [Validators.pattern('^[a-zA-Z]+$')]),
+        lastName: new FormControl("", [Validators.pattern('^[a-zA-Z]+$')]),
+        email: new FormControl("", [Validators.email])
     })
-    
+
     ngOnInit(): void {
         this.getUserInfo();
     }
 
-    getUserInfo(): void { 
+    getUserInfo(): void {
         this.userService.getCurrentUserInfo().subscribe({
-            next: (userInfo: UserInfoDto) => { 
+            next: (userInfo: UserInfoDto) => {
                 this.userInfoForm.setValue({
-                    firstName: userInfo.firstName, 
-                    lastName: userInfo.lastName,
-                    email: userInfo.email
-                }); 
+                    firstName: userInfo.firstName || "",
+                    lastName: userInfo.lastName || "",
+                    email: userInfo.email || ""
+                });
                 this.username = userInfo.username;
             },
             error: (error: Error) => {
@@ -48,7 +48,7 @@ export class AccountComponent implements OnInit {
         });
     }
 
-    updateInfo(): void {     
+    updateInfo(): void {
         if(this.userInfoForm.valid) {
             const setuserInfoDto: SetUserInfoDto = {
                 firstName: this.userInfoForm.get('firstName').value,
@@ -69,7 +69,7 @@ export class AccountComponent implements OnInit {
             this.messageService.warn(
                 "Invalid Form",
                 (this.userInfoForm.get('firstName').valid ? "" : "[First Name] is not valid!")
-                + (this.userInfoForm.get('lastName').valid ? "" : "[Last Name] is not valid!") 
+                + (this.userInfoForm.get('lastName').valid ? "" : "[Last Name] is not valid!")
                 + (this.userInfoForm.get('email').valid ? "" : "[E-Mail] is not valid!")
             );
             return null;
