@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, Observable } from 'rxjs';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
-import { ChangeRepositoryRequestDto } from '@shared/models/repositories/ChangeRepositoryRequestDto'; 
+import { ChangeRepositoryRequestDto } from '@shared/models/repositories/ChangeRepositoryRequestDto';
 import { ConfigurationService } from './configuration.service';
 import { MessagesService } from '../messages.service';
 
