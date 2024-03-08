@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
 import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
@@ -6,6 +6,7 @@ import { take } from 'rxjs';
 import { MessagesService } from '../../../../shared/services/messages.service';
 import { RepositoryOperationsService } from '../../../../shared/services/backEnd/repositoryOperations.service';
 import { DataLoaderService } from '@shared-services/dataLoader.service';
+import { ConfirmationModalComponent } from '../../confirmation-modal/confirmation-modal.component';
 
 @Component({
     selector: 'repository-management',
@@ -30,6 +31,8 @@ export class RepositoryManagementComponent implements OnInit {
     newRepositoryForm = this.fb.control('', Validators.required);
     repositoryClearForm = this.fb.control(null, Validators.required);
     repositoryDeleteForm = this.fb.control(null, Validators.required);
+
+    @ViewChild(ConfirmationModalComponent) confirmModalComponent: ConfirmationModalComponent;
 
     constructor(
         private messageService: MessagesService,
@@ -92,7 +95,7 @@ export class RepositoryManagementComponent implements OnInit {
             return;
         }
         this.repoToConfirm = this.repositoryClearForm.value;
-        this.openConfirmModal("clear");
+        this.confirmModalComponent.showConfirmationModal("clear", this.repoToConfirm.title);
     }
 
     clickDeleteRepository(): void {
@@ -101,15 +104,15 @@ export class RepositoryManagementComponent implements OnInit {
             return;
         }
         this.repoToConfirm = this.repositoryDeleteForm.value;
-        this.openConfirmModal("delete");
+        this.confirmModalComponent.showConfirmationModal("delete", this.repoToConfirm.title);
     }
 
-    openConfirmModal(operation: string): void {
-        this.operationToConfirm = "none";
-        // this is required in order for the modal to be reactivated after first use
-        this.changeDetectorRef.detectChanges();
-        this.operationToConfirm = operation;
-    }
+    // openConfirmModal(operation: string): void {
+    //     this.operationToConfirm = "none";
+    //     // this is required in order for the modal to be reactivated after first use
+    //     this.changeDetectorRef.detectChanges();
+    //     this.operationToConfirm = operation;
+    // }
 
     onConfirm(): void {
         this.repositoryDeleteForm.reset();
