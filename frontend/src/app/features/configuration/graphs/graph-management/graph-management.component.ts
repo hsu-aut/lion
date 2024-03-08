@@ -1,9 +1,10 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MessagesService } from '../../../../shared/services/messages.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { GraphOperationsService } from '../../../../shared/services/backEnd/graphOperations.service';
 import { GraphDto } from '@shared/models/graphs/GraphDto';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ConfirmationModalComponent } from '../../confirmation-modal/confirmation-modal.component';
 
 @Component({
     selector: 'app-graph-management',
@@ -12,134 +13,136 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class GraphManagementComponent implements OnInit {
 
-  // input variables from parent component
-  @Input() graphList: Array<GraphDto>;
+    // input variables from parent component
+    @Input() graphList: Array<GraphDto>;
 
-  // output event to trigger updates
-  @Output() onLoadGraphList = new EventEmitter<void>();
+    // output event to trigger updates
+    @Output() onLoadGraphList = new EventEmitter<void>();
 
-  // util variables
-  activeGraph: GraphDto;
-  graphToConfirm: string;
-  operationToConfirm: string;
+    // util variables
+    activeGraph: GraphDto;
+    graphToConfirm: string;
+    operationToConfirm: string;
 
-  // forms
-  graphSetOption = this.fb.control('', Validators.required);
-  graphDeleteOption = this.fb.control('', Validators.required);
-  graphDeleteTriplesOption = this.fb.control('', Validators.required);
-  newGraph = this.fb.control('', [Validators.required, Validators.pattern('http://.+')]);
+    // forms
+    graphSetOption = this.fb.control('', Validators.required);
+    graphDeleteOption = this.fb.control('', Validators.required);
+    graphDeleteTriplesOption = this.fb.control('', Validators.required);
+    newGraph = this.fb.control('', [Validators.required, Validators.pattern('http://.+')]);
 
-  constructor(
-    private fb: FormBuilder,
-    private graphService: GraphOperationsService,
-    private messageService: MessagesService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) { }
+    @ViewChild(ConfirmationModalComponent) confirmModalComponent: ConfirmationModalComponent;
 
-  ngOnInit(): void {
-      this.graphService.getActiveGraph().subscribe(activeGraph => this.activeGraph = activeGraph);
-      return;
-  }
+    constructor(
+        private fb: FormBuilder,
+        private graphService: GraphOperationsService,
+        private messageService: MessagesService,
+        private changeDetectorRef: ChangeDetectorRef
+    ) { }
 
-  /**
-     * Adds a new named graph to the current working repository
-     */
-  createNamedGraph(): void {
-      if(this.newGraph.invalid) {
-          console.log(this.newGraph);
+    ngOnInit(): void {
+        this.graphService.getActiveGraph().subscribe(activeGraph => this.activeGraph = activeGraph);
+        return;
+    }
 
-          this.messageService.warn('Ups!','It seems like you are missing some data here...');
-          return;
-      }
-      const rawGraphIri = this.newGraph.value;
-      const protocol = "http://";
-      const graphIri = rawGraphIri.startsWith(protocol) ? rawGraphIri : `${protocol}${rawGraphIri}`;
+    /**
+       * Adds a new named graph to the current working repository
+       */
+    createNamedGraph(): void {
+        if (this.newGraph.invalid) {
+            console.log(this.newGraph);
 
-      this.graphService.addGraph(graphIri).subscribe({
-          next: () => {
-              this.newGraph.reset();
-              this.messageService.warn('Graph addded',`Added a new graph with IRI ${graphIri}`);
-              this.onLoadGraphList.emit();
-          },
-          error: (error: HttpErrorResponse) => {
-              console.log(error);
-              this.messageService.warn("Error",`Error while adding new graph ${graphIri}. ${error}`);
-          }
-      });
-  }
+            this.messageService.warn('Ups!', 'It seems like you are missing some data here...');
+            return;
+        }
+        const rawGraphIri = this.newGraph.value;
+        const protocol = "http://";
+        const graphIri = rawGraphIri.startsWith(protocol) ? rawGraphIri : `${protocol}${rawGraphIri}`;
 
-  /**
- * Sets the currently active graph that all triples are inserted into
- * @param graphIri
- */
-  setActiveGraph(): void {
-      if (this.graphSetOption.invalid) {
-          this.messageService.warn('Ups!','It seems like you are missing some data here...');
-      }
-      const newActiveGraphIri = this.graphSetOption.value;
-      console.log(newActiveGraphIri);
+        this.graphService.addGraph(graphIri).subscribe({
+            next: () => {
+                this.newGraph.reset();
+                this.messageService.warn('Graph addded', `Added a new graph with IRI ${graphIri}`);
+                this.onLoadGraphList.emit();
+            },
+            error: (error: HttpErrorResponse) => {
+                console.log(error);
+                this.messageService.warn("Error", `Error while adding new graph ${graphIri}. ${error}`);
+            }
+        });
+    }
 
-      this.graphService.setActiveGraph(newActiveGraphIri).subscribe({
-          next: (newGraph) => {
-              this.messageService.warn('Active graph changed',`Changed the active graph to ${newGraph.graphIri}`);
-              this.activeGraph = newGraph;
-          },
-          error: (error: HttpErrorResponse) => {
-              console.log(error);
-              this.messageService.warn("Error",`Error while changing the active graph ${newActiveGraphIri}. ${error}`);
-          }
-      });
-  }
+    /**
+   * Sets the currently active graph that all triples are inserted into
+   * @param graphIri
+   */
+    setActiveGraph(): void {
+        if (this.graphSetOption.invalid) {
+            this.messageService.warn('Ups!', 'It seems like you are missing some data here...');
+        }
+        const newActiveGraphIri = this.graphSetOption.value;
+        console.log(newActiveGraphIri);
 
-  clickClearTriplesOfNamedGraph(): void {
-      if (this.graphDeleteTriplesOption.invalid) {
-          this.messageService.warn('Ups!','It seems like you are missing some data here...');
-      }
-      this.graphToConfirm = this.graphDeleteTriplesOption.value;
-      this.openConfirmModal("clear");
-  }
+        this.graphService.setActiveGraph(newActiveGraphIri).subscribe({
+            next: (newGraph) => {
+                this.messageService.warn('Active graph changed', `Changed the active graph to ${newGraph.graphIri}`);
+                this.activeGraph = newGraph;
+            },
+            error: (error: HttpErrorResponse) => {
+                console.log(error);
+                this.messageService.warn("Error", `Error while changing the active graph ${newActiveGraphIri}. ${error}`);
+            }
+        });
+    }
 
-  clickDeleteNamedGraph(): void {
-      if (this.graphDeleteOption.invalid) {
-          this.messageService.warn('Ups!','It seems like you are missing some data here...');
-          return;
-      }
-      this.graphToConfirm  = this.graphDeleteOption.value;
-      if (this.activeGraph.graphIri == this.graphToConfirm) {
-          this.messageService.warn('Error','You cannot delete the currently selected (active) graph.');
-          return;
-      }
-      this.openConfirmModal("delete");
-  }
+    clickClearTriplesOfNamedGraph(): void {
+        if (this.graphDeleteTriplesOption.invalid) {
+            this.messageService.warn('Ups!', 'It seems like you are missing some data here...');
+        }
+        this.graphToConfirm = this.graphDeleteTriplesOption.value;
+        this.confirmModalComponent.showConfirmationModal("clear", this.graphToConfirm);
+    }
 
-  openConfirmModal(operation: string): void {
-      this.operationToConfirm = "none";
-      // this is required in order for the modal to be reactivated after first use
-      this.changeDetectorRef.detectChanges();
-      this.operationToConfirm = operation;
-  }
+    clickDeleteNamedGraph(): void {
+        if (this.graphDeleteOption.invalid) {
+            this.messageService.warn('Ups!', 'It seems like you are missing some data here...');
+            return;
+        }
+        this.graphToConfirm = this.graphDeleteOption.value;
+        if (this.activeGraph.graphIri == this.graphToConfirm) {
+            this.messageService.warn('Error', 'You cannot delete the currently selected (active) graph.');
+            return;
+        }
+        this.confirmModalComponent.showConfirmationModal("delete", this.graphToConfirm);
+    }
 
-  onConfirm(): void {
-      this.graphDeleteTriplesOption.reset();
-      this.graphDeleteOption.reset();
-      if (this.operationToConfirm == "clear") {
-          this.graphService.deleteTriplesOfNamedGraph(this.graphToConfirm).subscribe({
-              next: () => this.messageService.success("Graph clear", `Cleared triples of named graph with IRI ${this.graphToConfirm}`),
-              error: (error: HttpErrorResponse) => {
-                  console.log(error);
-                  this.messageService.warn("Error",`Error while clearing triples of named graph ${this.graphToConfirm}. ${error}`);
-              }
-          });
-      } else if (this.operationToConfirm == "delete") {
-          this.graphService.deleteNamedGraph(this.graphToConfirm).subscribe({
-              next: () => {
-                  this.messageService.warn('Graph deleted',`Deleted named graph with IRI ${this.graphToConfirm}`);
-                  this.onLoadGraphList.emit();
-              },
-              error: (error) => this.messageService.warn("Error", `Error while deleting named graph ${this.graphToConfirm}. ${error}`)
-          });
-      }
-      return;
-  }
+    // openConfirmModal(operation: string): void {
+    //     this.operationToConfirm = "none";
+    //     // this is required in order for the modal to be reactivated after first use
+    //     this.changeDetectorRef.detectChanges();
+    //     this.operationToConfirm = operation;
+    // }
+
+    onConfirm(): void {
+        this.graphDeleteTriplesOption.reset();
+        this.graphDeleteOption.reset();
+        if (this.operationToConfirm == "clear") {
+            this.graphService.deleteTriplesOfNamedGraph(this.graphToConfirm).subscribe({
+                next: () => this.messageService.success("Graph clear", `Cleared triples of named graph with IRI ${this.graphToConfirm}`),
+                error: (error: HttpErrorResponse) => {
+                    console.log(error);
+                    this.messageService.warn("Error", `Error while clearing triples of named graph ${this.graphToConfirm}. ${error}`);
+                }
+            });
+        } else if (this.operationToConfirm == "delete") {
+            this.graphService.deleteNamedGraph(this.graphToConfirm).subscribe({
+                next: () => {
+                    this.messageService.warn('Graph deleted', `Deleted named graph with IRI ${this.graphToConfirm}`);
+                    this.onLoadGraphList.emit();
+                },
+                error: (error) => this.messageService.warn("Error", `Error while deleting named graph ${this.graphToConfirm}. ${error}`)
+            });
+        }
+        return;
+    }
 
 }

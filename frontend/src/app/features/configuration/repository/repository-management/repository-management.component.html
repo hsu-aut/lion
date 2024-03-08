@@ -69,9 +69,9 @@
 
 <h6 class="col-sm-5 mt-3">Clear repository:</h6>
 <div class="row">
-    <label for="repoList" class="col-sm-2 col-form-label">Repo to clear:</label>
+    <label for="repoListClear" class="col-sm-2 col-form-label">Repo to clear:</label>
     <div class="col-sm-4">
-        <select [formControl]="repositoryClearForm" id="repoList" class="form-select">
+        <select [formControl]="repositoryClearForm" id="repoListClear" class="form-select">
             <option value=null selected hidden></option>
             <option *ngFor='let repository of repositoryList' [ngValue]="repository">
                 {{repository?.title}} ({{repository?.id}})
@@ -86,9 +86,9 @@
 
 <h6 class="col-sm-5 mt-3">Delete repository:</h6>
 <div class="row">
-    <label for="repoList" class="col-sm-2 col-form-label">Repo to delete:</label>
+    <label for="repoListDelete" class="col-sm-2 col-form-label">Repo to delete:</label>
     <div class="col-sm-4">
-        <select [formControl]="repositoryDeleteForm" id="repoList" class="form-select">
+        <select [formControl]="repositoryDeleteForm" id="repoListDelete" class="form-select">
             <option value=null selected hidden></option>
             <option *ngFor='let repository of repositoryList' [ngValue]="repository">
                 {{repository?.title}} ({{repository?.id}})
@@ -101,4 +101,4 @@
     </div>
 </div>
 
-<app-confirmation-modal [operation]="operationToConfirm" [repository]="repoToConfirm" (onConfirm)="onConfirm()"></app-confirmation-modal>
+<app-confirmation-modal [context]="'repository'" (onConfirm)="onConfirm()"></app-confirmation-modal>
