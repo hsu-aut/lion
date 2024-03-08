@@ -1,4 +1,5 @@
-version: '3.7'
+name: 'lion-dev'
+version: '3.8'
 
 services:
 
@@ -8,15 +9,9 @@ services:
     ports: 
       - 7200:7200
     volumes:
-      - type: bind
-        source: ./graphdb-data
-        target: /opt/graphdb/data
-      - type: bind
-        source: ./graphdb-logs
-        target: /opt/graphdb/logs
-      - type: bind
-        source: ./graphdb-work
-        target: /opt/graphdb/work
+      - type: volume
+        source: graphdb
+        target: /opt/graphdb/home/data
 
   # mysql for eclass
   mysql:
@@ -25,8 +20,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - type: bind
-        source: ./mysql-data
+      - type: volume
+        source: mysql
         target: /var/lib/mysql
     ports:
       - 3306:3306
@@ -41,18 +36,23 @@ services:
 
   # mogo db for user mgmt
   mongo:
-    image: mongo
+    image: mongo:7.0.5
     restart: always
     volumes:
-      - type: bind
-        source: ./mongodb-data
+      - type: volume
+        source: mongo
         target: /data/db
     ports: 
       - 27017:27017
 
   # admin webapp for mongodb
   mongo-express:
-    image: mongo-express
+    image: mongo-express:1.0.2
     restart: always
     ports:
       - 8081:8081
+
+volumes:
+  graphdb:
+  mongo:
+  mysql:
