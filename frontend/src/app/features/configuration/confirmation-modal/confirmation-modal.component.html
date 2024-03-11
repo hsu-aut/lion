@@ -1,0 +1,19 @@
+<div class="modal fade bd-example-modal-md" tabindex="-2" role="dialog" aria-hidden="false" #confirmModal>
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm {{operation}} operation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="card-text">You are about to {{operation}} the {{context}} <strong>{{contextElementName}}</strong><br/>Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="confirm()" data-bs-dismiss="modal">Yes, {{operation}} {{context}}</button>
+                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+

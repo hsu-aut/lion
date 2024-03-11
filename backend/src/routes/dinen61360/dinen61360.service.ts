@@ -122,7 +122,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # Necessary SemAnz40 standard ontologies
-PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 
 INSERT {
   GRAPH <${activeGraph}>{
@@ -260,7 +260,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # Necessary SemAnz40 standard ontologies
-PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 
 INSERT {
   GRAPH <${activeGraph}>{

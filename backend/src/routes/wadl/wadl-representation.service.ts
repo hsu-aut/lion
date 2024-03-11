@@ -21,7 +21,7 @@ export class WadlRepresentationService {
 		if(parentIri) filterString = `BIND(<${parentIri}> AS ?parentIri)`; 
 
 		const queryString = `
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT ?representationIri ?mediaType ?parentIri WHERE {
 			${filterString}
 			?parentIri wadl:hasRepresentation ?representationIri.
@@ -69,7 +69,7 @@ export class WadlRepresentationService {
 	addRepresentation(rep: WadlRepresentation): Observable<WadlRepresentation> {
 		const repString = this.createRepresentationString([rep]);
 		const updateQuery = `
-			PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+			PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 			INSERT DATA {
 				${repString}
 			}
@@ -82,7 +82,7 @@ export class WadlRepresentationService {
 		await firstValueFrom(this.wadlParamService.deleteAllParametersOfParent(representationIri));
 		
 		const deleteQuery = `
-			PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+			PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 			PREFIX owl: <http://www.w3.org/2002/07/owl#>
 			DELETE WHERE {
 				?parentIri wadl:hasRepresentation <${representationIri}>.

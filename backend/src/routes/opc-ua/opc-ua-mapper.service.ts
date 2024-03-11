@@ -20,7 +20,7 @@ export class OpcUaMappingCreator {
 
 	createMapping(): string {
 		console.log('Create Mapping...');
-		let queryString = `PREFIX ${this.opcPrefix}: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+		let queryString = `PREFIX ${this.opcPrefix}: <http://www.w3id.org/hsu-aut/OpcUa#>
 		INSERT DATA{
 			GRAPH <${this.serverIp}>{\n`;
 

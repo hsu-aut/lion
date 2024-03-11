@@ -27,7 +27,7 @@ export class WadlService {
 	 */
 	async getBaseResources(): Promise<WadlBaseResource[]> {
 		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT ?baseResourceIri ?baseResourcePath ?serviceProviderIri WHERE {
 			?baseResourceIri rdf:type wadl:Resources;
 				a owl:NamedIndividual;
@@ -49,7 +49,7 @@ export class WadlService {
 		const activeGraph = this.graphService.getCurrentGraph();
 		const updateString = `
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+        PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         INSERT DATA {
@@ -69,7 +69,7 @@ export class WadlService {
 		const deleteString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		DELETE {
 			?bodyRepresentationParameterOption ?predicate ?object.
 		} WHERE {
@@ -241,7 +241,7 @@ export class WadlService {
 		if (baseResourceIri) { filterString = `FILTER (?baseResourceIri = <${baseResourceIri}>)`; }
 		
 		const queryString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT ?baseResourceIri ?resourceIri ?resourcePath WHERE {
 			?baseResourceIri wadl:hasResource ?resourceIri;
 				wadl:hasBase ?basePath.
@@ -269,7 +269,7 @@ export class WadlService {
 		const activeGraph = this.graphService.getCurrentGraph();
 
 		const insertString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+        PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
         INSERT DATA { 
 			GRAPH <${activeGraph}> {
@@ -286,7 +286,7 @@ export class WadlService {
 	deleteResource(serviceIri: string): Observable<void> {
 		const deleteString = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 		DELETE {
 			?bodyRepresentationParameterOption ?predicate ?object.
@@ -403,7 +403,7 @@ export class WadlService {
 	 * @returns All currently existing methods
 	 */
 	getMethodTypes(): Observable < SparqlResponse > {
-		const queryString = `PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		const queryString = `PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT DISTINCT ?methods WHERE {
 			?methods sesame:directSubClassOf wadl:Method.
 		}`;
@@ -419,7 +419,7 @@ export class WadlService {
 		const updateString = `
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
-		PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 		INSERT DATA{ 
@@ -442,7 +442,7 @@ export class WadlService {
  * @returns All reponse codes (these are subclasses of the response class)
  */
 	getAllResponseCodes(): Observable < SparqlResponse > {
-		const queryString = `PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+		const queryString = `PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 		SELECT DISTINCT ?responseCode WHERE {
 			?responseCode sesame:directSubClassOf wadl:Response.
 		}`;

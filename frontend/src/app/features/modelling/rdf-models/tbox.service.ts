@@ -67,7 +67,7 @@ export class TboxService {
         // Construct Params Object
         let params = new HttpParams();
         params = params.append('domainClass', domainClass);
-        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
+        params = params.append('namespace', "http://www.w3id.org/hsu-aut/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
 
         return this.http.get<SparqlResponse>("/lion_BE/t-box/properties-by-domain", {params: params}).pipe(toSparqlVariableList(), take(1));
     }
@@ -82,7 +82,7 @@ export class TboxService {
         // Construct Params Object
         let params = new HttpParams();
         params = params.append('property', propertyIri);
-        params = params.append('namespace', "http://www.hsu-ifa.de/ontologies/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
+        params = params.append('namespace', "http://www.w3id.org/hsu-aut/VDI3682#"); // TODO: Better just use a prefix and let this get resolved by a service
         return this.http.get<SparqlResponse>("/lion_BE/t-box/range-classes", {params: params}).pipe(toSparqlVariableList(), take(1));
     }
 

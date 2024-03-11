@@ -69,7 +69,7 @@ export class ISO224002Service {
 class ISO224002Data {
 
 	public SELECT_LIST_OF_KPIs  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
   
@@ -80,7 +80,7 @@ class ISO224002Data {
 	`
   
 	public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENTS  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
   
@@ -91,7 +91,7 @@ class ISO224002Data {
 	`
   
 	public SELECT_LIST_OF_NON_ORGANIZATIONAL_ELEMENTS  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
   
@@ -103,7 +103,7 @@ class ISO224002Data {
 	`
   
 	public SELECT_LIST_OF_ELEMENT_GROUPS  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
   
 	SELECT ?ISO_Elements
 	WHERE {
@@ -112,7 +112,7 @@ class ISO224002Data {
 	}`
   
 	public SELECT_LIST_OF_KPI_GROUPS  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
   
 	SELECT ?ISO_KPIs
 	WHERE {
@@ -120,13 +120,13 @@ class ISO224002Data {
 	}`
   
 	public SELECT_LIST_OF_ORGANIZATIONAL_ELEMENT_CLASSES  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
   
 	SELECT ?ISO_Elements
 	WHERE {
-		BIND(IRI("http://www.hsu-ifa.de/ontologies/ISO22400-2#OrganizationalTerms") AS ?Group)
+		BIND(IRI("http://www.w3id.org/hsu-aut/ISO22400-2#OrganizationalTerms") AS ?Group)
 		 ?ISO_Elements rdfs:subClassOf ?Group.
 		FILTER (?ISO_Elements != owl:Nothing)
 		FILTER (?ISO_Elements != ?Group)
@@ -134,7 +134,7 @@ class ISO224002Data {
 	}`
   
 	public SELECT_TABLE_ALL_ENTITY_INFO  = `
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   
 	SELECT ?Entity ?EntityType
@@ -149,7 +149,7 @@ class ISO224002Data {
 	public SELECT_TABLE_ELEMENTS  = `
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 	SELECT DISTINCT ?Entity ?Element ?Period ?Value ?UnitOfMeasure ?Duration
 	WHERE {
@@ -166,7 +166,7 @@ class ISO224002Data {
 	public SELECT_TABLE_KPI = `
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 	SELECT DISTINCT ?Entity ?KPI ?Period ?Value ?UnitOfMeasure
 	WHERE {
@@ -181,7 +181,7 @@ class ISO224002Data {
   	public SELECT_LIST_OF_ELEMENTS_BY_GROUP(groupNameIRI: string): string {
   
 		const selectString = `
-	 PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	 PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	 PREFIX owl: <http://www.w3.org/2002/07/owl#>
   
@@ -261,7 +261,7 @@ class ISO224002Insert {
 		  const insertString = `
 	  PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	  PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	  PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   
 	  INSERT {
@@ -321,7 +321,7 @@ class ISO224002Insert {
 		  const insertString = `
 	  PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	  PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-	  PREFIX ISO: <http://www.hsu-ifa.de/ontologies/ISO22400-2#>
+	  PREFIX ISO: <http://www.w3id.org/hsu-aut/ISO22400-2#>
 	  PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
   
 	  INSERT {

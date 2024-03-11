@@ -73,9 +73,9 @@ export enum WadlTypesOfDataTypes {
 }
 
 export enum WadlParameterTypes {
-	"http://www.hsu-ifa.de/ontologies/WADL#MatrixParameter",
-	"http://www.hsu-ifa.de/ontologies/WADL#HeaderParameter",
-	"http://www.hsu-ifa.de/ontologies/WADL#QueryParameter",
-	"http://www.hsu-ifa.de/ontologies/WADL#TemplateParameter",
-	"http://www.hsu-ifa.de/ontologies/WADL#PlainParameter"
+	"http://www.w3id.org/hsu-aut/WADL#MatrixParameter",
+	"http://www.w3id.org/hsu-aut/WADL#HeaderParameter",
+	"http://www.w3id.org/hsu-aut/WADL#QueryParameter",
+	"http://www.w3id.org/hsu-aut/WADL#TemplateParameter",
+	"http://www.w3id.org/hsu-aut/WADL#PlainParameter"
 }

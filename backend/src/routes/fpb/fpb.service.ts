@@ -70,7 +70,7 @@ export class FpbService {
 
 	getCompleteProcessInfo(): Observable<SparqlResponse> {
 		const queryString = `
-		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
 
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?process ?processOperator ?input ?inputType ?output ?outputType ?technicalResource  WHERE {
@@ -96,7 +96,7 @@ export class FpbService {
 
 	getAllProcesses(): Observable<SparqlResponse>{
 		const queryString = `
-		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		SELECT ?Process WHERE {
 			?Process a VDI3682:Process.
@@ -107,7 +107,7 @@ export class FpbService {
 
 	getAllTechnicalResources(): Observable<SparqlResponse>{
 		const queryString = `
-		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
 		SELECT ?TR WHERE {
 			?TR a VDI3682:TechnicalResource.
 		}`;
@@ -116,7 +116,7 @@ export class FpbService {
 
 	getInputsAndOutputs(): Observable<SparqlResponse>{
 		const queryString = `
-		PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+		PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
 		SELECT ?IoPoE WHERE {
 		?IoPoE a ?x.
 			VALUES ?x {VDI3682:Energy VDI3682:Product VDI3682:Information}
@@ -135,7 +135,7 @@ export class FpbService {
 		PREFIX owl: <http://www.w3.org/2002/07/owl#>
 		SELECT DISTINCT ?type WHERE {
 			?type a owl:Class.
-			FILTER(STRSTARTS(STR(?type), "http://www.hsu-ifa.de/ontologies/VDI3682#"))
+			FILTER(STRSTARTS(STR(?type), "http://www.w3id.org/hsu-aut/VDI3682#"))
 		}`;
 		
 		return this.queryService.query(queryString);

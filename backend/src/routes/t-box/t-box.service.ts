@@ -23,7 +23,7 @@ export class TBoxService {
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX owl: <http://www.w3.org/2002/07/owl#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-        PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+        PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
         
         SELECT DISTINCT ?objectProperty WHERE {
             # That's a killer query that can retrieve domain classes even if they are complex ones 

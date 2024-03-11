@@ -12,6 +12,10 @@
         <i class="fas fa-paragraph"></i>&nbsp;
       <span> Named graphs </span>
     </a>
+    <a [routerLink]="['account']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+      <i class="fas fa-user-circle"></i>&nbsp;
+    <span> My Account </span>
+    </a>
   </div>
   <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
       <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;

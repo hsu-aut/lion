@@ -23,7 +23,7 @@ export class ISA88Service {
 	}
 
 	private sparqlSelectBehaviorInfo =`
-PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
+PREFIX ISA88: <http://www.w3id.org/hsu-aut/PackML#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
@@ -51,7 +51,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # Necessary standard ontologies
-PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
+PREFIX ISA88: <http://www.w3id.org/hsu-aut/PackML#>
 
 
 # ${mode} Mode
@@ -328,7 +328,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # Necessary SemAnz40 standard ontologies
-PREFIX ISA88: <http://www.hsu-ifa.de/ontologies/ISA-TR88#>
+PREFIX ISA88: <http://www.w3id.org/hsu-aut/PackML#>
 PREFIX SA4: <http://www.hsu-ifa.de/ontologies/SemAnz40#>
 
 

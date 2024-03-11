@@ -123,7 +123,7 @@ export class NewKpiComponent implements OnInit {
     console.log(KPI_Class);
     if (KPI_Class) {
       // TODO getListOfClassConstraintEnum exists for this use case only - could ConstraingDataProperty also be a constant?
-      const ConstraingDataProperty = "http://www.hsu-ifa.de/ontologies/ISO22400-2#Timing";
+      const ConstraingDataProperty = "http://www.w3id.org/hsu-aut/ISO22400-2#Timing";
       this.isoService.getListOfClassConstraintEnum(KPI_Class, ConstraingDataProperty).subscribe((data: string[]) => this.possibleTiming = data);
     }
 }

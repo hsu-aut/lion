@@ -1,0 +1,44 @@
+<p class="text-sm-left"> You can up- and download triples from a named graph here.</p>
+
+<div class="row" [formGroup]="downloadOption">
+    <div class="form-group col">
+        <label> Named Graph to download: </label>
+        <select formControlName="graph" name="activeNamespace" class="form-control">
+            <option value=null selected hidden></option>
+            <option *ngFor='let graph of graphList'>
+                {{graph.graphIri}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label> Data format to serialize: </label>
+        <div class="input-group mb-3">
+            <select formControlName="dataFormat" name="dataFormat" class="form-select">
+                <option value=null selected hidden></option>
+                <option *ngFor='let x of dataFormats' [ngValue]="x">
+                    {{x.formatName}}
+                </option>
+            </select>
+            <button class="btn btn-secondary" type="button" id="button-addon2" (click)="downloadGraph()">Download</button>
+        </div>
+    </div>
+</div>
+
+<div class="row" [formGroup]="uploadOption">
+    <div class="form-group col">
+        <label> Named Graph to upload to: </label>
+        <select formControlName="graph" name="activeNamespace" class="form-control">
+            <option value=null selected hidden></option>
+            <option *ngFor='let graph of graphList'>
+                {{graph.graphIri}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group col-sm">
+        <label>File to upload </label>
+        <div class="input-group mb-3">
+            <input class="form-control" type="file" onchange="() => setUploadFile($event.target)">
+            <button class="btn btn-secondary" type="button" id="button-addon2" (click)="uploadGraph()">Upload</button>
+        </div>
+    </div>
+</div>

@@ -14,7 +14,7 @@ export class OpcService {
         private prefixService: PrefixesService) { }
 
     loadAllOpcUaServers() {
-        const query = `PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+        const query = `PREFIX OpcUa: <http://www.w3id.org/hsu-aut/OpcUa#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT ?opcUaServer ?opcUaServerLabel WHERE {
             ?opcUaServer a OpcUa:UAServer;
@@ -27,7 +27,7 @@ export class OpcService {
 
 
     loadAllOpcUaNodes() {
-        const query = `PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+        const query = `PREFIX OpcUa: <http://www.w3id.org/hsu-aut/OpcUa#>
         SELECT ?nodeIri ?nodeLabel WHERE {
             ?nodeIri a OpcUa:UANode;
             rdfs:label ?nodeLabel.
@@ -46,8 +46,8 @@ export class OpcService {
         // const graphIndex = this.graphService.getActiveGraph();
         // const activeGraph = graphs[graphIndex];
         // const query = `PREFIX lf: <http://lionFacts#>
-        //         PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        //         PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+        //         PREFIX OpcUa: <http://www.w3id.org/hsu-aut/OpcUa#>
+        //         PREFIX DINEN61360: <http://www.w3id.org/hsu-aut/DINEN61360#>
         //         INSERT DATA {
         //             GRAPH <${activeGraph}> {
         //                 <${this.prefixService.parseToIRI(instanceDescription)}> DINEN61360:hasOntologicalValue <${opcVariable}>.
@@ -58,8 +58,8 @@ export class OpcService {
 
     loadVariableAnd61360Connections() {
         const query = `
-        PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        PREFIX DINEN61360: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+        PREFIX OpcUa: <http://www.w3id.org/hsu-aut/OpcUa#>
+        PREFIX DINEN61360: <http://www.w3id.org/hsu-aut/DINEN61360#>
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
@@ -83,8 +83,8 @@ export class OpcService {
         // const graphIndex = this.graphService.getActiveGraph();
         // const activeGraph = graphs[graphIndex];
         // const query = `PREFIX lf: <http://lionFacts#>
-        // PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        // PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        // PREFIX OpcUa: <http://www.w3id.org/hsu-aut/OpcUa#>
+        // PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
         // INSERT DATA {
         //     GRAPH <${activeGraph}> {
         //         <${this.prefixService.parseToIRI(systemOrModule)}> OpcUa:hasOpcUaServer <${opcUaServer}>.
@@ -96,8 +96,8 @@ export class OpcService {
 
     loadServerAndVdi2206Connections() {
         const query = `PREFIX lf: <http://lionFacts#>
-        PREFIX OpcUa: <http://www.hsu-ifa.de/ontologies/OpcUa#>
-        PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+        PREFIX OpcUa: <http://www.w3id.org/hsu-aut/OpcUa#>
+        PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
         SELECT DISTINCT ?systemOrModuleLabel ?opcUaServer ?opcUaServerLabel{
             {
                 ?systemOrModule a VDI2206:System.

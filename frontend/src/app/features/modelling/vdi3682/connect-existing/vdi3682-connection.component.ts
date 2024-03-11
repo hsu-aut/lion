@@ -74,7 +74,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
     getExistingObjects(owlClass: string): void {
         if (!owlClass) return;
 
-        this.tBoxService.getListOfIndividualsByClass(owlClass, "http://www.hsu-ifa.de/ontologies/VDI3682#").pipe(take(1))
+        this.tBoxService.getListOfIndividualsByClass(owlClass, "http://www.w3id.org/hsu-aut/VDI3682#").pipe(take(1))
             .subscribe((data: any) => {
                 this.existingObjects = data;
             });
@@ -86,7 +86,7 @@ export class Vdi3682ConnectionComponent implements OnInit {
         this.newConnectionForm.controls['subject'].setValue(name);
 
         const individual = this.newConnectionForm.controls['subject'].value;
-        const namespace = "http://www.hsu-ifa.de/ontologies/VDI3682#";
+        const namespace = "http://www.w3id.org/hsu-aut/VDI3682#";
         this.tBoxService.getClassOfIndividualWithinNamespace(individual, namespace).pipe(take(1))
             .subscribe((data: any) => {
                 const owlClass = data[0];

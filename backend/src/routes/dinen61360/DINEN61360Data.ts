@@ -2,7 +2,7 @@
 export class DINEN61360Data {
 
 	public SELECT_TABLE_ALL_TYPE_INFO = `
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	SELECT DISTINCT ?type ?code ?revision ?version ?preferredName ?shortName ?definition ?unitOfMeasure ?dataType WHERE { 
 			  
@@ -21,7 +21,7 @@ export class DINEN61360Data {
 	}`
   
 	public SELECT_TABLE_ALL_INSTANCE_INFO = `
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	SELECT DISTINCT ?individual ?instance ?instanceLabel ?type ?expressionGoal ?logicInterpretation ?value WHERE { 
 	
@@ -40,7 +40,7 @@ export class DINEN61360Data {
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	SELECT DISTINCT ?enum
 	WHERE {
   
@@ -55,7 +55,7 @@ export class DINEN61360Data {
 	PREFIX owl: <http://www.w3.org/2002/07/owl#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	SELECT DISTINCT ?enum
 	WHERE {
   
@@ -67,7 +67,7 @@ export class DINEN61360Data {
 	}`
 
 	public SELECT_LIST_DATA_TYPES = `
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	SELECT DISTINCT ?dataType WHERE { 
 			  
@@ -78,7 +78,7 @@ export class DINEN61360Data {
 	}`
   
 	public SPARQL_SELECT_allDE = `
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	SELECT ?DE  WHERE { 
 	?DE a DE6:Data_Element.  
@@ -86,14 +86,14 @@ export class DINEN61360Data {
   
   
 	public SPARQL_SELECT_allDET = `
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	SELECT ?DET  WHERE { 
 	?DET a DE6:Type_Description.  
 	}`
 
 	public SPARQL_SELECT_allDEI = `
-	PREFIX DE6: <http://www.hsu-ifa.de/ontologies/DINEN61360#>
+	PREFIX DE6: <http://www.w3id.org/hsu-aut/DINEN61360#>
 	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 	SELECT ?DEI  WHERE { 
 	?DEI a DE6:Instance_Description.  

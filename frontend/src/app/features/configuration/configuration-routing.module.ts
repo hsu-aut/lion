@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { ConfigurationComponent } from './configuration.component';
 
 import { NamespacesComponent } from './namespaces/namespaces.component';
-import { GraphsComponent } from './graphs/graphs.component';
 
 const routes: Routes = [
     {
@@ -13,7 +12,8 @@ const routes: Routes = [
             { path: '', redirectTo: 'repository', pathMatch: 'prefix' },
             { path: 'repository', loadChildren:() => import('./repository/repository.module').then(m => m.RepositoryModule)},
             { path: 'namespaces', component: NamespacesComponent },
-            { path: 'graphs', component: GraphsComponent },
+            { path: 'graphs', loadChildren:() => import('./graphs/graphs.module').then(m => m.GraphsModule) },
+            { path: 'account', loadChildren:() => import('./account/account.module').then(m => m.AccountModule)},
         ]
     }
 ];

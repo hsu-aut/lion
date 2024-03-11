@@ -15,7 +15,7 @@ export class Vdi2206Service {
 
 	public selectAllSystems(): Observable<SparqlResponse> {
 		const queryString	= 
-			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+			`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 			SELECT ?system ?systemLabel ?consistsOfEntity ?EntityType WHERE {
@@ -35,7 +35,7 @@ export class Vdi2206Service {
 
 	public selectAllModules(): Observable<SparqlResponse> {
 		const queryString = 
-			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+			`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			
 			SELECT ?module ?consistsOfEntity ?EntityType WHERE {
@@ -52,7 +52,7 @@ export class Vdi2206Service {
 
 	public selectAllSystemsAndModules(): Observable<SparqlResponse> {
 		const queryString = 
-			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+			`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 			
@@ -70,7 +70,7 @@ export class Vdi2206Service {
 	
 	public selectAllComponents(): Observable<SparqlResponse> {
 		const queryString = 
-			`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+			`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 			PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 					
 			SELECT ?component WHERE {
@@ -87,7 +87,7 @@ export class Vdi2206Service {
 	//  */
 	// public selectSystemsAndConstituents(): Observable<SparqlResponse>  {
 	// 	const queryString = 
-	// 		`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 	// 		SELECT ?System ?systemLabel ?consistsOfEntity ?EntityType WHERE {
@@ -106,7 +106,7 @@ export class Vdi2206Service {
 	
 	// public selectModulesAndConstituents(): Observable<SparqlResponse> {
 	// 	const queryString = `
-	// 		PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			
 	// 		SELECT ?Module ?consistsOfEntity ?EntityType WHERE {
@@ -124,7 +124,7 @@ export class Vdi2206Service {
 
 	// public selectSystemInheritanceInformation() {
 	// 	const queryString = `
-	// 		PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			
 	// 		SELECT ?System ?childEntity ?childEntityType WHERE {
@@ -140,7 +140,7 @@ export class Vdi2206Service {
 
 	// public selectModuleInheritanceInformation() {
 	// 	const queryString = 
-	// 		`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		
 	// 		SELECT ?Module ?childEntity ?childEntityType WHERE {
@@ -156,7 +156,7 @@ export class Vdi2206Service {
 
 	// public selectComponentInheritanceInformation() {
 	// 	const queryString = 
-	// 		`PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+	// 		`PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
 	// 		PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 			
 	// 		SELECT ?Component ?childEntity ?childEntityType WHERE {

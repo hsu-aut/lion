@@ -31,7 +31,7 @@ export class Vdi2206NewIndividualsComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        this.tboxService.getClassesWithinNamespace("http://www.hsu-ifa.de/ontologies/VDI2206#").subscribe(data => {
+        this.tboxService.getClassesWithinNamespace("http://www.w3id.org/hsu-aut/VDI2206#").subscribe(data => {
             this.allClasses = data;
             this.newTripleForm.get('object').setValue(data[0]);
         });
