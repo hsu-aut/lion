@@ -39,9 +39,13 @@ import { UserRouteModule } from './routes/user/user-route.module';
 	Vdi2206Module,
 	AuthRouteModule,
 	UserRouteModule,
+
 	// uri schema: 'mongodb://username:password@host:port/database?options...'
 	// uri schema for testing with docker (no user / no pw / port set to standard 27017): mongodb://host:port/database'
-	MongooseModule.forRoot('mongodb://localhost/users'),
+	// TODO replace prod and dev uri with automatic uri generated from env variable
+	// MongooseModule.forRoot('mongodb://localhost/users'),		// for dev
+	MongooseModule.forRoot('mongodb://mongo/users'),			// for prod
+	
 	UsersModule
 	],
 	controllers: [AppController],
