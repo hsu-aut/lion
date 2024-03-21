@@ -5,8 +5,8 @@
   "scripts": {
     "clean": "if exist dist rd /s /q dist",
     "lint": "eslint src --ext .ts",
-    "start:dev": "tsc-watch --build --onSuccess \"node --env-file=dev.env -r tsconfig-paths/register dist/main.js dist/main.js \"",
-    "start:prod": "node --env-file=prod.env -r tsconfig-paths/register dist/main.js dist/main.js",
+    "start:dev": "tsc-watch --build --onSuccess \"node --env-file=src/environments/dev.env -r tsconfig-paths/register dist/main.js dist/main.js \"",
+    "start:prod": "node --env-file=src/environments/prod.env -r tsconfig-paths/register dist/main.js dist/main.js",
     "build": "tsc --build"
   },
   "dependencies": {
