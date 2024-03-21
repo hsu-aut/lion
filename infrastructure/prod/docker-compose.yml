@@ -1,0 +1,54 @@
+name: 'lion-prod'
+version: '3.8'
+
+services:
+  
+  frontend:
+    build:
+      context: ../../ 
+      dockerfile: ./infrastructure/prod/frontend.Dockerfile
+    depends_on:
+      - backend
+    networks:
+      - frontend_to_backend
+    ports: 
+      - 4200:80
+  
+  backend:
+    build: 
+      context: ../../
+      dockerfile: ./infrastructure/prod/backend.Dockerfile
+    depends_on:
+      - mongo
+    networks:
+      - frontend_to_backend
+      - backend_to_mongo
+  
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - type: volume
+        source: mongo
+        target: /data/db
+    networks:
+      - mongo-express_to_mongo
+      - backend_to_mongo
+  
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 8081:8081
+    networks:
+      - mongo-express_to_mongo
+
+volumes:
+  mongo:
+
+networks:
+  frontend_to_backend:
+  backend_to_mongo:
+  mongo-express_to_mongo:
