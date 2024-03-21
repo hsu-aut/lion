@@ -5,7 +5,7 @@
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
-        "build": "ng build --prod",
+        "build": "ng build --configuration production",
         "test": "ng test",
         "test-ci": "TEST_CI=true ng test",
         "lint": "eslint src --ext .ts",
