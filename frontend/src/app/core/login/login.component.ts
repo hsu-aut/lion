@@ -4,6 +4,7 @@ import { routerTransition } from '../../router.animations';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
 import { AuthService } from '../../shared/auth/auth.service';
+import { MessagesService } from '../../shared/services/messages.service';
 
 @Component({
     selector: 'app-login',
@@ -11,50 +12,28 @@ import { AuthService } from '../../shared/auth/auth.service';
     styleUrls: ['./login.component.scss'],
     animations: [routerTransition()]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
     public signInForm: FormGroup;
 
     constructor(
-      public router: Router,
-      private fb: FormBuilder,
-      private authService: AuthService,
+        public router: Router,
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private messageService: MessagesService
     ) {
         this.signInForm = this.fb.group({
-            inputEmail: ['',Validators.required],
-            inputPassword: ['',Validators.required]
+            inputEmail: ['', Validators.required],
+            inputPassword: ['', Validators.required]
         });
     }
 
-    ngOnInit() {}
-
-    /**
-     * gets data from sign in form and calls AuthService to sign in user.
-     */
-    onLogin(): void {
-
-        const formValues = this.signInForm.value;
-        if (!formValues.inputEmail || !formValues.inputPassword) {
-            // TODO call message service instead of console
-            console.error("Login error, provide username and password");
-            return;
-        }
-
-        const signinData: SignInReqDto = {
-            username: formValues.inputEmail,
-            password: formValues.inputPassword
-        };
-
-        this.authService.signIn(signinData).subscribe( (signedIn: boolean) => {
-            if (!signedIn) {
-                this.signInForm.reset();
-                // TODO call message service instead of console
-                console.error("Login error, username and/or password incorrect");
+    ngOnInit(): void {
+        this.authService.verifySingedInStatus().subscribe(verified => {
+            if(verified) {
+                this.router.navigate(['main']);
             }
-            this.router.navigate(['main']);
         });
-        
-        return;
 
     }
 

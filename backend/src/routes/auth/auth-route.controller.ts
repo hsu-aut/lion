@@ -21,7 +21,7 @@ export class AuthRouteController {
 	 */
 	@Public()
 	@Post('signUp')
-	signUp(@Body() signUpDto: SignUpDto): Promise<void> {
+	signUp(@Body() signUpDto: SignUpDto): Promise<SignInResDto> {
 		return this.authService.signUp(signUpDto);
 	}
 

@@ -1,16 +1,36 @@
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
+import { SignInReqDto, SignUpReqDto } from '@shared/models/auth/SignInReqDto';
 import { SignInResDto } from '@shared/models/auth/SignInResDto';
 import { Observable, catchError, map, of } from "rxjs";
+import { MessagesService } from "../services/messages.service";
 
 @Injectable()
 export class AuthService {
-     
+
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+        private messageService: MessagesService
     ) { }
-    
+
+    signUp(signUpData: SignUpReqDto): Observable<boolean> {
+        return this.http.post<SignInResDto>('/lion_BE/auth/signup', signUpData).pipe(
+            // on success: save access token in local app storage
+            map( (response: SignInResDto) => {
+                localStorage.setItem('access_token', response.access_token);
+                return true;
+            }),
+            // on errors: return false
+            catchError( (error: Error) => {
+                if ((error instanceof HttpErrorResponse)) {
+                    this.messageService.danger("Error while signing up", error.error.message);
+                } else {
+                    this.messageService.danger("Error while signing up", "Unknown error");
+                }
+                return of(false);
+            }));
+    }
+
     /**
      * signs in user by calling backend.
      * if user was signed in correctly, the jwt from the answer is stored it in local app storage for later use.
@@ -31,7 +51,8 @@ export class AuthService {
                     console.error("Login error, username and/or password incorrect");
                 }
                 return of(false);
-            }));
+            })
+        );
     }
 
     /**

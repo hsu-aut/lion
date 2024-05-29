@@ -9,30 +9,35 @@ export type UserDocument = HydratedDocument<User>;
 @Schema()
 export class User {
 
-    @Prop({
-        required: true, 
-        unique: true
-    })
-    username: string;
+	@Prop({
+		required: true, 
+		unique: true
+	})
+		email: string;
 
-    @Prop({
-        required: true 
-    })
-    password: string;
+	@Prop({
+		required: true 
+	})
+		username: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserInfo' })
-	userInfo: UserInfo;
+	@Prop({
+		required: true 
+	})
+		password: string;
+
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'UserInfo' })
+		userInfo: UserInfo;
 
 	// graphdb repositories owned by the user
 	@Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GraphDbRepository' }] })
-	graphDbRepositories: GraphDbRepository[];
+		graphDbRepositories: GraphDbRepository[];
 
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
 export interface CreateUserDto {
-    username: string,
-    password: string,
-    email: string
+	username: string,
+	password: string,
+	email: string
 }

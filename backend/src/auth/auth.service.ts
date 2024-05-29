@@ -1,11 +1,13 @@
-import { ImATeapotException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
 import { SignInResDto } from '@shared/models/auth/SignInResDto';
 import { SignUpDto } from '@shared/models/auth/SignUpDto';
-import { Observable, of } from 'rxjs';
+import { Observable} from 'rxjs';
 import { CreateUserDto, User } from '../users/user.schema';
+import * as bcrypt from 'bcrypt';
+import { isNullOrUndefined } from 'node-opcua';
 
 @Injectable()
 export class AuthService {
@@ -20,18 +22,26 @@ export class AuthService {
 	 * @param signUpDto 
 	 * @returns 
 	 */
-	signUp(signUpDto: SignUpDto): Promise<void> {
-		if (!(this.checkSignUpDto(signUpDto))) {
-			// throw new BadRequestException();
-			throw new ImATeapotException();
-		}
-		const encryptedPassword: string = signUpDto.password;
+	async signUp(signUpDto: SignUpDto): Promise<SignInResDto> {
+		// Check throws an error when something's not right
+		await this.checkSignUpDto(signUpDto);
+		
+		const saltOrRounds = 10;
+		const encryptedPassword = await bcrypt.hash(signUpDto.password, saltOrRounds);
 		const createUserDto: CreateUserDto = {
+			email: signUpDto.email,
 			username: signUpDto.username,
 			password: encryptedPassword,
-			email: signUpDto.email
 		};
-		return this.usersService.addUser(createUserDto);
+		
+		await this.usersService.addUser(createUserDto);
+		
+		// After adding, sign user in
+		const signInDto: SignInReqDto = {
+			email: signUpDto.email,
+			password: signUpDto.password
+		};
+		return this.signIn(signInDto);
 	}
 
 	/**
@@ -40,11 +50,12 @@ export class AuthService {
 	 * @returns a jwt token if sign in data is valid
 	 */
 	async signIn(signInDto: SignInReqDto): Promise<SignInResDto> {
-		const foundUser: User = await this.usersService.findUser(signInDto.username);
-		// throw unauthorized exception 
-		// if user is null/undefined, i.e. does not exist
-		// or password is not correct 
-		if ( foundUser === undefined || foundUser === null || !this.checkPassword(signInDto.password, foundUser?.password)) {
+		const foundUser: User = await this.usersService.findUser(signInDto.email);
+		
+		// throw unauthorized exception if user is null/undefined, i.e. does not exist or password is not correct
+		const passwordCorrect = await this.checkPassword(signInDto.password, foundUser?.password);
+		
+		if ( foundUser === undefined || foundUser === null || !passwordCorrect) {
 			throw new UnauthorizedException();
 		}
 		// create payload for jwt
@@ -68,11 +79,9 @@ export class AuthService {
 	 * @param hashedPassword hashed password from database 
 	 * @returns
 	 */
-	checkPassword(inputPassword: string, hashedPassword: string): boolean {
-		if (inputPassword === hashedPassword) {
-			return true;
-		}
-		return false;
+	async checkPassword(inputPassword: string, hashedPassword: string): Promise<boolean> {
+		const passwordsMatch = bcrypt.compare(inputPassword, hashedPassword);
+		return passwordsMatch;
 	}
 
 	/**
@@ -84,8 +93,17 @@ export class AuthService {
 	 * - pw policies
 	 * @param signUpDto 
 	 */
-	checkSignUpDto(signUpDto: SignUpDto): Observable<boolean> {
-		return of(true);
+	async checkSignUpDto(signUpDto: SignUpDto): Promise<boolean> {
+		const foundUser: User = await this.usersService.findUser(signUpDto.email);
+		console.log(foundUser);
+		
+		if(!isNullOrUndefined(foundUser)) {
+			console.log("throwing");
+			
+			throw new BadRequestException(`User with name ${signUpDto.username} already exists`);
+		} else {
+			return true;
+		}
 	}
 
 }
