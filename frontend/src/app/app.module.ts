@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared/auth/auth.guard';
 import { AuthInterceptor } from './shared/auth/auth.interceptor';
+import { MainLayoutModule } from './core/main-layout/main-layout.module';
 
 
 @NgModule({
@@ -22,12 +23,13 @@ import { AuthInterceptor } from './shared/auth/auth.interceptor';
         LanguageTranslationModule,
         AppRoutingModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MainLayoutModule
     ],
     declarations: [AppComponent],
     providers: [
         AuthGuard,
-        // enable AuthInterceptor on all outgoing HTTP requests 
+        // enable AuthInterceptor on all outgoing HTTP requests
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
@@ -37,6 +39,6 @@ import { AuthInterceptor } from './shared/auth/auth.interceptor';
     bootstrap: [AppComponent]
 })
 export class AppModule {}
- 
+
 
 
