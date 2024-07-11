@@ -2,8 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Inject, Injectable, forwardRef} from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
-import { from, Observable, forkJoin  } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { from, Observable, forkJoin, of  } from 'rxjs';
+import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import * as fs from 'fs';
 import * as FormData from 'form-data';
 import { GraphDbRequestException } from '../custom-exceptions/GraphDbRequestException';
@@ -14,6 +14,7 @@ import { User, UserDocument } from '../users/user.schema';
 import { CurrentUserService } from './current-user.service';
 import { MongoDbRequestException } from '../custom-exceptions/MongoDbRequestException';
 import { GraphOperationService } from './graph-operation.service';
+import { UsersService } from '../users/users.service';
 
 /**
  * A service that provides functionality to interact with GraphDB repositories
@@ -27,7 +28,7 @@ export class RepositoryService {
 		@InjectModel(GraphDbRepository.name) private graphDbRepositoryModel: Model<GraphDbRepository>,
 		private currentUserService: CurrentUserService,
 		@Inject(forwardRef(() => GraphOperationService))
-		private graphOperationService: GraphOperationService
+		private graphOperationService: GraphOperationService,
 	) {}
 
 	/**
@@ -67,15 +68,30 @@ export class RepositoryService {
 		);
 	}
 
+
+	createRepositoryForUser(newRepositoryName: string, userEmail: string): Observable<void> {
+		const user: Promise<UserDocument> = this.userModel.findOne({ email: userEmail }).exec();
+		const userObs = from(user).pipe(
+			catchError(error => { 
+				throw new MongoDbRequestException("error retrieving user: " + error.message);
+			}),
+			take(1)
+		);
+		
+		return this.createRepository(newRepositoryName, userObs);
+	}
+
+	createRepositoryForCurrentUser(newRepositoryName: string): Observable<void> {
+		// get current user 
+		const currentUser: Observable<UserDocument> = this.currentUserService.getCurrentUser();
+		return this.createRepository(newRepositoryName, currentUser);
+	}
+
 	/**
 	 * Creates a new repository with a given name
 	 * @param repositoryName Name of the repository that will be created
 	 */
-	createRepository(newRepositoryName: string): Observable<void> {
-
-		// get current user 
-		const currentUser: Observable<UserDocument> = this.currentUserService.getCurrentUser();
-
+	createRepository(newRepositoryName: string, user: Observable<User>): Observable<void> {
 		// create new repo as mongodb document and save doc
 		const newRepositoryPromise: Promise<GraphDbRepositoryDocument> = new this.graphDbRepositoryModel({ 
 			name: newRepositoryName, 
@@ -111,7 +127,7 @@ export class RepositoryService {
 		);
 
 		// join observables and return 
-		return forkJoin([currentUser, newRepository, graphDbRequest]).pipe(
+		return forkJoin([user, newRepository, graphDbRequest]).pipe(
 			mergeMap(([currentUser, newRepository, graphDbRequest]: [UserDocument, GraphDbRepositoryDocument, void]) => {
 				// add repo to user 
 				currentUser.graphDbRepositories.push(newRepository);
@@ -119,7 +135,7 @@ export class RepositoryService {
 				newRepository.uri = "http://localhost:7200/repositories/" + newRepository._id.toString();
 				return forkJoin([from(currentUser.save()), from(newRepository.save())]);
 			}),
-			mergeMap(([currentUser, newRepository]: [UserDocument, GraphDbRepositoryDocument]) => {
+			mergeMap(([user, newRepository]: [UserDocument, GraphDbRepositoryDocument]) => {
 				return this.setWorkingRepository(newRepository);
 			}),
 			// add new default graph

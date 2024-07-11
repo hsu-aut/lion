@@ -6,6 +6,7 @@ import { UserDocument } from '../../users/user.schema';
 import { UserInfo, UserInfoDocument } from '../../users/user-data/user-info.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 
 
 @Injectable()

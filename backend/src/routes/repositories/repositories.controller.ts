@@ -30,7 +30,7 @@ export class RepositoriesController {
 	 */
 	@Post('')
 	addNewRepository(@Body()newRepositoryRequest: NewRepositoryRequestDto): any {
-		return this.repoService.createRepository(newRepositoryRequest.repositoryName);
+		return this.repoService.createRepositoryForCurrentUser(newRepositoryRequest.repositoryName);
 	}
 
 	@Put('')

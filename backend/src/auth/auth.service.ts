@@ -1,20 +1,21 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
 import { SignInResDto } from '@shared/models/auth/SignInResDto';
-import { SignUpDto } from '@shared/models/auth/SignUpDto';
 import { Observable} from 'rxjs';
 import { CreateUserDto, User } from '../users/user.schema';
 import * as bcrypt from 'bcrypt';
-import { isNullOrUndefined } from 'node-opcua';
+import { RepositoryService } from '../shared-services/repository.service';
+import { SignUpReqDto } from '@shared/models/auth/SignUpReqDto';
+import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
 
 @Injectable()
 export class AuthService {
 
 	constructor(
         private usersService: UsersService,
-		private jwtService: JwtService
+		private jwtService: JwtService,
+		private repoService: RepositoryService
 	) {}
 
 	/**
@@ -22,7 +23,7 @@ export class AuthService {
 	 * @param signUpDto 
 	 * @returns 
 	 */
-	async signUp(signUpDto: SignUpDto): Promise<SignInResDto> {
+	async signUp(signUpDto: SignUpReqDto): Promise<SignInResDto> {
 		// Check throws an error when something's not right
 		await this.checkSignUpDto(signUpDto);
 		
@@ -34,14 +35,18 @@ export class AuthService {
 			password: encryptedPassword,
 		};
 		
+		// Add the user and create a default repository
 		await this.usersService.addUser(createUserDto);
 		
-		// After adding, sign user in
-		const signInDto: SignInReqDto = {
-			email: signUpDto.email,
-			password: signUpDto.password
-		};
-		return this.signIn(signInDto);
+		console.log("creating repo");
+		console.log(createUserDto.email);
+		
+		// creating repo
+		this.repoService.createRepositoryForUser("default", createUserDto.email).subscribe(() => {
+			console.log("created repo for new user");
+			
+		});
+		return this.signIn(signUpDto as SignInReqDto);
 	}
 
 	/**
@@ -60,7 +65,7 @@ export class AuthService {
 		}
 		// create payload for jwt
 		const payload = { 
-			username: foundUser.username 
+			email: foundUser.email
 		};
 		const jwtString: string = await this.jwtService.signAsync(payload);
 		return {access_token: jwtString};
@@ -88,22 +93,18 @@ export class AuthService {
 	 * dummy, returns Observable<true> for now
 	 * TODO: implement this
 	 * check stuff:
-	 * - username not taken
 	 * - verify email
 	 * - pw policies
 	 * @param signUpDto 
 	 */
-	async checkSignUpDto(signUpDto: SignUpDto): Promise<boolean> {
+	async checkSignUpDto(signUpDto: SignUpReqDto): Promise<boolean> {
 		const foundUser: User = await this.usersService.findUser(signUpDto.email);
-		console.log(foundUser);
 		
-		if(!isNullOrUndefined(foundUser)) {
-			console.log("throwing");
-			
+		if(foundUser) {
 			throw new BadRequestException(`User with name ${signUpDto.username} already exists`);
-		} else {
-			return true;
-		}
+		} 
+
+		return true;
 	}
 
 }
