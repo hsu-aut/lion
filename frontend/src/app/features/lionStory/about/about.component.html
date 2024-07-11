@@ -3,57 +3,29 @@
         <div class="row no-gutters">
             <div class="col">
                 <h1 class="display-4">Ontology Building in the Automation Domain</h1>
-                <p class="lead">RDF/OWL based Semantic Modelling accessable for Domain experts and Software developers
-                    in the
-                    Automation Domain</p>
+                <p class="lead">
+                    RDF/OWL based Semantic Modelling accessable for Domain experts and Software developers in the Automation Domain
+                </p>
             </div>
             <div class="col-sm-1">
                 <img src="assets/home-images/AT_Logo.png">
             </div>
         </div>
+        <p>
+            The development of software functionalities, or applications in general, that monitor and analyze manufacturing related data in order to improve, support or automate processes, is becoming increasingly important in industry.
+            These applications require several information from different data sources in their context.
+            An application that is planning a maintenance workers daily schedule for instance, requires several information about machines statuses, productions plans and inventory, which resides in different systems likes Programmable Logical Controllers (PLC) or Structured Query Language (SQL) databases. Furthermore, manufacturing companies usually run machines and software systems from different vendors or of
+            different ages. The schemata used in such systems do therefor not follow a certain standard, i.e. they are very heterogeneous in their semantics.
+            When building such applications, accessing, searching and understanding the data sources is becoming a very time intensive, manual and error prone procedure that is repeated for every
+            newly build application and for every newly introduced data source. To allow for an eased access, searching and understanding of these heterogeneous data sources, an ontology can be used to integrate all heterogeneous data sources in one schemata.
+        </p>
+        <p>
+            As part of the BMBF project CrESt (Collaborative Embedded Systems), Ontology-Building methodologies have been designed that build reusable Ontologies based on industrial standards. This tool implements necessary
+            functionalities to create and manipulate RDF/OWL data to describe manufacturing related knowledge like Products, Processes and Resources, as well as their properties. Whereby this tool offers two basic functionalities:
+            Directly creating RDF/OWL data within a triple store owned by the user, or exporting of SPARQL INSERT templates that can be used by a Software developer to be executed by an application in a given event.
+        </p>
 
-        <p>
-            The development of software functionalities, or applications in general, that monitor and analyze
-            manufacturing
-            related data in order to improve,
-            support or automate processes, is becoming increasingly important in industry. These applications require
-            several
-            information from different data sources in
-            their context. An application that is planning a maintenance workers daily schedule for instance, requires
-            several
-            information about machines statuses,
-            productions plans and inventory, which resides in different systems likes Programmable Logical Controllers
-            (PLC)
-            or Structured Query Language (SQL) databases.
-            Furthermore, manufacturing companies usually run machines and software systems from different vendors or of
-            different ages. The schemata used in such systems do therefor
-            not follow a certain standard, i.e. they are very heterogeneous in their semantics. When building such
-            applications, accessing, searching and understanding the
-            data sources is becoming a very time intensive, manual and error prone procedure that is repeated for every
-            newly
-            build application and for every newly introduced
-            data source. To allow for an eased access, searching and understanding of these heterogeneous data sources,
-            an
-            ontology can be used to integrate all heterogeneous
-            data sources in one schemata.
-        </p>
-        <p>
-            As part of the BMBF project CrESt (Collaborative Embedded Systems), Ontology-Building methodologies have
-            been
-            designed that build reusable Ontologies based on industrial standards. This tool implements necessary
-            functionalities to create and manipulate RDF/OWL data to describe manufacturing related knowledge like
-            Products,
-            Processes and Resources, as well as their properties. Whereby this tool offers two basic functionalities:
-            Directly creating RDF/OWL data within a triple store owned by the user, or exporting of SPARQL INSERT
-            templates that can
-            be used by a Software developer to be executed by an application in a given event.
-        </p>
-        <div id="carouselExampleIndicators" class="carousel slide w-50 mx-auto" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            </ol>
+        <div id="myCarousel" #carousel class="carousel slide w-50 mx-auto" data-bs-theme="dark">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="assets/home-images/methodologicalOverview.png" class="d-block w-100" alt="...">
@@ -77,14 +49,14 @@
                     <img src="assets/home-images/LIONS_step6.png" class="d-block w-100" alt="...">
                 </div>
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
 
 

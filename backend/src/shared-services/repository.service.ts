@@ -1,91 +1,371 @@
 import { HttpService } from '@nestjs/axios';
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable, forwardRef} from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { RepositoryDto } from '@shared/models/repositories/RepositoryDto';
-import { NewRepositoryRequestDto } from '@shared/models/repositories/NewRepositoryRequestDto';
-import { Observable, of } from 'rxjs';
-import {catchError, map, tap} from 'rxjs/operators';
+import { from, Observable, forkJoin, of  } from 'rxjs';
+import { catchError, map, mergeMap, take } from 'rxjs/operators';
 import * as fs from 'fs';
 import * as FormData from 'form-data';
-import { SparqlResponse } from '../models/sparql/SparqlResponse';
 import { GraphDbRequestException } from '../custom-exceptions/GraphDbRequestException';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { GraphDbRepository, GraphDbRepositoryDocument } from '../users/user-data/graphdb-repository.schema';
+import { User, UserDocument } from '../users/user.schema';
+import { CurrentUserService } from './current-user.service';
+import { MongoDbRequestException } from '../custom-exceptions/MongoDbRequestException';
 import { GraphOperationService } from './graph-operation.service';
+import { UsersService } from '../users/users.service';
+
 /**
  * A service that provides functionality to interact with GraphDB repositories
  */
 @Injectable()
 export class RepositoryService {
 
-	workingRepository: Observable<RepositoryDto> = of({
-		id: "testdb",
-		title: "testdb",
-		uri: "localhost:7200/repositories/testdb",
-		readable: true,
-		writable: true
-	})
-
 	constructor(
 		private http: HttpService,
+		@InjectModel(User.name) private userModel: Model<User>,
+		@InjectModel(GraphDbRepository.name) private graphDbRepositoryModel: Model<GraphDbRepository>,
+		private currentUserService: CurrentUserService,
 		@Inject(forwardRef(() => GraphOperationService))
-		private graphService: GraphOperationService
+		private graphOperationService: GraphOperationService,
 	) {}
 
 	/**
-     * Get a list of all repositories
-     * @returns List of the currently existing repositories
-     */
-	getAllRepositories(): Observable<RepositoryDto[]> {
-		const reqConfig: AxiosRequestConfig = {
-			method: 'GET',
-			headers: {
-				'Accept': 'application/sparql-results+json, */*;q=0.5'
-			},
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories`
-		};
-
-		return this.http.request<SparqlResponse>(reqConfig).pipe(
-			map(axiosResponse => {
-				const sparqlResult = axiosResponse.data;
-				const bindings = sparqlResult.results.bindings;
-				return bindings.map(binding => {
-					const bindingEntries = Object.entries(binding);
-					const a = new RepositoryDto();
-					bindingEntries.forEach(bindingEntry => a[bindingEntry[0]] = bindingEntry[1].value);
-					return a;
-				});
-			})
+	 * get all repsitories owned by the current user
+	 * @returns Observable of an array of all repsitories
+	 */
+	getAllRepositories(): Observable<Array<RepositoryDto>> { 
+		return this.getAllRepositoryDocs().pipe(
+			map((allRepos: Array<GraphDbRepositoryDocument>) => allRepos.map(
+				(repo: GraphDbRepositoryDocument) => this.convertRepositoryDocToDto(repo)
+			))
 		);
 	}
 
-	setWorkingRepository(repositoryId: string): Observable<RepositoryDto> {
-		const repos = this.getAllRepositories();
-		const repoToSet = repos.pipe(
-			map(repos => repos.find(repo => repo.id === repositoryId)),
-		);
-		this.workingRepository = repoToSet;
-		return this.workingRepository;
-	}
-	
 	/**
 	 * Get the currently activated working repository
 	 * @returns Observable of the current working repository
 	 */
 	getWorkingRepository(): Observable<RepositoryDto> {
-		return this.workingRepository;
+		return this.getWorkingRepositoryDoc().pipe(map((repo: GraphDbRepositoryDocument) => {
+			// if undefined, no working repo is set so return undefined
+			if (repo === undefined) return undefined;
+			// else
+			return this.convertRepositoryDocToDto(repo);
+		}));	
 	}
 
+	/**
+	 * set the current users working directory
+	 * @param repoId the id of the new working repo to be set
+	 * @returns the new working repo
+	 */
+	setWorkingRepositoryById(repoId: string): Observable<RepositoryDto> { 
+		return this.getRepositoryById(repoId).pipe(
+			mergeMap((repository: GraphDbRepositoryDocument) => this.setWorkingRepository(repository)),
+			mergeMap(( ) => this.getWorkingRepository())
+		);
+	}
+
+
+	createRepositoryForUser(newRepositoryName: string, userEmail: string): Observable<void> {
+		const user: Promise<UserDocument> = this.userModel.findOne({ email: userEmail }).exec();
+		const userObs = from(user).pipe(
+			catchError(error => { 
+				throw new MongoDbRequestException("error retrieving user: " + error.message);
+			}),
+			take(1)
+		);
+		
+		return this.createRepository(newRepositoryName, userObs);
+	}
+
+	createRepositoryForCurrentUser(newRepositoryName: string): Observable<void> {
+		// get current user 
+		const currentUser: Observable<UserDocument> = this.currentUserService.getCurrentUser();
+		return this.createRepository(newRepositoryName, currentUser);
+	}
 
 	/**
 	 * Creates a new repository with a given name
 	 * @param repositoryName Name of the repository that will be created
 	 */
-	createRepository(newRepositoryRequest: NewRepositoryRequestDto): Observable<void> {
-		const {repositoryId, repositoryName} = newRepositoryRequest;
-		const repoConfig = `
-		#
-		# Sesame configuration template for a GraphDB Free repository
-		#
+	createRepository(newRepositoryName: string, user: Observable<User>): Observable<void> {
+		// create new repo as mongodb document and save doc
+		const newRepositoryPromise: Promise<GraphDbRepositoryDocument> = new this.graphDbRepositoryModel({ 
+			name: newRepositoryName, 
+			uri: "not initiated",
+			workingDirectory: false 
+		}).save();
+
+		// convert from promise to observable and catch errors during creation
+		const newRepository: Observable<GraphDbRepositoryDocument> = from(newRepositoryPromise).pipe(
+			catchError(error => { throw new MongoDbRequestException("error creating repo doc: " + error.message); }));
+
+		// create config for graphdb request and execute reuqest
+		const graphDbRequest: Observable<void> = newRepository.pipe(
+			// create config
+			map((repository: GraphDbRepositoryDocument) => (
+				this.createRepoConfig(repository._id.toString(), repository.name)
+			)),
+			// execute request and merge resulting inner observable
+			mergeMap((requestConfig: AxiosRequestConfig) => (
+				this.http.request<void>(requestConfig)
+			)),
+			//map to void
+			map(() => { return; }),
+			// in case of errors 
+			catchError((error) => { 
+				// delete mongo db repo doc
+				newRepository.subscribe((newRepository: GraphDbRepositoryDocument) =>{
+					newRepository.deleteOne();
+				});
+				// rethrow as graphdb error
+				throw new GraphDbRequestException("error creating repo: " + error.message); 
+			})
+		);
+
+		// join observables and return 
+		return forkJoin([user, newRepository, graphDbRequest]).pipe(
+			mergeMap(([currentUser, newRepository, graphDbRequest]: [UserDocument, GraphDbRepositoryDocument, void]) => {
+				// add repo to user 
+				currentUser.graphDbRepositories.push(newRepository);
+				// add mongodb document id as uri
+				newRepository.uri = "http://localhost:7200/repositories/" + newRepository._id.toString();
+				return forkJoin([from(currentUser.save()), from(newRepository.save())]);
+			}),
+			mergeMap(([user, newRepository]: [UserDocument, GraphDbRepositoryDocument]) => {
+				return this.setWorkingRepository(newRepository);
+			}),
+			// add new default graph
+			mergeMap(( ) => {
+				return this.graphOperationService.addNewGraph("http://lionFacts");
+			})
+		);
+
+	}
+
+	/**
+     * Clears a repository with a given ID by deleting all triples
+     * @param repositoryId ID of the repository to clear 
+     * @returns void if successfull
+     */
+	clearRepositoryById(repositoryId: string): Observable<void> {
+		return this.getRepositoryById(repositoryId).pipe(mergeMap(
+			(repository: GraphDbRepositoryDocument) => this.clearRepository(repository)
+		));
+	}
+
+	/**
+	 * Deletes an existing repository with a given ID
+	 * @param repositoryId ID of the repository to delete
+	 * @returns void if successfull
+	 */
+	deleteRepositoryById(repositoryId: string): Observable<void> {
+		return this.getRepositoryById(repositoryId).pipe(mergeMap(
+			(repository: GraphDbRepositoryDocument) => this.deleteRepository(repository)
+		));
+	}
+
+	/**
+	 * get a repository by its id
+	 * @param repositoryId the id of the repository
+	 * @returns the repo as a mongo db document 
+	 */
+	private getRepositoryById(repositoryId: string): Observable<GraphDbRepositoryDocument> {
+		const repoDocPromise: Promise<GraphDbRepositoryDocument> = this.graphDbRepositoryModel.findById(repositoryId).exec();
+		return from(repoDocPromise).pipe(
+			catchError(error => { 
+				throw new MongoDbRequestException("error retrieving repository: " + error.message);
+			})
+		); 
+	}
+
+	/**
+	 * set the current users working directory
+	 * @param repo the repository as a mongo db document
+	 * @returns void if successfull
+	 */
+	private setWorkingRepository(repo: GraphDbRepositoryDocument): Observable<void> { 
+		return this.currentUserService.getCurrentUser().pipe(
+			// check if user owns repo (throws exception otherwise)
+			map((user: UserDocument) =>	this.userOwnsRepository(repo, user)),
+			// get old working directory
+			mergeMap(() => this.getWorkingRepositoryDoc()),
+			// unset old working directory and save
+			map((oldWorkingRepo: GraphDbRepositoryDocument) => {
+				// if undefined, no working repo is set so just skip this 
+				if (oldWorkingRepo === undefined) return;
+				// if same repo is already set to working repo throw error
+				if (oldWorkingRepo.id === repo.id) throw new Error("this repo is already set as working repo");
+				// else, unset old working directory and save
+				oldWorkingRepo.workingDirectory = false;
+				return from(oldWorkingRepo.save());
+			}),
+			// on completion, set new working repo and save
+			mergeMap(( ) => {
+				repo.workingDirectory = true;
+				return from(repo.save());
+			}),
+			// map to void on completion
+			map(( ) => { return; }),
+			// catch errors
+			catchError(error => {
+				throw new MongoDbRequestException("could not update working repo: " + error.message);
+			})
+		);
+	}
+
+	/**
+	 * get all repsitories owned by the current user
+	 * @returns Observable of an array of all repsitories as mongo db documents
+	 */
+	private getAllRepositoryDocs(): Observable<Array<GraphDbRepositoryDocument>> {
+		return this.currentUserService.getCurrentUser().pipe(
+			// populate repositories in user document to get inner data
+			mergeMap((user: UserDocument) => from(user.populate('graphDbRepositories'))),
+			map((user: UserDocument) => {
+				// if array exists and is not empty, return it
+				if (user.graphDbRepositories.length > 0) {
+					return (user.graphDbRepositories as Array<GraphDbRepositoryDocument>);
+				}
+				// else throw error
+				throw new MongoDbRequestException("user owns no repos");
+			})
+		);
+	}
+
+	/**
+	 * Get the currently activated working repository
+	 * @returns Observable of the current working repository as a mongo db document or undefined if no working repo is set
+	 */
+	private getWorkingRepositoryDoc(): Observable<GraphDbRepositoryDocument> {
+		return this.getAllRepositoryDocs().pipe(
+			// find repo set to true
+			map((allRepos: Array<GraphDbRepositoryDocument>) => 
+				allRepos.find((repo: GraphDbRepositoryDocument) => (repo.workingDirectory === true))
+			),
+		);
+	}
+
+	/**
+	 * convert a repository mongo db document to a repository DTO
+	 * @param repository the repository as a mongo db document 
+	 * @returns the repository
+	 */
+	private convertRepositoryDocToDto(repository: GraphDbRepositoryDocument): RepositoryDto {
+		const repositoryDto: RepositoryDto = {
+			id: repository._id.toString(),
+			title: repository.name,
+			uri: repository.uri
+		};
+		return repositoryDto;
+	}
+
+	/**
+	 * check if an user owns a repo
+	 * @param repository the repo
+	 * @param user the user
+	 * @returns returns (void) if user owns repository, thorws exception otherwise
+	 * 
+	 */
+	private userOwnsRepository(repository: GraphDbRepositoryDocument, user: UserDocument): void {
+		const matchingRepo = user.graphDbRepositories.find(
+			(_repository: GraphDbRepositoryDocument) => {
+				return (repository.equals(_repository));
+			}
+		);
+		if(matchingRepo === undefined) {
+			throw new HttpException("not owned by user", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return;
+	}
+
+	/**
+	 * Deletes an existing repository
+	 * @param repository the mongo db repository document
+	 * @returns void on success
+	 */
+	private deleteRepository(repository: GraphDbRepositoryDocument): Observable<void> {
+		return this.currentUserService.getCurrentUser().pipe(
+			map((user: UserDocument) => this.userOwnsRepository(repository, user)),
+			mergeMap(( ) => {
+				return from(repository.deleteOne());
+			}),
+			mergeMap((repository: GraphDbRepositoryDocument) => {
+				const requestConfig: AxiosRequestConfig = {
+					method: 'DELETE',
+					baseURL: 'http://localhost:7200/',
+					url: '/repositories/' + repository._id.toString()
+				};
+				return this.http.request<void>(requestConfig);
+			}),
+			// map to void
+			map(( ) => { return; })
+		);
+	}
+
+	/**
+     * Clears a repository by deleting all triples
+     * @param repository the repository to clear as a mongo db document 
+     * @returns void if successfull
+     */
+	private clearRepository(repository: GraphDbRepositoryDocument): Observable<void> {
+		return this.currentUserService.getCurrentUser().pipe(
+			map((user: UserDocument) => {
+				this.userOwnsRepository(repository, user);
+				return repository;
+			}),
+			mergeMap((repository: GraphDbRepositoryDocument) => {
+				const requestConfig: AxiosRequestConfig = {
+					method: 'DELETE',
+					baseURL: 'http://localhost:7200/',
+					url: '/repositories/' + repository._id.toString() + '/statements'
+				};
+				return this.http.request<void>(requestConfig);
+			}),
+			// map to void
+			map(( ) => { return; })
+		);
+	}
+
+	/**
+	 * create a axios request config to create a new repository
+	 * TODO: find a better way without forms and creating a .ttl file
+	 * @param repositoryId 
+	 * @param repositoryName 
+	 * @returns the repo config
+	 */
+	private createRepoConfig(repositoryId: string, repositoryName: string): AxiosRequestConfig {
+		// create config as string
+		const repoConfigString = this.createRepoConfigString(repositoryId, repositoryName);
+		// store config as file as it has to be a file for further steps
+		fs.writeFileSync("./temp/repo-config.ttl", repoConfigString);
+		// Create form data with the config file
+		const form = new FormData();
+		form.append('config', fs.createReadStream("./temp/repo-config.ttl"));
+		// Build the request. Note that headers have to be calculated from the form
+		const reqConfig: AxiosRequestConfig = {
+			method: 'POST',
+			headers: form.getHeaders(),
+			baseURL: 'http://localhost:7200',
+			url: '/rest/repositories',
+			data: form
+		};
+		// delete file
+		// fs.unlinkSync("./temp/repo-config.ttl");
+		return reqConfig;
+	}
+
+	/**
+	 * helper function
+	 * @param repositoryId 
+	 * @param repositoryName 
+	 * @returns 
+	 */
+	private createRepoConfigString(repositoryId: string, repositoryName: string): string {
+		return `
 		@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 		@prefix rep: <http://www.openrdf.org/config/repository#>.
 		@prefix sr: <http://www.openrdf.org/config/repository/sail#>.
@@ -96,9 +376,9 @@ export class RepositoryService {
 			rep:repositoryID '${repositoryId}' ;
 			rdfs:label '${repositoryName}' ;
 			rep:repositoryImpl [
-				rep:repositoryType "graphdb:FreeSailRepository" ;
+				rep:repositoryType "graphdb:SailRepository" ;
 				sr:sailImpl [
-					sail:sailType "graphdb:FreeSail" ;
+					sail:sailType "graphdb:Sail" ;
 		
 					owlim:owlim-license "" ;
 		
@@ -139,65 +419,6 @@ export class RepositoryService {
 					owlim:nonInterpretablePredicates "http://www.w3.org/2000/01/rdf-schema#label;http://www.w3.org/1999/02/22-rdf-syntax-ns#type;http://www.ontotext.com/owlim/ces#gazetteerConfig;http://www.ontotext.com/owlim/ces#metadataConfig" ;
 				]
 			].`;
-
-		// Config has to be used as a file, so we store the config to file
-		fs.writeFileSync("./temp/repo-config.ttl", repoConfig);
-		
-		// Create form data with the config file
-		const form = new FormData();
-		form.append('config', fs.createReadStream("./temp/repo-config.ttl"));
-		
-		// Build the request. Note that headers have to be calculated from the form
-		const reqConfig: AxiosRequestConfig = {
-			method: 'POST',
-			headers: form.getHeaders(),
-			baseURL: 'http://localhost:7200',
-			url: '/rest/repositories',
-			data: form
-		};
-		const buf = fs.readFileSync("./temp/repo-config.ttl");
-		
-		// Execute request, file can now be deleted
-		return this.http.request<void>(reqConfig).pipe(
-			map(res => res.data),
-			catchError(error => {throw new GraphDbRequestException(error.message);}),
-			tap(res => {
-				fs.unlinkSync("./temp/repo-config.ttl");
-				this.graphService.addNewGraph("http://lionFacts");
-			})
-		);	
-	}
-
-
-	/**
-     * Clears a repository with a given ID by deleting all triples
-     * @param repositoryId ID of the repository to delete 
-     * @returns 
-     */
-	clearRepository(repositoryName: string): Observable<AxiosResponse<null>> {
-		const reqConfig: AxiosRequestConfig = {
-			method: 'DELETE',
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${repositoryName}/statements`
-		};
-
-		return this.http.request<null>(reqConfig).pipe(map(res => res.data));
-	}
-
-
-	/**
-     * Deletes an existing repository with a given ID
-     * @param repositoryId ID of the repository to delete
-     * @returns 
-     */
-	deleteRepository(repositoryName: string): Observable<AxiosResponse<null>> {
-		const reqConfig: AxiosRequestConfig = {
-			method: 'DELETE',
-			baseURL: 'http://localhost:7200/',
-			url: `/repositories/${repositoryName}`
-		};
-
-		return this.http.request<null>(reqConfig).pipe(map(res => res.data));
 	}
 
 }

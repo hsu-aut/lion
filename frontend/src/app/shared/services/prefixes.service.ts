@@ -9,13 +9,13 @@ export class PrefixesService {
 
     // TODO: This should be stored in a config database / file
     defaultPrefixes: Array<Prefix> =[
-        new Prefix("VDI3682:","http://www.hsu-ifa.de/ontologies/VDI3682#"),
-        new Prefix("VDI2206:", "http://www.hsu-ifa.de/ontologies/VDI2206#"),
-        new Prefix("DE6:",  "http://www.hsu-ifa.de/ontologies/DINEN61360#"),
-        new Prefix("ISA88:",  "http://www.hsu-ifa.de/ontologies/ISA-TR88#"),
-        new Prefix("wadl:",  "http://www.hsu-ifa.de/ontologies/WADL#"),
-        new Prefix("OpcUa:",  "http://www.hsu-ifa.de/ontologies/OpcUa#"),
-        new Prefix("iso:",  "http://www.hsu-ifa.de/ontologies/ISO22400-2#"),
+        new Prefix("VDI3682:","http://www.w3id.org/hsu-aut/VDI3682#"),
+        new Prefix("VDI2206:", "http://www.w3id.org/hsu-aut/VDI2206#"),
+        new Prefix("DE6:",  "http://www.w3id.org/hsu-aut/DINEN61360#"),
+        new Prefix("ISA88:",  "http://www.w3id.org/hsu-aut/PackML#"),
+        new Prefix("wadl:",  "http://www.w3id.org/hsu-aut/WADL#"),
+        new Prefix("OpcUa:",  "http://www.w3id.org/hsu-aut/OpcUa#"),
+        new Prefix("iso:",  "http://www.w3id.org/hsu-aut/ISO22400-2#"),
         new Prefix("rdf:",  "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
         new Prefix("rdfs:",  "http://www.w3.org/2000/01/rdf-schema#"),
         new Prefix("owl:",  "http://www.w3.org/2002/07/owl#"),

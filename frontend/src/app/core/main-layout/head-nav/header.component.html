@@ -2,8 +2,8 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <a class="navbar-brand" href="#"> Lightweight Industrial Ontology Design Support </a>
         <div class="collapse navbar-collapse">
-
-            <ul class="navbar-nav ml-auto">
+            <!-- left aligned items -->
+            <ul class="navbar-nav me-auto">
                 <li class="nav-item d-none d-xl-block">
                     <a class="nav-link btn header-button" [routerLink]="['modelling']"
                         [routerLinkActive]="['router-link-active']" role="button"><i class="fas fa-plane-departure"></i>
@@ -28,15 +28,41 @@
                         Configuration
                     </a>
                 </li>
+            </ul>
+            <!-- right aligned items -->
+            <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle header-button" data-bs-toggle="dropdown" role="button"
                         aria-haspopup="true" aria-expanded="false"><i class="fas fa-home"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" [routerLink]="['lionStory/about']"
-                            [routerLinkActive]="['router-link-active']">About LiOnS</a>
-                        <a class="dropdown-item" [routerLink]="['lionStory/modellingGuide']"
-                            [routerLinkActive]="['router-link-active']">Tutorial</a>
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['lionStory/about']"
+                                [routerLinkActive]="['router-link-active']">About LiOnS</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['lionStory/modellingGuide']"
+                                [routerLinkActive]="['router-link-active']">Tutorial</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle header-button" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item disabled" href="#" aria-disabled="true">{{$userName | async}}</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <button class="dropdown-item" type="button" (click)="signOut()">Sign Out</button>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" [routerLink]="['configuration/account']">My Account</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

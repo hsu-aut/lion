@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, take } from 'rxjs/operators';
 import { GraphUpdate } from '@shared/models/graphs/GraphUpdate';
-import { Tables } from '../../../features/modelling/utils/tables';
 import { ConfigurationService } from './configuration.service';
 import { FormatDescription } from '@shared/models/DataFormats';
 import { DownloadService } from './download.service';
@@ -16,8 +15,6 @@ import { GraphDto } from '@shared/models/graphs/GraphDto';
 })
 export class GraphOperationsService {
 
-    // util
-    TableUtil = new Tables();
     defaultGraph = "http://lionFacts";
     activeGraph = this.defaultGraph;
 

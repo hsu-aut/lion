@@ -1,0 +1,76 @@
+<p class="text-sm-left">
+    Manage your named graphs here. You can select a named graph that your triples will be added to.
+    And you can clear or delete named graphs. Warning: Clearing and deleting named graphs cannot be undone.
+</p>
+
+<div class="row mb-4 align-items-center">
+    <div class="col-2">
+        <label for="activeGraph" class="col-form-label">Active graph:</label>
+    </div>
+    <div class="col-4">
+        <input type="text" disabled readonly id="activeGraph" class="form-control" [value]="activeGraph?.graphIri">
+    </div>
+    <div class="col-2">
+        <label for="existingGraphs" class="col-form-label">Existing named graphs:</label>
+    </div>
+    <div class="col-4">
+        <div class="input-group">
+            <select id="existingGraphs" [formControl]="graphSetOption" name="activeNamespace" class="form-control">
+                <option value=null selected hidden></option>
+                <option *ngFor='let graph of graphList'>
+                    {{graph.graphIri}}
+                </option>
+            </select>
+            <button class="btn btn-primary" type="button" id="button-addon2" (click)="setActiveGraph()">Change graph</button>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <h6>Create new named graph</h6>
+    <label for="newGraphIri" class="col-sm-2 col-form-label">Graph IRI:</label>
+    <div class="col-sm-4">
+        <input [formControl]="newGraph" id="newGraphIri" type="text" class="form-control"
+        aria-label="Text input with dropdown button" placeholder="Enter graph IRI">
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-success" type="button"
+            (click)="createNamedGraph()">Create graph</button>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <h6>Clear Graph</h6>
+    <label for="graphToClear" class="col-sm-2 col-form-label">Graph IRI:</label>
+    <div class="col-sm-4">
+        <select [formControl]="graphDeleteTriplesOption" id="graphToClear" class="form-select">
+            <option value=null selected hidden></option>
+            <option *ngFor='let graph of graphList'>
+                {{graph.graphIri}}
+            </option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-warning" type="button"
+            (click)="clickClearTriplesOfNamedGraph()">Clear graph triples</button>
+    </div>
+</div>
+
+<div class="row">
+    <h6>Delete Graph</h6>
+    <label for="graphToDelete" class="col-sm-2 col-form-label">Graph IRI:</label>
+    <div class="col-sm-4">
+        <select [formControl]="graphDeleteOption" id="graphToDelete" class="form-select">
+            <option value=null selected hidden></option>
+            <option *ngFor='let graph of graphList'>
+                {{graph.graphIri}}
+            </option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-danger" type="button"
+            (click)="clickDeleteNamedGraph()">Delete graph</button>
+    </div>
+</div>
+
+<app-confirmation-modal [context]="'graph'" (onConfirm)="onConfirm()"></app-confirmation-modal>

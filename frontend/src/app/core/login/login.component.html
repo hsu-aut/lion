@@ -1,15 +1,26 @@
-<div class="login-page" [@routerTransition]>
-    <div class="row justify-content-md-center">
-        <div class="col-md-6">
-            <img src="assets/home-images/AT_Logo_big.png" width="150px" />
-            <h1>Lightweight Industrial Ontology Design Support</h1>
-            <p>RDF/OWL based Semantic Modelling accessable for Domain experts and Software developers in the Automation Domain</p>
-            <form role="form">
-
-                <a class="btn rounded-btn" [routerLink]="['/main/lionStory']">What is this tool about?</a>
-                &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/main/configuration/repository']">Start modelling RDF!</a>
-            </form>
+<div class="login-background" [@routerTransition]>
+    <div class="container p-3">
+        <div class="row d-flex flex-column align-items-center gap-3">
+            <div class="col-auto">
+                <img src="assets/home-images/AT_Logo_big.png" width="150px" />
+            </div>
+            <div class="col-auto">
+                <h1>Lightweight Industrial Ontology Design Support</h1>
+                <p>RDF/OWL based Semantic Modelling accessable for Domain experts and Software developers in the Automation Domain</p>
+            </div>
+        </div>
+        <div class="row mt-3 justify-content-center">
+            <div class="col-sm-4 col-md-3">
+                <a class="btn btn-lg btn-outline-light" [routerLink]="['/main/lionStory']">What is this tool about?</a>
+            </div>
+            <div class="col-sm-4 col-md-3">
+                <a class="btn btn-lg btn-outline-light" [routerLink]="['/main/configuration/repository']">Start modelling RDF!</a>
+            </div>
+        </div>
+        <div class="row mt-3 justify-content-center">
+            <div class="col-4">
+                <router-outlet></router-outlet>
+            </div>
         </div>
     </div>
 </div>

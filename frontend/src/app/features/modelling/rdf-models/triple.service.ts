@@ -27,6 +27,12 @@ export class TripleService {
         return this.queryService.executeUpdate(insertString);
     }
 
+    deleteTriple(triple: Triple): Observable<void> {
+        Object.keys(triple).forEach(key => triple[key] = this.prefixService.addOrParseNamespace(triple[key]));
+        const deleteString = this.buildTripleDeleteString(triple);
+        return this.queryService.executeUpdate(deleteString);
+    }
+
     /**
      * Builds a SPARQL INSERT string to add triples to a triple store
      * @param triple Triple to create the insert string for
@@ -44,6 +50,24 @@ export class TripleService {
                 BIND(IRI(STR("${triple.object}")) AS ?object).
             }`;
         return insertString;
+    }
+
+    /**
+     * Builds a SPARQL DELETE string to delete a triple from a triple store
+     * @param triple Triple to create the DELETE string for
+     * @returns A SPARQL DELETE string that deletes the given triples from the current graph
+     */
+    buildTripleDeleteString(triple: Triple): string {
+        const deleteString = `
+            DELETE {
+                ?subject ?predicate ?object;
+                a owl:NamedIndividual.
+            } WHERE {
+                BIND(IRI(STR("${triple.subject}")) AS ?subject).
+                BIND(IRI(STR("${triple.predicate}")) AS ?predicate).
+                BIND(IRI(STR("${triple.object}")) AS ?object).
+            }`;
+        return deleteString;
     }
 
 }

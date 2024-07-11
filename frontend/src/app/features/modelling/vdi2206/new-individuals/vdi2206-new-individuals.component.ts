@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { TboxService } from '../../rdf-models/tbox.service';
 import { Triple, TripleService } from '../../rdf-models/triple.service';
 import { DownloadService } from '../../../../shared/services/backEnd/download.service';
+import { MessagesService } from '../../../../shared/services/messages.service';
 
 @Component({
     selector: 'vdi2206-new-individuals',
@@ -25,18 +26,22 @@ export class Vdi2206NewIndividualsComponent implements OnInit {
         private fb: FormBuilder,
         private dlService: DownloadService,
         private tboxService: TboxService,
-        private tripleService: TripleService
+        private tripleService: TripleService,
+        private messageService: MessagesService
     ) { }
 
     ngOnInit(): void {
-        this.tboxService.getClassesWithinNamespace("http://www.hsu-ifa.de/ontologies/VDI2206#").subscribe(data => {
+        this.tboxService.getClassesWithinNamespace("http://www.w3id.org/hsu-aut/VDI2206#").subscribe(data => {
             this.allClasses = data;
             this.newTripleForm.get('object').setValue(data[0]);
         });
     }
 
     buildInsert(): void  {
-        if(this.newTripleForm.invalid) return;
+        if(this.newTripleForm.invalid) {
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
+            return;
+        }
 
         const triple = this.newTripleForm.getRawValue();
         const insertString = this.tripleService.buildTripleInsertString(triple);
@@ -45,9 +50,25 @@ export class Vdi2206NewIndividualsComponent implements OnInit {
         const name = 'insert.ttl';
         this.dlService.download(blob, name);
     }
+
     executeInsert(): void  {
+        if(this.newTripleForm.invalid) {
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
+            return;
+        }
         const newTriple = this.newTripleForm.getRawValue() as Triple;
         this.tripleService.addTriple(newTriple).subscribe({
+            next: () => this.newTripleForm.reset()
+        });
+    }
+
+    deleteStatement(): void {
+        if(this.newTripleForm.invalid) {
+            this.messageService.warn('Ups!','It seems like you are missing some data here...');
+            return;
+        }
+        const tripleToDelete = this.newTripleForm.getRawValue() as Triple;
+        this.tripleService.deleteTriple(tripleToDelete).subscribe({
             next: () => this.newTripleForm.reset()
         });
     }
