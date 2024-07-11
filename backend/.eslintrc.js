@@ -13,7 +13,7 @@ module.exports = {
 	},
 	rules: {
 		"semi": ["error","always"],
-		"indent": ["error", "tab"],
+		"indent": ["error", "tab", { "ignoredNodes": ["PropertyDefinition"] }],
 		"prefer-const": ["error",{}],
 		"max-len": ["error", {code: 140, ignoreComments: true}]
 		// Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
