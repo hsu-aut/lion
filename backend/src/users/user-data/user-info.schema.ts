@@ -7,14 +7,11 @@ export type UserInfoDocument = HydratedDocument<UserInfo>;
 @Schema()
 export class UserInfo {
 
-    @Prop()
-    firstName: string;
+	@Prop()
+	firstName: string;
 
-    @Prop()
-    lastName: string;
-
-    @Prop()
-    email: string;
+	@Prop()
+	lastName: string;
 
 }
 

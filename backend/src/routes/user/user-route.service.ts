@@ -1,13 +1,11 @@
-import { Controller, Get, Injectable, Post } from '@nestjs/common';
-import { Observable, forkJoin, from, map, mergeMap, of, tap, withLatestFrom } from 'rxjs';
+import { Observable, from, map, mergeMap} from 'rxjs';
 import { UserInfoDto } from "@shared/models/user/UserInfoDto";
 import { SetUserInfoDto } from "@shared/models/user/SetUserInfoDto";
 import { CurrentUserService } from '../../shared-services/current-user.service';
-import { User, UserDocument } from '../../users/user.schema';
+import { UserDocument } from '../../users/user.schema';
 import { UserInfo, UserInfoDocument } from '../../users/user-data/user-info.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MongoDbRequestException } from '../../custom-exceptions/MongoDbRequestException';
 
 
 @Injectable()
@@ -26,7 +24,6 @@ export class UserRouteService {
 					username: user.username,
 					firstName: user.userInfo && user.userInfo.firstName ? user.userInfo.firstName : undefined,
 					lastName: user.userInfo && user.userInfo.lastName ? user.userInfo.lastName : undefined,
-					email: user.userInfo && user.userInfo.email ? user.userInfo.email : undefined
 				};
 				return userInfoDto;
 			})
@@ -41,7 +38,6 @@ export class UserRouteService {
 					const newUserInfo: Observable<UserInfoDocument> = from(new this.userInfoModel({ 
 						firstName: setUserInfoDto.firstName, 
 						lastName: setUserInfoDto.lastName,
-						email: setUserInfoDto.email 
 					}).save());
 					return newUserInfo.pipe(mergeMap((newUserInfo: UserInfoDocument) => {
 						user.userInfo = newUserInfo;
@@ -51,7 +47,6 @@ export class UserRouteService {
 				else {
 					if (setUserInfoDto.firstName) user.userInfo.firstName = setUserInfoDto.firstName;
 					if (setUserInfoDto.lastName) user.userInfo.lastName = setUserInfoDto.lastName;
-					if (setUserInfoDto.email) user.userInfo.email = setUserInfoDto.email;
 					return from((user.userInfo as UserInfoDocument).save());
 				}
 			}),

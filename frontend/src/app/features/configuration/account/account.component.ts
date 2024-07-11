@@ -24,7 +24,6 @@ export class AccountComponent implements OnInit {
     userInfoForm = this.formBuilder.group({
         firstName: new FormControl("", [Validators.pattern('^[a-zA-Z]+$')]),
         lastName: new FormControl("", [Validators.pattern('^[a-zA-Z]+$')]),
-        email: new FormControl("", [Validators.email])
     })
 
     ngOnInit(): void {
@@ -37,7 +36,6 @@ export class AccountComponent implements OnInit {
                 this.userInfoForm.setValue({
                     firstName: userInfo.firstName || "",
                     lastName: userInfo.lastName || "",
-                    email: userInfo.email || ""
                 });
                 this.username = userInfo.username;
             },
@@ -53,7 +51,6 @@ export class AccountComponent implements OnInit {
             const setuserInfoDto: SetUserInfoDto = {
                 firstName: this.userInfoForm.get('firstName').value,
                 lastName: this.userInfoForm.get('lastName').value,
-                email: this.userInfoForm.get('email').value
             };
             this.userService.setCurrentUserInfo(setuserInfoDto).subscribe({
                 next: () => {

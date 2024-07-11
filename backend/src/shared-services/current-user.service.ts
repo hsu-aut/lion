@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { MongoDbRequestException } from '../custom-exceptions/MongoDbRequestException';
 import { Request } from 'express';
+import { UsersService } from '../users/users.service';
 
 @Injectable(
 	{ scope: Scope.REQUEST }
@@ -15,13 +16,14 @@ export class CurrentUserService {
 	constructor(
 		@InjectModel(User.name) private userModel: Model<User>,
         @Inject(REQUEST) private request: Request,
+		private userService: UsersService
 	) {
 
 	}
 
 	getCurrentUser(): Observable<UserDocument> {
-		const username: string = this.request['user']['username'];
-		const foundUser: Promise<UserDocument> = this.userModel.findOne({ username: username }).exec();
+		const email: string = this.request['user']['email'];
+		const foundUser: Promise<UserDocument> = this.userModel.findOne({ email: email }).exec();
 		return from(foundUser).pipe(
 			catchError(error => { 
 				throw new MongoDbRequestException("error retrieving user: " + error.message);

@@ -2,8 +2,8 @@ import { Body, Controller, Post, Get } from '@nestjs/common';
 import { AuthService } from '../../auth/auth.service';
 import { SignInReqDto } from '@shared/models/auth/SignInReqDto';
 import { SignInResDto } from '@shared/models/auth/SignInResDto';
-import { SignUpDto } from '@shared/models/auth/SignUpDto';
 import { Public } from '../../auth/public.decorator';
+import { SignUpReqDto } from '@shared/models/auth/SignUpReqDto';
 
 @Controller("/lion_BE/auth")
 export class AuthRouteController {
@@ -21,7 +21,7 @@ export class AuthRouteController {
 	 */
 	@Public()
 	@Post('signUp')
-	signUp(@Body() signUpDto: SignUpDto): Promise<SignInResDto> {
+	signUp(@Body() signUpDto: SignUpReqDto): Promise<SignInResDto> {
 		return this.authService.signUp(signUpDto);
 	}
 

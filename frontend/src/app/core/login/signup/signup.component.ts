@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { SignInReqDto, SignUpReqDto } from '@shared/models/auth/SignInReqDto';
 import { routerTransition } from '../../../router.animations';
 import { AuthService } from '../../../shared/auth/auth.service';
 import { MessagesService } from '../../../shared/services/messages.service';
-import { tap } from 'rxjs';
+import { SignUpReqDto } from '@shared/models/auth/SignUpReqDto';
 
 @Component({
     selector: 'app-signup',
