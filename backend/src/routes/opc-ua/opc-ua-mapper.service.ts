@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DataToMap, ServerInfo, OpcNode} from './opc-ua.controller';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class OpcUaMappingCreator {
@@ -20,18 +19,18 @@ export class OpcUaMappingCreator {
 
 	createMapping(): string {
 		console.log('Create Mapping...');
-		let queryString = `PREFIX ${this.opcPrefix}: <http://www.hsu-ifa.de/ontologies/OpcUa#>
+		let queryString = `PREFIX ${this.opcPrefix}: <http://www.w3id.org/hsu-aut/OpcUa#>
 		INSERT DATA{
 			GRAPH <${this.serverIp}>{\n`;
 
 		// Create description of server and nodeset
-		const nodeSetId = `<urn:uuid:${uuid()}>`;
+		const nodeSetId = `<urn:uuid:${crypto.randomUUID()}>`;
 		queryString += this.createServerAndNodeSetDescription(nodeSetId);
 		
 		// Preprocessing, give every node a UUID
 		// This is needed later when connecting with object properties
 		this.nodesToMap.forEach(node => {
-			node.uuid = uuid();
+			node.uuid = crypto.randomUUID();
 		});
 
 		this.nodesToMap.forEach(node => {
@@ -108,7 +107,7 @@ export class OpcUaMappingCreator {
      * @param {string} nodeSetId ID of the nodeset to create. Has to be passed because it's needed when creating the individual nodes
      */
 	createServerAndNodeSetDescription(nodeSetId: string): string {
-		const serverId = `<urn:uuid:${uuid()}>`;
+		const serverId = `<urn:uuid:${crypto.randomUUID()}>`;
 		const queryString = `${serverId} rdf:type ${this.opcPrefix}:UAServer;
 			rdfs:label 'OPC-UA-Server_${this.serverInfo.endpointUrl}';
 			${this.opcPrefix}:hasEndpointUrl '${this.serverInfo.endpointUrl}';

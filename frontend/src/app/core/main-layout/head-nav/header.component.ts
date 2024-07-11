@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import { UserService } from '../../../shared/services/backEnd/user.service';
+import { map } from 'rxjs';
+import { UserInfoDto } from '@shared/models/user/UserInfoDto';
+import { AuthService } from '../../../shared/auth/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -8,11 +11,15 @@ import { TranslateService } from '@ngx-translate/core';
     styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
     public pushRightClass: string;
+    public userName = "---";
+    public $userName;
 
     constructor(
-        // private translate: TranslateService, 
-        // public router: Router
+        private userService: UserService,
+        public router: Router,
+        private authService: AuthService
     ) {
 
         // this.router.events.subscribe(val => {
@@ -26,8 +33,21 @@ export class HeaderComponent implements OnInit {
         // });
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
+        this.getUserName();
         // this.pushRightClass = 'push-right';
+    }
+
+    signOut(): void {
+        this.authService.signOut();
+        this.router.navigate(['']);
+        return;
+    }
+
+    getUserName(): void {
+        this.$userName =  this.userService.getCurrentUserInfo().pipe(map(
+            (userInfo: UserInfoDto) => userInfo.username
+        ));
     }
 
     // isToggled(): boolean {

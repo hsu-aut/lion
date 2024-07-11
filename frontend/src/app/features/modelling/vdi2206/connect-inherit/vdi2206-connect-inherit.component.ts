@@ -37,9 +37,9 @@ export class Vdi2206ConnectInheritComponent implements OnInit {
 
         if (selectedPredicate != undefined) {
             const subject = selectedSubject;
-            this.tboxService.getClassOfIndividualWithinNamespace(subject, "http://www.hsu-ifa.de/ontologies/VDI2206#").pipe(take(1)).subscribe((data: any) => {
+            this.tboxService.getClassOfIndividualWithinNamespace(subject, "http://www.w3id.org/hsu-aut/VDI2206#").pipe(take(1)).subscribe((data: any) => {
                 const owlClass = data[0];
-                this.tboxService.getListOfIndividualsByClass(owlClass, "http://www.hsu-ifa.de/ontologies/VDI2206#").pipe(take(1)).subscribe((data: any) => {
+                this.tboxService.getListOfIndividualsByClass(owlClass, "http://www.w3id.org/hsu-aut/VDI2206#").pipe(take(1)).subscribe((data: any) => {
                     this.existingObjects = data;
                     this.connectTripleForm.get('selectedObject').setValue(data[0]);
                 });

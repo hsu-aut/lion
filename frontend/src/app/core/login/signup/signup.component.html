@@ -1,0 +1,26 @@
+<form class="mt-3" [formGroup]="signUpForm">
+    <div class="mb-3">
+        <label for="userName" class="form-label">Username</label>
+        <input type="text" class="form-control form-control-lg" id="userName" formControlName="username"
+            aria-describedby="emailHelp" placeholder="Enter username">
+    </div>
+    <div class="mb-3">
+        <label for="inputEmail" class="form-label">Email</label>
+        <input type="email" class="form-control form-control-lg" id="inputEmail" formControlName="inputEmail"
+            aria-describedby="emailHelp" placeholder="Enter email">
+    </div>
+    <div class="mb-3">
+        <label for="inputPassword" class="form-label">Password</label>
+        <input type="password" class="form-control form-control-lg" id="inputPassword" formControlName="inputPassword"
+            placeholder="Enter password">
+    </div>
+    <div class="mb-4">
+        <label for="inputPasswordConfirmation" class="form-label">Repeat Password</label>
+        <input type="password" class="form-control form-control-lg" id="inputPasswordConfirmation" formControlName="inputPasswordConfirmation"
+            placeholder="Repeat password">
+    </div>
+    <div>
+        <a class="btn btn-outline-light float-start" routerLink="/sign-in">Sign In</a>
+        <a class="btn btn-outline-light float-end" (click)="signUp()">Sign Up</a>
+    </div>
+</form>
