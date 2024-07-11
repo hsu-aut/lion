@@ -47,6 +47,7 @@
         "wadl",
         "frontend",
         "backend",
-        "2206"
+        "2206",
+        "auth"
     ],
 }
