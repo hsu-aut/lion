@@ -10,9 +10,7 @@ import { ConfigurationRoutingModule } from './configuration-routing.module';
 
 // child components
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { RepositoryComponent } from './repository/repository.component';
 import { NamespacesComponent } from './namespaces/namespaces.component';
-import { GraphsComponent } from './graphs/graphs.component';
 
 // util modules
 import { TableModule } from '../../shared/modules/table/table.module';
@@ -28,8 +26,7 @@ import { TableModule } from '../../shared/modules/table/table.module';
     declarations: [
         ConfigurationComponent,
         SidebarComponent,
-        NamespacesComponent,
-        GraphsComponent
+        NamespacesComponent
     ]
 })
 export class ConfigurationModule { }

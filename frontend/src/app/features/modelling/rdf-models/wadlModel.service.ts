@@ -253,7 +253,7 @@ export class WADLDATA {
         const selectString = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT DISTINCT ?bodyRepresentation ?bodyMediaType ?bodyParameterKey ?bodyDataType ?bodyOptionValue WHERE {
@@ -300,7 +300,7 @@ export class WADLDATA {
 
     public SELECT_LIST_ONTOLOGICAL_TYPES_BY_NAMESPACE(Namespace) {
         const selectString = `
-    PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+    PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
     PREFIX sesame: <http://www.openrdf.org/schema/sesame#>
     PREFIX owl: <http://www.w3.org/2002/07/owl#>
     SELECT DISTINCT ?class
@@ -323,7 +323,7 @@ export class WADLDATA {
 //         const deleteString = `
 //     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 //     PREFIX owl: <http://www.w3.org/2002/07/owl#>
-//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 //     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 //     DELETE  {
 //       ?parameter wadl:hasParameterOption ?option.
@@ -349,7 +349,7 @@ export class WADLDATA {
 //         const deleteString = `
 //     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 //     PREFIX owl: <http://www.w3.org/2002/07/owl#>
-//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 //     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 //     DELETE  {
 //       ?option ?predicate ?object.
@@ -376,7 +376,7 @@ export class WADLDATA {
 //         const deleteString = `
 //     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 //     PREFIX owl: <http://www.w3.org/2002/07/owl#>
-//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 //     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 //     DELETE {
 
@@ -443,7 +443,7 @@ export class WADLDATA {
 //         const deleteString = `
 //     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 //     PREFIX owl: <http://www.w3.org/2002/07/owl#>
-//     PREFIX wadl: <http://www.hsu-ifa.de/ontologies/WADL#>
+//     PREFIX wadl: <http://www.w3id.org/hsu-aut/WADL#>
 //     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 //     DELETE {
 

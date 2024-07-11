@@ -28,6 +28,9 @@ import { MessageComponent } from './messaging/message/messages.component';
         LoaderComponent,
         MessageContainerComponent,
         MessageComponent
+    ],
+    exports: [
+        MessageContainerComponent
     ]
 })
 export class MainLayoutModule { }

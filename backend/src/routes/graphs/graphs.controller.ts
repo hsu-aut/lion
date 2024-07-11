@@ -86,7 +86,7 @@ export class GraphsController {
 	@Delete(':graphIri/triples')
 	deleteTriplesOfNamedGraph(@Param('graphIri') graphIri: string): Observable<void> {
 		// To clear all triples, we simply set empty data as there is no dedicated clear method
-		const triples = "http://www.w3.org/2002/07/owl#Class a http://www.w3.org/2000/01/rdf-schema#Class.";
+		const triples = "<http://www.w3.org/2002/07/owl#Class> a <http://www.w3.org/2000/01/rdf-schema#Class> .";
 		const format = "text/turtle";
 		return this.graphService.setTriplesToGraph(decodeURIComponent(graphIri), format, triples);
 	}

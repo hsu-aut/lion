@@ -39,7 +39,7 @@
         "typescriptreact"
     ],
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
     "eslint.alwaysShowStatus": true,
     "conventionalCommits.scopes": [
@@ -47,6 +47,7 @@
         "wadl",
         "frontend",
         "backend",
-        "2206"
+        "2206",
+        "auth"
     ],
 }

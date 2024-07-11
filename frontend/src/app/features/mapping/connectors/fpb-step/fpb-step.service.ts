@@ -110,7 +110,7 @@ export class FpbStepService {
 export class Data {
 
     public SELECT_TABLE_OF_TECHNICAL_RESOURCE_INFO = `
-  PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+  PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
   SELECT ?ID ?longName ?shortName
@@ -123,7 +123,7 @@ export class Data {
   `
 
     public SELECT_TABLE_OF_SYSTEM_INFO = `
-  PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+  PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
@@ -136,11 +136,11 @@ export class Data {
   `
 
     public SELECT_TABLE_OVERVIEW = `
-  PREFIX VDI2206: <http://www.hsu-ifa.de/ontologies/VDI2206#>
+  PREFIX VDI2206: <http://www.w3id.org/hsu-aut/VDI2206#>
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
   PREFIX owl: <http://www.w3.org/2002/07/owl#>
-  PREFIX VDI3682: <http://www.hsu-ifa.de/ontologies/VDI3682#>
+  PREFIX VDI3682: <http://www.w3id.org/hsu-aut/VDI3682#>
 
   SELECT DISTINCT ?CADLabel ?longName ?shortName WHERE {
   ?technicalResource a VDI2206:System.
