@@ -12,7 +12,8 @@ COPY ./tsconfig.base.json /usr/local/app/
 # set workdir
 WORKDIR /usr/local/app/backend
 
-# clean install
+# create package-lock.json first then clean install
+RUN npm i --package-lock-only
 RUN npm ci
 
 # build app
