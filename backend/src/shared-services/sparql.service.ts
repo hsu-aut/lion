@@ -31,7 +31,7 @@ export class SparqlService {
 				},
 				responseType: 'text',
 				data: queryString,
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${currentRepoId}`
 			};
 
@@ -65,7 +65,7 @@ export class SparqlService {
 				},
 				responseType: 'text',
 				data: updateString,
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${currentRepoId}/statements`
 			};
         

@@ -38,7 +38,7 @@ export class OdpService {
 			},
 			responseType: 'text',
 			data: odp.data,
-			baseURL: 'http://localhost:7200/',
+			baseURL: process.env.GRAPHDB_BASE_URL,
 			url: `/repositories/${currentRepo.id}/statements`
 		};
 

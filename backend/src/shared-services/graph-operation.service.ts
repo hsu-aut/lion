@@ -31,7 +31,7 @@ export class GraphOperationService {
 					'Accept': 'application/json'
 				},
 				responseType: 'json',
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${workingRepo.id}/rdf-graphs`
 			};
 			return this.http.request<SparqlResponse>(requestConfig).pipe(
@@ -51,7 +51,7 @@ export class GraphOperationService {
 				headers: {
 					'Content-Type': 'application/x-turtle;charset=UTF-8'
 				},
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				data: `owl:Class a rdfs:Class.`,
 				url: `/repositories/${workingRepo.id}/rdf-graphs/service?graph=${decodedGraphIri}`
 			};
@@ -96,7 +96,7 @@ export class GraphOperationService {
 					'Accept': format
 				},
 				responseType: 'text',
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${currentRepo.id}/rdf-graphs/service?graph=${graphName}`
 			};
 	
@@ -122,7 +122,7 @@ export class GraphOperationService {
 			const reqConfig: AxiosRequestConfig = {
 				method: 'DELETE',
 				responseType: 'text',
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${workingRepo.id}/rdf-graphs/service?graph=${graphName}`
 			};
 	
@@ -152,7 +152,7 @@ export class GraphOperationService {
 				},
 				responseType: 'text',
 				data: triples,
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${workingRepository.id}/rdf-graphs/service?graph=${graphIri}`
 			};
 	
@@ -189,7 +189,7 @@ export class GraphOperationService {
 				},
 				responseType: 'text',
 				data: fileContent,
-				baseURL: 'http://localhost:7200/',
+				baseURL: process.env.GRAPHDB_BASE_URL,
 				url: `/repositories/${currentRepo.id}/rdf-graphs/service?graph=${graphIri}`
 			};
 	

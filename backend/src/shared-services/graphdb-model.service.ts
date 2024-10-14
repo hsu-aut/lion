@@ -22,7 +22,7 @@ export class GraphDbModelService {
 			},
 			responseType: 'text',
 			data: ttlContent,
-			url: `http://localhost:7200/repositories/${currentRepo}/rdf-graphs/service?graph=${graphName}`
+			url: `${process.env.GRAPHDB_BASE_URL}repositories/${currentRepo}/rdf-graphs/service?graph=${graphName}`
 		};
 
 		try {

@@ -132,7 +132,7 @@ export class RepositoryService {
 				// add repo to user 
 				currentUser.graphDbRepositories.push(newRepository);
 				// add mongodb document id as uri
-				newRepository.uri = "http://localhost:7200/repositories/" + newRepository._id.toString();
+				newRepository.uri = process.env.GRAPHDB_BASE_URL + "repositories/" + newRepository._id.toString();
 				return forkJoin([from(currentUser.save()), from(newRepository.save())]);
 			}),
 			mergeMap(([user, newRepository]: [UserDocument, GraphDbRepositoryDocument]) => {
@@ -296,7 +296,7 @@ export class RepositoryService {
 			mergeMap((repository: GraphDbRepositoryDocument) => {
 				const requestConfig: AxiosRequestConfig = {
 					method: 'DELETE',
-					baseURL: 'http://localhost:7200/',
+					baseURL: process.env.GRAPHDB_BASE_URL,
 					url: '/repositories/' + repository._id.toString()
 				};
 				return this.http.request<void>(requestConfig);
@@ -320,7 +320,7 @@ export class RepositoryService {
 			mergeMap((repository: GraphDbRepositoryDocument) => {
 				const requestConfig: AxiosRequestConfig = {
 					method: 'DELETE',
-					baseURL: 'http://localhost:7200/',
+					baseURL: process.env.GRAPHDB_BASE_URL,
 					url: '/repositories/' + repository._id.toString() + '/statements'
 				};
 				return this.http.request<void>(requestConfig);
@@ -349,7 +349,7 @@ export class RepositoryService {
 		const reqConfig: AxiosRequestConfig = {
 			method: 'POST',
 			headers: form.getHeaders(),
-			baseURL: 'http://localhost:7200',
+			baseURL: process.env.GRAPHDB_BASE_URL,
 			url: '/rest/repositories',
 			data: form
 		};

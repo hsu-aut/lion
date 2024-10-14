@@ -25,7 +25,7 @@ export class ModelService {
 			headers: {
 				'Accept': 'application/rdf+xml'
 			},
-			baseURL: 'http://localhost:7200/',
+			baseURL: process.env.GRAPHDB_BASE_URL,
 			url: `/repositories/${currentRepo}/statements`
 		};
 
@@ -44,7 +44,7 @@ export class ModelService {
 			headers: {
 				'Accept': 'application/rdf+xml'
 			},
-			baseURL: 'http://localhost:7200/',
+			baseURL: process.env.GRAPHDB_BASE_URL,
 			url: `/repositories/${currentRepo}/statements`
 		};
 
@@ -66,7 +66,7 @@ export class ModelService {
 			},
 			responseType: 'text',
 			data: pattern.data,
-			baseURL: 'http://localhost:7200/',
+			baseURL: process.env.GRAPHDB_BASE_URL,
 			url: `/repositories/${currentRepo}/statements`
 		};
 
