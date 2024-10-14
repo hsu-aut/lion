@@ -22,6 +22,7 @@ services:
     networks:
       - frontend_to_backend
       - backend_to_mongo
+      - backend_to_graphdb
   
   mongo:
     image: mongo
@@ -44,10 +45,24 @@ services:
     networks:
       - mongo-express_to_mongo
 
+  graphdb:
+    image: ontotext/graphdb:10.5.1
+    # todo: remove port forwarding to host, in production only the backend should access the graphdb
+    ports: 
+      - 7200:7200
+    volumes:
+      - type: volume
+        source: graphdb
+        target: /opt/graphdb/home/data
+    networks:
+      - backend_to_graphdb
+
 volumes:
   mongo:
+  graphdb:
 
 networks:
   frontend_to_backend:
   backend_to_mongo:
   mongo-express_to_mongo:
+  backend_to_graphdb:
